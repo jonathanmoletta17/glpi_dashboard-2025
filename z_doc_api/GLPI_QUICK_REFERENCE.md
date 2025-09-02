@@ -131,7 +131,7 @@ Params:
 ["gabriel andrade da conceicao", "nicolas fernando muniz nunez"]
 
 # N2
-["alessandro carbonera vieira", "jonathan nascimento moletta", 
+["alessandro carbonera vieira", "jonathan nascimento moletta",
  "thales vinicius paz leite", "leonardo trojan repiso riela",
  "edson joel dos santos silva", "luciano marcelino da silva"]
 
@@ -321,6 +321,6 @@ if 'data' not in data:
 
 ---
 
-**Última atualização:** 22 de Janeiro de 2025  
-**Versão:** 1.0  
+**Última atualização:** 22 de Janeiro de 2025
+**Versão:** 1.0
 **Status:** ✅ Validado e Funcional

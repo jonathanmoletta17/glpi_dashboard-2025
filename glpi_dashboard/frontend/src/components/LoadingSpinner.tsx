@@ -125,7 +125,7 @@ export const ErrorState: React.FC<ErrorStateProps> = ({
       </div>
 
       {onRetry && (
-        <button onClick={onRetry} className='btn-primary flex items-center space-x-2'>
+        <button onClick={onRetry} className='flex items-center space-x-2 font-semibold py-3 px-6 rounded-xl bg-gradient-to-r from-blue-500 to-blue-700 hover:from-blue-600 hover:to-blue-800 text-white shadow-lg hover:shadow-xl transform hover:-translate-y-0.5 transition-all duration-300'>
           <svg className='w-4 h-4' fill='none' stroke='currentColor' viewBox='0 0 24 24'>
             <path
               strokeLinecap='round'

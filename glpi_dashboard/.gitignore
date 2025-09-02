@@ -101,3 +101,15 @@ frontend/coverage/
 
 # Nginx configs locais
 nginx/
+# Arquivos temporários e backup
+debug_*.log
+.pytest_cache/
+.coverage
+htmlcov/
+.mypy_cache/
+.tox/
+ENV/
+.env.local
+.env.development.local
+.env.test.local
+.env.production.local

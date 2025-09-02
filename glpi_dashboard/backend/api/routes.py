@@ -119,8 +119,8 @@ def get_metrics(validated_start_date=None, validated_end_date=None, validated_fi
 
     # Verificar cache baseado nos filtros
     filters_str = json.dumps({
-        "start_date": validated_start_date.isoformat() if validated_start_date else None,
-        "end_date": validated_end_date.isoformat() if validated_end_date else None,
+        "start_date": validated_start_date if validated_start_date else None,
+        "end_date": validated_end_date if validated_end_date else None,
         "filters": validated_filters or {},
     }, sort_keys=True)
     filters_hash = hashlib.md5(filters_str.encode()).hexdigest()
@@ -752,6 +752,76 @@ def get_alerts():
 
     except Exception as e:
         logger.error(f"Erro inesperado ao buscar alertas: {e}", exc_info=True)
+        error_response = ResponseFormatter.format_error_response(
+            f"Erro interno do servidor: {str(e)}", [str(e)]
+        )
+        return jsonify(error_response), 500
+
+
+@api_bp.route("/filter-types")
+@monitor_api_endpoint("get_filter_types")
+@monitor_performance
+@cache_with_filters(timeout=3600)  # Cache por 1 hora pois raramente muda
+def get_filter_types():
+    """Endpoint para obter tipos de filtro disponíveis"""
+    start_time = time.time()
+    
+    try:
+        # Tipos de filtro disponíveis no sistema
+        filter_types = {
+            "creation": {
+                "name": "Data de Criação",
+                "description": "Filtra tickets criados no período selecionado",
+                "default": True,
+                "field": "date",
+                "supported_operations": ["range", "exact"]
+            },
+            "modification": {
+                "name": "Data de Modificação",
+                "description": "Filtra tickets modificados no período selecionado",
+                "default": False,
+                "field": "date_mod",
+                "supported_operations": ["range", "exact"]
+            },
+            "current_status": {
+                "name": "Status Atual",
+                "description": "Mostra snapshot atual dos tickets independente de data",
+                "default": False,
+                "field": "status",
+                "supported_operations": ["snapshot"]
+            },
+            "resolution": {
+                "name": "Data de Resolução",
+                "description": "Filtra tickets resolvidos no período selecionado",
+                "default": False,
+                "field": "solvedate",
+                "supported_operations": ["range", "exact"]
+            },
+            "close": {
+                "name": "Data de Fechamento",
+                "description": "Filtra tickets fechados no período selecionado",
+                "default": False,
+                "field": "closedate",
+                "supported_operations": ["range", "exact"]
+            }
+        }
+        
+        response_time = (time.time() - start_time) * 1000
+        
+        response_data = {
+            "success": True,
+            "data": filter_types,
+            "response_time_ms": round(response_time, 2),
+            "total_types": len(filter_types),
+            "cached": False
+        }
+        
+        logger.info(f"Tipos de filtro retornados com sucesso em {response_time:.2f}ms")
+        
+        return jsonify(response_data)
+        
+    except Exception as e:
+        logger.error(f"Erro inesperado ao buscar tipos de filtro: {e}", exc_info=True)
         error_response = ResponseFormatter.format_error_response(
             f"Erro interno do servidor: {str(e)}", [str(e)]
         )

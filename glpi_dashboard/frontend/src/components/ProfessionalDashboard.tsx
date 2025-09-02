@@ -445,7 +445,7 @@ export const ProfessionalDashboard: React.FC<ProfessionalDashboardProps> = ({
                           <div className='text-sm font-medium text-gray-900 truncate flex-1 mr-2'>
                             #{ticket.id}
                           </div>
-                          <span className='inline-flex items-center px-2 py-1 rounded text-xs font-medium figma-badge-subtle'>
+                          <span className='inline-flex items-center px-2 py-1 rounded text-xs font-medium bg-gray-100 text-gray-700 dark:bg-gray-700 dark:text-gray-300'>
                             {ticket.priority}
                           </span>
                         </div>

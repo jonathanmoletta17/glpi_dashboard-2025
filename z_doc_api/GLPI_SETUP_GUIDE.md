@@ -181,15 +181,15 @@ def test_glpi_connection():
     base_url = os.getenv('GLPI_BASE_URL')
     app_token = os.getenv('GLPI_APP_TOKEN')
     user_token = os.getenv('GLPI_USER_TOKEN')
-    
+
     if not all([base_url, app_token, user_token]):
         print("❌ Variáveis de ambiente não configuradas")
         return False
-    
+
     # Teste de conectividade
     try:
-        response = requests.get(f"{base_url}/apirest.php/initSession", 
-                              headers={'App-Token': app_token, 
+        response = requests.get(f"{base_url}/apirest.php/initSession",
+                              headers={'App-Token': app_token,
                                      'Authorization': f'user_token {user_token}'})
         if response.status_code == 200:
             print("✅ Conectividade com GLPI OK")
@@ -213,9 +213,9 @@ import os
 
 def test_configuration():
     required_vars = ['GLPI_BASE_URL', 'GLPI_APP_TOKEN', 'GLPI_USER_TOKEN']
-    
+
     print("🔍 Verificando configuração...")
-    
+
     for var in required_vars:
         value = os.getenv(var)
         if value:
@@ -227,7 +227,7 @@ def test_configuration():
                 print(f"✅ {var}: {value}")
         else:
             print(f"❌ {var}: Não configurado")
-    
+
     print("\n🎯 Configuração completa!" if all(os.getenv(var) for var in required_vars) else "⚠️ Configuração incompleta!")
 
 if __name__ == "__main__":
@@ -297,17 +297,17 @@ def validate_tokens():
     base_url = os.getenv('GLPI_BASE_URL')
     app_token = os.getenv('GLPI_APP_TOKEN')
     user_token = os.getenv('GLPI_USER_TOKEN')
-    
+
     # Teste de autenticação
     headers = {
         'Content-Type': 'application/json',
         'App-Token': app_token,
         'Authorization': f'user_token {user_token}'
     }
-    
+
     try:
         response = requests.get(f"{base_url}/apirest.php/initSession", headers=headers)
-        
+
         if response.status_code == 200:
             data = response.json()
             if 'session_token' in data:
@@ -321,7 +321,7 @@ def validate_tokens():
             print(f"❌ Erro de autenticação: {response.status_code}")
             print(f"Resposta: {response.text}")
             return False
-            
+
     except Exception as e:
         print(f"❌ Erro na validação: {e}")
         return False
@@ -419,18 +419,18 @@ from datetime import datetime
 
 def health_check():
     """Verificação de saúde do sistema"""
-    
+
     print(f"🔍 Health Check - {datetime.now()}")
-    
+
     # 1. Verificar configuração
     config_ok = all([
         os.getenv('GLPI_BASE_URL'),
         os.getenv('GLPI_APP_TOKEN'),
         os.getenv('GLPI_USER_TOKEN')
     ])
-    
+
     print(f"✅ Configuração: {'OK' if config_ok else 'ERRO'}")
-    
+
     # 2. Verificar conectividade
     try:
         response = requests.get(os.getenv('GLPI_BASE_URL'), timeout=10)
@@ -439,7 +439,7 @@ def health_check():
     except:
         print("❌ Conectividade: ERRO")
         connectivity_ok = False
-    
+
     # 3. Verificar autenticação
     if config_ok and connectivity_ok:
         try:
@@ -455,11 +455,11 @@ def health_check():
             auth_ok = False
     else:
         auth_ok = False
-    
+
     # Resultado final
     overall_health = config_ok and connectivity_ok and auth_ok
     print(f"\n🎯 Status Geral: {'✅ SAUDÁVEL' if overall_health else '❌ PROBLEMAS DETECTADOS'}")
-    
+
     return overall_health
 
 if __name__ == "__main__":
@@ -489,6 +489,6 @@ Em caso de problemas:
 3. Validar configuração
 4. Consultar documentação técnica
 
-**Última atualização:** 22 de Janeiro de 2025  
-**Versão:** 1.0  
+**Última atualização:** 22 de Janeiro de 2025
+**Versão:** 1.0
 **Status:** ✅ Testado e Validado

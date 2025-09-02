@@ -174,7 +174,7 @@ is_deleted = str(user_data.get('is_deleted', '0')).strip()
 # Critérios de validação
 if str(is_active) != '1':  # Deve estar ativo
     return None
-    
+
 if str(is_deleted) == '1':  # Não deve estar deletado
     return None
 ```
@@ -301,7 +301,7 @@ pendentes = 0
 
 for ticket in tickets:
     status_id = int(ticket.get('12', 0))
-    
+
     if status_id in [5, 6]:  # Solucionado ou Fechado
         resolvidos += 1
     elif status_id in [2, 3, 4]:  # Em progresso, Planejado, Pendente
@@ -345,7 +345,7 @@ service_levels = {
 ```python
 status_map = {
     1: 'novo',
-    2: 'em_progresso', 
+    2: 'em_progresso',
     3: 'planejado',
     4: 'pendente',
     5: 'solucionado',
@@ -409,11 +409,11 @@ except json.JSONDecodeError as e:
 try:
     response = self.session.get(url, params=params)
     response.raise_for_status()
-    
+
     data = response.json()
     if not data or 'data' not in data:
         return []
-        
+
 except requests.exceptions.RequestException as e:
     print(f"❌ Erro na requisição: {e}")
     return []
@@ -603,6 +603,6 @@ Esta documentação serve como **referência definitiva** para implementação d
 3. **Manter** consistência com o backend
 4. **Debuggar** problemas de integração
 
-**Última atualização:** 22 de Janeiro de 2025  
-**Versão:** 1.0  
+**Última atualização:** 22 de Janeiro de 2025
+**Versão:** 1.0
 **Status:** ✅ Validado e Funcional

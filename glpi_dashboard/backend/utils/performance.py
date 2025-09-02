@@ -163,6 +163,15 @@ def monitor_performance(func):
 
 def extract_filter_params() -> Dict[str, Any]:
     """Extrai parâmetros de filtro da requisição atual"""
+    # Função auxiliar para converter para int se possível
+    def safe_int(value):
+        if value is None:
+            return None
+        try:
+            return int(value)
+        except (ValueError, TypeError):
+            return None
+    
     return {
         "start_date": request.args.get("start_date"),
         "end_date": request.args.get("end_date"),
@@ -172,8 +181,8 @@ def extract_filter_params() -> Dict[str, Any]:
         "level": request.args.get("level"),
         "technician": request.args.get("technician"),
         "category": request.args.get("category"),
-        "limit": request.args.get("limit", type=int),
-        "entity_id": request.args.get("entity_id", type=int),
+        "limit": safe_int(request.args.get("limit")),
+        "entity_id": safe_int(request.args.get("entity_id")),
     }
 
 

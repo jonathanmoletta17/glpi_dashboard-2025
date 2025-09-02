@@ -47,16 +47,16 @@ describe('Visual Regression Tests - CSS Migration', () => {
     it('deve manter estrutura DOM após migração', () => {
       const { container } = render(<LevelsSection metrics={mockMetrics} />);
       
-      // Verificar estrutura de grid
-      const gridContainer = container.querySelector('.grid-container');
+      // Verificar estrutura de grid com classes Tailwind CSS
+      const gridContainer = container.querySelector('.grid.grid-cols-12');
       expect(gridContainer).toBeInTheDocument();
-      
-      // Verificar cards de nível
-      const levelCards = container.querySelectorAll('[class*="col-span-3"]');
+
+      // Verificar cards de nível (agora usando Shadcn Card)
+      const levelCards = container.querySelectorAll('.grid.grid-cols-2');
       expect(levelCards).toHaveLength(4);
       
-      // Verificar barras de progresso
-      const progressBars = container.querySelectorAll('.bg-status-resolved');
+      // Verificar barras de progresso (agora usando classes Tailwind CSS)
+      const progressBars = container.querySelectorAll('.bg-green-500');
       expect(progressBars).toHaveLength(4);
     });
 
@@ -73,12 +73,12 @@ describe('Visual Regression Tests - CSS Migration', () => {
     it('deve aplicar classes de status corretamente', () => {
       const { container } = render(<LevelsSection metrics={mockMetrics} />);
       
-      // Verificar classes de status nos elementos
+      // Verificar elementos de status por classes Tailwind CSS
       const statusElements = {
-        new: container.querySelectorAll('.status-new'),
-        progress: container.querySelectorAll('.status-progress'),
-        pending: container.querySelectorAll('.status-pending'),
-        resolved: container.querySelectorAll('.status-resolved')
+        new: container.querySelectorAll('.text-blue-600'),
+        progress: container.querySelectorAll('.text-yellow-600'),
+        pending: container.querySelectorAll('.text-orange-600'),
+        resolved: container.querySelectorAll('.text-green-600')
       };
       
       // Cada nível deve ter elementos com cada status
@@ -90,24 +90,21 @@ describe('Visual Regression Tests - CSS Migration', () => {
   });
 
   describe('Compatibilidade com Shadcn UI', () => {
-    it('deve ser compatível com estrutura de Card do Shadcn', () => {
-      // Este teste será expandido quando migrarmos para Shadcn Card
+    it('deve usar componentes Card do Shadcn UI', () => {
+      // Verificar se a migração para Shadcn Card foi bem-sucedida
       const { container } = render(<LevelsSection metrics={mockMetrics} />);
       
-      // Verificar que a estrutura atual pode ser migrada
-      const cards = container.querySelectorAll('.card-base');
-      expect(cards).toHaveLength(4);
+      // Verificar que os componentes Shadcn Card estão sendo usados
+      const cards = container.querySelectorAll('[data-testid="card"], .border.rounded-lg, .bg-card');
+      expect(cards.length).toBeGreaterThan(0);
       
-      // Cada card deve ter header e conteúdo
-      cards.forEach(card => {
-        const header = card.querySelector('h3');
-        const metrics = card.querySelector('.grid');
-        const progressBar = card.querySelector('.bg-gray-200');
-        
-        expect(header).toBeInTheDocument();
-        expect(metrics).toBeInTheDocument();
-        expect(progressBar).toBeInTheDocument();
-      });
+      // Cada card deve ter estrutura de grid para métricas
+      const metricsGrids = container.querySelectorAll('.grid.grid-cols-2');
+      expect(metricsGrids).toHaveLength(4);
+      
+      // Cada card deve ter barra de progresso
+      const progressBars = container.querySelectorAll('.bg-gray-200.rounded-full');
+      expect(progressBars).toHaveLength(4);
     });
   });
 

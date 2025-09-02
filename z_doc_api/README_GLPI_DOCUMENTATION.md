@@ -256,8 +256,8 @@ logging.basicConfig(level=logging.DEBUG)
 
 ---
 
-**Última atualização:** 22 de Janeiro de 2025  
-**Versão:** 1.0  
-**Status:** ✅ Documentação Completa e Funcional  
-**Autor:** Sistema de Engenharia  
+**Última atualização:** 22 de Janeiro de 2025
+**Versão:** 1.0
+**Status:** ✅ Documentação Completa e Funcional
+**Autor:** Sistema de Engenharia
 **Projeto:** GLPI Dashboard Funcional

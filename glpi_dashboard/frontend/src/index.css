@@ -361,38 +361,7 @@
 
 
 
-  /* Color Tokens */
-  .text-figma-teal {
-    color: #40e0d0;
-  }
-  .text-figma-blue {
-    color: #5ab6ff;
-  }
-  .text-figma-yellow {
-    color: #ffd166;
-  }
-  .text-figma-purple {
-    color: #c084fc;
-  }
-  .text-figma-primary {
-    color: #ffffff;
-  }
-  .text-figma-secondary {
-    color: #a0a3bd;
-  }
-
-  .bg-figma-teal {
-    background-color: #40e0d0;
-  }
-  .bg-figma-blue {
-    background-color: #5ab6ff;
-  }
-  .bg-figma-yellow {
-    background-color: #ffd166;
-  }
-  .bg-figma-purple {
-    background-color: #c084fc;
-  }
+  /* Color Tokens - Migrated to Tailwind */
 
   .metric-card {
     @apply p-4 lg:p-6 relative overflow-hidden min-w-0;
@@ -1203,77 +1172,7 @@ h3 {
   animation: shine 0.6s ease-in-out;
 }
 
-/* Classes personalizadas para substituir backgrounds muito brancos */
-.figma-badge-subtle {
-  @apply bg-white/20 text-gray-700 border-white/30;
-  backdrop-filter: blur(8px);
-}
-
-.dark .figma-badge-subtle {
-  @apply bg-white/10 text-gray-300 border-white/20;
-  backdrop-filter: blur(8px);
-}
-
-.figma-level-badge {
-  @apply bg-white/15 text-gray-700 border-white/25;
-  backdrop-filter: blur(10px);
-}
-
-.dark .figma-level-badge {
-  @apply bg-white/5 text-gray-300 border-white/20;
-  backdrop-filter: blur(10px);
-}
-
-.figma-priority-badge {
-  @apply bg-white/20 border-white/30;
-  backdrop-filter: blur(8px);
-}
-
-.dark .figma-priority-badge {
-  @apply bg-white/10 border-white/20;
-  backdrop-filter: blur(8px);
-}
-
-/* Status badges com glassmorphism */
-.figma-status-badge-blue {
-  @apply bg-blue-500/20 text-blue-700 border-blue-500/30;
-  backdrop-filter: blur(8px);
-}
-
-.dark .figma-status-badge-blue {
-  @apply bg-blue-400/20 text-blue-300 border-blue-400/30;
-  backdrop-filter: blur(8px);
-}
-
-.figma-status-badge-yellow {
-  @apply bg-yellow-500/20 text-yellow-700 border-yellow-500/30;
-  backdrop-filter: blur(8px);
-}
-
-.dark .figma-status-badge-yellow {
-  @apply bg-yellow-400/20 text-yellow-300 border-yellow-400/30;
-  backdrop-filter: blur(8px);
-}
-
-.figma-status-badge-red {
-  @apply bg-red-500/20 text-red-700 border-red-500/30;
-  backdrop-filter: blur(8px);
-}
-
-.dark .figma-status-badge-red {
-  @apply bg-red-400/20 text-red-300 border-red-400/30;
-  backdrop-filter: blur(8px);
-}
-
-.figma-status-badge-green {
-  @apply bg-green-500/20 text-green-700 border-green-500/30;
-  backdrop-filter: blur(8px);
-}
-
-.dark .figma-status-badge-green {
-  @apply bg-green-400/20 text-green-300 border-green-400/30;
-  backdrop-filter: blur(8px);
-}
+/* Classes Figma removidas - migradas para Tailwind CSS */
 
 
 

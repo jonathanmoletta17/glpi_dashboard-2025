@@ -1,6 +1,7 @@
 import React, { useMemo } from 'react';
 // import { Users, Minus } from 'lucide-react';
 import { MetricsData, LevelMetrics } from '../types';
+import { Card, CardHeader, CardTitle, CardContent } from './ui/card';
 
 interface LevelsSectionProps {
   metrics: MetricsData;
@@ -28,41 +29,41 @@ const LevelCard = React.memo<LevelCardProps>(({ level, data, resolucaoRate }) =>
   );
 
   return (
-    <div className='card-base p-6 col-span-3 md:col-span-6 lg:col-span-3'>
-      {/* Header */}
-      <div className='flex justify-between items-center mb-4'>
-        <h3 className='text-h3 text-primary'>Nível {level}</h3>
-        <span className='text-meta status-resolved'>{resolucaoRate}% Resolução</span>
-      </div>
+    <Card className='col-span-3 md:col-span-6 lg:col-span-3'>
+      <CardHeader className='flex flex-row items-center justify-between space-y-0 pb-2'>
+        <CardTitle className='text-lg font-medium text-gray-700 dark:text-gray-300'>Nível {level}</CardTitle>
+        <span className='text-xs text-green-600 dark:text-green-400'>{resolucaoRate}% Resolução</span>
+      </CardHeader>
+      <CardContent>
+        {/* Metrics Grid */}
+        <div className='grid grid-cols-2 gap-3 mb-4'>
+          <div className='text-center'>
+            <div className='text-2xl font-bold text-blue-600 dark:text-blue-400'>{data.novos}</div>
+            <div className='text-sm text-gray-600 dark:text-gray-400'>Novos</div>
+          </div>
+          <div className='text-center'>
+            <div className='text-2xl font-bold text-yellow-600 dark:text-yellow-400'>{data.progresso}</div>
+            <div className='text-sm text-gray-600 dark:text-gray-400'>Progresso</div>
+          </div>
+          <div className='text-center'>
+            <div className='text-2xl font-bold text-orange-600 dark:text-orange-400'>{data.pendentes}</div>
+            <div className='text-sm text-gray-600 dark:text-gray-400'>Pendentes</div>
+          </div>
+          <div className='text-center'>
+            <div className='text-2xl font-bold text-green-600 dark:text-green-400'>{data.resolvidos}</div>
+            <div className='text-sm text-gray-600 dark:text-gray-400'>Resolvidos</div>
+          </div>
+        </div>
 
-      {/* Metrics Grid */}
-      <div className='grid grid-cols-2 gap-3 mb-4'>
-        <div className='text-center'>
-          <div className='text-numeric status-new'>{data.novos}</div>
-          <div className='text-body text-secondary'>Novos</div>
+        {/* Progress Bar */}
+        <div className='w-full bg-gray-200 rounded-full h-1.5'>
+          <div
+            className='bg-green-500 h-1.5 rounded-full transition-all duration-300'
+            style={progressBarStyle}
+          ></div>
         </div>
-        <div className='text-center'>
-          <div className='text-numeric status-progress'>{data.progresso}</div>
-          <div className='text-body text-secondary'>Progresso</div>
-        </div>
-        <div className='text-center'>
-          <div className='text-numeric status-pending'>{data.pendentes}</div>
-          <div className='text-body text-secondary'>Pendentes</div>
-        </div>
-        <div className='text-center'>
-          <div className='text-numeric status-resolved'>{data.resolvidos}</div>
-          <div className='text-body text-secondary'>Resolvidos</div>
-        </div>
-      </div>
-
-      {/* Progress Bar */}
-      <div className='w-full bg-gray-200 rounded-full h-1.5'>
-        <div
-          className='bg-status-resolved h-1.5 rounded-full transition-all duration-300'
-          style={progressBarStyle}
-        ></div>
-      </div>
-    </div>
+      </CardContent>
+    </Card>
   );
 });
 
@@ -88,9 +89,9 @@ export const LevelsSection = React.memo<LevelsSectionProps>(({ metrics }) => {
   );
 
   return (
-    <section className='grid-container mb-8'>
+    <section className='w-full max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 mb-8'>
       <div className='col-span-12'>
-        <h2 className='text-h1 text-primary mb-6'>Níveis de Atendimento</h2>
+        <h2 className='text-2xl font-bold text-gray-900 dark:text-gray-100 mb-6'>Níveis de Atendimento</h2>
         <div className='grid grid-cols-12 gap-4'>
           <LevelCard level='1' data={metrics.niveis.n1} resolucaoRate={resolutionRates.n1} />
           <LevelCard level='2' data={metrics.niveis.n2} resolucaoRate={resolutionRates.n2} />

@@ -214,7 +214,7 @@ export const Header: React.FC<HeaderProps> = ({
   }, [onSearch]);
 
   return (
-    <header className='figma-header w-full shadow-xl relative z-50'>
+    <header className='h-16 flex items-center justify-between px-6 backdrop-blur-md bg-white/90 dark:bg-gray-900/95 border-b border-gray-200/80 dark:border-purple-500/20 w-full shadow-xl relative z-50'>
       <div className='w-full px-6 py-4'>
         <div className='flex items-center justify-between w-full'>
           {/* ========== SEÇÃO ESQUERDA: LOGO + TÍTULO ========== */}
@@ -223,8 +223,8 @@ export const Header: React.FC<HeaderProps> = ({
               <SimpleTechIcon size={24} className='group-hover:scale-110 transition-transform' />
             </div>
             <div className='min-w-0'>
-              <h1 className='figma-heading-large text-xl font-bold truncate'>Dashboard GLPI</h1>
-              <p className='figma-subheading text-sm font-medium truncate'>
+              <h1 className='text-2xl font-semibold text-gray-900 dark:text-gray-100 truncate'>Dashboard GLPI</h1>
+              <p className='text-sm font-medium text-gray-600 dark:text-gray-300 truncate'>
                 Departamento de Tecnologia do Estado
               </p>
             </div>
@@ -235,7 +235,7 @@ export const Header: React.FC<HeaderProps> = ({
             {/* Search Bar */}
             <div className='relative flex-1 max-w-md' ref={searchRef}>
               <div className='relative'>
-                <Search className='absolute left-4 top-1/2 transform -translate-y-1/2 w-4 h-4 figma-body opacity-60' />
+                <Search className='absolute left-4 top-1/2 transform -translate-y-1/2 w-4 h-4 text-gray-600 dark:text-gray-400 opacity-60' />
                 <input
                   ref={inputRef}
                   type='text'
@@ -244,12 +244,12 @@ export const Header: React.FC<HeaderProps> = ({
                   onFocus={handleSearchFocus}
                   onBlur={handleSearchBlur}
                   placeholder='Buscar chamados... (Ctrl+K)'
-                  className='input-field w-full pl-12 pr-10 py-3 rounded-xl text-sm font-medium'
+                  className='w-full pl-12 pr-10 py-3 rounded-xl text-sm font-medium border border-gray-200 bg-white/90 text-gray-900 dark:border-gray-600 dark:bg-gray-800/90 dark:text-gray-100 focus:ring-2 focus:ring-blue-500/50 focus:border-blue-500 backdrop-blur-md transition-all'
                 />
                 {searchQuery && (
                   <button
                     onClick={handleSearchClear}
-                    className='absolute right-4 top-1/2 transform -translate-y-1/2 w-4 h-4 figma-body opacity-60 hover:opacity-100 transition-opacity'
+                    className='absolute right-4 top-1/2 transform -translate-y-1/2 w-4 h-4 text-gray-600 dark:text-gray-400 opacity-60 hover:opacity-100 transition-opacity'
                   >
                     <X className='w-4 h-4' />
                   </button>
@@ -276,7 +276,7 @@ export const Header: React.FC<HeaderProps> = ({
             <div className='relative' ref={dateRef}>
               <button
                 onClick={() => setShowDatePicker(!showDatePicker)}
-                className='btn-secondary flex items-center space-x-3 px-4 py-3 rounded-xl font-medium'
+                className='flex items-center space-x-3 px-4 py-3 rounded-xl font-medium bg-white/90 text-gray-700 border border-gray-200 dark:bg-gray-800/80 dark:text-gray-200 dark:border-gray-600 hover:bg-white hover:text-gray-900 dark:hover:bg-gray-700/90 dark:hover:text-white transition-all backdrop-blur-md'
               >
                 <Calendar className='w-4 h-4' />
                 <span className='text-sm whitespace-nowrap'>{getDateRangeLabel}</span>
@@ -369,7 +369,7 @@ export const Header: React.FC<HeaderProps> = ({
             <div className='relative' ref={themeRef}>
               <button
                 onClick={() => setShowThemeSelector(!showThemeSelector)}
-                className='btn-secondary flex items-center space-x-2 px-3 py-2 rounded-xl text-sm font-medium'
+                className='flex items-center space-x-2 px-3 py-2 rounded-xl text-sm font-medium bg-white/90 text-gray-700 border border-gray-200 dark:bg-gray-800/80 dark:text-gray-200 dark:border-gray-600 hover:bg-white hover:text-gray-900 dark:hover:bg-gray-700/90 dark:hover:text-white transition-all backdrop-blur-md'
               >
                 <span>{currentTheme.icon}</span>
                 <span>{currentTheme.label}</span>
@@ -399,7 +399,7 @@ export const Header: React.FC<HeaderProps> = ({
             {/* Current Time */}
             <div className='bg-white/80 backdrop-blur-sm border border-white/90 dark:bg-white/5 dark:border-white/10 flex items-center space-x-2 text-sm px-3 py-2 rounded-xl font-mono'>
               <Clock className='w-4 h-4' />
-              <span className='figma-body'>{currentTime}</span>
+              <span className='text-sm text-gray-600 dark:text-gray-300'>{currentTime}</span>
             </div>
           </div>
         </div>

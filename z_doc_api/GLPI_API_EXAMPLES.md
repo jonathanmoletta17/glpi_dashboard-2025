@@ -199,15 +199,15 @@ response = requests.get(url, headers=headers)
 
 if response.status_code == 200:
     user_data = response.json()
-    
+
     print(f"Técnico: {user_data.get('firstname')} {user_data.get('realname')}")
     print(f"Ativo: {user_data.get('is_active')}")
     print(f"Deletado: {user_data.get('is_deleted')}")
-    
+
     # Verificar se é válido
     is_active = str(user_data.get('is_active', '0')).strip()
     is_deleted = str(user_data.get('is_deleted', '0')).strip()
-    
+
     if str(is_active) == '1' and str(is_deleted) == '0':
         print("✅ Técnico válido!")
     else:
@@ -349,41 +349,41 @@ for status, count in status_count.items():
 ```python
 def teste_fluxo_completo():
     """Teste completo de todas as funcionalidades"""
-    
+
     # 1. Autenticação
     print("1. Testando autenticação...")
     session_token = autenticar()
     if not session_token:
         print("❌ Falha na autenticação")
         return False
-    
+
     # 2. Métricas gerais
     print("2. Testando métricas gerais...")
     metricas = buscar_metricas_gerais(session_token)
     if not metricas:
         print("❌ Falha nas métricas gerais")
         return False
-    
+
     # 3. Tickets novos
     print("3. Testando tickets novos...")
     tickets_novos = buscar_tickets_novos(session_token)
     print(f"✅ {len(tickets_novos)} tickets novos encontrados")
-    
+
     # 4. Ranking de técnicos
     print("4. Testando ranking de técnicos...")
     ranking = buscar_ranking_tecnicos(session_token)
     total_tecnicos = sum(len(tecnicos) for tecnicos in ranking.values())
     print(f"✅ {total_tecnicos} técnicos no ranking")
-    
+
     # 5. Status por nível
     print("5. Testando status por nível...")
     status_nivel = buscar_status_por_nivel(session_token)
     print("✅ Status por nível coletado")
-    
+
     # 6. Finalização
     print("6. Finalizando sessão...")
     finalizar_sessao(session_token)
-    
+
     print("✅ Todos os testes passaram!")
     return True
 
@@ -396,21 +396,21 @@ teste_fluxo_completo()
 ```python
 def teste_validacao_tecnicos():
     """Teste de validação dos 19 técnicos"""
-    
+
     technician_ids = [
         "696", "32", "141", "60", "69", "1032", "252", "721", "926", "1291",
         "185", "1331", "1404", "1088", "1263", "10", "53", "250", "1471"
     ]
-    
+
     session_token = autenticar()
     tecnicos_validos = []
-    
+
     for tech_id in technician_ids:
         user_data = buscar_usuario(tech_id, session_token)
         if user_data:
             is_active = str(user_data.get('is_active', '0')).strip()
             is_deleted = str(user_data.get('is_deleted', '0')).strip()
-            
+
             if str(is_active) == '1' and str(is_deleted) == '0':
                 nome = f"{user_data.get('firstname')} {user_data.get('realname')}"
                 tecnicos_validos.append({'id': tech_id, 'nome': nome})
@@ -419,7 +419,7 @@ def teste_validacao_tecnicos():
                 print(f"❌ {tech_id}: Inativo ou deletado")
         else:
             print(f"❌ {tech_id}: Não encontrado")
-    
+
     print(f"\nTotal de técnicos válidos: {len(tecnicos_validos)}/19")
     return tecnicos_validos
 
@@ -432,7 +432,7 @@ teste_validacao_tecnicos()
 ```python
 def teste_mapeamento_niveis():
     """Teste do mapeamento de níveis dos técnicos"""
-    
+
     # Mapeamento esperado
     mapeamento_esperado = {
         "1404": "N1",  # Gabriel Andrade da Conceicao
@@ -446,10 +446,10 @@ def teste_mapeamento_niveis():
         "1291": "N4",  # Gabriel Silva Machado
         "1088": "N4",  # Luciano de Araujo Silva
     }
-    
+
     session_token = autenticar()
     resultados = {}
-    
+
     for tech_id, nivel_esperado in mapeamento_esperado.items():
         nivel_detectado = detectar_nivel_tecnico(tech_id, session_token)
         resultados[tech_id] = {
@@ -457,13 +457,13 @@ def teste_mapeamento_niveis():
             'detectado': nivel_detectado,
             'correto': nivel_esperado == nivel_detectado
         }
-        
+
         status = "✅" if nivel_esperado == nivel_detectado else "❌"
         print(f"{status} {tech_id}: Esperado {nivel_esperado}, Detectado {nivel_detectado}")
-    
+
     corretos = sum(1 for r in resultados.values() if r['correto'])
     total = len(resultados)
-    
+
     print(f"\nMapeamento correto: {corretos}/{total} ({corretos/total*100:.1f}%)")
     return resultados
 
@@ -491,12 +491,12 @@ def debug_request(url, params=None, headers=None):
     logging.debug(f"URL: {url}")
     logging.debug(f"Params: {params}")
     logging.debug(f"Headers: {headers}")
-    
+
     response = requests.get(url, params=params, headers=headers)
-    
+
     logging.debug(f"Status: {response.status_code}")
     logging.debug(f"Response: {response.text[:500]}...")
-    
+
     return response
 ```
 
@@ -505,31 +505,31 @@ def debug_request(url, params=None, headers=None):
 ```python
 def validar_resposta_glpi(response, expected_fields=None):
     """Valida estrutura de resposta do GLPI"""
-    
+
     if not response.ok:
         print(f"❌ Status HTTP inválido: {response.status_code}")
         return False
-    
+
     try:
         data = response.json()
     except json.JSONDecodeError:
         print("❌ Resposta não é JSON válido")
         return False
-    
+
     if not isinstance(data, dict):
         print("❌ Resposta não é um objeto JSON")
         return False
-    
+
     if 'data' not in data:
         print("❌ Campo 'data' não encontrado na resposta")
         return False
-    
+
     if expected_fields:
         for field in expected_fields:
             if field not in data:
                 print(f"❌ Campo '{field}' não encontrado")
                 return False
-    
+
     print("✅ Resposta válida")
     return True
 ```
@@ -576,6 +576,6 @@ Este documento fornece **exemplos práticos** e **casos de teste** para validar 
 3. **Debuggar** problemas
 4. **Garantir** qualidade do código
 
-**Última atualização:** 22 de Janeiro de 2025  
-**Versão:** 1.0  
+**Última atualização:** 22 de Janeiro de 2025
+**Versão:** 1.0
 **Status:** ✅ Testado e Validado
