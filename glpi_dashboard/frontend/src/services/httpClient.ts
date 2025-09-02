@@ -154,7 +154,8 @@ function shouldRetry(error: AxiosError): boolean {
 
   return (
     (error.response?.status && retryableStatuses.includes(error.response.status)) ||
-    (error.code && retryableCodes.includes(error.code as string))
+    (error.code && retryableCodes.includes(error.code as string)) ||
+    false
   );
 }
 

@@ -404,9 +404,7 @@ export const SkeletonCard: React.FC<{ className?: string }> = ({ className }) =>
   <LoadingSkeleton skeletonType="card" className={className} isLoading={true} />
 );
 
-export const SkeletonMetricsGrid: React.FC = () => (
-  <LoadingSkeleton skeletonType="metrics" isLoading={true} />
-);
+// SkeletonMetricsGrid removido - MetricsGrid foi removido do sistema
 
 export const SkeletonLevelsSection: React.FC = () => (
   <LoadingSkeleton skeletonType="levels" isLoading={true} />

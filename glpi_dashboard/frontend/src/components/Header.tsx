@@ -219,7 +219,7 @@ export const Header: React.FC<HeaderProps> = ({
         <div className='flex items-center justify-between w-full'>
           {/* ========== SEÇÃO ESQUERDA: LOGO + TÍTULO ========== */}
           <div className='flex items-center space-x-4 min-w-0 flex-shrink-0'>
-            <div className='w-11 h-11 figma-glass-card rounded-xl flex items-center justify-center hover:scale-105 transition-all duration-200 group'>
+            <div className='w-11 h-11 bg-white/80 backdrop-blur-sm border border-white/90 dark:bg-white/5 dark:border-white/10 rounded-xl flex items-center justify-center hover:scale-105 transition-all duration-200 group'>
               <SimpleTechIcon size={24} className='group-hover:scale-110 transition-transform' />
             </div>
             <div className='min-w-0'>
@@ -397,7 +397,7 @@ export const Header: React.FC<HeaderProps> = ({
             </div>
 
             {/* Current Time */}
-            <div className='figma-glass-card flex items-center space-x-2 text-sm px-3 py-2 rounded-xl font-mono'>
+            <div className='bg-white/80 backdrop-blur-sm border border-white/90 dark:bg-white/5 dark:border-white/10 flex items-center space-x-2 text-sm px-3 py-2 rounded-xl font-mono'>
               <Clock className='w-4 h-4' />
               <span className='figma-body'>{currentTime}</span>
             </div>

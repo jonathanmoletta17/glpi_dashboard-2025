@@ -62,16 +62,7 @@ export const SkeletonCard: React.FC<{ className?: string }> = ({ className = '' 
   );
 };
 
-// Skeleton loader for metrics grid
-export const SkeletonMetricsGrid: React.FC = () => {
-  return (
-    <div className='grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6'>
-      {Array.from({ length: 4 }).map((_, index) => (
-        <SkeletonCard key={`metrics-skeleton-${index}`} />
-      ))}
-    </div>
-  );
-};
+// SkeletonMetricsGrid removido - MetricsGrid foi removido do sistema
 
 // Skeleton loader for levels section
 export const SkeletonLevelsSection: React.FC = () => {

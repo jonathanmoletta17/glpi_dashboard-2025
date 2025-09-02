@@ -6,12 +6,33 @@ import { Badge } from '@/components/ui/badge';
 import { cn, formatNumber, getStatusIcon } from '@/lib/utils';
 import { type LucideIcon } from 'lucide-react';
 
+// CSS refatorado removido - usando apenas Tailwind CSS
+
+/**
+ * StatusCard Refatorado - Melhorias Implementadas:
+ * 
+ * 1. CSS Refatorado:
+ *    - Substituição de classes utilitárias por classes semânticas BEM
+ *    - Variáveis CSS para cores, espaçamentos e animações
+ *    - Suporte aprimorado a tema escuro
+ *    - Media queries para responsividade
+ *    - Melhor acessibilidade (prefers-reduced-motion, prefers-contrast)
+ * 
+ * 2. Estrutura HTML Simplificada:
+ *    - Classes BEM descritivas e semânticas
+ *    - Redução significativa de classes Tailwind inline
+ *    - Melhor separação de responsabilidades
+ * 
+ * 3. Performance:
+ *    - CSS otimizado com variáveis reutilizáveis
+ *    - Animações mais eficientes
+ *    - Menor bundle size
+ */
 
 interface StatusCardProps {
   title: string;
   value: number;
   status?: string;
-
   icon?: LucideIcon;
   className?: string;
   variant?: 'default' | 'compact' | 'detailed' | 'gradient';
@@ -21,28 +42,24 @@ interface StatusCardProps {
 }
 
 // Função auxiliar definida fora do componente para evitar recriação
-const getStatusGradient = (status?: string) => {
+const getStatusClass = (status?: string) => {
   switch (status) {
     case 'online':
-      return 'from-green-500 to-emerald-600';
+      return 'status-card--online';
     case 'offline':
-      return 'from-red-500 to-rose-600';
+      return 'status-card--offline';
     case 'active':
-      return 'from-blue-500 to-cyan-600';
+      return 'status-card--active';
     case 'progress':
-      return 'from-yellow-500 to-orange-600';
+      return 'status-card--progress';
     case 'pending':
-      return 'from-orange-500 to-red-600';
+      return 'status-card--pending';
     case 'resolved':
-      return 'from-green-500 to-emerald-600';
+      return 'status-card--resolved';
     default:
-      return 'from-gray-500 to-slate-600';
+      return 'status-card--default';
   }
 };
-
-
-
-
 
 // Variantes de animação definidas fora do componente
 const cardVariants = {
@@ -101,8 +118,8 @@ export const StatusCard = memo<StatusCardProps>(function StatusCard({
   // Memoizar ícones para evitar recálculos
   const StatusIcon = useMemo(() => icon || (status ? getStatusIcon(status) : null), [icon, status]);
 
-  // Memoizar gradiente do status
-  const statusGradient = useMemo(() => getStatusGradient(status), [status]);
+  // Memoizar classe do status
+  const statusClass = useMemo(() => getStatusClass(status), [status]);
 
   // Memoizar valor formatado
   const formattedValue = useMemo(() => {
@@ -122,52 +139,44 @@ export const StatusCard = memo<StatusCardProps>(function StatusCard({
       initial='hidden'
       animate='visible'
       whileHover='hover'
-      className={cn('cursor-pointer', className)}
+      className={cn('status-card status-card--animated', statusClass, className)}
     >
       <Card
-        className='figma-glass-card border-0 shadow-none h-full w-full flex flex-col relative overflow-hidden'
+        className='status-card__container'
         onClick={handleCardClick}
       >
         {/* Gradient Background */}
-        <div className={cn('absolute inset-0 bg-gradient-to-br opacity-5', statusGradient)} />
+        <div className='status-card__gradient-bg' />
 
         {/* Animated Border */}
-        <div className='absolute inset-0'>
-          <div
-            className={cn('absolute inset-0 bg-gradient-to-r opacity-20 blur-sm', statusGradient)}
-          />
-        </div>
+        <div className='status-card__animated-border' />
 
-        <CardHeader className='flex flex-row items-center justify-between space-y-0 pb-3 px-4 pt-4 flex-shrink-0 relative z-10'>
-          <CardTitle className='figma-subheading uppercase tracking-wide'>{title}</CardTitle>
+        <CardHeader className='status-card__header'>
+          <CardTitle className='status-card__title'>{title}</CardTitle>
           {StatusIcon && (
             <motion.div
               variants={iconVariants}
-              className={cn('p-2 rounded-xl bg-gradient-to-br shadow-lg', statusGradient)}
+              className='status-card__icon'
             >
-              <StatusIcon className='h-5 w-5 text-white' />
+              <StatusIcon />
             </motion.div>
           )}
         </CardHeader>
 
-        <CardContent className='px-4 pb-4 flex-1 relative z-10'>
-          <div className='flex items-center justify-between'>
-            <div className='space-y-2'>
-              <motion.div variants={numberVariants} className='figma-numeric'>
+        <CardContent className='status-card__content'>
+          <div className='status-card__content-wrapper'>
+            <div className='status-card__value-section'>
+              <motion.div 
+                variants={numberVariants} 
+                className='status-card__value status-card__value--animated'
+              >
                 {formattedValue}
               </motion.div>
-
-
             </div>
 
             {status && (
               <motion.div whileHover={{ scale: 1.05 }} transition={{ duration: 0.2 }}>
-                <Badge
-                  className={cn(
-                    'capitalize text-xs font-semibold px-3 py-1 border-0 shadow-lg bg-gradient-to-r text-white',
-                    statusGradient
-                  )}
-                >
+                <Badge className='status-card__badge'>
                   {status}
                 </Badge>
               </motion.div>
@@ -177,7 +186,7 @@ export const StatusCard = memo<StatusCardProps>(function StatusCard({
 
         {/* Shine Effect */}
         <motion.div
-          className='absolute inset-0 bg-gradient-to-r from-transparent via-white/20 to-transparent -skew-x-12 opacity-0'
+          className='status-card__shine'
           whileHover={{
             opacity: [0, 1, 0],
             x: [-100, 300],

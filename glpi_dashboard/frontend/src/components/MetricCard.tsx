@@ -13,7 +13,7 @@ interface MetricCardProps {
 // Funções auxiliares movidas para fora do componente
 const getMetricConfig = (type: TicketStatus) => {
   switch (type) {
-    case 'new':
+    case 'novo':
       return {
         title: 'Novos',
         icon: Plus,
@@ -22,7 +22,7 @@ const getMetricConfig = (type: TicketStatus) => {
         textColor: 'text-blue-900 dark:text-blue-100',
         borderColor: 'border-blue-200 dark:border-blue-800',
       };
-    case 'progress':
+    case 'progresso':
       return {
         title: 'Em Progresso',
         icon: Clock,
@@ -31,7 +31,7 @@ const getMetricConfig = (type: TicketStatus) => {
         textColor: 'text-yellow-900 dark:text-yellow-100',
         borderColor: 'border-yellow-200 dark:border-yellow-800',
       };
-    case 'pending':
+    case 'pendente':
       return {
         title: 'Pendentes',
         icon: AlertCircle,
@@ -40,7 +40,7 @@ const getMetricConfig = (type: TicketStatus) => {
         textColor: 'text-orange-900 dark:text-orange-100',
         borderColor: 'border-orange-200 dark:border-orange-800',
       };
-    case 'resolved':
+    case 'resolvido':
       return {
         title: 'Resolvidos',
         icon: CheckCircle,
@@ -169,7 +169,6 @@ export const MetricCard = React.memo<MetricCardProps>(function MetricCard({
       className={`
         metric-card cursor-pointer group relative overflow-hidden
         ${config.bgColor} ${config.borderColor}
-        figma-glass-card
       `}
       onClick={onClick}
       role='button'

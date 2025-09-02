@@ -227,14 +227,14 @@ export const batchMetricsRequest = async (params: any) => {
   return requestBatcher.batchRequest('metrics', params, async (batchedParams: any[]) => {
     // Implementar lógica de requisição em batch para métricas
     // Por enquanto, fazemos requisições individuais
-    const results = [];
+    const results: any[] = [];
     for (const param of batchedParams) {
       try {
         const response = await fetch(`/api/metrics?${new URLSearchParams(param)}`);
         const data = await response.json();
-        results.push(data);
+        results.push(data as any);
       } catch (error) {
-        results.push(null);
+        results.push(null as any);
       }
     }
     return results;
@@ -247,14 +247,14 @@ export const batchMetricsRequest = async (params: any) => {
 export const batchTicketsRequest = async (params: any) => {
   return requestBatcher.batchRequest('tickets', params, async (batchedParams: any[]) => {
     // Implementar lógica de requisição em batch para tickets
-    const results = [];
+    const results: any[] = [];
     for (const param of batchedParams) {
       try {
         const response = await fetch(`/api/tickets?${new URLSearchParams(param)}`);
         const data = await response.json();
-        results.push(data);
+        results.push(data as any);
       } catch (error) {
-        results.push(null);
+        results.push(null as any);
       }
     }
     return results;

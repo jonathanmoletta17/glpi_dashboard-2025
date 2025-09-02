@@ -9,7 +9,7 @@ import {
   Calendar,
   Tag,
 } from 'lucide-react';
-import { Ticket } from '../types/api';
+import { Ticket } from '../types/ticket';
 import { cn } from '@/lib/utils';
 
 interface TicketCardProps {
@@ -144,9 +144,9 @@ export const TicketCard: React.FC<TicketCardProps> = ({
           <span
             className={cn(
               'inline-flex items-center gap-1 px-2 py-1 rounded-full text-xs font-medium',
-              ticket.status === 'open' && 'bg-red-100 text-red-800',
-              ticket.status === 'closed' && 'bg-green-100 text-green-800',
-              ticket.status === 'in_progress' && 'bg-yellow-100 text-yellow-800'
+              ticket.status === 'novo' && 'bg-red-100 text-red-800',
+              ticket.status === 'fechado' && 'bg-green-100 text-green-800',
+              ticket.status === 'progresso' && 'bg-yellow-100 text-yellow-800'
             )}
             aria-label={`Status: ${ticket.status}`}
           >
@@ -167,20 +167,20 @@ export const TicketCard: React.FC<TicketCardProps> = ({
       <div className="grid grid-cols-2 gap-4 text-sm text-gray-600 mb-3">
         <div className="flex items-center gap-1">
           <User className="h-4 w-4" />
-          <span>{ticket.requester}</span>
+          <span>{ticket.requester.name}</span>
         </div>
         <div className="flex items-center gap-1">
           <User className="h-4 w-4" />
-          <span>{ticket.assignee}</span>
+          <span>{ticket.technician?.name || 'Não atribuído'}</span>
         </div>
         <div className="flex items-center gap-1">
           <Calendar className="h-4 w-4" />
-          <span>{formatDate(ticket.created_at)}</span>
+          <span>{formatDate(ticket.createdAt)}</span>
         </div>
-        {ticket.due_date && (
+        {ticket.dueDate && (
           <div className="flex items-center gap-1">
             <Clock className="h-4 w-4" />
-            <span>Vence: {formatDate(ticket.due_date)}</span>
+            <span>Vence: {formatDate(ticket.dueDate)}</span>
           </div>
         )}
       </div>
@@ -190,9 +190,9 @@ export const TicketCard: React.FC<TicketCardProps> = ({
         <span
           className={cn(
             'px-2 py-1 rounded text-xs font-medium',
-            ticket.priority === 'high' && 'bg-red-100 text-red-800',
-            ticket.priority === 'medium' && 'bg-yellow-100 text-yellow-800',
-            ticket.priority === 'low' && 'bg-green-100 text-green-800'
+            ticket.priority === 'alta' && 'bg-red-100 text-red-800',
+            ticket.priority === 'normal' && 'bg-yellow-100 text-yellow-800',
+            ticket.priority === 'baixa' && 'bg-green-100 text-green-800'
           )}
           data-testid="ticket-priority"
         >
@@ -218,8 +218,8 @@ export const TicketCard: React.FC<TicketCardProps> = ({
 
       {/* Footer */}
       <div className="flex justify-between items-center text-xs text-gray-500">
-        <span>{ticket.comments_count} comentários</span>
-        <span>{ticket.attachments_count} anexos</span>
+        <span>{ticket.comments?.length || 0} comentários</span>
+        <span>{ticket.attachments?.length || 0} anexos</span>
       </div>
     </motion.article>
   );

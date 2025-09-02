@@ -14,8 +14,9 @@ export const API_CONFIG = {
     METRICS: '/metrics',
     METRICS_FILTERED: '/metrics/filtered',
     HEALTH: '/health',
-    TECHNICIAN_RANKING: '/technician-ranking',
-    NEW_TICKETS: '/new-tickets',
+    TECHNICIAN_RANKING: '/technicians/ranking',
+    NEW_TICKETS: '/tickets/new',
+    FILTER_TYPES: '/filter-types',
   },
 } as const;
 

@@ -26,6 +26,7 @@ interface ModernDashboardProps {
   technicianRanking?: TechnicianRanking[];
   onFilterByStatus?: (status: TicketStatus) => void;
   onTicketClick?: (ticket: Ticket) => void;
+  onRefresh?: () => void;
   isLoading?: boolean;
   className?: string;
   filters?: {
@@ -62,17 +63,17 @@ const itemVariants = {
 // Componente SkeletonCard memoizado
 const SkeletonCard = React.memo(function SkeletonCard() {
   return (
-    <Card className='figma-glass-card shadow-none'>
+    <Card className='bg-white/80 backdrop-blur-sm border border-white/90 shadow-sm dark:bg-white/5 dark:border-white/10 shadow-none'>
       <CardHeader className='pb-2'>
         <div className='flex items-center justify-between'>
-          <div className='h-4 figma-glass-card rounded animate-pulse w-20' />
-          <div className='h-8 w-8 figma-glass-card rounded-full animate-pulse' />
+          <div className='h-4 bg-gray-200 dark:bg-gray-700 rounded animate-pulse w-20' />
+          <div className='h-8 w-8 bg-gray-200 dark:bg-gray-700 rounded-full animate-pulse' />
         </div>
       </CardHeader>
       <CardContent>
         <div className='space-y-3'>
-          <div className='h-8 figma-glass-card rounded animate-pulse w-16' />
-          <div className='h-3 figma-glass-card rounded animate-pulse w-24' />
+          <div className='h-8 bg-gray-200 dark:bg-gray-700 rounded animate-pulse w-16' />
+          <div className='h-3 bg-gray-200 dark:bg-gray-700 rounded animate-pulse w-24' />
         </div>
       </CardContent>
     </Card>
@@ -102,7 +103,7 @@ export const ModernDashboard = React.memo<ModernDashboardProps>(function ModernD
       id: tech.id || String(tech.name),
       name: tech.name || tech.nome || 'Técnico',
       level: tech.level || 'N1',
-      total: tech.total || tech.total_tickets || 0,
+      total: tech.total_tickets || tech.total || 0,
       rank: tech.rank || 0,
     }));
 
@@ -116,12 +117,12 @@ export const ModernDashboard = React.memo<ModernDashboardProps>(function ModernD
         {/* Header skeleton */}
         <div className='flex flex-col lg:flex-row lg:items-center lg:justify-between gap-4'>
           <div className='space-y-2'>
-            <div className='h-8 figma-glass-card rounded animate-pulse w-64' />
-            <div className='h-4 figma-glass-card rounded animate-pulse w-48' />
+            <div className='h-8 bg-gray-200 dark:bg-gray-700 rounded animate-pulse w-64' />
+            <div className='h-4 bg-gray-200 dark:bg-gray-700 rounded animate-pulse w-48' />
           </div>
           <div className='flex items-center gap-3'>
-            <div className='h-10 figma-glass-card rounded animate-pulse w-32' />
-            <div className='h-10 figma-glass-card rounded animate-pulse w-24' />
+            <div className='h-10 bg-gray-200 dark:bg-gray-700 rounded animate-pulse w-32' />
+            <div className='h-10 bg-gray-200 dark:bg-gray-700 rounded animate-pulse w-24' />
           </div>
         </div>
 
@@ -135,12 +136,12 @@ export const ModernDashboard = React.memo<ModernDashboardProps>(function ModernD
         {/* Charts skeleton */}
         <div className='grid grid-cols-1 xl:grid-cols-3 gap-6'>
           <div className='xl:col-span-2'>
-            <Card className='figma-glass-card shadow-none'>
+            <Card className='bg-white/80 backdrop-blur-sm border border-white/90 shadow-sm dark:bg-white/5 dark:border-white/10 shadow-none'>
               <CardHeader>
-                <div className='h-6 figma-glass-card rounded animate-pulse w-40' />
+                <div className='h-6 bg-gray-200 dark:bg-gray-700 rounded animate-pulse w-40' />
               </CardHeader>
               <CardContent>
-                <div className='h-64 figma-glass-card rounded animate-pulse' />
+                <div className='h-64 bg-gray-200 dark:bg-gray-700 rounded animate-pulse' />
               </CardContent>
             </Card>
           </div>
@@ -164,16 +165,21 @@ export const ModernDashboard = React.memo<ModernDashboardProps>(function ModernD
         className
       )}
     >
-      {/* Cards de métricas principais */}
+      {/* Cards de métricas gerais no topo */}
       <motion.div variants={itemVariants} className='dashboard-metrics-section'>
-        <MetricsGrid metrics={metrics} onFilterByStatus={onFilterByStatus} />
+        <MetricsGrid 
+          metrics={metrics} 
+          onFilterByStatus={onFilterByStatus}
+          isLoading={isLoading}
+          className='mb-6'
+        />
       </motion.div>
 
       {/* Layout principal com métricas por nível e tickets novos */}
       <div className='dashboard-main-grid'>
         {/* Métricas por nível de atendimento - ocupando 2 colunas */}
         <motion.div variants={itemVariants} className='dashboard-levels-section'>
-          <LevelMetricsGrid metrics={{ niveis: levelMetrics }} className='h-full' />
+          <LevelMetricsGrid metrics={metrics} className='h-full' />
         </motion.div>
 
         {/* Lista de tickets novos - ocupando 1 coluna */}

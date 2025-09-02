@@ -14,11 +14,11 @@ export const LazyTicketChart = lazy(() =>
 );
 
 export const LazyNewTicketsList = lazy(() =>
-  import('./dashboard/NewTicketsList').then(module => ({ default: module.NewTicketsList }))
+  import('./dashboard/NewTicketsList')
 );
 
 export const LazyRankingTable = lazy(() =>
-  import('./dashboard/RankingTable').then(module => ({ default: module.RankingTable }))
+  import('./dashboard/RankingTable')
 );
 
 // Componentes de relatórios e análises

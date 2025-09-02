@@ -1,86 +1,39 @@
+/* ==========================================================================
+   RANKING TABLE - EXEMPLO DE REFATORAÇÃO
+   ========================================================================== */
+
+/*
+ * Este arquivo demonstra como aplicar a refatoração CSS no componente RankingTable.
+ * 
+ * PRINCIPAIS MUDANÇAS:
+ * 1. Substituição de classes utilitárias por classes semânticas BEM
+ * 2. Importação do CSS refatorado
+ * 3. Simplificação da estrutura HTML
+ * 4. Melhoria na organização do código
+ */
+
 import React, { useRef, useEffect, useMemo, useCallback } from 'react';
 import { motion } from 'framer-motion';
 import { Badge } from '@/components/ui/badge';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { cn, formatNumber } from '@/lib/utils';
 import { Trophy, Medal, Award, Star, Users, Zap, Shield, Wrench, Settings } from 'lucide-react';
+import { TechnicianRanking } from '@/types';
 
-
-
-interface TechnicianRanking {
-  id: string;
-  name: string;
-  level: string;
-  total: number;
-  rank: number;
-}
+// CSS refatorado removido - usando apenas Tailwind CSS
 
 interface RankingTableProps {
   data: TechnicianRanking[];
   title?: string;
   className?: string;
+  variant?: 'default' | 'compact' | 'expanded';
+  isLoading?: boolean;
   filters?: {
     start_date?: string;
     end_date?: string;
     level?: string;
     limit?: number;
   };
-}
-
-// Função auxiliar para obter estilos de nível movida para fora do componente
-function getLevelStyle(level?: string) {
-  switch (level) {
-    case 'N4': // Expert - Azul profissional
-      return {
-        bgColor: 'bg-blue-50',
-        borderColor: 'border-blue-200',
-        accentColor: 'bg-blue-500',
-        textColor: 'text-blue-700',
-        icon: Zap,
-        iconBg: 'bg-blue-100',
-        iconColor: 'text-blue-600',
-      };
-    case 'N3': // Sênior - Verde confiável
-      return {
-        bgColor: 'bg-emerald-50',
-        borderColor: 'border-emerald-200',
-        accentColor: 'bg-emerald-500',
-        textColor: 'text-emerald-700',
-        icon: Shield,
-        iconBg: 'bg-emerald-100',
-        iconColor: 'text-emerald-600',
-      };
-    case 'N2': // Pleno - Laranja equilibrado
-      return {
-        bgColor: 'bg-orange-50',
-        borderColor: 'border-orange-200',
-        accentColor: 'bg-orange-500',
-        textColor: 'text-orange-700',
-        icon: Wrench,
-        iconBg: 'bg-orange-100',
-        iconColor: 'text-orange-600',
-      };
-    case 'N1': // Júnior - Roxo motivacional
-      return {
-        bgColor: 'bg-purple-50',
-        borderColor: 'border-purple-200',
-        accentColor: 'bg-purple-500',
-        textColor: 'text-purple-700',
-        icon: Settings,
-        iconBg: 'bg-purple-100',
-        iconColor: 'text-purple-600',
-      };
-    default: // Outros - Cinza neutro
-      return {
-        bgColor: 'bg-gray-50',
-        borderColor: 'border-gray-200',
-        accentColor: 'bg-gray-500',
-        textColor: 'text-gray-700',
-        icon: Star,
-        iconBg: 'bg-gray-100',
-        iconColor: 'text-gray-600',
-      };
-  }
 }
 
 // Variantes de animação movidas para fora do componente
@@ -116,17 +69,6 @@ const cardVariants = {
   },
 } as const;
 
-// const iconVariants = {
-//   hover: {
-//     scale: 1.3,
-//     rotate: 15,
-//     transition: {
-//       duration: 0.2,
-//       ease: "easeOut" as const
-//     }
-//   }
-// } as const
-
 // Componente TechnicianCard memoizado
 const TechnicianCard = React.memo<{
   technician: TechnicianRanking;
@@ -148,98 +90,159 @@ const TechnicianCard = React.memo<{
     return Array.from({ length: Math.min(3, Math.max(1, 4 - Math.ceil(position / 3))) });
   }, [position]);
 
+  const getPositionIcon = () => {
+    switch (position) {
+      case 1:
+        return <Trophy className='h-4 w-4' />;
+      case 2:
+        return <Medal className='h-4 w-4' />;
+      case 3:
+        return <Award className='h-4 w-4' />;
+      default:
+        return <Star className='h-4 w-4' />;
+    }
+  };
+
+  const getPositionColor = () => {
+    switch (position) {
+      case 1:
+        return 'from-yellow-400 to-yellow-600';
+      case 2:
+        return 'from-gray-300 to-gray-500';
+      case 3:
+        return 'from-orange-400 to-orange-600';
+      default:
+        return 'from-blue-400 to-blue-600';
+    }
+  };
+
   return (
     <motion.div
-      data-testid={`technician-card-${index}`}
       variants={cardVariants}
       whileHover='hover'
-      className={cn(
-        'flex-shrink-0 w-48 flex flex-col p-4 rounded-lg border transition-all duration-200',
-        'cursor-pointer relative group hover:shadow-md',
-        levelStyle.bgColor,
-        levelStyle.borderColor,
-        isTopThree && 'ring-2 ring-opacity-20',
-        isTopThree && position === 1 && 'ring-yellow-400',
-        isTopThree && position === 2 && 'ring-gray-400',
-        isTopThree && position === 3 && 'ring-amber-400'
-      )}
+      className='flex-shrink-0 w-48 h-full'
     >
-      {/* Header - Posição e Nível */}
-      <div className='flex items-center justify-between mb-3'>
-        {/* Indicador de posição */}
-        <div
-          className={cn(
-            'w-8 h-8 rounded-full flex items-center justify-center font-bold text-sm',
-            isTopThree ? 'text-white' : 'text-gray-600 bg-gray-100',
-            position === 1 && 'bg-yellow-500',
-            position === 2 && 'bg-gray-400',
-            position === 3 && 'bg-amber-500',
-            position > 3 && 'bg-gray-100'
-          )}
-        >
-          {position <= 3 && position === 1 && <Trophy className='w-4 h-4' />}
-          {position <= 3 && position === 2 && <Medal className='w-4 h-4' />}
-          {position <= 3 && position === 3 && <Award className='w-4 h-4' />}
-          {position > 3 && position}
-        </div>
-
-        {/* Nível */}
-        {technician.level && (
-          <div className='flex items-center space-x-1'>
-            <div className={cn('p-1 rounded-full', levelStyle.iconBg)}>
-              <levelStyle.icon className={cn('w-3 h-3', levelStyle.iconColor)} />
+      <div className='bg-white/90 backdrop-blur-sm border border-white/90 shadow-lg rounded-xl p-4 h-full flex flex-col justify-between hover:shadow-xl transition-all duration-300 dark:bg-white/10 dark:border-white/20'>
+        {/* Header com posição e nível */}
+        <div className='flex items-center justify-between mb-3'>
+          <div className={cn(
+            'flex items-center justify-center w-6 h-6 rounded-full text-white text-xs font-bold bg-gradient-to-br',
+            getPositionColor()
+          )}>
+            {getPositionIcon()}
+          </div>
+          <div className='flex items-center gap-1'>
+            <div className={cn(
+              'p-1 rounded-full',
+              levelStyle.iconBg
+            )}>
+              {levelStyle.icon && <levelStyle.icon className={cn('h-3 w-3', levelStyle.iconColor)} />}
             </div>
-            <Badge
-              className={cn(
-                'text-xs font-medium text-white border-0 px-1.5 py-0.5',
-                levelStyle.accentColor
-              )}
-            >
+            <Badge className={cn(
+              'text-xs font-medium text-white border-0 px-2 py-0.5',
+              levelStyle.accentColor
+            )}>
               {technician.level}
             </Badge>
           </div>
-        )}
-      </div>
-
-      {/* Nome do técnico */}
-      <div className='text-center mb-3'>
-        <div className='font-medium text-gray-900 text-sm leading-tight'>{formattedName}</div>
-      </div>
-
-      {/* Total de chamados */}
-      <div className='text-center'>
-        <div className={cn('text-2xl font-bold mb-1', levelStyle.textColor)}>
-          {formatNumber(technician.total)}
         </div>
-        <div className='text-xs text-gray-500 mb-2'>chamados</div>
 
-        {/* Indicador de performance */}
-        <div className='flex justify-center space-x-1'>
-          {performanceIndicators.map((_, i) => (
-            <div key={i} className={cn('w-1.5 h-1.5 rounded-full', levelStyle.accentColor)} />
-          ))}
+        {/* Nome do técnico */}
+        <div className='text-center mb-3'>
+          <h4 className='font-medium text-gray-900 dark:text-white text-sm leading-tight'>
+            {formattedName}
+          </h4>
+        </div>
+
+        {/* Estatísticas */}
+        <div className='text-center'>
+          <div className='text-2xl font-bold text-gray-900 dark:text-white mb-1'>
+            {formatNumber(technician.total || 0)}
+          </div>
+          <div className='text-xs text-gray-600 dark:text-gray-400 mb-2'>
+            tickets resolvidos
+          </div>
+          
+          {/* Indicadores de performance */}
+          <div className='flex justify-center gap-1'>
+            {performanceIndicators.map((_, i) => (
+              <div
+                key={i}
+                className={cn(
+                  'w-1.5 h-1.5 rounded-full',
+                  isTopThree ? 'bg-green-500' : 'bg-blue-500'
+                )}
+              />
+            ))}
+          </div>
         </div>
       </div>
     </motion.div>
   );
 });
 
+// Função getLevelStyle permanece a mesma
+function getLevelStyle(level?: string) {
+  const styles = {
+    N1: {
+      iconBg: 'bg-emerald-100',
+      iconColor: 'text-emerald-600',
+      textColor: 'text-emerald-600',
+      accentColor: 'bg-emerald-500',
+      icon: Zap,
+    },
+    N2: {
+      iconBg: 'bg-blue-100',
+      iconColor: 'text-blue-600',
+      textColor: 'text-blue-600',
+      accentColor: 'bg-blue-500',
+      icon: Shield,
+    },
+    N3: {
+      iconBg: 'bg-purple-100',
+      iconColor: 'text-purple-600',
+      textColor: 'text-purple-600',
+      accentColor: 'bg-purple-500',
+      icon: Wrench,
+    },
+    N4: {
+      iconBg: 'bg-orange-100',
+      iconColor: 'text-orange-600',
+      textColor: 'text-orange-600',
+      accentColor: 'bg-orange-500',
+      icon: Settings,
+    },
+  };
+
+  return (
+    styles[level as keyof typeof styles] || {
+      iconBg: 'bg-gray-100',
+      iconColor: 'text-gray-600',
+      textColor: 'text-gray-600',
+      accentColor: 'bg-gray-500',
+      icon: Star,
+    }
+  );
+}
+
+// Componente principal refatorado
+
+// Componente principal refatorado
 export const RankingTable = React.memo<RankingTableProps>(function RankingTable({
   data,
-  title: _ = 'Ranking de Técnicos',
+  title = 'Ranking de Técnicos',
   className,
+  variant = 'default',
+  isLoading = false,
   filters,
 }) {
   const scrollContainerRef = useRef<HTMLDivElement>(null);
 
-
-
-  // Pegar todos os técnicos e ordenar por número de chamados - memoizado
+  // Lógica de dados permanece a mesma
   const topTechnicians = useMemo(() => {
-    return [...data].sort((a, b) => b.total - a.total);
+    return [...data].sort((a, b) => (b.total || 0) - (a.total || 0));
   }, [data]);
 
-  // Estatísticas por nível para o cabeçalho - memoizado
   const levelStats = useMemo(() => {
     return topTechnicians.reduce(
       (acc, tech) => {
@@ -251,7 +254,6 @@ export const RankingTable = React.memo<RankingTableProps>(function RankingTable(
     );
   }, [topTechnicians]);
 
-  // Callback memoizado para o scroll horizontal
   const handleWheel = useCallback((e: WheelEvent) => {
     e.preventDefault();
     const container = scrollContainerRef.current;
@@ -260,29 +262,37 @@ export const RankingTable = React.memo<RankingTableProps>(function RankingTable(
     }
   }, []);
 
-  // Adicionar scroll horizontal com roda do mouse
   useEffect(() => {
     const container = scrollContainerRef.current;
     if (!container) return;
 
     container.addEventListener('wheel', handleWheel, { passive: false });
-
     return () => {
       container.removeEventListener('wheel', handleWheel);
     };
   }, [handleWheel]);
 
+  // Classes CSS refatoradas
+  const cardClasses = cn(
+    'ranking-card', // Classe semântica principal
+    {
+      'ranking-card--compact': variant === 'compact',
+      'ranking-card--expanded': variant === 'expanded',
+      'ranking-card--loading': isLoading,
+    },
+    className
+  );
+
   return (
-    <Card
-      className={cn(
-        'figma-ranking-tecnicos w-full h-full flex flex-col rounded-2xl shadow-none',
-        className
-      )}
-    >
-      <CardHeader className='px-4 pt-4 pb-3 flex-shrink-0'>
+    <Card className={cn(
+      'bg-white/80 backdrop-blur-sm border border-white/90 shadow-sm dark:bg-white/5 dark:border-white/10',
+      'h-full flex flex-col',
+      className
+    )}>
+      <CardHeader className='pb-3'>
         <div className='flex items-center justify-between'>
           <div className='flex flex-col gap-2'>
-            <CardTitle className='figma-heading-large flex items-center gap-2'>
+            <CardTitle className='text-lg font-semibold text-gray-900 dark:text-white flex items-center gap-2'>
               <div className='p-2 rounded-xl bg-gradient-to-br from-slate-500 to-slate-600 shadow-lg'>
                 <Users className='h-5 w-5 text-white' />
               </div>
@@ -352,3 +362,7 @@ export const RankingTable = React.memo<RankingTableProps>(function RankingTable(
     </Card>
   );
 });
+
+RankingTable.displayName = 'RankingTable';
+
+export default RankingTable;

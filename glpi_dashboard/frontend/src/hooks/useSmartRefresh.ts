@@ -183,6 +183,7 @@ const refreshManager = SmartRefreshManager.getInstance();
  */
 export function useSmartRefresh(config: SmartRefreshConfig) {
   const cleanupRef = useRef<(() => void) | null>(null);
+  const lastRefreshRef = useRef<number>(0);
 
   const refreshFn = useCallback(async () => {
     // Usar coordenador de requisições para evitar duplicatas
@@ -199,6 +200,17 @@ export function useSmartRefresh(config: SmartRefreshConfig) {
     );
   }, [config.refreshFn, config.refreshKey]);
 
+  const markRefreshed = useCallback(() => {
+    lastRefreshRef.current = Date.now();
+  }, []);
+
+  const shouldRefresh = useCallback(() => {
+    const now = Date.now();
+    const timeSinceLastRefresh = now - lastRefreshRef.current;
+    const intervalMs = config.intervalMs || 300000; // 5 minutos padrão
+    return timeSinceLastRefresh >= intervalMs;
+  }, [config.intervalMs]);
+
   useEffect(() => {
     cleanupRef.current = refreshManager.registerRefresher({
       ...config,
@@ -213,6 +225,8 @@ export function useSmartRefresh(config: SmartRefreshConfig) {
   }, [config.refreshKey, config.intervalMs, config.enabled, refreshFn]);
 
   return {
+    shouldRefresh,
+    markRefreshed,
     pauseRefresh: () => refreshManager.pauseAllRefreshers(),
     resumeRefresh: () => refreshManager.resumeAllRefreshers(),
     isAutoRefreshEnabled: () => refreshManager.isAutoRefreshEnabled(),

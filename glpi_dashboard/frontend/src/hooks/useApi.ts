@@ -153,9 +153,9 @@ export function useMetrics(options?: UseApiOptions) {
  * Hook especializado para status do sistema
  */
 export function useSystemStatus(options?: UseApiOptions) {
-  const apiFunction = async (...args: any[]) => {
+  const apiFunction = async () => {
     const { apiService } = await import('../services/api');
-    return apiService.getSystemStatus(...args);
+    return apiService.getSystemStatus();
   };
   return useApi(apiFunction, options);
 }

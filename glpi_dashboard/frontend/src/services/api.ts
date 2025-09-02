@@ -63,7 +63,6 @@ export const apiService = {
           if (rawData.general || rawData.by_level) {
             // Estrutura com filtros aplicados
             processedNiveis = {
-              geral: { novos: 0, progresso: 0, pendentes: 0, resolvidos: 0, total: 0 },
               n1: { novos: 0, progresso: 0, pendentes: 0, resolvidos: 0, total: 0 },
               n2: { novos: 0, progresso: 0, pendentes: 0, resolvidos: 0, total: 0 },
               n3: { novos: 0, progresso: 0, pendentes: 0, resolvidos: 0, total: 0 },
@@ -118,7 +117,6 @@ export const apiService = {
             } else {
               // Fallback com zeros
               processedNiveis = {
-                geral: { novos: 0, pendentes: 0, progresso: 0, resolvidos: 0, total: 0 },
                 n1: { novos: 0, pendentes: 0, progresso: 0, resolvidos: 0, total: 0 },
                 n2: { novos: 0, pendentes: 0, progresso: 0, resolvidos: 0, total: 0 },
                 n3: { novos: 0, pendentes: 0, progresso: 0, resolvidos: 0, total: 0 },
@@ -141,7 +139,6 @@ export const apiService = {
           // Return fallback data
           const fallbackData: import('../types/api').DashboardMetrics = {
             niveis: {
-              geral: { novos: 0, pendentes: 0, progresso: 0, resolvidos: 0, total: 0 },
               n1: { novos: 0, pendentes: 0, progresso: 0, resolvidos: 0, total: 0 },
               n2: { novos: 0, pendentes: 0, progresso: 0, resolvidos: 0, total: 0 },
               n3: { novos: 0, pendentes: 0, progresso: 0, resolvidos: 0, total: 0 },
@@ -273,7 +270,6 @@ export const apiService = {
       );
       const response = await api.get<ApiResponse<any[]>>(url, {
         timeout: 180000, // 3 minutos para ranking
-        ...timeoutConfig
       });
 
       // Monitora performance
@@ -479,6 +475,24 @@ export const apiService = {
     }
   },
 
+  // Get filter types
+  async getFilterTypes(): Promise<ApiResponse<any>> {
+    const startTime = Date.now();
+    const cacheParams = { endpoint: 'filter-types' };
+    const cacheKey = `filter-types-${JSON.stringify(cacheParams)}`;
+    
+    return requestCoordinator.coordinateRequest(
+      cacheKey,
+      async () => {
+        const response = await api.get('/filter-types');
+        const responseTime = Date.now() - startTime;
+        
+        console.log(`📋 Filter types fetched in ${responseTime}ms`);
+        return response.data;
+      }
+    );
+  },
+
   // Clear all caches
   clearAllCaches(): void {
     console.log('🧹 Limpando todos os caches...');
@@ -522,6 +536,10 @@ export const healthCheck = async () => {
 
 export const getTicketById = async (ticketId: string) => {
   return apiService.getTicketById(ticketId);
+};
+
+export const getFilterTypes = async () => {
+  return apiService.getFilterTypes();
 };
 
 export const clearAllCaches = apiService.clearAllCaches;

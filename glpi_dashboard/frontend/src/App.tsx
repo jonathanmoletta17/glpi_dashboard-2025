@@ -8,7 +8,6 @@ import { TicketDetailModal } from './components/TicketDetailModal';
 import { Ticket } from './types/ticket';
 import {
   LoadingSpinner,
-  SkeletonMetricsGrid,
   SkeletonLevelsSection,
   ErrorState,
 } from './components/LoadingSpinner';
@@ -163,7 +162,7 @@ function App() {
 
           {/* Content skeleton */}
           <div className='p-6 space-y-8'>
-            <SkeletonMetricsGrid />
+            {/* SkeletonMetricsGrid removido - MetricsGrid foi removido */}
             <SkeletonLevelsSection />
           </div>
         </div>
@@ -230,9 +229,9 @@ function App() {
 
               };
               console.log(
-                '🎯 App.tsx - Métricas sendo passadas para ModernDashboard:',
-                dashboardMetrics
-              );
+                  '🎯 App.tsx - Métricas sendo passadas para ModernDashboard:',
+                  dashboardMetrics
+                );
               console.log('🔍 App.tsx - Objeto metrics completo:', metrics);
               return (
                 <ModernDashboard
@@ -242,6 +241,7 @@ function App() {
                   technicianRanking={technicianRanking}
                   onFilterByStatus={handleFilterByStatus}
                   onTicketClick={handleTicketClick}
+                  onRefresh={loadData}
                   isLoading={isLoading}
                   filters={filters}
                 />

@@ -187,9 +187,13 @@ class LocalCache<T> {
     this.stats.hits++;
     console.log(`📦 Cache: Hit para chave: ${key}`);
 
-    // Atualizar último acesso
-    entry.lastAccessed = Date.now();
-    entry.accessCount = (entry.accessCount || 0) + 1;
+    // Atualizar último acesso (se as propriedades existirem)
+    if ('lastAccessed' in entry) {
+      (entry as any).lastAccessed = Date.now();
+    }
+    if ('accessCount' in entry) {
+      (entry as any).accessCount = ((entry as any).accessCount || 0) + 1;
+    }
 
     return entry.data;
   }

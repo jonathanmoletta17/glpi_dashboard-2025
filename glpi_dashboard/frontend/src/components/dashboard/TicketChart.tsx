@@ -76,8 +76,8 @@ export const TicketChart = React.memo<TicketChartProps>(function TicketChart({
   const CustomTooltip = useCallback(({ active, payload, label }: any) => {
     if (active && payload && payload.length) {
       return (
-        <div className='figma-glass-card rounded-lg p-3 shadow-none'>
-          <p className='figma-body font-medium'>{label}</p>
+        <div className='bg-white/80 backdrop-blur-sm border border-white/90 dark:bg-white/5 dark:border-white/10 rounded-lg p-3 shadow-none'>
+          <p className='text-sm font-medium'>{label}</p>
           {payload.map((entry: any, index: number) => (
             <p key={`tooltip-entry-${index}`} className='text-sm' style={{ color: entry.color }}>
               {entry.name}: <span className='font-semibold'>{entry.value}</span>
@@ -263,10 +263,10 @@ export const TicketChart = React.memo<TicketChartProps>(function TicketChart({
 
   return (
     <motion.div variants={chartVariants} initial='hidden' animate='visible' className={className}>
-      <Card className='figma-glass-card border-0 shadow-none'>
+      <Card className='bg-white/80 backdrop-blur-sm border border-white/90 dark:bg-white/5 dark:border-white/10 border-0 shadow-none'>
         <CardHeader>
           <div className='flex items-center justify-between'>
-            <CardTitle className='figma-heading-large flex items-center gap-2'>
+            <CardTitle className='text-lg font-semibold flex items-center gap-2'>
               {chartIcon}
               {title}
             </CardTitle>

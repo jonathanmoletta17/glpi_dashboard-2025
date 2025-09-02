@@ -41,7 +41,7 @@ export interface SearchResult {
   status?: TicketStatus;
 }
 
-export type TicketStatus = 'new' | 'progress' | 'pending' | 'resolved';
+export type TicketStatus = 'novo' | 'progresso' | 'pendente' | 'resolvido' | 'fechado';
 
 export type Theme = 'light' | 'dark';
 
@@ -82,7 +82,11 @@ export interface TechnicianRanking {
   nome?: string; // Campo alternativo da API
   level: string;
   rank: number;
-  total: number; // Total de tickets do técnico
+  total?: number; // Total de tickets do técnico (campo legado)
+  total_tickets?: number; // Total de tickets do técnico (campo atual da API)
+  resolved_tickets?: number; // Tickets resolvidos
+  pending_tickets?: number; // Tickets pendentes
+  avg_resolution_time?: number; // Tempo médio de resolução
   score?: number; // Campo opcional para compatibilidade
   ticketsResolved?: number; // Campo opcional para compatibilidade
   ticketsInProgress?: number; // Campo opcional para compatibilidade
@@ -122,3 +126,4 @@ export * from './api';
 export * from './mock';
 export * from './test';
 export * from './contract';
+export * from './ticket';

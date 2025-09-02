@@ -1,5 +1,6 @@
 @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap');
 @import url('https://fonts.googleapis.com/css2?family=Roboto+Mono:wght@400;500;600;700&display=swap');
+/* CSS refatorado integrado diretamente no index.css */
 
 @tailwind base;
 @tailwind components;
@@ -46,30 +47,30 @@
   }
 
   .dark {
-    --background: 222.2 84% 4.9%;
-    --foreground: 210 40% 98%;
-    --card: 222.2 84% 4.9%;
-    --card-foreground: 210 40% 98%;
-    --popover: 222.2 84% 4.9%;
-    --popover-foreground: 210 40% 98%;
-    --primary: 210 40% 98%;
-    --primary-foreground: 222.2 47.4% 11.2%;
-    --secondary: 217.2 32.6% 17.5%;
-    --secondary-foreground: 210 40% 98%;
-    --muted: 217.2 32.6% 17.5%;
-    --muted-foreground: 215 20.2% 65.1%;
-    --accent: 217.2 32.6% 17.5%;
-    --accent-foreground: 210 40% 98%;
-    --destructive: 0 62.8% 30.6%;
-    --destructive-foreground: 210 40% 98%;
-    --border: 217.2 32.6% 17.5%;
-    --input: 217.2 32.6% 17.5%;
-    --ring: 212.7 26.8% 83.9%;
-    --chart-1: 220 70% 50%;
-    --chart-2: 160 60% 45%;
-    --chart-3: 30 80% 55%;
-    --chart-4: 280 65% 60%;
-    --chart-5: 340 75% 55%;
+    --background: 224 71% 4%;
+    --foreground: 213 31% 91%;
+    --card: 224 71% 4%;
+    --card-foreground: 213 31% 91%;
+    --popover: 224 71% 4%;
+    --popover-foreground: 213 31% 91%;
+    --primary: 263 70% 50%;
+    --primary-foreground: 210 20% 98%;
+    --secondary: 215 25% 27%;
+    --secondary-foreground: 210 20% 98%;
+    --muted: 215 25% 27%;
+    --muted-foreground: 217 10% 65%;
+    --accent: 215 25% 27%;
+    --accent-foreground: 210 20% 98%;
+    --destructive: 0 63% 31%;
+    --destructive-foreground: 210 20% 98%;
+    --border: 215 28% 17%;
+    --input: 215 28% 17%;
+    --ring: 263 70% 50%;
+    --chart-1: 263 70% 50%;
+    --chart-2: 173 58% 39%;
+    --chart-3: 197 37% 24%;
+    --chart-4: 43 74% 66%;
+    --chart-5: 27 87% 67%;
   }
 
   * {
@@ -93,8 +94,6 @@
       'rlig' 1,
       'calt' 1;
     margin: 0;
-    display: flex;
-    place-items: center;
     min-width: 320px;
     transition:
       background 0.3s ease,
@@ -107,10 +106,11 @@
     background: linear-gradient(135deg, #f8fafc 0%, #e2e8f0 50%, #f1f5f9 100%);
   }
 
-  /* Dark theme styles */
+  /* Dark theme styles - Sophisticated Design */
   body.dark {
     @apply text-gray-100;
-    background: linear-gradient(135deg, #0f172a 0%, #1e293b 50%, #334155 100%);
+    background: linear-gradient(135deg, #0a0f1c 0%, #1a1f2e 25%, #2d1b69 50%, #1e293b 75%, #0f172a 100%);
+    background-attachment: fixed;
   }
 
   #root {
@@ -125,37 +125,6 @@
 
 @layer components {
   /* Figma Design System Classes - OTIMIZADAS */
-  .figma-glass-card {
-    border-radius: 12px;
-    transition: all 0.3s ease;
-    backdrop-filter: blur(10px);
-  }
-
-  /* Light theme glass card */
-  body:not(.dark) .figma-glass-card {
-    background: rgba(255, 255, 255, 0.8);
-    border: 1px solid rgba(255, 255, 255, 0.9);
-    box-shadow: 0 4px 16px rgba(0, 0, 0, 0.1);
-  }
-
-  body:not(.dark) .figma-glass-card:hover {
-    background: rgba(255, 255, 255, 0.95);
-    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.15);
-    transform: translateY(-2px);
-  }
-
-  /* Dark theme glass card */
-  body.dark .figma-glass-card {
-    background: rgba(255, 255, 255, 0.05);
-    border: 1px solid rgba(255, 255, 255, 0.1);
-    box-shadow: 0 4px 16px rgba(0, 0, 0, 0.1);
-  }
-
-  body.dark .figma-glass-card:hover {
-    background: rgba(255, 255, 255, 0.08);
-    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.15);
-    transform: translateY(-2px);
-  }
 
   .figma-heading-large {
     font-family: 'Inter', sans-serif;
@@ -170,7 +139,12 @@
   }
 
   body.dark .figma-heading-large {
-    color: #f1f5f9;
+    color: #f8fafc;
+    text-shadow: 0 2px 8px rgba(139, 92, 246, 0.3);
+    background: linear-gradient(135deg, #f8fafc 0%, #e2e8f0 50%, #cbd5e1 100%);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
   }
 
   .figma-subheading {
@@ -186,7 +160,9 @@
   }
 
   body.dark .figma-subheading {
-    color: #e2e8f0;
+    color: #f1f5f9;
+    text-shadow: 0 1px 4px rgba(139, 92, 246, 0.2);
+    font-weight: 600;
   }
 
   .figma-body {
@@ -202,7 +178,9 @@
   }
 
   body.dark .figma-body {
-    color: #94a3b8;
+    color: #cbd5e1;
+    text-shadow: 0 1px 2px rgba(0, 0, 0, 0.3);
+    line-height: 1.6;
   }
 
   .figma-numeric {
@@ -218,7 +196,13 @@
   }
 
   body.dark .figma-numeric {
-    color: #f8fafc;
+    color: #ffffff;
+    text-shadow: 0 2px 8px rgba(139, 92, 246, 0.4);
+    background: linear-gradient(135deg, #ffffff 0%, #f1f5f9 50%, #e2e8f0 100%);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+    font-weight: 800;
   }
 
   .figma-grid-12 {
@@ -244,8 +228,9 @@
   }
 
   body.dark .figma-header {
-    background: rgba(15, 23, 42, 0.9);
-    border-bottom: 1px solid rgba(71, 85, 105, 0.3);
+    background: rgba(10, 15, 28, 0.95);
+    border-bottom: 1px solid rgba(139, 92, 246, 0.2);
+    box-shadow: 0 4px 32px rgba(139, 92, 246, 0.1);
   }
 
   .figma-summary-card {
@@ -273,15 +258,36 @@
   }
 
   body.dark .figma-summary-card {
-    background: rgba(255, 255, 255, 0.05);
-    border: 1px solid rgba(255, 255, 255, 0.1);
-    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+    background: linear-gradient(135deg, rgba(139, 92, 246, 0.1) 0%, rgba(59, 130, 246, 0.05) 50%, rgba(16, 185, 129, 0.05) 100%);
+    border: 1px solid rgba(139, 92, 246, 0.2);
+    box-shadow: 0 8px 32px rgba(139, 92, 246, 0.15), inset 0 1px 0 rgba(255, 255, 255, 0.1);
+    backdrop-filter: blur(20px);
+    transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+    position: relative;
+    overflow: hidden;
+  }
+
+  body.dark .figma-summary-card::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: linear-gradient(135deg, transparent 0%, rgba(139, 92, 246, 0.1) 50%, transparent 100%);
+    opacity: 0;
+    transition: opacity 0.4s ease;
   }
 
   body.dark .figma-summary-card:hover {
-    background: rgba(255, 255, 255, 0.08);
-    transform: translateY(-2px);
-    box-shadow: 0 4px 16px rgba(0, 0, 0, 0.15);
+    background: linear-gradient(135deg, rgba(139, 92, 246, 0.15) 0%, rgba(59, 130, 246, 0.1) 50%, rgba(16, 185, 129, 0.08) 100%);
+    transform: translateY(-4px) scale(1.02);
+    box-shadow: 0 20px 40px rgba(139, 92, 246, 0.25), inset 0 1px 0 rgba(255, 255, 255, 0.2);
+    border-color: rgba(139, 92, 246, 0.4);
+  }
+
+  body.dark .figma-summary-card:hover::before {
+    opacity: 1;
   }
 
   .figma-level-card {
@@ -310,87 +316,50 @@
   }
 
   body.dark .figma-level-card {
-    background: rgba(255, 255, 255, 0.05);
-    border: 1px solid rgba(255, 255, 255, 0.1);
-    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+    background: linear-gradient(135deg, rgba(30, 41, 59, 0.8) 0%, rgba(45, 27, 105, 0.6) 50%, rgba(15, 23, 42, 0.9) 100%);
+    border: 1px solid rgba(139, 92, 246, 0.3);
+    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3), inset 0 1px 0 rgba(255, 255, 255, 0.1);
+    backdrop-filter: blur(16px);
+    position: relative;
+    overflow: hidden;
+    transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+  }
+
+  body.dark .figma-level-card::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 1px;
+    background: linear-gradient(90deg, transparent, rgba(139, 92, 246, 0.8), transparent);
+  }
+
+  body.dark .figma-level-card::after {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: -100%;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(90deg, transparent, rgba(139, 92, 246, 0.2), transparent);
+    transition: left 0.6s ease;
   }
 
   body.dark .figma-level-card:hover {
-    background: rgba(255, 255, 255, 0.08);
-    transform: translateY(-2px);
-    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.15);
+    background: linear-gradient(135deg, rgba(30, 41, 59, 0.9) 0%, rgba(45, 27, 105, 0.8) 50%, rgba(15, 23, 42, 0.95) 100%);
+    transform: translateY(-6px) scale(1.02);
+    box-shadow: 0 20px 40px rgba(139, 92, 246, 0.2), 0 8px 32px rgba(0, 0, 0, 0.4), inset 0 1px 0 rgba(255, 255, 255, 0.2);
+    border-color: rgba(139, 92, 246, 0.5);
   }
 
-  .figma-ranking-tecnicos {
-    width: 100%;
-    min-height: 300px;
-    height: 100%;
-    border-radius: 12px;
-    padding: 20px;
-    padding-bottom: 24px;
-    display: flex;
-    flex-direction: column;
-    overflow: hidden;
-    backdrop-filter: blur(10px);
-    transition: all 0.3s ease;
+  body.dark .figma-level-card:hover::after {
+    left: 100%;
   }
 
-  body:not(.dark) .figma-ranking-tecnicos {
-    background: rgba(255, 255, 255, 0.8);
-    border: 1px solid rgba(226, 232, 240, 0.6);
-    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
-  }
 
-  body:not(.dark) .figma-ranking-tecnicos:hover {
-    background: rgba(255, 255, 255, 0.95);
-    box-shadow: 0 4px 16px rgba(0, 0, 0, 0.15);
-  }
 
-  body.dark .figma-ranking-tecnicos {
-    background: rgba(255, 255, 255, 0.05);
-    border: 1px solid rgba(255, 255, 255, 0.1);
-    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
-  }
 
-  body.dark .figma-ranking-tecnicos:hover {
-    background: rgba(255, 255, 255, 0.08);
-    box-shadow: 0 4px 16px rgba(0, 0, 0, 0.15);
-  }
-
-  .figma-tickets-recentes {
-    width: 100%;
-    min-height: 300px;
-    height: 100%;
-    border-radius: 12px;
-    padding: 24px;
-    display: flex;
-    flex-direction: column;
-    overflow: hidden;
-    backdrop-filter: blur(10px);
-    transition: all 0.3s ease;
-  }
-
-  body:not(.dark) .figma-tickets-recentes {
-    background: rgba(255, 255, 255, 0.8);
-    border: 1px solid rgba(226, 232, 240, 0.6);
-    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
-  }
-
-  body:not(.dark) .figma-tickets-recentes:hover {
-    background: rgba(255, 255, 255, 0.95);
-    box-shadow: 0 4px 16px rgba(0, 0, 0, 0.15);
-  }
-
-  body.dark .figma-tickets-recentes {
-    background: rgba(255, 255, 255, 0.05);
-    border: 1px solid rgba(255, 255, 255, 0.1);
-    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
-  }
-
-  body.dark .figma-tickets-recentes:hover {
-    background: rgba(255, 255, 255, 0.08);
-    box-shadow: 0 4px 16px rgba(0, 0, 0, 0.15);
-  }
 
   /* Color Tokens */
   .text-figma-teal {
@@ -426,22 +395,52 @@
   }
 
   .metric-card {
-    @apply figma-glass-card p-4 lg:p-6 relative overflow-hidden min-w-0;
-    /* REMOVIDO: cursor-pointer */
+    @apply p-4 lg:p-6 relative overflow-hidden min-w-0;
+    /* Glass card effect */
+    border-radius: 12px;
+    transition: all 0.3s ease;
+    backdrop-filter: blur(10px);
+    background: rgba(255, 255, 255, 0.8);
+    border: 1px solid rgba(255, 255, 255, 0.9);
+    box-shadow: 0 4px 16px rgba(0, 0, 0, 0.1);
     word-wrap: break-word;
     max-width: 100%;
   }
 
   .metric-card:hover {
-    /* REMOVIDO: @apply transform -translate-y-2 scale-[1.02]; */
-    /* REMOVIDO: box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04); */
-    background: rgba(255, 255, 255, 0.08);
+    background: rgba(255, 255, 255, 0.95);
+    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.15);
+    transform: translateY(-2px);
   }
 
-  .dark .metric-card:hover {
-    /* REMOVIDO: box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.25), 0 10px 10px -5px rgba(0, 0, 0, 0.1); */
-    background: rgba(255, 255, 255, 0.08);
+  /* Dark theme for metric-card - Sophisticated Design */
+  body.dark .metric-card {
+    background: linear-gradient(135deg, rgba(30, 41, 59, 0.7) 0%, rgba(45, 27, 105, 0.4) 50%, rgba(15, 23, 42, 0.8) 100%);
+    border: 1px solid rgba(139, 92, 246, 0.25);
+    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.2), inset 0 1px 0 rgba(255, 255, 255, 0.08);
+    backdrop-filter: blur(16px);
+    position: relative;
+    overflow: hidden;
   }
+
+  body.dark .metric-card::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 1px;
+    background: linear-gradient(90deg, transparent, rgba(139, 92, 246, 0.6), transparent);
+  }
+
+  body.dark .metric-card:hover {
+    background: linear-gradient(135deg, rgba(30, 41, 59, 0.85) 0%, rgba(45, 27, 105, 0.6) 50%, rgba(15, 23, 42, 0.9) 100%);
+    box-shadow: 0 16px 40px rgba(139, 92, 246, 0.15), 0 8px 32px rgba(0, 0, 0, 0.3), inset 0 1px 0 rgba(255, 255, 255, 0.15);
+    transform: translateY(-4px) scale(1.02);
+    border-color: rgba(139, 92, 246, 0.4);
+  }
+
+  /* Hover effects já definidos acima - removendo duplicação */
 
   .btn-primary {
     @apply font-semibold py-3 px-6 rounded-xl;
@@ -476,14 +475,19 @@
   }
 
   body.dark .btn-secondary {
-    @apply bg-gray-800/90 text-gray-200 border-gray-600;
-    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.3);
+    background: linear-gradient(135deg, rgba(30, 41, 59, 0.8) 0%, rgba(45, 27, 105, 0.6) 100%);
+    @apply text-gray-200;
+    border: 1px solid rgba(139, 92, 246, 0.3);
+    box-shadow: 0 4px 16px rgba(0, 0, 0, 0.2), inset 0 1px 0 rgba(255, 255, 255, 0.1);
+    backdrop-filter: blur(12px);
   }
 
   body.dark .btn-secondary:hover {
-    @apply bg-gray-700 text-white;
-    box-shadow: 0 4px 16px rgba(0, 0, 0, 0.4);
-    transform: translateY(-2px);
+    background: linear-gradient(135deg, rgba(30, 41, 59, 0.9) 0%, rgba(45, 27, 105, 0.8) 100%);
+    @apply text-white;
+    box-shadow: 0 8px 24px rgba(139, 92, 246, 0.2), 0 4px 16px rgba(0, 0, 0, 0.3), inset 0 1px 0 rgba(255, 255, 255, 0.2);
+    transform: translateY(-3px) scale(1.02);
+    border-color: rgba(139, 92, 246, 0.5);
   }
 
   .input-field {
@@ -504,14 +508,18 @@
   }
 
   body.dark .input-field {
-    @apply border border-gray-600 bg-gray-800/90 text-gray-100;
-    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.3);
+    background: linear-gradient(135deg, rgba(30, 41, 59, 0.6) 0%, rgba(15, 23, 42, 0.8) 100%);
+    border: 1px solid rgba(139, 92, 246, 0.2);
+    @apply text-gray-100;
+    box-shadow: 0 4px 16px rgba(0, 0, 0, 0.2), inset 0 1px 0 rgba(255, 255, 255, 0.05);
+    backdrop-filter: blur(12px);
   }
 
   body.dark .input-field:focus {
-    @apply bg-gray-800;
-    box-shadow: 0 4px 16px rgba(59, 130, 246, 0.25);
-    transform: translateY(-1px);
+    background: linear-gradient(135deg, rgba(30, 41, 59, 0.8) 0%, rgba(15, 23, 42, 0.9) 100%);
+    box-shadow: 0 8px 24px rgba(139, 92, 246, 0.3), 0 4px 16px rgba(0, 0, 0, 0.3), inset 0 1px 0 rgba(255, 255, 255, 0.1);
+    transform: translateY(-2px);
+    border-color: rgba(139, 92, 246, 0.5);
   }
 
   .status-indicator {
@@ -612,17 +620,71 @@
   @apply bg-gray-400 dark:bg-gray-500;
 }
 
-/* ANIMAÇÕES ULTRA-RÁPIDAS */
+/* ANIMAÇÕES SOFISTICADAS PARA MODO ESCURO */
 .fade-in {
-  animation: fadeIn 0.1s ease;
+  animation: fadeIn 0.3s cubic-bezier(0.4, 0, 0.2, 1);
 }
 
 .slide-in {
-  animation: slideIn 0.1s ease;
+  animation: slideIn 0.4s cubic-bezier(0.4, 0, 0.2, 1);
 }
 
 .bounce-in {
-  animation: bounceIn 0.2s ease;
+  animation: bounceIn 0.5s cubic-bezier(0.68, -0.55, 0.265, 1.55);
+}
+
+/* Animação de brilho para modo escuro */
+@keyframes darkModeShine {
+  0% {
+    transform: translateX(-100%) skewX(-15deg);
+    opacity: 0;
+  }
+  50% {
+    opacity: 1;
+  }
+  100% {
+    transform: translateX(200%) skewX(-15deg);
+    opacity: 0;
+  }
+}
+
+.dark-mode-shine {
+  position: relative;
+  overflow: hidden;
+}
+
+.dark-mode-shine::after {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(90deg, transparent, rgba(139, 92, 246, 0.3), transparent);
+  transform: translateX(-100%) skewX(-15deg);
+  transition: transform 0.6s;
+}
+
+.dark-mode-shine:hover::after {
+  animation: darkModeShine 0.8s ease-in-out;
+}
+
+/* Animação de pulse sofisticada */
+@keyframes sophisticatedPulse {
+  0%, 100% {
+    opacity: 1;
+    transform: scale(1);
+    box-shadow: 0 0 0 0 rgba(139, 92, 246, 0.4);
+  }
+  50% {
+    opacity: 0.9;
+    transform: scale(1.02);
+    box-shadow: 0 0 0 10px rgba(139, 92, 246, 0);
+  }
+}
+
+.sophisticated-pulse {
+  animation: sophisticatedPulse 2s cubic-bezier(0.4, 0, 0.6, 1) infinite;
 }
 
 /* REMOVIDO: .pulse-glow - muito pesado */
@@ -731,7 +793,6 @@
   height: 100vh;
   display: grid;
   grid-template-rows: auto 1fr auto auto;
-  gap: 1rem;
   padding: 1rem;
   max-width: 100vw;
   overflow: hidden;
@@ -840,12 +901,6 @@
   }
 }
 
-@media (min-width: 1920px) {
-  .dashboard-fullscreen-container {
-    gap: 1.25rem;
-    padding: 1.25rem;
-  }
-
   .dashboard-main-grid {
     grid-template-columns: 2.5fr 1fr;
     gap: 1.25rem;
@@ -863,7 +918,6 @@
     min-height: 320px;
     max-height: 380px;
   }
-}
 
 @media (min-width: 2560px) {
   .dashboard-fullscreen-container {
@@ -1047,6 +1101,49 @@ h3 {
   background: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%);
 }
 
+/* Gradientes específicos para cards de métricas */
+.metrics-card-new {
+  background: linear-gradient(135deg, #dbeafe 0%, #bfdbfe 50%, #93c5fd 100%);
+  box-shadow: 0 8px 32px rgba(59, 130, 246, 0.15);
+}
+
+.metrics-card-progress {
+  background: linear-gradient(135deg, #fef3c7 0%, #fde68a 50%, #fcd34d 100%);
+  box-shadow: 0 8px 32px rgba(245, 158, 11, 0.15);
+}
+
+.metrics-card-pending {
+  background: linear-gradient(135deg, #fed7aa 0%, #fdba74 50%, #fb923c 100%);
+  box-shadow: 0 8px 32px rgba(249, 115, 22, 0.15);
+}
+
+.metrics-card-resolved {
+  background: linear-gradient(135deg, #dcfce7 0%, #bbf7d0 50%, #86efac 100%);
+  box-shadow: 0 8px 32px rgba(34, 197, 94, 0.15);
+}
+
+/* Efeito de brilho para cards */
+.metrics-card-shine {
+  position: relative;
+  overflow: hidden;
+}
+
+.metrics-card-shine::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: -100%;
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.4), transparent);
+  transform: skewX(-15deg);
+  transition: left 0.6s ease;
+}
+
+.metrics-card-shine:hover::before {
+  left: 100%;
+}
+
 /* Sombras modernas */
 .modern-shadow {
   box-shadow:
@@ -1176,4 +1273,11 @@ h3 {
 .dark .figma-status-badge-green {
   @apply bg-green-400/20 text-green-300 border-green-400/30;
   backdrop-filter: blur(8px);
+}
+
+
+
+/* Garantir bordas arredondadas nos cards de nível */
+.level-metrics-grid .card {
+  @apply rounded-lg;
 }

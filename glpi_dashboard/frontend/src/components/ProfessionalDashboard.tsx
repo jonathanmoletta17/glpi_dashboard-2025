@@ -1,9 +1,18 @@
-import React, { useState, useEffect, useMemo } from 'react';
-import { MetricsData, TechnicianRanking, NewTicket } from '../types';
-import { DateRange } from '../types';
+import React, { useState, useEffect, useMemo, Suspense } from 'react';
+import {
+  MetricsData,
+  TechnicianRanking,
+  NewTicket,
+  TicketStatus,
+  SystemStatus,
+  DateRange,
+  LevelMetrics,
+} from '../types';
+import { Ticket } from '../types/ticket';
 import { apiService } from '../services/api';
 import { useThrottledCallback } from '../hooks/useDebounce';
 import { useSmartRefresh } from '../hooks/useSmartRefresh';
+// Performance monitoring removido temporariamente
 import {
   BarChart3,
   Clock,
@@ -11,15 +20,30 @@ import {
   AlertTriangle,
   CheckCircle,
   Settings,
+  Activity,
+  RefreshCw,
+  TrendingUp,
 } from 'lucide-react';
 
+// Interface atualizada para compatibilidade com ModernDashboard
 interface ProfessionalDashboardProps {
-  metrics: MetricsData | null;
-  technicianRanking: TechnicianRanking[];
-  isLoading: boolean;
-  dateRange: DateRange;
-  onDateRangeChange: (range: DateRange) => void;
-  onRefresh: () => void;
+  metrics: MetricsData;
+  levelMetrics?: any;
+  systemStatus?: SystemStatus | null;
+  technicianRanking?: TechnicianRanking[];
+  onFilterByStatus?: (status: TicketStatus) => void;
+  onTicketClick?: (ticket: Ticket) => void;
+  onRefresh?: () => void;
+  isLoading?: boolean;
+  className?: string;
+  filters?: {
+    start_date?: string;
+    end_date?: string;
+    level?: string;
+    limit?: number;
+    status?: TicketStatus[];
+    dateRange?: DateRange;
+  };
 }
 
 interface StatusCardProps {
@@ -28,19 +52,35 @@ interface StatusCardProps {
   icon: React.ComponentType<any>;
   color: string;
   bgColor: string;
+  status?: TicketStatus;
+  onClick?: (status: TicketStatus) => void;
 }
 
 const StatusCard = React.memo<StatusCardProps>(
-  ({ title, value, icon: Icon, color, bgColor }) => {
+  ({ title, value, icon: Icon, color, bgColor, status, onClick }) => {
     const formattedValue = useMemo(() => value.toLocaleString(), [value]);
+    const isClickable = status && onClick;
+
+    const handleClick = () => {
+      if (isClickable) {
+        onClick(status);
+      }
+    };
 
     return (
-      <div className='bg-white rounded-xl shadow-sm border border-gray-200 p-6 hover:shadow-md transition-all duration-200'>
+      <div 
+        className={`bg-white rounded-xl shadow-sm border border-gray-200 p-6 transition-all duration-200 ${
+          isClickable ? 'hover:shadow-md hover:scale-105 cursor-pointer' : 'hover:shadow-md'
+        }`}
+        onClick={handleClick}
+      >
         <div className='flex items-center justify-between'>
           <div>
             <p className='text-sm font-medium text-gray-600 mb-1'>{title}</p>
             <p className={`text-3xl font-bold ${color}`}>{formattedValue}</p>
-
+            {isClickable && (
+              <p className='text-xs text-gray-500 mt-1'>Clique para filtrar</p>
+            )}
           </div>
           <div className={`p-3 rounded-lg ${bgColor}`}>
             <Icon className={`w-6 h-6 ${color}`} />
@@ -119,11 +159,17 @@ const LevelSection = React.memo<LevelSectionProps>(({ level, data }) => {
 
 export const ProfessionalDashboard: React.FC<ProfessionalDashboardProps> = ({
   metrics,
-  technicianRanking,
-  isLoading,
-  dateRange,
+  levelMetrics,
+  systemStatus,
+  technicianRanking = [],
+  onFilterByStatus,
+  onTicketClick,
   onRefresh,
+  isLoading = false,
+  className,
+  filters,
 }) => {
+  // Performance monitoring removido temporariamente
   const [newTickets, setNewTickets] = useState<NewTicket[]>([]);
   const [ticketsLoading, setTicketsLoading] = useState(false);
   const [currentTime, setCurrentTime] = useState('');
@@ -195,7 +241,7 @@ export const ProfessionalDashboard: React.FC<ProfessionalDashboardProps> = ({
           <div className='text-gray-900 text-xl font-semibold mb-2'>Erro ao Carregar Dados</div>
           <div className='text-gray-600 mb-4'>Não foi possível conectar ao sistema GLPI</div>
           <button
-            onClick={() => onRefresh()}
+            onClick={() => onRefresh?.()}
             className='bg-blue-600 text-white px-6 py-2 rounded-lg hover:bg-blue-700 transition-colors'
           >
             Tentar Novamente
@@ -251,41 +297,53 @@ export const ProfessionalDashboard: React.FC<ProfessionalDashboardProps> = ({
         {/* Summary Cards */}
         <div className='grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8'>
           <StatusCard
-            title='Chamados Ativos'
-            value={totalActive}
+            title='Novos'
+            value={metrics.novos}
             icon={AlertTriangle}
-            color='text-slate-700 dark:text-slate-300'
-            bgColor='figma-level-badge'
+            color='text-blue-600'
+            bgColor='bg-blue-50'
+            status='novo'
+            onClick={onFilterByStatus}
+          />
+          <StatusCard
+            title='Em Progresso'
+            value={metrics.progresso}
+            icon={Activity}
+            color='text-yellow-600'
+            bgColor='bg-yellow-50'
+            status='progresso'
+            onClick={onFilterByStatus}
+          />
+          <StatusCard
+            title='Pendentes'
+            value={metrics.pendentes}
+            icon={Clock}
+            color='text-orange-600'
+            bgColor='bg-orange-50'
+            status='pendente'
+            onClick={onFilterByStatus}
           />
           <StatusCard
             title='Resolvidos'
             value={metrics.resolvidos}
             icon={CheckCircle}
-            color='text-slate-700 dark:text-slate-300'
-            bgColor='figma-level-badge'
-          />
-          <StatusCard
-            title='Taxa de Resolução'
-            value={parseFloat(resolutionRate)}
-            icon={BarChart3}
-            color='text-slate-700 dark:text-slate-300'
-            bgColor='figma-level-badge'
-          />
-          <StatusCard
-            title='Técnicos Ativos'
-            value={technicianRanking.length}
-            icon={Users}
-            color='text-slate-700 dark:text-slate-300'
-            bgColor='figma-level-badge'
+            color='text-green-600'
+            bgColor='bg-green-50'
+            status='resolvido'
+            onClick={onFilterByStatus}
           />
         </div>
 
         {/* Levels Grid */}
         <div className='grid grid-cols-1 lg:grid-cols-2 gap-6 mb-8'>
-          <LevelSection level='N1' data={metrics.niveis.n1} />
-          <LevelSection level='N2' data={metrics.niveis.n2} />
-          <LevelSection level='N3' data={metrics.niveis.n3} />
-          <LevelSection level='N4' data={metrics.niveis.n4} />
+          {levelMetrics && (
+            <>
+              <LevelSection level='N1' data={levelMetrics.n1 || metrics.niveis?.n1 || { novos: 0, progresso: 0, pendentes: 0, resolvidos: 0 }} />
+              <LevelSection level='N2' data={levelMetrics.n2 || metrics.niveis?.n2 || { novos: 0, progresso: 0, pendentes: 0, resolvidos: 0 }} />
+              <LevelSection level='N3' data={levelMetrics.n3 || metrics.niveis?.n3 || { novos: 0, progresso: 0, pendentes: 0, resolvidos: 0 }} />
+              <LevelSection level='N4' data={levelMetrics.n4 || metrics.niveis?.n4 || { novos: 0, progresso: 0, pendentes: 0, resolvidos: 0 }} />
+            </>
+          )}
         </div>
 
         {/* Bottom Section */}
@@ -326,7 +384,7 @@ export const ProfessionalDashboard: React.FC<ProfessionalDashboardProps> = ({
                     </div>
                     <div className='text-right'>
                       <div className='text-lg font-semibold text-gray-900'>
-                        {tech.total || tech.total_tickets || 0}
+                        {tech.total_tickets || tech.total || 0}
                       </div>
                       <div className='text-sm text-gray-500'>chamados</div>
                     </div>
@@ -356,7 +414,32 @@ export const ProfessionalDashboard: React.FC<ProfessionalDashboardProps> = ({
                     return (
                       <div
                         key={ticket.id}
-                        className='p-3 bg-gray-50 rounded-lg hover:bg-gray-100 transition-colors'
+                        className='p-3 bg-gray-50 rounded-lg hover:bg-gray-100 transition-colors cursor-pointer'
+                        onClick={() => onTicketClick && onTicketClick({
+                          id: ticket.id.toString(),
+                          title: ticket.title,
+                          description: ticket.description || '',
+                          status: 'novo',
+                          priority: ticket.priority.toLowerCase() as any,
+                          requester: {
+                            id: '1',
+                            name: ticket.requester,
+                            email: '',
+                          },
+                          technician: undefined,
+                          createdAt: ticket.date,
+                          updatedAt: ticket.date,
+                          category: 'Geral',
+                          urgency: 2,
+                          impact: 2,
+                          tags: [],
+                          attachments: [],
+                          comments: [],
+                          timeTracking: {
+                            totalTime: 0,
+                            entries: [],
+                          },
+                        })}
                       >
                         <div className='flex justify-between items-start mb-2'>
                           <div className='text-sm font-medium text-gray-900 truncate flex-1 mr-2'>

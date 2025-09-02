@@ -125,7 +125,7 @@ const StatusItem = React.memo<{
       key={`status-item-${status}`}
       variants={statusVariants}
       whileHover='hover'
-      className='flex items-center justify-between p-4 rounded-lg figma-glass-card min-h-[60px] border border-gray-100/50 dark:border-gray-800/50 cursor-pointer'
+      className='flex items-center justify-between p-4 rounded-lg bg-white/80 backdrop-blur-sm min-h-[60px] border border-gray-100/50 dark:border-gray-800/50 dark:bg-white/5 cursor-pointer'
     >
       <div className='flex items-center gap-3'>
         <motion.div
@@ -170,7 +170,7 @@ const LevelCard = React.memo<{
       whileHover='hover'
       className='h-full flex cursor-pointer'
     >
-      <Card className='figma-glass-card border-0 shadow-none h-full w-full flex flex-col relative overflow-hidden'>
+      <Card className='bg-white/80 backdrop-blur-sm border border-white/90 dark:bg-white/5 dark:border-white/10 border-0 shadow-none h-full w-full flex flex-col relative overflow-hidden rounded-lg'>
         <CardHeader className='pb-3 px-4 pt-4 flex-shrink-0'>
           <div className='flex items-center justify-between relative z-10'>
             <CardTitle className='text-lg font-semibold flex items-center gap-3'>
@@ -234,11 +234,11 @@ export const LevelMetricsGrid = React.memo<LevelMetricsGridProps>(function Level
   // Verificação de segurança para evitar erros
   if (!metrics || !metrics.niveis) {
     return (
-      <Card className={cn('figma-glass-card h-full shadow-none', className)}>
+      <Card className={cn('bg-white/80 backdrop-blur-sm border border-white/90 dark:bg-white/5 dark:border-white/10 h-full shadow-none rounded-lg', className)}>
         <CardContent className='flex items-center justify-center h-48'>
           <div className='text-center'>
-            <div className='figma-body mb-2'>📊</div>
-            <div className='figma-body'>Carregando métricas por nível...</div>
+            <div className='text-sm text-gray-600 mb-2'>📊</div>
+            <div className='text-sm text-gray-600'>Carregando métricas por nível...</div>
           </div>
         </CardContent>
       </Card>

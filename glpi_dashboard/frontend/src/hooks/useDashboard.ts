@@ -166,18 +166,16 @@ export const useDashboard = (initialFilters: FilterParams = {}): UseDashboardRet
   // Função para buscar tipos de filtro disponíveis
   const fetchFilterTypes = useCallback(async () => {
     try {
-      const response = await fetch('/api/filter-types');
-      if (response.ok) {
-        const result = await response.json();
-        if (result.success && result.data) {
-          const types = Object.entries(result.data).map(([key, value]: [string, any]) => ({
-            key,
-            name: value.name,
-            description: value.description,
-            default: value.default,
-          }));
-          setAvailableFilterTypes(types);
-        }
+      const { apiService } = await import('../services/api');
+      const result = await apiService.getFilterTypes();
+      if (result.success && result.data) {
+        const types = Object.entries(result.data).map(([key, value]: [string, any]) => ({
+          key,
+          name: value.name,
+          description: value.description,
+          default: value.default,
+        }));
+        setAvailableFilterTypes(types);
       }
     } catch (error) {
       console.error('Erro ao buscar tipos de filtro:', error);

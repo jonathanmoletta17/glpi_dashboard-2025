@@ -251,7 +251,7 @@ export function useApiErrorHandler(config: ApiErrorHandlerConfig = {}) {
             lastError = new Error(error);
           } else if (error && typeof error === 'object') {
             // Handle object errors safely
-            const message = error.message || error.toString?.() || 'Unknown error occurred';
+            const message = (error as any).message || error.toString?.() || 'Unknown error occurred';
             lastError = new Error(message);
           } else {
             lastError = new Error('Unknown error occurred');
