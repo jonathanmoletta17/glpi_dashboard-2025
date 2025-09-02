@@ -3,11 +3,20 @@ import logging
 import os
 import warnings
 from typing import Any, Dict, Optional
+from pathlib import Path
 
 from dotenv import load_dotenv
 
 # Carrega as variáveis de ambiente do arquivo .env
 load_dotenv()
+
+# Importação opcional do YAML
+try:
+    import yaml
+    YAML_AVAILABLE = True
+except ImportError:
+    YAML_AVAILABLE = False
+    warnings.warn("PyYAML não está instalado. Usando apenas variáveis de ambiente.")
 
 
 class ConfigValidationError(Exception):
@@ -21,126 +30,217 @@ class Config:
 
     def __init__(self):
         """Inicializa e valida as configurações"""
+        self._load_yaml_config()
         self._validate_required_configs()
         self._validate_config_values()
 
+    def _load_yaml_config(self):
+        """Carrega configurações do arquivo YAML"""
+        self.yaml_config = {}
+        
+        if not YAML_AVAILABLE:
+            warnings.warn("PyYAML não disponível. Usando apenas variáveis de ambiente.")
+            return
+            
+        try:
+            # Caminho para o arquivo de configuração
+            config_path = Path(__file__).parent.parent.parent / "config" / "system.yaml"
+            
+            if config_path.exists():
+                with open(config_path, 'r', encoding='utf-8') as file:
+                    self.yaml_config = yaml.safe_load(file)
+            else:
+                # Fallback para configurações padrão se arquivo não existir
+                warnings.warn(f"Arquivo de configuração não encontrado: {config_path}")
+        except Exception as e:
+            warnings.warn(f"Erro ao carregar config/system.yaml: {e}")
+            self.yaml_config = {}
+
+    def _get_config_value(self, path: str, default=None, env_var=None):
+        """Obtém valor de configuração do YAML ou variável de ambiente"""
+        # Primeiro tenta variável de ambiente
+        if env_var and os.environ.get(env_var):
+            return os.environ.get(env_var)
+        
+        # Depois tenta YAML
+        keys = path.split('.')
+        value = self.yaml_config
+        for key in keys:
+            if isinstance(value, dict) and key in value:
+                value = value[key]
+            else:
+                return default
+        
+        # Substitui variáveis de ambiente no valor
+        if isinstance(value, str) and value.startswith("${") and value.endswith("}"):
+            env_key = value[2:-1]
+            return os.environ.get(env_key, default)
+        
+        return value if value is not None else default
+
     # Flask
-    SECRET_KEY = os.environ.get("SECRET_KEY", "dev-secret-key-change-in-production")
-    DEBUG = os.environ.get("FLASK_DEBUG", "False").lower() == "true"
+    @property
+    def SECRET_KEY(self) -> str:
+        return self._get_config_value("flask.secret_key", "dev-secret-key-change-in-production", "SECRET_KEY")
+
+    @property
+    def DEBUG(self) -> bool:
+        return self._get_config_value("flask.debug", False) or os.environ.get("FLASK_DEBUG", "False").lower() == "true"
 
     @property
     def PORT(self) -> int:
         """Porta do servidor com validação"""
         try:
-            port = int(os.environ.get("PORT", 5000))
+            port = self._get_config_value("flask.port", 5000, "PORT")
+            port = int(port)  # Garantir que é inteiro
             if not (1 <= port <= 65535):
                 raise ValueError(f"Porta inválida: {port}")
             return port
-        except ValueError as e:
+        except (ValueError, TypeError) as e:
             raise ConfigValidationError(f"Erro na configuração PORT: {e}")
 
-    HOST = os.environ.get("HOST", "0.0.0.0")
+    @property
+    def HOST(self) -> str:
+        return self._get_config_value("flask.host", "0.0.0.0", "HOST")
 
     # GLPI API
-    GLPI_URL = os.environ.get("GLPI_URL", "http://10.73.0.79/glpi/apirest.php")
-    GLPI_USER_TOKEN = os.environ.get("GLPI_USER_TOKEN")
-    GLPI_APP_TOKEN = os.environ.get("GLPI_APP_TOKEN")
+    @property
+    def GLPI_URL(self) -> str:
+        return self._get_config_value("glpi.base_url", "http://10.73.0.79/glpi/apirest.php", "GLPI_URL")
+
+    @property
+    def GLPI_USER_TOKEN(self) -> str:
+        return self._get_config_value("glpi.user_token", None, "GLPI_USER_TOKEN")
+
+    @property
+    def GLPI_APP_TOKEN(self) -> str:
+        return self._get_config_value("glpi.app_token", None, "GLPI_APP_TOKEN")
 
     # Backend API
-    BACKEND_API_URL = os.environ.get("BACKEND_API_URL", "http://localhost:8000")
-    API_KEY = os.environ.get("API_KEY", "")
+    @property
+    def BACKEND_API_URL(self) -> str:
+        return self._get_config_value("api.backend_url", "http://localhost:8000", "BACKEND_API_URL")
 
-    # Observabilidade
-    PROMETHEUS_GATEWAY_URL = os.environ.get(
-        "PROMETHEUS_GATEWAY_URL", "http://localhost:9091"
-    )
-    PROMETHEUS_JOB_NAME = os.environ.get("PROMETHEUS_JOB_NAME", "glpi_dashboard")
-    STRUCTURED_LOGGING = os.environ.get("STRUCTURED_LOGGING", "True").lower() == "true"
-    LOG_FILE_PATH = os.environ.get("LOG_FILE_PATH", "logs/app.log")
-    LOG_MAX_BYTES = int(os.environ.get("LOG_MAX_BYTES", "10485760"))  # 10MB
-    LOG_BACKUP_COUNT = int(os.environ.get("LOG_BACKUP_COUNT", "5"))
-
-    # Alertas
-    ALERT_RESPONSE_TIME_THRESHOLD = float(
-        os.environ.get("ALERT_RESPONSE_TIME_THRESHOLD", "300")
-    )  # 300ms
-    ALERT_ERROR_RATE_THRESHOLD = float(
-        os.environ.get("ALERT_ERROR_RATE_THRESHOLD", "0.05")
-    )  # 5%
-    ALERT_ZERO_TICKETS_THRESHOLD = int(
-        os.environ.get("ALERT_ZERO_TICKETS_THRESHOLD", "60")
-    )  # 60 segundos
+    @property
+    def API_KEY(self) -> str:
+        return self._get_config_value("api.key", "", "API_KEY")
 
     @property
     def API_TIMEOUT(self) -> int:
         """Timeout da API com validação"""
         try:
-            timeout = int(os.environ.get("API_TIMEOUT", "30"))
+            timeout = self._get_config_value("glpi.timeout", 30, "API_TIMEOUT")
+            timeout = int(timeout)  # Garantir que é inteiro
             if not (1 <= timeout <= 300):
-                raise ValueError(
-                    f"Timeout deve estar entre 1 e 300 segundos: {timeout}"
-                )
+                raise ValueError(f"Timeout deve estar entre 1 e 300 segundos: {timeout}")
             return timeout
-        except ValueError as e:
+        except (ValueError, TypeError) as e:
             raise ConfigValidationError(f"Erro na configuração API_TIMEOUT: {e}")
 
+    # Observabilidade
+    @property
+    def PROMETHEUS_GATEWAY_URL(self) -> str:
+        return self._get_config_value("observability.prometheus.gateway_url", "http://localhost:9091", "PROMETHEUS_GATEWAY_URL")
+
+    @property
+    def PROMETHEUS_JOB_NAME(self) -> str:
+        return self._get_config_value("observability.prometheus.job_name", "glpi_dashboard", "PROMETHEUS_JOB_NAME")
+
+    @property
+    def STRUCTURED_LOGGING(self) -> bool:
+        return self._get_config_value("logging.structured", True) or os.environ.get("STRUCTURED_LOGGING", "True").lower() == "true"
+
+    @property
+    def LOG_FILE_PATH(self) -> str:
+        return self._get_config_value("logging.file_path", "logs/app.log", "LOG_FILE_PATH")
+
+    @property
+    def LOG_MAX_BYTES(self) -> int:
+        return self._get_config_value("logging.max_bytes", 10485760, "LOG_MAX_BYTES")
+
+    @property
+    def LOG_BACKUP_COUNT(self) -> int:
+        return self._get_config_value("logging.backup_count", 5, "LOG_BACKUP_COUNT")
+
+    # Alertas
+    @property
+    def ALERT_RESPONSE_TIME_THRESHOLD(self) -> float:
+        return self._get_config_value("alerts.response_time_threshold", 300, "ALERT_RESPONSE_TIME_THRESHOLD")
+
+    @property
+    def ALERT_ERROR_RATE_THRESHOLD(self) -> float:
+        return self._get_config_value("alerts.error_rate_threshold", 0.05, "ALERT_ERROR_RATE_THRESHOLD")
+
+    @property
+    def ALERT_ZERO_TICKETS_THRESHOLD(self) -> int:
+        return self._get_config_value("alerts.zero_tickets_threshold", 60, "ALERT_ZERO_TICKETS_THRESHOLD")
+
     # Logging
-    LOG_LEVEL = os.environ.get("LOG_LEVEL", "INFO")
-    LOG_FORMAT = "%(asctime)s - %(name)s - %(levelname)s - %(message)s"
+    @property
+    def LOG_LEVEL(self) -> str:
+        return self._get_config_value("logging.level", "INFO", "LOG_LEVEL")
+
+    @property
+    def LOG_FORMAT(self) -> str:
+        return self._get_config_value("logging.format", "%(asctime)s - %(name)s - %(levelname)s - %(message)s")
 
     # CORS
-    CORS_ORIGINS = ["*"]
+    @property
+    def CORS_ORIGINS(self) -> list:
+        return self._get_config_value("flask.cors_origins", ["*"])
 
     # Redis Cache
-    REDIS_URL = os.environ.get("REDIS_URL", "redis://localhost:6379/0")
-    CACHE_TYPE = os.environ.get("CACHE_TYPE", "RedisCache")
-    CACHE_REDIS_URL = os.environ.get(
-        "CACHE_REDIS_URL", os.environ.get("REDIS_URL", "redis://localhost:6379/0")
-    )
+    @property
+    def REDIS_URL(self) -> str:
+        return self._get_config_value("cache.redis_url", "redis://localhost:6379/0", "REDIS_URL")
+
+    @property
+    def CACHE_TYPE(self) -> str:
+        return self._get_config_value("cache.type", "RedisCache", "CACHE_TYPE")
+
+    @property
+    def CACHE_REDIS_URL(self) -> str:
+        return self._get_config_value("cache.redis_url", self.REDIS_URL, "CACHE_REDIS_URL")
 
     @property
     def CACHE_DEFAULT_TIMEOUT(self) -> int:
         """Timeout do cache com validação"""
         try:
-            timeout = int(os.environ.get("CACHE_DEFAULT_TIMEOUT", "300"))
+            timeout = self._get_config_value("cache.default_timeout", 300, "CACHE_DEFAULT_TIMEOUT")
+            timeout = int(timeout)  # Garantir que é inteiro
             if not (10 <= timeout <= 3600):
-                raise ValueError(
-                    f"Cache timeout deve estar entre 10 e 3600 segundos: {timeout}"
-                )
+                raise ValueError(f"Cache timeout deve estar entre 10 e 3600 segundos: {timeout}")
             return timeout
-        except ValueError as e:
-            raise ConfigValidationError(
-                f"Erro na configuração CACHE_DEFAULT_TIMEOUT: {e}"
-            )
+        except (ValueError, TypeError) as e:
+            raise ConfigValidationError(f"Erro na configuração CACHE_DEFAULT_TIMEOUT: {e}")
 
-    CACHE_KEY_PREFIX = os.environ.get("CACHE_KEY_PREFIX", "glpi_dashboard:")
+    @property
+    def CACHE_KEY_PREFIX(self) -> str:
+        return self._get_config_value("cache.key_prefix", "glpi_dashboard:", "CACHE_KEY_PREFIX")
 
     # Performance Settings
     @property
     def PERFORMANCE_TARGET_P95(self) -> int:
         """Target de performance P95 com validação"""
         try:
-            target = int(os.environ.get("PERFORMANCE_TARGET_P95", "300"))
+            target = self._get_config_value("performance.target_p95", 1000, "PERFORMANCE_TARGET_P95")
+            target = int(target)  # Garantir que é inteiro
             if not (50 <= target <= 10000):
-                raise ValueError(
-                    f"Performance target deve estar entre 50 e 10000ms: {target}"
-                )
+                raise ValueError(f"Performance target deve estar entre 50 e 10000ms: {target}")
             return target
-        except ValueError as e:
-            raise ConfigValidationError(
-                f"Erro na configuração PERFORMANCE_TARGET_P95: {e}"
-            )
+        except (ValueError, TypeError) as e:
+            raise ConfigValidationError(f"Erro na configuração PERFORMANCE_TARGET_P95: {e}")
 
     # Configurações de segurança
     @property
     def MAX_CONTENT_LENGTH(self) -> int:
         """Tamanho máximo de conteúdo"""
-        return int(os.environ.get("MAX_CONTENT_LENGTH", "16777216"))  # 16MB
+        return int(self._get_config_value("flask.max_content_length", 16777216, "MAX_CONTENT_LENGTH"))
 
     @property
     def RATE_LIMIT_PER_MINUTE(self) -> int:
         """Limite de requisições por minuto"""
-        return int(os.environ.get("RATE_LIMIT_PER_MINUTE", "100"))
+        return int(self._get_config_value("performance.rate_limit_per_minute", 100, "RATE_LIMIT_PER_MINUTE"))
 
     def _validate_required_configs(self) -> None:
         """Valida configurações obrigatórias"""
@@ -216,6 +316,9 @@ class Config:
     def get_config_summary(self) -> Dict[str, Any]:
         """Retorna um resumo das configurações (sem dados sensíveis)"""
         return {
+            "app_name": self._get_config_value("app.name", "GLPI Dashboard"),
+            "app_version": self._get_config_value("app.version", "1.0.0"),
+            "environment": self._get_config_value("app.environment", "development"),
             "debug": self.DEBUG,
             "port": self.PORT,
             "host": self.HOST,
@@ -225,6 +328,8 @@ class Config:
             "cache_timeout": self.CACHE_DEFAULT_TIMEOUT,
             "performance_target": self.PERFORMANCE_TARGET_P95,
             "api_timeout": self.API_TIMEOUT,
+            "structured_logging": self.STRUCTURED_LOGGING,
+            "prometheus_enabled": self._get_config_value("observability.metrics.enabled", True),
         }
 
 

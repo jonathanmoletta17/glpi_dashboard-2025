@@ -1,7 +1,0 @@
-{
-  "timestamp": "20250830_002715",
-  "group_investigation": {},
-  "ticket_search_methods": {},
-  "sample_tickets": [],
-  "error": "'GLPIService' object has no attribute '_discover_field_ids'"
-}
