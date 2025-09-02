@@ -1,0 +1,19 @@
+{
+  "timestamp": "2025-08-30T05:13:44.491597",
+  "monitoring_duration": 28,
+  "cpu_stats": {
+    "avg_usage": 29.182142857142857,
+    "max_usage": 34.1,
+    "min_usage": 23.7,
+    "over_80_percent": 0
+  },
+  "gpu_stats": {
+    "avg_usage": 17.84370067711264,
+    "max_usage": 23.465776211985894,
+    "min_usage": 0.0,
+    "under_50_percent": 28
+  },
+  "recommendations": [
+    "GPU subutilizada - aumentar batch size e quantização"
+  ]
+}

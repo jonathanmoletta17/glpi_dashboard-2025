@@ -1,0 +1,286 @@
+{
+  "timestamp": "20250830_003027",
+  "status_investigation": {
+    "current_status_map": {
+      "new": 1,
+      "in_progress": 2,
+      "planned": 3,
+      "pending": 4,
+      "solved": 5,
+      "closed": 6
+    },
+    "service_levels": {
+      "N1": 89,
+      "N2": 90,
+      "N3": 91,
+      "N4": 92
+    },
+    "status_found_in_tickets": [
+      [
+        6,
+        12
+      ],
+      [
+        6,
+        18
+      ],
+      [
+        6,
+        15
+      ],
+      [
+        6,
+        21
+      ],
+      [
+        6,
+        24
+      ],
+      [
+        6,
+        30
+      ],
+      [
+        6,
+        27
+      ],
+      [
+        6,
+        33
+      ],
+      [
+        6,
+        5
+      ],
+      [
+        6,
+        11
+      ],
+      [
+        6,
+        8
+      ],
+      [
+        6,
+        14
+      ],
+      [
+        6,
+        17
+      ],
+      [
+        6,
+        23
+      ],
+      [
+        6,
+        26
+      ],
+      [
+        6,
+        32
+      ],
+      [
+        6,
+        29
+      ],
+      [
+        6,
+        35
+      ],
+      [
+        6,
+        7
+      ],
+      [
+        6,
+        13
+      ],
+      [
+        6,
+        10
+      ],
+      [
+        6,
+        16
+      ],
+      [
+        6,
+        19
+      ],
+      [
+        6,
+        25
+      ],
+      [
+        6,
+        22
+      ],
+      [
+        6,
+        28
+      ],
+      [
+        6,
+        31
+      ],
+      [
+        6,
+        34
+      ],
+      [
+        6,
+        6
+      ],
+      [
+        6,
+        9
+      ]
+    ]
+  },
+  "ticket_tests": {
+    "field_71_no_status": {
+      "count": 1,
+      "sample_tickets": [
+        {
+          "2": 7413,
+          "1": "Solicitação de Suprimento // CC - Departamento de Informações Oficiais // HP E57540c ",
+          "80": "Entidade raiz > PIRATINI > CENTRAL DE ATENDIMENTOS > CASA CIVIL > Secretaria-Executiva > Subchefia Juridica > Departamento de Informações Especiais",
+          "12": 6,
+          "19": "2025-03-20 09:09:01",
+          "4": null,
+          "15": "2025-03-19 12:00:00",
+          "5": "141",
+          "8": null,
+          "7": "IMPRESSORA",
+          "95": null,
+          "83": null,
+          "71": "CC-SE-SUBADM-DTIC > N1"
+        }
+      ]
+    },
+    "field_8_no_status": {
+      "count": 1464,
+      "sample_tickets": [
+        {
+          "2": 7346,
+          "1": "3 computadores (monitor, mouse e teclado) // GVG // Carla Calero",
+          "80": "Entidade raiz > PIRATINI > CENTRAL DE ATENDIMENTOS > GVG",
+          "12": 5,
+          "19": "2025-05-19 14:21:19",
+          "4": "539",
+          "15": "2025-03-14 12:00:00",
+          "5": [
+            "926",
+            "1032",
+            "1160",
+            "1197",
+            "1291"
+          ],
+          "8": "CC-SE-SUBADM-DTIC > N1",
+          "7": "AJUDA E SUPORTE > MOVIMENTO DE EQUIPAMENTOS DE TI > EMPRESTIMO",
+          "95": null,
+          "83": "Edifício Guaíba"
+        },
+        {
+          "2": 6442,
+          "1": "Acesso a Sistemas  - Geral - DESBLOQUEAR USUÁRIO",
+          "80": "Entidade raiz > PIRATINI > CENTRAL DE ATENDIMENTOS > CASA MILITAR",
+          "12": 5,
+          "19": "2025-01-07 09:16:43",
+          "4": "1215",
+          "15": "2025-01-07 08:43:45",
+          "5": [
+            "696",
+            "1110"
+          ],
+          "8": "CC-SE-SUBADM-DTIC > N1",
+          "7": "ACESSO A SISTEMAS > REDE > RESET DE SENHA",
+          "95": "1110",
+          "83": null
+        },
+        {
+          "2": 6496,
+          "1": "Acesso a Sistemas  - Geral - DESBLOQUEAR USUÁRIO",
+          "80": "Entidade raiz > PIRATINI > CENTRAL DE ATENDIMENTOS > CASA MILITAR",
+          "12": 5,
+          "19": "2025-01-08 15:42:02",
+          "4": "718",
+          "15": "2025-01-08 13:50:45",
+          "5": [
+            "696",
+            "1197"
+          ],
+          "8": "CC-SE-SUBADM-DTIC > N1",
+          "7": "ACESSO A SISTEMAS",
+          "95": "1197",
+          "83": null
+        },
+        {
+          "2": 6544,
+          "1": "Acesso a Sistemas  - Geral - DESBLOQUEAR USUÁRIO",
+          "80": "Entidade raiz > PIRATINI > CENTRAL DE ATENDIMENTOS > CASA MILITAR",
+          "12": 5,
+          "19": "2025-01-15 15:50:08",
+          "4": "718",
+          "15": "2025-01-09 14:10:22",
+          "5": [
+            "696",
+            "1110"
+          ],
+          "8": "CC-SE-SUBADM-DTIC > N1",
+          "7": "ACESSO A SISTEMAS",
+          "95": "1110",
+          "83": null
+        },
+        {
+          "2": 7082,
+          "1": "Acesso a Sistemas  - Geral - DESBLOQUEAR USUÁRIO",
+          "80": "Entidade raiz > PIRATINI > CENTRAL DE ATENDIMENTOS > CASA CIVIL",
+          "12": 6,
+          "19": "2025-02-20 11:35:12",
+          "4": "1088",
+          "15": "2025-02-19 13:28:48",
+          "5": [
+            "141",
+            "1110"
+          ],
+          "8": "CC-SE-SUBADM-DTIC > N1",
+          "7": "ACESSO A SISTEMAS",
+          "95": "1110",
+          "83": null
+        }
+      ]
+    },
+    "Novo": {
+      "status_id_1": 0,
+      "status_id_2": 4
+    },
+    "Em andamento": {
+      "status_id_3": 3,
+      "status_id_4": 2
+    },
+    "Resolvido": {
+      "status_id_5": 521,
+      "status_id_6": 934
+    },
+    "Fechado": {
+      "status_id_6": 934,
+      "status_id_7": 0
+    }
+  },
+  "group_tests": {
+    "N2": {
+      "group_id": 90,
+      "total_tickets": 2481
+    },
+    "N3": {
+      "group_id": 91,
+      "total_tickets": 5349
+    },
+    "N4": {
+      "group_id": 92,
+      "total_tickets": 59
+    }
+  }
+}

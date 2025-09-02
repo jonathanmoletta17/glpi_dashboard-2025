@@ -1,0 +1,167 @@
+{
+  "optimization_timestamp": "2025-08-30T04:59:05.098235",
+  "gpu_info": {
+    "device_name": "NVIDIA RTX A4000",
+    "total_memory_gb": 15.99169921875,
+    "allocated_memory_gb": 0.0079345703125,
+    "cached_memory_gb": 0.23046875,
+    "free_memory_gb": 15.76123046875
+  },
+  "system_info": {
+    "python_version": "2.5.1+cu121",
+    "cuda_available": true,
+    "cuda_version": "12.1"
+  },
+  "results": [
+    {
+      "model_name": "microsoft/DialoGPT-small",
+      "success": false,
+      "error": "No package metadata was found for bitsandbytes"
+    },
+    {
+      "model_name": "microsoft/DialoGPT-small",
+      "success": true,
+      "gpu_info_after_loading": {
+        "device_name": "NVIDIA RTX A4000",
+        "total_memory_gb": 15.99169921875,
+        "allocated_memory_gb": 0.24388408660888672,
+        "cached_memory_gb": 0.31640625,
+        "free_memory_gb": 15.67529296875
+      },
+      "memory_used_gb": 0.24388408660888672,
+      "quantization_used": false,
+      "optimal_batch_size": 16,
+      "inference_results": [
+        {
+          "prompt": "def analyze_glpi_ticket():",
+          "response": "Output shape: torch.Size([1, 8, 768])",
+          "inference_time_seconds": 0.16791,
+          "success": true
+        },
+        {
+          "prompt": "Como resolver um ticket de suporte técnico?",
+          "response": "Output shape: torch.Size([1, 15, 768])",
+          "inference_time_seconds": 0.018325,
+          "success": true
+        },
+        {
+          "prompt": "Analyze the following GLPI data:",
+          "response": "Output shape: torch.Size([1, 8, 768])",
+          "inference_time_seconds": 0.004691,
+          "success": true
+        }
+      ],
+      "timestamp": "2025-08-30T04:56:31.528417"
+    },
+    {
+      "model_name": "distilbert-base-uncased",
+      "success": false,
+      "error": "No package metadata was found for bitsandbytes"
+    },
+    {
+      "model_name": "distilbert-base-uncased",
+      "success": true,
+      "gpu_info_after_loading": {
+        "device_name": "NVIDIA RTX A4000",
+        "total_memory_gb": 15.99169921875,
+        "allocated_memory_gb": 0.13207626342773438,
+        "cached_memory_gb": 0.232421875,
+        "free_memory_gb": 15.75927734375
+      },
+      "memory_used_gb": 0.13207626342773438,
+      "quantization_used": false,
+      "optimal_batch_size": 16,
+      "inference_results": [
+        {
+          "prompt": "def analyze_glpi_ticket():",
+          "response": "Output shape: torch.Size([1, 13, 768])",
+          "inference_time_seconds": 0.014025,
+          "success": true
+        },
+        {
+          "prompt": "Como resolver um ticket de suporte técnico?",
+          "response": "Output shape: torch.Size([1, 16, 768])",
+          "inference_time_seconds": 0.003996,
+          "success": true
+        },
+        {
+          "prompt": "Analyze the following GLPI data:",
+          "response": "Output shape: torch.Size([1, 10, 768])",
+          "inference_time_seconds": 0.002733,
+          "success": true
+        }
+      ],
+      "timestamp": "2025-08-30T04:56:32.546727"
+    },
+    {
+      "model_name": "codellama/CodeLlama-7b-Python-hf",
+      "success": false,
+      "error": "No package metadata was found for bitsandbytes"
+    },
+    {
+      "model_name": "codellama/CodeLlama-7b-Python-hf",
+      "success": true,
+      "gpu_info_after_loading": {
+        "device_name": "NVIDIA RTX A4000",
+        "total_memory_gb": 15.99169921875,
+        "allocated_memory_gb": 12.55957841873169,
+        "cached_memory_gb": 13.28125,
+        "free_memory_gb": 2.71044921875
+      },
+      "memory_used_gb": 12.55957841873169,
+      "quantization_used": false,
+      "optimal_batch_size": 1,
+      "inference_results": [
+        {
+          "prompt": "def analyze_glpi_ticket():",
+          "response": "def analyze_glpi_ticket():\n    \"\"\"\n    Get the issue from the Glpi ticket and perform some analysis on it, to\n    generate a report\n\n    :returns: list of string -- the report\n    \"\"\"\n    return []\n\n\ndef get",
+          "inference_time_seconds": 2.222972,
+          "success": true
+        },
+        {
+          "prompt": "Como resolver um ticket de suporte técnico?",
+          "response": "Como resolver um ticket de suporte técnico?\n\n## Resposta\n\nPara resolver um ticket de suporte técnico, você terá que ir ao painel de suporte técnico, clicar em **Tickets** e clicar na lup",
+          "inference_time_seconds": 2.081294,
+          "success": true
+        },
+        {
+          "prompt": "Analyze the following GLPI data:",
+          "response": "Analyze the following GLPI data:\n# - Hosts\n# - Items\n# - ITIL request\n# - Users\n# - ITIL categories\n# - ITIL impact\n# - ITIL itype\n# - ITIL tracker\n\n# -----------------",
+          "inference_time_seconds": 2.078236,
+          "success": true
+        }
+      ],
+      "timestamp": "2025-08-30T04:56:46.504148"
+    },
+    {
+      "model_name": "microsoft/DialoGPT-medium",
+      "success": false,
+      "error": "No package metadata was found for bitsandbytes"
+    },
+    {
+      "model_name": "microsoft/DialoGPT-medium",
+      "success": false,
+      "error": "Due to a serious vulnerability issue in `torch.load`, even with `weights_only=True`, we now require users to upgrade torch to at least v2.6 in order to use the function. This version restriction does not apply when loading files with safetensors.\nSee the vulnerability report here https://nvd.nist.gov/vuln/detail/CVE-2025-32434"
+    },
+    {
+      "model_name": "huggingface/CodeBERTa-small-v1",
+      "success": false,
+      "error": "No package metadata was found for bitsandbytes"
+    },
+    {
+      "model_name": "huggingface/CodeBERTa-small-v1",
+      "success": false,
+      "error": "Due to a serious vulnerability issue in `torch.load`, even with `weights_only=True`, we now require users to upgrade torch to at least v2.6 in order to use the function. This version restriction does not apply when loading files with safetensors.\nSee the vulnerability report here https://nvd.nist.gov/vuln/detail/CVE-2025-32434"
+    },
+    {
+      "model_name": "Salesforce/codet5-small",
+      "success": false,
+      "error": "No package metadata was found for bitsandbytes"
+    },
+    {
+      "model_name": "Salesforce/codet5-small",
+      "success": false,
+      "error": "Unrecognized configuration class <class 'transformers.models.t5.configuration_t5.T5Config'> for this kind of AutoModel: AutoModelForCausalLM.\nModel type should be one of ApertusConfig, ArceeConfig, AriaTextConfig, BambaConfig, BartConfig, BertConfig, BertGenerationConfig, BigBirdConfig, BigBirdPegasusConfig, BioGptConfig, BitNetConfig, BlenderbotConfig, BlenderbotSmallConfig, BloomConfig, CamembertConfig, LlamaConfig, CodeGenConfig, CohereConfig, Cohere2Config, CpmAntConfig, CTRLConfig, Data2VecTextConfig, DbrxConfig, DeepseekV2Config, DeepseekV3Config, DiffLlamaConfig, DogeConfig, Dots1Config, ElectraConfig, Emu3Config, ErnieConfig, Ernie4_5Config, Ernie4_5_MoeConfig, Exaone4Config, FalconConfig, FalconH1Config, FalconMambaConfig, FuyuConfig, GemmaConfig, Gemma2Config, Gemma3Config, Gemma3TextConfig, Gemma3nConfig, Gemma3nTextConfig, GitConfig, GlmConfig, Glm4Config, Glm4MoeConfig, GotOcr2Config, GPT2Config, GPT2Config, GPTBigCodeConfig, GPTNeoConfig, GPTNeoXConfig, GPTNeoXJapaneseConfig, GptOssConfig, GPTJConfig, GraniteConfig, GraniteMoeConfig, GraniteMoeHybridConfig, GraniteMoeSharedConfig, HeliumConfig, HunYuanDenseV1Config, HunYuanMoEV1Config, JambaConfig, JetMoeConfig, Lfm2Config, LlamaConfig, Llama4Config, Llama4TextConfig, MambaConfig, Mamba2Config, MarianConfig, MBartConfig, MegaConfig, MegatronBertConfig, MiniMaxConfig, MistralConfig, MixtralConfig, MllamaConfig, ModernBertDecoderConfig, MoshiConfig, MptConfig, MusicgenConfig, MusicgenMelodyConfig, MvpConfig, NemotronConfig, OlmoConfig, Olmo2Config, OlmoeConfig, OpenLlamaConfig, OpenAIGPTConfig, OPTConfig, PegasusConfig, PersimmonConfig, PhiConfig, Phi3Config, Phi4MultimodalConfig, PhimoeConfig, PLBartConfig, ProphetNetConfig, QDQBertConfig, Qwen2Config, Qwen2MoeConfig, Qwen3Config, Qwen3MoeConfig, RecurrentGemmaConfig, ReformerConfig, RemBertConfig, RobertaConfig, RobertaPreLayerNormConfig, RoCBertConfig, RoFormerConfig, RwkvConfig, SeedOssConfig, SmolLM3Config, Speech2Text2Config, StableLmConfig, Starcoder2Config, TransfoXLConfig, TrOCRConfig, WhisperConfig, XGLMConfig, XLMConfig, XLMProphetNetConfig, XLMRobertaConfig, XLMRobertaXLConfig, XLNetConfig, xLSTMConfig, XmodConfig, ZambaConfig, Zamba2Config."
+    }
+  ]
+}

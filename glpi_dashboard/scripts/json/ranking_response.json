@@ -1,0 +1,224 @@
+﻿{
+    "cached":  false,
+    "correlation_id":  "f4440f7f-a5ac-4e3f-93c2-043cf175987b",
+    "data":  [
+                 {
+                     "avg_resolution_time":  0.0,
+                     "id":  "141",
+                     "level":  "N3",
+                     "name":  "Jorge Antonio Vicente Júnior",
+                     "nome":  "Jorge Antonio Vicente Júnior",
+                     "pending_tickets":  50,
+                     "rank":  1,
+                     "resolved_tickets":  1708,
+                     "total_tickets":  1758
+                 },
+                 {
+                     "avg_resolution_time":  0.0,
+                     "id":  "60",
+                     "level":  "N3",
+                     "name":  "Pablo Hebling Guimaraes",
+                     "nome":  "Pablo Hebling Guimaraes",
+                     "pending_tickets":  5,
+                     "rank":  2,
+                     "resolved_tickets":  1316,
+                     "total_tickets":  1321
+                 },
+                 {
+                     "avg_resolution_time":  0.0,
+                     "id":  "1032",
+                     "level":  "N2",
+                     "name":  "Jonathan Nascimento Moletta",
+                     "nome":  "Jonathan Nascimento Moletta",
+                     "pending_tickets":  12,
+                     "rank":  3,
+                     "resolved_tickets":  557,
+                     "total_tickets":  569
+                 },
+                 {
+                     "avg_resolution_time":  0.0,
+                     "id":  "252",
+                     "level":  "N2",
+                     "name":  "Alessandro Carbonera Vieira",
+                     "nome":  "Alessandro Carbonera Vieira",
+                     "pending_tickets":  4,
+                     "rank":  4,
+                     "resolved_tickets":  557,
+                     "total_tickets":  561
+                 },
+                 {
+                     "avg_resolution_time":  0.0,
+                     "id":  "721",
+                     "level":  "N2",
+                     "name":  "Thales Vinicius Paz Leite",
+                     "nome":  "Thales Vinicius Paz Leite",
+                     "pending_tickets":  5,
+                     "rank":  5,
+                     "resolved_tickets":  554,
+                     "total_tickets":  559
+                 },
+                 {
+                     "avg_resolution_time":  0.0,
+                     "id":  "926",
+                     "level":  "N2",
+                     "name":  "Leonardo Trojan Repiso Riela",
+                     "nome":  "Leonardo Trojan Repiso Riela",
+                     "pending_tickets":  3,
+                     "rank":  6,
+                     "resolved_tickets":  416,
+                     "total_tickets":  419
+                 },
+                 {
+                     "avg_resolution_time":  0.0,
+                     "id":  "1291",
+                     "level":  "N4",
+                     "name":  "Gabriel Silva Machado",
+                     "nome":  "Gabriel Silva Machado",
+                     "pending_tickets":  7,
+                     "rank":  7,
+                     "resolved_tickets":  243,
+                     "total_tickets":  250
+                 },
+                 {
+                     "avg_resolution_time":  0.0,
+                     "id":  "185",
+                     "level":  "N2",
+                     "name":  "Edson Joel dos Santos Silva",
+                     "nome":  "Edson Joel dos Santos Silva",
+                     "pending_tickets":  2,
+                     "rank":  8,
+                     "resolved_tickets":  248,
+                     "total_tickets":  250
+                 },
+                 {
+                     "avg_resolution_time":  0.0,
+                     "id":  "1331",
+                     "level":  "N2",
+                     "name":  "Luciano Marcelino da Silva",
+                     "nome":  "Luciano Marcelino da Silva",
+                     "pending_tickets":  21,
+                     "rank":  9,
+                     "resolved_tickets":  106,
+                     "total_tickets":  127
+                 },
+                 {
+                     "avg_resolution_time":  0.0,
+                     "id":  "1404",
+                     "level":  "N1",
+                     "name":  "Gabriel Andrade da Conceicao",
+                     "nome":  "Gabriel Andrade da Conceicao",
+                     "pending_tickets":  3,
+                     "rank":  10,
+                     "resolved_tickets":  58,
+                     "total_tickets":  61
+                 },
+                 {
+                     "avg_resolution_time":  0.0,
+                     "id":  "1088",
+                     "level":  "N4",
+                     "name":  "Luciano de Araujo Silva",
+                     "nome":  "Luciano de Araujo Silva",
+                     "pending_tickets":  1,
+                     "rank":  11,
+                     "resolved_tickets":  46,
+                     "total_tickets":  47
+                 },
+                 {
+                     "avg_resolution_time":  0.0,
+                     "id":  "1263",
+                     "level":  "N1",
+                     "name":  "Nicolas Fernando Muniz Nunez",
+                     "nome":  "Nicolas Fernando Muniz Nunez",
+                     "pending_tickets":  0,
+                     "rank":  12,
+                     "resolved_tickets":  26,
+                     "total_tickets":  26
+                 },
+                 {
+                     "avg_resolution_time":  0.0,
+                     "id":  "10",
+                     "level":  "N4",
+                     "name":  "Wagner Mengue",
+                     "nome":  "Wagner Mengue",
+                     "pending_tickets":  0,
+                     "rank":  13,
+                     "resolved_tickets":  9,
+                     "total_tickets":  9
+                 },
+                 {
+                     "avg_resolution_time":  0.0,
+                     "id":  "53",
+                     "level":  "N4",
+                     "name":  "Paulo César Pedó Nunes",
+                     "nome":  "Paulo César Pedó Nunes",
+                     "pending_tickets":  1,
+                     "rank":  14,
+                     "resolved_tickets":  7,
+                     "total_tickets":  8
+                 },
+                 {
+                     "avg_resolution_time":  0.0,
+                     "id":  "250",
+                     "level":  "N4",
+                     "name":  "Alexandre Rovinski Almoarqueg",
+                     "nome":  "Alexandre Rovinski Almoarqueg",
+                     "pending_tickets":  0,
+                     "rank":  15,
+                     "resolved_tickets":  4,
+                     "total_tickets":  4
+                 },
+                 {
+                     "avg_resolution_time":  0.0,
+                     "id":  "1471",
+                     "level":  "N1",
+                     "name":  "Joao Pedro Wilson Dias",
+                     "nome":  "Joao Pedro Wilson Dias",
+                     "pending_tickets":  1,
+                     "rank":  16,
+                     "resolved_tickets":  0,
+                     "total_tickets":  1
+                 },
+                 {
+                     "avg_resolution_time":  0.0,
+                     "id":  "69",
+                     "level":  "N3",
+                     "name":  "Miguelangelo Ferreira",
+                     "nome":  "Miguelangelo Ferreira",
+                     "pending_tickets":  0,
+                     "rank":  17,
+                     "resolved_tickets":  0,
+                     "total_tickets":  0
+                 },
+                 {
+                     "avg_resolution_time":  0.0,
+                     "id":  "696",
+                     "level":  "N3",
+                     "name":  "Anderson da Silva Morim de Oliveira",
+                     "nome":  "Anderson da Silva Morim de Oliveira",
+                     "pending_tickets":  0,
+                     "rank":  18,
+                     "resolved_tickets":  0,
+                     "total_tickets":  0
+                 },
+                 {
+                     "avg_resolution_time":  0.0,
+                     "id":  "32",
+                     "level":  "N3",
+                     "name":  "Silvio Godinho Valim",
+                     "nome":  "Silvio Godinho Valim",
+                     "pending_tickets":  0,
+                     "rank":  19,
+                     "resolved_tickets":  0,
+                     "total_tickets":  0
+                 }
+             ],
+    "filters_applied":  {
+                            "end_date":  null,
+                            "entity_id":  null,
+                            "level":  null,
+                            "limit":  100,
+                            "start_date":  null
+                        },
+    "response_time_ms":  0.0,
+    "success":  true
+}

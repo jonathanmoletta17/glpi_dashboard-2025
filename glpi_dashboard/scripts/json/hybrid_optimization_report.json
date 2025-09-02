@@ -1,0 +1,50 @@
+{
+  "timestamp": "2025-08-30T02:03:19.253596",
+  "drives_info": {
+    "C:": {
+      "available": true,
+      "total_gb": 474.71581649780273,
+      "free_gb": 14.899520874023438,
+      "status": "✅"
+    },
+    "B:": {
+      "available": true,
+      "total_gb": 1862.9999961853027,
+      "free_gb": 1847.2974090576172,
+      "status": "✅"
+    },
+    "D:": {
+      "available": false,
+      "total_gb": 0,
+      "free_gb": 0,
+      "status": "❌"
+    },
+    "E:": {
+      "available": false,
+      "total_gb": 0,
+      "free_gb": 0,
+      "status": "❌"
+    }
+  },
+  "cache_structure": {
+    "ai_models": {
+      "transformers": "B:\\ai_models_cache\\transformers",
+      "huggingface": "B:\\ai_models_cache\\huggingface",
+      "torch": "B:\\ai_models_cache\\torch",
+      "datasets": "B:\\ai_models_cache\\datasets",
+      "cuda": "B:\\ai_models_cache\\cuda"
+    },
+    "python_cache": {
+      "pip": "B:\\ai_models_cache\\pip",
+      "mypy": "B:\\ai_models_cache\\mypy",
+      "pytest": "B:\\ai_models_cache\\pytest"
+    },
+    "temp": "B:\\ai_models_cache\\temp",
+    "logs": "B:\\ai_models_cache\\logs"
+  },
+  "moved_items": [],
+  "cleaned_mb": 0.0,
+  "total_freed_mb": 0.0,
+  "primary_cache_drive": "B:",
+  "backup_sync_drive": "OneDrive"
+}

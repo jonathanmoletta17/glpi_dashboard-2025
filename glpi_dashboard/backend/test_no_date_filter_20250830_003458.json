@@ -1,0 +1,173 @@
+{
+  "no_filter": {
+    "cached": false,
+    "correlation_id": "3ccc153c-16c2-4e54-bdca-eba34b39ec70",
+    "data": {
+      "filters_applied": {
+        "data_fim": "2025-08-30",
+        "data_inicio": "2025-08-23"
+      },
+      "niveis": {
+        "geral": {
+          "novos": 0,
+          "pendentes": 0,
+          "progresso": 0,
+          "resolvidos": 0,
+          "total": 0
+        },
+        "n1": {
+          "novos": 0,
+          "pendentes": 0,
+          "progresso": 0,
+          "resolvidos": 0
+        },
+        "n2": {
+          "novos": 0,
+          "pendentes": 0,
+          "progresso": 0,
+          "resolvidos": 0
+        },
+        "n3": {
+          "novos": 0,
+          "pendentes": 0,
+          "progresso": 0,
+          "resolvidos": 0
+        },
+        "n4": {
+          "novos": 0,
+          "pendentes": 0,
+          "progresso": 0,
+          "resolvidos": 0
+        }
+      },
+      "novos": 0,
+      "pendentes": 0,
+      "progresso": 0,
+      "resolvidos": 0,
+      "tendencias": {
+        "novos": "0%",
+        "pendentes": "0%",
+        "progresso": "0%",
+        "resolvidos": "0%"
+      },
+      "timestamp": "2025-08-30T00:34:54.665255",
+      "total": 0
+    },
+    "success": true,
+    "tempo_execucao": 3.87
+  },
+  "last_month": {
+    "cached": false,
+    "correlation_id": "3ccc153c-16c2-4e54-bdca-eba34b39ec70",
+    "data": {
+      "filters_applied": {
+        "data_fim": "2025-08-30",
+        "data_inicio": "2025-08-23"
+      },
+      "niveis": {
+        "geral": {
+          "novos": 0,
+          "pendentes": 0,
+          "progresso": 0,
+          "resolvidos": 0,
+          "total": 0
+        },
+        "n1": {
+          "novos": 0,
+          "pendentes": 0,
+          "progresso": 0,
+          "resolvidos": 0
+        },
+        "n2": {
+          "novos": 0,
+          "pendentes": 0,
+          "progresso": 0,
+          "resolvidos": 0
+        },
+        "n3": {
+          "novos": 0,
+          "pendentes": 0,
+          "progresso": 0,
+          "resolvidos": 0
+        },
+        "n4": {
+          "novos": 0,
+          "pendentes": 0,
+          "progresso": 0,
+          "resolvidos": 0
+        }
+      },
+      "novos": 0,
+      "pendentes": 0,
+      "progresso": 0,
+      "resolvidos": 0,
+      "tendencias": {
+        "novos": "0%",
+        "pendentes": "0%",
+        "progresso": "0%",
+        "resolvidos": "0%"
+      },
+      "timestamp": "2025-08-30T00:34:54.665255",
+      "total": 0
+    },
+    "success": true,
+    "tempo_execucao": 3.87
+  },
+  "last_year": {
+    "cached": false,
+    "correlation_id": "3ccc153c-16c2-4e54-bdca-eba34b39ec70",
+    "data": {
+      "filters_applied": {
+        "data_fim": "2025-08-30",
+        "data_inicio": "2025-08-23"
+      },
+      "niveis": {
+        "geral": {
+          "novos": 0,
+          "pendentes": 0,
+          "progresso": 0,
+          "resolvidos": 0,
+          "total": 0
+        },
+        "n1": {
+          "novos": 0,
+          "pendentes": 0,
+          "progresso": 0,
+          "resolvidos": 0
+        },
+        "n2": {
+          "novos": 0,
+          "pendentes": 0,
+          "progresso": 0,
+          "resolvidos": 0
+        },
+        "n3": {
+          "novos": 0,
+          "pendentes": 0,
+          "progresso": 0,
+          "resolvidos": 0
+        },
+        "n4": {
+          "novos": 0,
+          "pendentes": 0,
+          "progresso": 0,
+          "resolvidos": 0
+        }
+      },
+      "novos": 0,
+      "pendentes": 0,
+      "progresso": 0,
+      "resolvidos": 0,
+      "tendencias": {
+        "novos": "0%",
+        "pendentes": "0%",
+        "progresso": "0%",
+        "resolvidos": "0%"
+      },
+      "timestamp": "2025-08-30T00:34:54.665255",
+      "total": 0
+    },
+    "success": true,
+    "tempo_execucao": 3.87
+  }
+}

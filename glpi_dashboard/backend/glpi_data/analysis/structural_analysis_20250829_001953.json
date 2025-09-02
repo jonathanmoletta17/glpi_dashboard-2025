@@ -1,0 +1,139 @@
+{
+  "metadata": {
+    "generated_at": "2025-08-29T00:19:53.113941",
+    "script_version": "1.0.0",
+    "reports_analyzed": [
+      "categories"
+    ],
+    "total_issues": 3
+  },
+  "summary": {
+    "total_issues": 3,
+    "critical_issues": 1,
+    "high_priority_issues": 0,
+    "medium_priority_issues": 2,
+    "low_priority_issues": 0,
+    "recommendations_count": 4
+  },
+  "issues_by_component": {
+    "entities": [],
+    "profiles": [],
+    "groups": [],
+    "categories": [
+      {
+        "type": "orphan_categories",
+        "severity": "high",
+        "count": 9,
+        "description": "9 categorias órfãs encontradas",
+        "impact": "Categorias órfãs podem causar erros na criação de tickets"
+      },
+      {
+        "type": "too_many_unused_categories",
+        "severity": "medium",
+        "count": 30,
+        "description": "30 categorias não utilizadas",
+        "impact": "Muitas categorias não utilizadas podem confundir usuários"
+      }
+    ],
+    "cross_references": [
+      {
+        "type": "insufficient_data",
+        "severity": "medium",
+        "description": "Dados insuficientes para análise completa de referências cruzadas",
+        "impact": "Não é possível identificar todos os problemas estruturais"
+      }
+    ]
+  },
+  "priority_matrix": {
+    "critical": [
+      {
+        "type": "orphan_categories",
+        "severity": "high",
+        "count": 9,
+        "description": "9 categorias órfãs encontradas",
+        "impact": "Categorias órfãs podem causar erros na criação de tickets"
+      }
+    ],
+    "high": [],
+    "medium": [
+      {
+        "type": "too_many_unused_categories",
+        "severity": "medium",
+        "count": 30,
+        "description": "30 categorias não utilizadas",
+        "impact": "Muitas categorias não utilizadas podem confundir usuários"
+      },
+      {
+        "type": "insufficient_data",
+        "severity": "medium",
+        "description": "Dados insuficientes para análise completa de referências cruzadas",
+        "impact": "Não é possível identificar todos os problemas estruturais"
+      }
+    ],
+    "low": []
+  },
+  "recommendations": [
+    {
+      "priority": "critical",
+      "action": "Corrigir categorias órfãs",
+      "description": "Remover ou reparentar categorias que referenciam pais inexistentes",
+      "steps": [
+        "Identificar categorias órfãs",
+        "Verificar se os pais devem ser criados ou se as categorias devem ser movidas",
+        "Atualizar referências ou remover categorias desnecessárias"
+      ]
+    },
+    {
+      "priority": "medium",
+      "action": "Limpar categorias não utilizadas",
+      "description": "Remover ou consolidar categorias desnecessárias",
+      "steps": [
+        "Revisar categorias sem tickets",
+        "Consolidar categorias similares",
+        "Remover categorias obsoletas"
+      ]
+    },
+    {
+      "priority": "medium",
+      "action": "Implementar governança de dados",
+      "description": "Estabelecer processos para manter a qualidade dos dados",
+      "steps": [
+        "Definir responsáveis por cada área",
+        "Criar processo de revisão periódica",
+        "Implementar validações automáticas"
+      ]
+    },
+    {
+      "priority": "low",
+      "action": "Documentar estrutura atual",
+      "description": "Criar documentação da estrutura organizacional",
+      "steps": [
+        "Documentar hierarquias atuais",
+        "Criar guias de uso para administradores",
+        "Estabelecer padrões de nomenclatura"
+      ]
+    }
+  ],
+  "detailed_issues": [
+    {
+      "type": "orphan_categories",
+      "severity": "high",
+      "count": 9,
+      "description": "9 categorias órfãs encontradas",
+      "impact": "Categorias órfãs podem causar erros na criação de tickets"
+    },
+    {
+      "type": "too_many_unused_categories",
+      "severity": "medium",
+      "count": 30,
+      "description": "30 categorias não utilizadas",
+      "impact": "Muitas categorias não utilizadas podem confundir usuários"
+    },
+    {
+      "type": "insufficient_data",
+      "severity": "medium",
+      "description": "Dados insuficientes para análise completa de referências cruzadas",
+      "impact": "Não é possível identificar todos os problemas estruturais"
+    }
+  ]
+}

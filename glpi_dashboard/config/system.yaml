@@ -1,0 +1,24 @@
+features:
+  ai_assistance: true
+  code_analysis: true
+  dashboard_generation: true
+  glpi_integration: true
+hardware:
+  gpu:
+    available: true
+    cuda_version: '12.1'
+    device_name: NVIDIA RTX A4000
+    memory_gb: 15.99169921875
+  pytorch_version: !!python/object/new:torch.torch_version.TorchVersion
+  - 2.5.1+cu121
+models:
+  available: []
+  fallback: microsoft/DialoGPT-small
+  primary: null
+system:
+  created_at: '2025-08-30T04:44:12.644486'
+  debug_mode: true
+  environment: development
+  log_level: INFO
+  name: GLPI Dashboard AI Agent System
+  version: 1.0.0

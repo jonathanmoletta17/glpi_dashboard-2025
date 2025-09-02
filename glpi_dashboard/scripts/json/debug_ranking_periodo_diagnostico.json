@@ -1,0 +1,85 @@
+{
+  "cached": false,
+  "correlation_id": "46860194-8666-43a5-9046-7b0e9432da36",
+  "data": [
+    {
+      "id": "696",
+      "level": "N3",
+      "name": "Anderson da Silva Morim de Oliveira",
+      "rank": 1,
+      "total": 1796
+    },
+    {
+      "id": "141",
+      "level": "N3",
+      "name": "Jorge Antonio Vicente Júnior",
+      "rank": 2,
+      "total": 1414
+    },
+    {
+      "id": "32",
+      "level": "N3",
+      "name": "Silvio Godinho Valim",
+      "rank": 3,
+      "total": 1280
+    },
+    {
+      "id": "60",
+      "level": "N3",
+      "name": "Pablo Hebling Guimaraes",
+      "rank": 4,
+      "total": 984
+    },
+    {
+      "id": "69",
+      "level": "N3",
+      "name": "Miguelangelo Ferreira",
+      "rank": 5,
+      "total": 749
+    },
+    {
+      "id": "721",
+      "level": "N2",
+      "name": "Thales Vinicius Paz Leite",
+      "rank": 6,
+      "total": 531
+    },
+    {
+      "id": "926",
+      "level": "N2",
+      "name": "Leonardo Trojan Repiso Riela",
+      "rank": 7,
+      "total": 252
+    },
+    {
+      "id": "185",
+      "level": "N2",
+      "name": "Edson Joel dos Santos Silva",
+      "rank": 8,
+      "total": 176
+    },
+    {
+      "id": "1291",
+      "level": "N4",
+      "name": "Gabriel Silva Machado",
+      "rank": 9,
+      "total": 170
+    },
+    {
+      "id": "1331",
+      "level": "N2",
+      "name": "Luciano Marcelino da Silva",
+      "rank": 10,
+      "total": 91
+    }
+  ],
+  "filters_applied": {
+    "end_date": "2025-08-28",
+    "entity_id": null,
+    "level": null,
+    "limit": 10,
+    "start_date": "2025-07-29"
+  },
+  "response_time_ms": 32898.19,
+  "success": true
+}

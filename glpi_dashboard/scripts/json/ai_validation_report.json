@@ -1,0 +1,165 @@
+{
+  "timestamp": "2025-08-30T05:41:17.696624",
+  "total_tests": 9,
+  "passed": 6,
+  "failed": 0,
+  "skipped": 0,
+  "errors": 3,
+  "total_duration": 37.92807102203369,
+  "test_results": [
+    {
+      "test_name": "Directory Structure Check",
+      "category": "smoke",
+      "status": "PASS",
+      "duration": 0.0009953975677490234,
+      "details": {
+        "required_directories": [
+          "glpi_dashboard/backend/ai_agents",
+          "glpi_dashboard/ai/orchestration",
+          "cache",
+          "ai_agent_system",
+          "logs"
+        ],
+        "missing_directories": [],
+        "found_directories": 5
+      },
+      "error_message": null,
+      "timestamp": "2025-08-30T05:40:42.666824"
+    },
+    {
+      "test_name": "Python Dependencies Check",
+      "category": "smoke",
+      "status": "PASS",
+      "duration": 0.0,
+      "details": {
+        "required_packages": [
+          "torch",
+          "transformers",
+          "asyncio"
+        ],
+        "available_packages": [
+          "torch",
+          "transformers",
+          "asyncio"
+        ],
+        "missing_packages": []
+      },
+      "error_message": null,
+      "timestamp": "2025-08-30T05:40:42.666824"
+    },
+    {
+      "test_name": "AI Models Availability Check",
+      "category": "smoke",
+      "status": "PASS",
+      "duration": 0.0005133152008056641,
+      "details": {
+        "models_file_exists": true,
+        "available_models": [
+          "microsoft/DialoGPT-small",
+          "distilbert-base-uncased",
+          "codellama/CodeLlama-7b-Python-hf"
+        ],
+        "model_count": 3
+      },
+      "error_message": null,
+      "timestamp": "2025-08-30T05:40:42.667337"
+    },
+    {
+      "test_name": "Orchestrator Initialization",
+      "category": "functional",
+      "status": "PASS",
+      "duration": 15.410633087158203,
+      "details": {
+        "orchestrator_loaded": true,
+        "system_status": {
+          "model_loaded": true,
+          "device": "cuda",
+          "model_name": "codellama/CodeLlama-7b-Python-hf",
+          "timestamp": "2025-08-30T05:40:58.076970",
+          "gpu_info": {
+            "name": "NVIDIA RTX A4000",
+            "memory_allocated": 12.55127763748169,
+            "memory_total": 15.99169921875
+          }
+        },
+        "model_loaded": true,
+        "device": "cuda"
+      },
+      "error_message": null,
+      "timestamp": "2025-08-30T05:40:58.077970"
+    },
+    {
+      "test_name": "Code Analysis Function",
+      "category": "functional",
+      "status": "PASS",
+      "duration": 19.61536169052124,
+      "details": {
+        "analysis_result": {
+          "status": "success",
+          "analysis": "Algoritmo:\n        def calculate_average(numbers):\n            if not numbers:\n                return 0\n            return sum(numbers) / len(numbers)\n        \n        Dados de entrada:\n        numbers\n        \n        Saída:\n        media\n        \n        \n        Problemas:\n        \n        A função possui um problema de desempenho pois a chamada da função sum()\n        realiza uma iteração completa na lista de números.\n        \n        Sugestões de Melhoria:\n        \n        A função sum() pode ser substituída pela função sum(numbers), que é uma\n        função interna do Python.\n        \n        Padrões:\n        \n        A função \"calculate_average\" é de alto nível.\n        A função é de cálculo, ou seja, tem o objetivo de retornar uma média de uma\n        lista de números.\n        A função aceita uma lista de números como entrada.\n        A função retorna uma média como saída.\n        \n        Concluído.\n\nProblemas:\n\nA função possui um problema de desempenho pois a chamada da função sum()\nrealiza uma iteração completa na lista de números.\n\nSugestões de Melhoria:\n\nA função sum() pode ser substituída pela função sum(numbers), que é uma\nfunção interna do Python.\n\nPadrões:\n\nA função \"calculate_average\" é de alto nível.\nA função é de cálculo, ou seja, tem o objetivo de retornar uma média de uma\nlista de números.\nA função aceita uma lista de números como entrada.\nA função retorna uma média como saída.\n\nConcluído.\n\"\"\"",
+          "timestamp": "2025-08-30T05:41:17.693332",
+          "model_used": "codellama/CodeLlama-7b-Python-hf"
+        },
+        "analysis_successful": true,
+        "has_analysis_content": true
+      },
+      "error_message": null,
+      "timestamp": "2025-08-30T05:41:17.693332"
+    },
+    {
+      "test_name": "GLPI Ticket Processing Flow",
+      "category": "integration",
+      "status": "ERROR",
+      "duration": 0.0,
+      "details": {},
+      "error_message": "name 'orchestrator' is not defined",
+      "timestamp": "2025-08-30T05:41:17.696624"
+    },
+    {
+      "test_name": "Inference Latency Test",
+      "category": "performance",
+      "status": "ERROR",
+      "duration": 0.0,
+      "details": {},
+      "error_message": "name 'orchestrator' is not defined",
+      "timestamp": "2025-08-30T05:41:17.696624"
+    },
+    {
+      "test_name": "GPU Memory Usage Test",
+      "category": "performance",
+      "status": "ERROR",
+      "duration": 0.0,
+      "details": {},
+      "error_message": "name 'orchestrator' is not defined",
+      "timestamp": "2025-08-30T05:41:17.696624"
+    },
+    {
+      "test_name": "Invalid Input Handling",
+      "category": "resilience",
+      "status": "PASS",
+      "duration": 0.0,
+      "details": {
+        "exception_handled": true,
+        "exception_message": "name 'orchestrator' is not defined"
+      },
+      "error_message": null,
+      "timestamp": "2025-08-30T05:41:17.696624"
+    }
+  ],
+  "system_info": {
+    "python_version": "3.12.1 (tags/v3.12.1:2305ca5, Dec  7 2023, 22:03:25) [MSC v.1937 64 bit (AMD64)]",
+    "platform": "win32",
+    "working_directory": "C:\\Users\\jonathan-moletta.PPIRATINI\\projects\\glpi_dashboard_funcional",
+    "timestamp": "2025-08-30T05:40:39.768553",
+    "torch_version": "2.5.1+cu121",
+    "cuda_available": true,
+    "gpu_name": "NVIDIA RTX A4000",
+    "gpu_memory_total": 15.99169921875,
+    "transformers_version": "4.56.0"
+  },
+  "recommendations": [
+    "Problemas de performance - otimizar configurações de GPU/CPU",
+    "Falhas de integração - verificar fluxos entre componentes"
+  ],
+  "go_no_go_decision": "CONDITIONAL GO: Sistema aprovado com restrições (60-80% de sucesso)"
+}

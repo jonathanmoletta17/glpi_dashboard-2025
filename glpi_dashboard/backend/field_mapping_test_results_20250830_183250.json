@@ -1,0 +1,33 @@
+{
+  "timestamp": "2025-08-30T18:32:50.690080",
+  "test_results": {
+    "field_conversion": {
+      "status": "PASSOU",
+      "converted_data": {
+        "id": "12345",
+        "name": "Problema no sistema",
+        "status": "2",
+        "entities_id": "1",
+        "date": "2025-01-30 10:00:00",
+        "date_mod": "2025-01-30 15:30:00",
+        "users_id_assign": "123",
+        "groups_id_assign": "456",
+        "itilcategories_id": "789",
+        "priority": "3"
+      }
+    },
+    "validation_test": {
+      "status": "PASSOU",
+      "auto_convert": true
+    },
+    "integration_test": {
+      "status": "PASSOU",
+      "adapter_initialized": true
+    }
+  },
+  "summary": {
+    "total_tests": 3,
+    "passed_tests": 3,
+    "overall_status": "SUCESSO"
+  }
+}

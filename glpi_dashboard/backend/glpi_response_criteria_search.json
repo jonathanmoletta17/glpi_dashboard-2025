@@ -1,0 +1,27 @@
+{
+  "totalcount": 1,
+  "count": 1,
+  "sort": [
+    "1"
+  ],
+  "order": [
+    "ASC"
+  ],
+  "data": [
+    {
+      "2": 10203,
+      "1": "TESTE // NÃO MEXER",
+      "80": "Entidade raiz > PIRATINI > CENTRAL DE ATENDIMENTOS",
+      "12": 1,
+      "19": "2025-08-30 07:41:02",
+      "4": "1032",
+      "15": "2025-08-29 16:52:25",
+      "5": null,
+      "8": null,
+      "7": "ACESSO A SISTEMAS > NDD",
+      "95": null,
+      "83": null
+    }
+  ],
+  "content-range": "0-0/1"
+}

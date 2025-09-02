@@ -1,0 +1,57 @@
+{
+  "timestamp": "2025-08-30T04:45:50.535198",
+  "tests": {
+    "system_requirements": {
+      "python_version": true,
+      "pytorch_available": true,
+      "cuda_available": true,
+      "gpu_memory": 15.99169921875
+    },
+    "model_loading": {
+      "success": true,
+      "model_name": "microsoft/DialoGPT-small",
+      "model_size": 124439808,
+      "device": "cuda:0"
+    },
+    "inference": {
+      "success": true,
+      "input": "Configurar notificações automáticas",
+      "output": "Configurar notificações automáticas fiscalistas as pessoas estas a fim.",
+      "output_length": 71
+    },
+    "glpi_scenarios": {
+      "total": 4,
+      "successful": 4,
+      "results": [
+        {
+          "scenario": "Como criar um ticket no GLPI?",
+          "success": true
+        },
+        {
+          "scenario": "Qual é o status do equipamento ID 123?",
+          "success": true
+        },
+        {
+          "scenario": "Gerar relatório de incidentes do mês",
+          "success": true
+        },
+        {
+          "scenario": "Configurar notificações automáticas",
+          "success": true
+        }
+      ]
+    },
+    "memory_usage": {
+      "allocated_gb": 0.25,
+      "reserved_gb": 0.34,
+      "total_gb": 15.99,
+      "usage_percent": 2.1
+    }
+  },
+  "summary": {
+    "total_tests": 5,
+    "passed_tests": 5,
+    "success_rate": 1.0,
+    "overall_success": true
+  }
+}

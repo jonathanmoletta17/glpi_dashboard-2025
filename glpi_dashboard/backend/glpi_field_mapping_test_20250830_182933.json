@@ -1,0 +1,8 @@
+{
+  "timestamp": "20250830_182933",
+  "field_mapping_test": {},
+  "validation_test": {
+    "error": "'GLPIService' object has no attribute '_ensure_authenticated'"
+  },
+  "sample_conversions": []
+}

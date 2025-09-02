@@ -1,0 +1,162 @@
+# Regras de Alerta para GLPI Dashboard
+groups:
+  - name: glpi_dashboard_alerts
+    rules:
+      # Alertas de Performance
+      - alert: HighResponseTime
+        expr: glpi_api_response_time_seconds > 0.3
+        for: 2m
+        labels:
+          severity: warning
+          service: glpi-dashboard
+        annotations:
+          summary: "Tempo de resposta alto detectado"
+          description: "O tempo de resposta da API está acima de 300ms por mais de 2 minutos. Valor atual: {{ $value }}s"
+
+      - alert: HighErrorRate
+        expr: rate(glpi_api_requests_total{status_code!~"2.."}[5m]) / rate(glpi_api_requests_total[5m]) > 0.05
+        for: 1m
+        labels:
+          severity: critical
+          service: glpi-dashboard
+        annotations:
+          summary: "Taxa de erro alta detectada"
+          description: "A taxa de erro da API está acima de 5% nos últimos 5 minutos. Taxa atual: {{ $value | humanizePercentage }}"
+
+      # Alertas de Disponibilidade
+      - alert: ServiceDown
+        expr: up{job="glpi-dashboard-backend"} == 0
+        for: 30s
+        labels:
+          severity: critical
+          service: glpi-dashboard
+        annotations:
+          summary: "Serviço GLPI Dashboard indisponível"
+          description: "O backend do GLPI Dashboard está fora do ar há mais de 30 segundos."
+
+      - alert: GLPIConnectionError
+        expr: glpi_connection_status == 0
+        for: 1m
+        labels:
+          severity: critical
+          service: glpi
+        annotations:
+          summary: "Falha na conexão com GLPI"
+          description: "Não foi possível conectar ao GLPI há mais de 1 minuto."
+
+      # Alertas de Cache
+      - alert: LowCacheHitRate
+        expr: glpi_cache_hit_rate < 0.8
+        for: 5m
+        labels:
+          severity: warning
+          service: cache
+        annotations:
+          summary: "Taxa de acerto do cache baixa"
+          description: "A taxa de acerto do cache está abaixo de 80% nos últimos 5 minutos. Taxa atual: {{ $value | humanizePercentage }}"
+
+      - alert: CacheMemoryHigh
+        expr: glpi_cache_memory_usage_bytes / glpi_cache_memory_limit_bytes > 0.9
+        for: 2m
+        labels:
+          severity: warning
+          service: cache
+        annotations:
+          summary: "Uso de memória do cache alto"
+          description: "O uso de memória do cache está acima de 90%. Uso atual: {{ $value | humanizePercentage }}"
+
+      # Alertas de Recursos do Sistema
+      - alert: HighCPUUsage
+        expr: 100 - (avg by(instance) (rate(node_cpu_seconds_total{mode="idle"}[5m])) * 100) > 80
+        for: 5m
+        labels:
+          severity: warning
+          service: system
+        annotations:
+          summary: "Uso de CPU alto"
+          description: "O uso de CPU está acima de 80% nos últimos 5 minutos. Uso atual: {{ $value }}%"
+
+      - alert: HighMemoryUsage
+        expr: (1 - (node_memory_MemAvailable_bytes / node_memory_MemTotal_bytes)) * 100 > 85
+        for: 3m
+        labels:
+          severity: warning
+          service: system
+        annotations:
+          summary: "Uso de memória alto"
+          description: "O uso de memória está acima de 85% nos últimos 3 minutos. Uso atual: {{ $value }}%"
+
+      - alert: DiskSpaceLow
+        expr: (1 - (node_filesystem_avail_bytes{fstype!="tmpfs"} / node_filesystem_size_bytes{fstype!="tmpfs"})) * 100 > 90
+        for: 1m
+        labels:
+          severity: critical
+          service: system
+        annotations:
+          summary: "Espaço em disco baixo"
+          description: "O espaço em disco está acima de 90% de uso. Uso atual: {{ $value }}%"
+
+      # Alertas de Métricas de Negócio
+      - alert: NoNewTickets
+        expr: glpi_tickets_total{status="new"} == 0
+        for: 1h
+        labels:
+          severity: info
+          service: business
+        annotations:
+          summary: "Nenhum ticket novo nas últimas horas"
+          description: "Não foram criados novos tickets nas últimas horas. Isso pode indicar um problema no sistema GLPI."
+
+      - alert: HighPendingTickets
+        expr: glpi_tickets_total{status="pending"} > 100
+        for: 30m
+        labels:
+          severity: warning
+          service: business
+        annotations:
+          summary: "Muitos tickets pendentes"
+          description: "Há mais de 100 tickets pendentes há mais de 30 minutos. Total atual: {{ $value }}"
+
+      # Alertas de Segurança
+      - alert: TooManyFailedRequests
+        expr: rate(glpi_api_requests_total{status_code="401"}[5m]) > 0.1
+        for: 2m
+        labels:
+          severity: warning
+          service: security
+        annotations:
+          summary: "Muitas tentativas de acesso não autorizado"
+          description: "Taxa alta de requisições com status 401 (não autorizado) detectada. Taxa: {{ $value }} req/s"
+
+      - alert: UnusualTrafficPattern
+        expr: rate(glpi_api_requests_total[5m]) > 10
+        for: 5m
+        labels:
+          severity: info
+          service: security
+        annotations:
+          summary: "Padrão de tráfego incomum detectado"
+          description: "Taxa de requisições acima do normal detectada. Taxa atual: {{ $value }} req/s"
+
+  - name: glpi_dashboard_health
+    rules:
+      # Regras de saúde geral do sistema
+      - alert: ServiceHealthCheck
+        expr: probe_success{job="blackbox"} == 0
+        for: 1m
+        labels:
+          severity: critical
+          service: health
+        annotations:
+          summary: "Health check falhou"
+          description: "O health check para {{ $labels.instance }} está falhando há mais de 1 minuto."
+
+      - alert: DatabaseConnectionIssue
+        expr: glpi_database_connections_active / glpi_database_connections_max > 0.8
+        for: 3m
+        labels:
+          severity: warning
+          service: database
+        annotations:
+          summary: "Muitas conexões ativas no banco"
+          description: "O número de conexões ativas no banco está acima de 80% do limite. Conexões ativas: {{ $value }}"

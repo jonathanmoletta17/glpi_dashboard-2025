@@ -1,0 +1,52 @@
+{
+  "timestamp": "2025-08-30T05:09:57.473864",
+  "model": "codellama/CodeLlama-7b-Python-hf",
+  "quantization": "4-bit",
+  "initial_memory": {
+    "allocated_gb": 3.6089887619018555,
+    "reserved_gb": 6.328125,
+    "total_gb": 15.99169921875
+  },
+  "final_memory": {
+    "allocated_gb": 3.601052761077881,
+    "reserved_gb": 6.2578125,
+    "total_gb": 15.99169921875
+  },
+  "test_results": [
+    {
+      "prompt": "def analyze_glpi_ticket():",
+      "response": "\b\n    # Reads the glpi json output\n    with open('glpi_ticket_json.json', 'r') as f:\n        glpi_json = json.load(f)\n\n    # Print the number of tickets\n    print(f\"Number of tickets: {glpi_json['coun",
+      "inference_time_seconds": 4.687521,
+      "memory_usage": {
+        "allocated_gb": 3.6089892387390137,
+        "reserved_gb": 6.322265625,
+        "total_gb": 15.99169921875
+      }
+    },
+    {
+      "prompt": "# Função para processar tickets GLPI\ndef process_ticket(ticket_data):",
+      "response": "# Variável para armazenar tickets processados\n    tickets_processed = dict()\n    # Para cada ticket de entrada\n    for ticket in ticket_data:\n        # Variável para armazenar data do ticket\n        d",
+      "inference_time_seconds": 4.156379,
+      "memory_usage": {
+        "allocated_gb": 3.6089892387390137,
+        "reserved_gb": 6.328125,
+        "total_gb": 15.99169921875
+      }
+    },
+    {
+      "prompt": "SELECT COUNT(*) FROM glpi_tickets WHERE status = 'open'",
+      "response": "ZygotKET C:\\xampp\\htdocs\\glpi>",
+      "inference_time_seconds": 0.795236,
+      "memory_usage": {
+        "allocated_gb": 3.6089887619018555,
+        "reserved_gb": 6.328125,
+        "total_gb": 15.99169921875
+      }
+    }
+  ],
+  "summary": {
+    "memory_used_gb": 3.601052761077881,
+    "memory_efficiency": "22.5%",
+    "avg_inference_time": 3.2130453333333335
+  }
+}
