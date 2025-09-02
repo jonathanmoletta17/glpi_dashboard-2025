@@ -4,12 +4,7 @@
 
 /* Custom styles for the GLPI Dashboard */
 
-.line-clamp-2 {
-  display: -webkit-box;
-  -webkit-line-clamp: 2;
-  -webkit-box-orient: vertical;
-  overflow: hidden;
-}
+/* line-clamp-2 has been migrated to Tailwind CSS */
 
 /* Smooth transitions */
 * {
