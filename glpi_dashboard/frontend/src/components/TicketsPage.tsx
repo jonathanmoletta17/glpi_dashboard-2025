@@ -13,7 +13,7 @@ export const TicketsPage: React.FC<TicketsPageProps> = ({ onTicketClick }) => {
         <h1 className="text-2xl font-bold text-gray-900 mb-2">Tickets</h1>
         <p className="text-gray-600">Gerencie e visualize todos os tickets do sistema</p>
       </div>
-      
+
       <TicketList onTicketClick={onTicketClick} />
     </div>
   );

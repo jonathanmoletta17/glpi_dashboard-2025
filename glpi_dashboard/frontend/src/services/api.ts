@@ -5,7 +5,7 @@ import { isApiError, isApiResponse, transformLegacyData } from '../types/api';
 import { metricsCache, systemStatusCache, technicianRankingCache, newTicketsCache } from './cache';
 import { requestCoordinator } from './requestCoordinator';
 import { smartCacheManager } from './smartCache';
-import { requestMonitor, instrumentRequest } from './requestMonitor';
+
 
 // Base URL for API (mantido para compatibilidade)
 const API_BASE_URL = API_CONFIG.BASE_URL;
@@ -130,12 +130,7 @@ export const apiService = {
           // Garantir que todos os campos necessários existam
           const data: DashboardMetrics = {
             niveis: processedNiveis,
-            tendencias: rawData.tendencias || {
-              novos: '0',
-              pendentes: '0',
-              progresso: '0',
-              resolvidos: '0',
-            },
+
           };
 
           // Armazenar no cache
@@ -152,7 +147,7 @@ export const apiService = {
               n3: { novos: 0, pendentes: 0, progresso: 0, resolvidos: 0, total: 0 },
               n4: { novos: 0, pendentes: 0, progresso: 0, resolvidos: 0, total: 0 },
             },
-            tendencias: { novos: '0', pendentes: '0', progresso: '0', resolvidos: '0' },
+
           };
           // Não cachear dados de fallback
           return fallbackData;
@@ -270,14 +265,16 @@ export const apiService = {
 
       console.log('🔍 Buscando ranking de técnicos:', url);
 
-      // Usar timeout maior para ranking com filtros de data (3 minutos)
-      const hasDateFilters = filters?.start_date || filters?.end_date;
-      const timeoutConfig = hasDateFilters ? { timeout: 180000 } : {}; // 3 minutos para filtros de data
+      // Usar timeout maior para ranking (sempre 3 minutos pois demora ~44s)
+      const timeoutConfig = { timeout: 180000 }; // 3 minutos para ranking
 
       console.log(
-        `⏱️ Usando timeout de ${hasDateFilters ? '180' : '30'} segundos para ranking de técnicos`
+        `⏱️ Usando timeout de 180 segundos para ranking de técnicos`
       );
-      const response = await api.get<ApiResponse<any[]>>(url, timeoutConfig);
+      const response = await api.get<ApiResponse<any[]>>(url, {
+        timeout: 180000, // 3 minutos para ranking
+        ...timeoutConfig
+      });
 
       // Monitora performance
       const responseTime = Date.now() - startTime;
@@ -497,12 +494,10 @@ export default api;
 
 // Named exports for individual functions
 export const getMetrics = async (dateRange?: DateRange) => {
-  return instrumentRequest('/metrics', () => apiService.getMetrics(dateRange), 'GET', {
-    dateRange,
-  });
+  return apiService.getMetrics(dateRange);
 };
 export const getSystemStatus = async () => {
-  return instrumentRequest('/system-status', () => apiService.getSystemStatus(), 'GET');
+  return apiService.getSystemStatus();
 };
 export const getTechnicianRanking = async (filters?: {
   start_date?: string;
@@ -510,28 +505,23 @@ export const getTechnicianRanking = async (filters?: {
   level?: string;
   limit?: number;
 }) => {
-  return instrumentRequest(
-    '/technician-ranking',
-    () => apiService.getTechnicianRanking(filters),
-    'GET',
-    { filters }
-  );
+  return apiService.getTechnicianRanking(filters);
 };
 
 export const getNewTickets = async (limit?: number) => {
-  return instrumentRequest('/new-tickets', () => apiService.getNewTickets(limit), 'GET', { limit });
+  return apiService.getNewTickets(limit);
 };
 
 export const search = async (query: string) => {
-  return instrumentRequest('/search', () => apiService.search(query), 'GET', { query });
+  return apiService.search(query);
 };
 
 export const healthCheck = async () => {
-  return instrumentRequest('/health', () => apiService.healthCheck(), 'GET');
+  return apiService.healthCheck();
 };
 
 export const getTicketById = async (ticketId: string) => {
-  return instrumentRequest('/ticket-details', () => apiService.getTicketById(ticketId), 'GET', { ticketId });
+  return apiService.getTicketById(ticketId);
 };
 
 export const clearAllCaches = apiService.clearAllCaches;

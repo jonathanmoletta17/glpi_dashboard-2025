@@ -61,7 +61,6 @@ export const DEFAULT_USER_PREFERENCES: UserPreferences = {
   dashboard: {
     defaultView: 'cards',
     autoRefresh: true,
-    showTrends: true,
   },
 };
 

@@ -245,7 +245,7 @@ module.exports = {
 ```ini
 [tool:pytest]
 testpaths = tests
-addopts = 
+addopts =
     --strict-markers
     --cov=.
     --cov-report=html:htmlcov
@@ -265,7 +265,7 @@ markers =
 [run]
 source = .
 branch = True
-omit = 
+omit =
     */tests/*
     */venv/*
     */__pycache__/*

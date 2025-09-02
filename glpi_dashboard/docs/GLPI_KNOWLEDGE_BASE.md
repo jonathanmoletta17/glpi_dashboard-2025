@@ -92,7 +92,7 @@ Caso a descoberta automática falhe, são utilizados IDs padrão:
 ```javascript
 {
   "GROUP": "8",
-  "STATUS": "12", 
+  "STATUS": "12",
   "TECH": "5"
 }
 ```

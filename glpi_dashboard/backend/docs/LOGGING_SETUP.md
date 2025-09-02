@@ -50,7 +50,7 @@ logger.error("Falha na conexão", error_code=500, endpoint="/api/tickets")
 class GLPIService:
     def __init__(self):
         self.structured_logger = create_glpi_logger()
-    
+
     @log_api_call(structured_logger)
     @log_performance(structured_logger, threshold_seconds=2.0)
     def get_tickets(self, status=None):
@@ -115,7 +115,7 @@ filter {
       add_tag => ["glpi", "api"]
     }
   }
-  
+
   if [level] == "ERROR" {
     mutate {
       add_tag => ["error"]

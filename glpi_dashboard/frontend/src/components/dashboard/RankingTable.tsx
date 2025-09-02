@@ -4,8 +4,8 @@ import { Badge } from '@/components/ui/badge';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { cn, formatNumber } from '@/lib/utils';
 import { Trophy, Medal, Award, Star, Users, Zap, Shield, Wrench, Settings } from 'lucide-react';
-import { usePerformanceMonitoring, useRenderTracker } from '../../hooks/usePerformanceMonitoring';
-import { performanceMonitor } from '../../utils/performanceMonitor';
+
+
 
 interface TechnicianRanking {
   id: string;
@@ -232,20 +232,7 @@ export const RankingTable = React.memo<RankingTableProps>(function RankingTable(
 }) {
   const scrollContainerRef = useRef<HTMLDivElement>(null);
 
-  // Performance monitoring hooks
-  const { measureRender } = usePerformanceMonitoring('RankingTable');
-  const { trackRender } = useRenderTracker('RankingTable');
 
-  // Track component renders
-  useEffect(() => {
-    trackRender();
-    measureRender(() => {
-      performanceMonitor.markComponentRender('RankingTable', {
-        technicianCount: data.length,
-        hasData: data.length > 0,
-      });
-    });
-  }, [data, trackRender, measureRender]);
 
   // Pegar todos os técnicos e ordenar por número de chamados - memoizado
   const topTechnicians = useMemo(() => {

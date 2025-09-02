@@ -35,20 +35,26 @@ def _load_app_config(config_obj) -> Dict[str, Any]:
         'DEBUG': bool(config_obj.DEBUG),
         'HOST': str(config_obj.HOST),
         'PORT': int(config_obj.PORT),
-        'CORS_ORIGINS': list(config_obj.CORS_ORIGINS) if config_obj.CORS_ORIGINS else ["*"],
+        'CORS_ORIGINS': (
+            list(config_obj.CORS_ORIGINS) if config_obj.CORS_ORIGINS else ["*"]
+        ),
         'MAX_CONTENT_LENGTH': int(config_obj.MAX_CONTENT_LENGTH),
-        
+
         # Configurações GLPI
         'GLPI_URL': str(config_obj.GLPI_URL),
-        'GLPI_USER_TOKEN': str(config_obj.GLPI_USER_TOKEN) if config_obj.GLPI_USER_TOKEN else "",
-        'GLPI_APP_TOKEN': str(config_obj.GLPI_APP_TOKEN) if config_obj.GLPI_APP_TOKEN else "",
+        'GLPI_USER_TOKEN': (
+            str(config_obj.GLPI_USER_TOKEN) if config_obj.GLPI_USER_TOKEN else ""
+        ),
+        'GLPI_APP_TOKEN': (
+            str(config_obj.GLPI_APP_TOKEN) if config_obj.GLPI_APP_TOKEN else ""
+        ),
         'API_TIMEOUT': int(config_obj.API_TIMEOUT),
-        
+
         # Configurações de cache
         'REDIS_URL': str(config_obj.REDIS_URL),
         'CACHE_TYPE': str(config_obj.CACHE_TYPE),
         'CACHE_DEFAULT_TIMEOUT': int(config_obj.CACHE_DEFAULT_TIMEOUT),
-        
+
         # Configurações de logging e observabilidade
         'LOG_LEVEL': str(config_obj.LOG_LEVEL),
         'PROMETHEUS_GATEWAY_URL': str(config_obj.PROMETHEUS_GATEWAY_URL),
@@ -60,9 +66,8 @@ def _setup_cache(app: Flask) -> Dict[str, Any]:
     """Configura cache com Redis e fallback para SimpleCache"""
     try:
         # Tenta conectar ao Redis
-        redis_client = redis.from_url(
-            app.config.get("REDIS_URL", "redis://localhost:6379/0")
-        )
+        redis_url = app.config.get("REDIS_URL", "redis://localhost:6379/0")
+        redis_client = redis.from_url(redis_url)
         redis_client.ping()  # Testa conexão
 
         cache_config = {
@@ -71,13 +76,15 @@ def _setup_cache(app: Flask) -> Dict[str, Any]:
                 "CACHE_REDIS_URL", "redis://localhost:6379/0"
             ),
             "CACHE_DEFAULT_TIMEOUT": app.config.get("CACHE_DEFAULT_TIMEOUT", 300),
-            "CACHE_KEY_PREFIX": app.config.get("CACHE_KEY_PREFIX", "glpi_dashboard:"),
+            "CACHE_KEY_PREFIX": app.config.get(
+                "CACHE_KEY_PREFIX", "glpi_dashboard:"
+            ),
         }
 
         system_logger.log_operation_end(
             "redis_connection",
             success=True,
-            redis_url=app.config.get("REDIS_URL", "redis://localhost:6379/0"),
+            redis_url=redis_url,
         )
         return cache_config
 
@@ -105,7 +112,7 @@ def _setup_cors(app: Flask) -> None:
             r"/api/*": {
                 "origins": [
                     "http://localhost:3000",
-                    "http://localhost:3001", 
+                    "http://localhost:3001",
                     "http://localhost:3002",
                 ],
                 "methods": ["GET", "POST", "PUT", "DELETE", "OPTIONS"],
@@ -186,12 +193,12 @@ def run_server() -> None:
     """Inicia o servidor Flask"""
     logger = logging.getLogger("app")
     server_config = _get_server_config()
-    
-    logger.info(
-        f"Iniciando servidor Flask em {server_config['host']}:{server_config['port']} "
-        f"(Debug: {server_config['debug']})"
-    )
-    
+
+    host = server_config['host']
+    port = server_config['port']
+    debug = server_config['debug']
+    logger.info(f"Iniciando servidor Flask em {host}:{port} (Debug: {debug})")
+
     try:
         app.run(
             host=server_config['host'],

@@ -12,25 +12,22 @@ class SmartCacheManager {
   private preWarmScheduled = false;
 
   constructor() {
-    // Cache para métricas do dashboard - TTL mais longo
+    // Cache para métricas - TTL longo
     this.metricsCache = new LocalCache({
-      maxSize: 50,
-      defaultTTL: 300000, // 5 minutos
-      cleanupInterval: 60000, // 1 minuto
+      maxSize: 100,
+      ttl: 180000, // 3 minutos
     });
 
     // Cache para tickets - TTL médio
     this.ticketsCache = new LocalCache({
-      maxSize: 100,
-      defaultTTL: 180000, // 3 minutos
-      cleanupInterval: 60000,
+      maxSize: 200,
+      ttl: 180000, // 3 minutos
     });
 
     // Cache para status do sistema - TTL curto
     this.systemStatusCache = new LocalCache({
       maxSize: 20,
-      defaultTTL: 30000, // 30 segundos
-      cleanupInterval: 30000,
+      ttl: 30000, // 30 segundos
     });
 
     this.setupPreWarming();
@@ -151,15 +148,15 @@ class SmartCacheManager {
       total: {
         size: metricsStats.size + ticketsStats.size + systemStats.size,
         hitRate:
-          (metricsStats.hitCount + ticketsStats.hitCount + systemStats.hitCount) /
+          (metricsStats.hits + ticketsStats.hits + systemStats.hits) /
           Math.max(
             1,
-            metricsStats.hitCount +
-              metricsStats.missCount +
-              ticketsStats.hitCount +
-              ticketsStats.missCount +
-              systemStats.hitCount +
-              systemStats.missCount
+            metricsStats.hits +
+              metricsStats.misses +
+              ticketsStats.hits +
+              ticketsStats.misses +
+              systemStats.hits +
+              systemStats.misses
           ),
         memoryUsage: metricsStats.memoryUsage + ticketsStats.memoryUsage + systemStats.memoryUsage,
       },

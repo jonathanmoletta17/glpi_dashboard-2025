@@ -55,11 +55,7 @@ const server = setupServer(
           pending_tickets: 10,
           in_progress_tickets: 15,
         },
-        tendencias: {
-          total_tickets: { valor: 5, tipo: 'aumento' },
-          open_tickets: { valor: 2, tipo: 'aumento' },
-          closed_tickets: { valor: 3, tipo: 'aumento' },
-        },
+
       },
     });
   }),
@@ -120,22 +116,7 @@ beforeAll(() => server.listen());
 afterEach(() => server.resetHandlers());
 afterAll(() => server.close());
 
-// Mock do hook de performance
-vi.mock('../../hooks/usePerformanceMonitoring', () => ({
-  usePerformanceMonitoring: () => ({
-    measureRender: vi.fn(),
-    measureApiCall: vi.fn(),
-  }),
-}));
 
-// Mock do monitor de performance
-vi.mock('../../utils/performanceMonitor', () => ({
-  performanceMonitor: {
-    markComponentRender: vi.fn(),
-    markApiCall: vi.fn(),
-  },
-  usePerformanceProfiler: () => vi.fn(),
-}));
 
 describe('Technician Ranking Filters E2E', () => {
   beforeEach(() => {

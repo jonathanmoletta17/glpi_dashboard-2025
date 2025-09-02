@@ -1,6 +1,6 @@
 /**
  * Configuração Centralizada da Aplicação
- * 
+ *
  * Este arquivo centraliza todas as configurações da aplicação,
  * eliminando configurações hardcoded espalhadas pelos componentes.
  */
@@ -300,24 +300,24 @@ export const appConfig = {
   notifications: notificationConfig,
   api: apiConfig,
   cache: cacheConfig,
-  
+
   // Helpers
   isDevelopment: getCurrentEnvironment() === 'development',
   isProduction: getCurrentEnvironment() === 'production',
-  
+
   // Getters para configurações específicas
   getNotificationDuration: (priority: keyof NotificationConfig['priorities'] = 'medium') => {
     return notificationConfig.priorities[priority].duration || notificationConfig.defaultDuration;
   },
-  
+
   getLoadingTimeout: () => {
     return loadingConfig.timeoutDuration;
   },
-  
+
   getAPITimeout: () => {
     return apiConfig.timeout;
   },
-  
+
   getCacheTTL: (strategy: keyof CacheConfig['strategies'] = 'dashboard') => {
     return cacheConfig.strategies[strategy].ttl;
   }
@@ -334,7 +334,7 @@ export const componentConfigs = {
     autoRecovery: appConfig.environment.autoRecovery,
     notifications: appConfig.environment.notifications
   },
-  
+
   unifiedLoading: {
     animationDuration: appConfig.loading.skeletonAnimationDuration,
     minimumTime: appConfig.loading.minimumLoadingTime,
@@ -344,14 +344,14 @@ export const componentConfigs = {
     defaultSize: 'md',
     defaultVariant: 'default'
   },
-  
+
   notificationSystem: {
     maxVisible: appConfig.notifications.maxVisible,
     position: appConfig.notifications.position,
     defaultDuration: appConfig.notifications.defaultDuration,
     priorities: appConfig.notifications.priorities
   },
-  
+
   cacheNotification: {
     enabled: appConfig.notifications.types.cache.enabled,
     autoCloseDelay: appConfig.notifications.types.cache.duration,

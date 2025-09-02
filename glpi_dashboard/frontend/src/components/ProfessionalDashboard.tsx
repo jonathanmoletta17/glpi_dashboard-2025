@@ -10,7 +10,6 @@ import {
   Users,
   AlertTriangle,
   CheckCircle,
-  TrendingUp,
   Settings,
 } from 'lucide-react';
 
@@ -29,20 +28,11 @@ interface StatusCardProps {
   icon: React.ComponentType<any>;
   color: string;
   bgColor: string;
-  trend?: number;
 }
 
 const StatusCard = React.memo<StatusCardProps>(
-  ({ title, value, icon: Icon, color, bgColor, trend }) => {
+  ({ title, value, icon: Icon, color, bgColor }) => {
     const formattedValue = useMemo(() => value.toLocaleString(), [value]);
-    const trendColor = useMemo(
-      () => (trend !== undefined ? (trend >= 0 ? 'text-green-500' : 'text-red-500') : ''),
-      [trend]
-    );
-    const trendTextColor = useMemo(
-      () => (trend !== undefined ? (trend >= 0 ? 'text-green-600' : 'text-red-600') : ''),
-      [trend]
-    );
 
     return (
       <div className='bg-white rounded-xl shadow-sm border border-gray-200 p-6 hover:shadow-md transition-all duration-200'>
@@ -50,15 +40,7 @@ const StatusCard = React.memo<StatusCardProps>(
           <div>
             <p className='text-sm font-medium text-gray-600 mb-1'>{title}</p>
             <p className={`text-3xl font-bold ${color}`}>{formattedValue}</p>
-            {trend !== undefined && (
-              <div className='flex items-center mt-2'>
-                <TrendingUp className={`w-4 h-4 mr-1 ${trendColor}`} />
-                <span className={`text-sm font-medium ${trendTextColor}`}>
-                  {trend >= 0 ? '+' : ''}
-                  {trend}%
-                </span>
-              </div>
-            )}
+
           </div>
           <div className={`p-3 rounded-lg ${bgColor}`}>
             <Icon className={`w-6 h-6 ${color}`} />
@@ -274,7 +256,6 @@ export const ProfessionalDashboard: React.FC<ProfessionalDashboardProps> = ({
             icon={AlertTriangle}
             color='text-slate-700 dark:text-slate-300'
             bgColor='figma-level-badge'
-            trend={5}
           />
           <StatusCard
             title='Resolvidos'
@@ -282,7 +263,6 @@ export const ProfessionalDashboard: React.FC<ProfessionalDashboardProps> = ({
             icon={CheckCircle}
             color='text-slate-700 dark:text-slate-300'
             bgColor='figma-level-badge'
-            trend={12}
           />
           <StatusCard
             title='Taxa de Resolução'

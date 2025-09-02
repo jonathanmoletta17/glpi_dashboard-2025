@@ -1,7 +1,7 @@
 # Relatório de Status da Documentação - GLPI Dashboard
 
-**Data da Análise**: 2024-01-15  
-**Versão**: 1.0  
+**Data da Análise**: 2024-01-15
+**Versão**: 1.0
 **Analista**: Sistema de Análise Automatizada
 
 ## 📋 Resumo Executivo
@@ -64,7 +64,7 @@ Este relatório apresenta uma análise completa do estado da documentação do p
 ```python
 class APIService:
     """Service to handle external API communications"""
-    
+
     def _make_request(self, endpoint: str, method: str = 'GET', data: Dict = None) -> Dict:
         """Make HTTP request to external API"""
 ```
@@ -291,20 +291,20 @@ curl -X GET "http://localhost:5000/api/endpoint"
 ```typescript
 /**
  * [Descrição do componente]
- * 
+ *
  * @param props - Propriedades do componente
  * @param props.data - Dados a serem exibidos
  * @param props.loading - Estado de carregamento
  * @param props.onAction - Callback para ações
- * 
+ *
  * @returns Componente React renderizado
- * 
+ *
  * @example
  * ```tsx
- * <Component 
- *   data={metrics} 
- *   loading={false} 
- *   onAction={handleAction} 
+ * <Component
+ *   data={metrics}
+ *   loading={false}
+ *   onAction={handleAction}
  * />
  * ```
  */
@@ -339,6 +339,6 @@ curl -X GET "http://localhost:5000/api/endpoint"
 
 ---
 
-**Relatório gerado automaticamente**  
-**Última atualização**: 2024-01-15  
+**Relatório gerado automaticamente**
+**Última atualização**: 2024-01-15
 **Próxima revisão**: 2024-02-15

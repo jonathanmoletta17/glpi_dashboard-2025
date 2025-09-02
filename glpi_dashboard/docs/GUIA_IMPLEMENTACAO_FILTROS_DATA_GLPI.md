@@ -44,34 +44,34 @@ Frontend (DateRangeFilter) → Hook (useDashboard) → API Service → Backend R
 def get_dashboard_metrics_with_date_filter(self, start_date: Optional[str] = None, end_date: Optional[str] = None) -> Dict[str, any]:
     """
     Método base para obter métricas com filtro de data.
-    
+
     Args:
         start_date: Data inicial no formato YYYY-MM-DD (opcional)
         end_date: Data final no formato YYYY-MM-DD (opcional)
-    
+
     Returns:
         Dict com métricas filtradas ou None em caso de falha
     """
     # 1. Validação de autenticação
     if not self._ensure_authenticated():
         return None
-    
+
     # 2. Descoberta de IDs de campos
     if not self.discover_field_ids():
         return None
-    
+
     # 3. Log da operação
     self.logger.info(f"Buscando métricas com filtro de data: {start_date} até {end_date}")
-    
+
     # 4. Obter métricas com filtro
     raw_metrics = self._get_metrics_by_level_internal(start_date, end_date)
-    
+
     # 5. Processar e formatar dados
     result = self._format_metrics_response(raw_metrics, start_date, end_date)
-    
+
     # 6. Log do resultado
     self.logger.info(f"Métricas formatadas com filtro de data: {result}")
-    
+
     return result
 ```
 
@@ -80,26 +80,26 @@ def get_dashboard_metrics_with_date_filter(self, start_date: Optional[str] = Non
 def _get_metrics_by_level_internal(self, start_date: Optional[str] = None, end_date: Optional[str] = None) -> Dict[str, Dict[str, int]]:
     """
     Método interno para obter métricas por nível com filtro de data.
-    
+
     Args:
         start_date: Data inicial (opcional)
         end_date: Data final (opcional)
-    
+
     Returns:
         Dict com métricas por nível
     """
     metrics = {}
-    
+
     for level_name, group_id in self.service_levels.items():
         level_metrics = {}
-        
+
         for status_name, status_id in self.status_map.items():
             # Chama método com filtro de data
             count = self.get_ticket_count(group_id, status_id, start_date, end_date)
             level_metrics[status_name] = count if count is not None else 0
-        
+
         metrics[level_name] = level_metrics
-    
+
     return metrics
 ```
 
@@ -108,13 +108,13 @@ def _get_metrics_by_level_internal(self, start_date: Optional[str] = None, end_d
 def get_ticket_count(self, group_id: int, status_id: int, start_date: Optional[str] = None, end_date: Optional[str] = None) -> Optional[int]:
     """
     Conta tickets com filtros opcionais de data.
-    
+
     Args:
         group_id: ID do grupo
         status_id: ID do status
         start_date: Data inicial (YYYY-MM-DD)
         end_date: Data final (YYYY-MM-DD)
-    
+
     Returns:
         Número de tickets ou None em caso de erro
     """
@@ -124,7 +124,7 @@ def get_ticket_count(self, group_id: int, status_id: int, start_date: Optional[s
             {'field': self.group_field_id, 'searchtype': 'equals', 'value': group_id},
             {'field': self.status_field_id, 'searchtype': 'equals', 'value': status_id}
         ]
-        
+
         # Adicionar filtros de data se fornecidos
         if start_date:
             criteria.append({
@@ -132,31 +132,31 @@ def get_ticket_count(self, group_id: int, status_id: int, start_date: Optional[s
                 'searchtype': 'morethan',
                 'value': start_date
             })
-        
+
         if end_date:
             criteria.append({
                 'field': self.date_field_id,
                 'searchtype': 'lessthan',
                 'value': end_date
             })
-        
+
         # Executar busca
         search_data = {
             'criteria': criteria,
             'metacriteria': []
         }
-        
+
         response = self.session.get(
             f"{self.base_url}/search/Ticket",
             params={'criteria': json.dumps(search_data)}
         )
-        
+
         if response.status_code == 200:
             data = response.json()
             return data.get('totalcount', 0)
-        
+
         return None
-        
+
     except Exception as e:
         self.logger.error(f"Erro ao contar tickets: {e}")
         return None
@@ -170,11 +170,11 @@ def get_ticket_count(self, group_id: int, status_id: int, start_date: Optional[s
 def get_metrics():
     """
     Endpoint para obter métricas com suporte opcional a filtros de data.
-    
+
     Query Parameters:
         start_date (str, opcional): Data inicial no formato YYYY-MM-DD
         end_date (str, opcional): Data final no formato YYYY-MM-DD
-    
+
     Returns:
         JSON com métricas e informações de filtro aplicado
     """
@@ -182,7 +182,7 @@ def get_metrics():
         # 1. Extrair parâmetros de data
         start_date = request.args.get('start_date')
         end_date = request.args.get('end_date')
-        
+
         # 2. Validar formato das datas
         if start_date:
             try:
@@ -193,7 +193,7 @@ def get_metrics():
                     "error": "Formato de start_date inválido. Use YYYY-MM-DD",
                     "data": DEFAULT_METRICS
                 }), 400
-        
+
         if end_date:
             try:
                 datetime.strptime(end_date, '%Y-%m-%d')
@@ -203,7 +203,7 @@ def get_metrics():
                     "error": "Formato de end_date inválido. Use YYYY-MM-DD",
                     "data": DEFAULT_METRICS
                 }), 400
-        
+
         # 3. Validar ordem das datas
         if start_date and end_date:
             start_dt = datetime.strptime(start_date, '%Y-%m-%d')
@@ -214,16 +214,16 @@ def get_metrics():
                     "error": "Data de início não pode ser posterior à data de fim",
                     "data": DEFAULT_METRICS
                 }), 400
-        
+
         # 4. Log da operação
         logger.info(f"Buscando métricas do GLPI com filtro de data: {start_date} até {end_date}")
-        
+
         # 5. Chamar serviço apropriado
         if start_date or end_date:
             metrics_data = glpi_service.get_dashboard_metrics_with_date_filter(start_date, end_date)
         else:
             metrics_data = glpi_service.get_dashboard_metrics()
-        
+
         # 6. Tratar falha do serviço
         if not metrics_data:
             logger.warning("Não foi possível obter métricas do GLPI, usando dados de fallback.")
@@ -238,11 +238,11 @@ def get_metrics():
                 "success": True,
                 "data": fallback_data
             })
-        
+
         # 7. Retornar sucesso
         logger.info(f"Métricas obtidas com sucesso.")
         return jsonify({"success": True, "data": metrics_data})
-        
+
     except Exception as e:
         logger.error(f"Erro inesperado ao buscar métricas: {e}", exc_info=True)
         fallback_data = DEFAULT_METRICS.copy()
@@ -324,13 +324,13 @@ export const useDashboard = () => {
   const loadData = useCallback(async (range?: DateRange) => {
     setLoading(true);
     setError(null);
-    
+
     try {
       console.log('🔄 Carregando dados do dashboard...', range ? `com filtro: ${range.startDate} até ${range.endDate}` : 'sem filtro');
-      
+
       const result = await apiService.getMetrics(range);
       setData(result);
-      
+
       console.log('✅ Dados carregados com sucesso:', result);
     } catch (err) {
       const errorMessage = err instanceof Error ? err.message : 'Erro desconhecido';
@@ -507,7 +507,7 @@ export const apiService = {
   async getMetrics(dateRange?: DateRange | null): Promise<MetricsData> {
     try {
       let url = '/metrics';
-      
+
       // Adicionar parâmetros de data se fornecidos
       if (dateRange && dateRange.startDate && dateRange.endDate) {
         const params = new URLSearchParams({
@@ -522,9 +522,9 @@ export const apiService = {
       } else {
         console.log('🔍 Chamando API sem filtro de data');
       }
-      
+
       const response = await api.get(url);
-      
+
       // Verificar estrutura da resposta
       if (response.data && response.data.success && response.data.data) {
         const data = response.data.data;
@@ -536,7 +536,7 @@ export const apiService = {
       }
     } catch (error) {
       console.error('❌ Erro ao buscar métricas:', error);
-      
+
       // Retornar dados de fallback em caso de erro
       return {
         novos: 0,
@@ -566,23 +566,23 @@ export default function App() {
 
   return (
     <div className="app">
-      <Header 
+      <Header
         onDateRangeChange={updateDateRange}
         currentDateRange={dateRange}
       />
-      
+
       {loading && <div>Carregando...</div>}
       {error && <div>Erro: {error}</div>}
-      
+
       {data && (
         <>
-          <ModernDashboard 
+          <ModernDashboard
             data={data}
             dateRange={dateRange}
             onDateRangeChange={updateDateRange}
           />
-          
-          <SimplifiedDashboard 
+
+          <SimplifiedDashboard
             data={data}
             dateRange={dateRange}
             onDateRangeChange={updateDateRange}
@@ -613,9 +613,9 @@ from datetime import datetime, timedelta
 def test_date_filters():
     """Testa filtros de data na API"""
     base_url = "http://localhost:5000/api"
-    
+
     print("=== TESTE DE FILTROS DE DATA ===")
-    
+
     # Teste 1: Sem filtro
     print("\n1. TESTE SEM FILTRO:")
     response = requests.get(f"{base_url}/metrics")
@@ -623,12 +623,12 @@ def test_date_filters():
         data = response.json().get('data', {})
         print(f"✅ Total: {data.get('total', 0)}")
         print(f"✅ Filtro: {'Nenhum' if not data.get('filtro_data') else data.get('filtro_data')}")
-    
+
     # Teste 2: Com filtro de 7 dias
     print("\n2. TESTE COM FILTRO DE 7 DIAS:")
     end_date = datetime.now().strftime('%Y-%m-%d')
     start_date = (datetime.now() - timedelta(days=7)).strftime('%Y-%m-%d')
-    
+
     params = {'start_date': start_date, 'end_date': end_date}
     response = requests.get(f"{base_url}/metrics", params=params)
     if response.status_code == 200:
@@ -636,13 +636,13 @@ def test_date_filters():
         filtro = data.get('filtro_data', {})
         print(f"✅ Total: {data.get('total', 0)}")
         print(f"✅ Período: {filtro.get('data_inicio')} até {filtro.get('data_fim')}")
-        
+
         # Verificar se filtro foi aplicado
         if filtro.get('data_inicio') == start_date and filtro.get('data_fim') == end_date:
             print("✅ Filtro aplicado corretamente!")
         else:
             print("❌ Filtro não aplicado corretamente")
-    
+
     print("\n=== TESTE CONCLUÍDO ===")
 
 if __name__ == "__main__":
@@ -688,7 +688,7 @@ try:
         datetime.strptime(start_date, '%Y-%m-%d')
     if end_date:
         datetime.strptime(end_date, '%Y-%m-%d')
-    
+
     if start_date and end_date:
         start_dt = datetime.strptime(start_date, '%Y-%m-%d')
         end_dt = datetime.strptime(end_date, '%Y-%m-%d')
@@ -786,7 +786,7 @@ def get_tickets_by_category_with_date_filter(self, start_date: Optional[str] = N
     """Obter tickets agrupados por categoria com filtro de data"""
     if not self._ensure_authenticated():
         return {}
-    
+
     categories = {}  # Implementar lógica específica
     return categories
 ```
@@ -797,9 +797,9 @@ def get_tickets_by_category_with_date_filter(self, start_date: Optional[str] = N
 def get_tickets_by_category():
     start_date = request.args.get('start_date')
     end_date = request.args.get('end_date')
-    
+
     # Validações padrão...
-    
+
     data = glpi_service.get_tickets_by_category_with_date_filter(start_date, end_date)
     return jsonify({"success": True, "data": data})
 ```
@@ -816,7 +816,7 @@ async getTicketsByCategory(dateRange?: DateRange): Promise<CategoryData> {
 const { updateDateRange } = useDashboard();
 
 // Componente automaticamente receberá filtros de data
-<CategoryChart 
+<CategoryChart
     onDateRangeChange={updateDateRange}
     dateRange={dateRange}
 />

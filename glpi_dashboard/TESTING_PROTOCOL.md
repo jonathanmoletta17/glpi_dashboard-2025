@@ -38,7 +38,7 @@ fetch('http://localhost:5000/api/metrics')
       progresso: data.data.progresso,
       resolvidos: data.data.resolvidos
     });
-    
+
     const total = data.data.novos + data.data.pendentes + data.data.progresso + data.data.resolvidos;
     console.log('Total calculado:', total);
     console.log('Total da API:', data.data.total);
@@ -97,7 +97,7 @@ validateMetrics()
 1. Abrir http://localhost:3002/
 2. Verificar os 4 cards superiores:
    - 📊 NOVOS
-   - ⏳ EM PROGRESSO  
+   - ⏳ EM PROGRESSO
    - ⚠️ PENDENTES
    - ✅ RESOLVIDOS
 
@@ -209,7 +209,7 @@ const quickValidation = async () => {
   try {
     const response = await fetch('http://localhost:5000/api/metrics');
     const data = await response.json();
-    
+
     console.log('🔍 Quick Validation Results:');
     console.log('API Status:', response.ok ? '✅' : '❌');
     console.log('Data Structure:', data.success ? '✅' : '❌');
@@ -219,11 +219,11 @@ const quickValidation = async () => {
       progresso: data.data?.progresso || 0,
       resolvidos: data.data?.resolvidos || 0
     });
-    
-    const hasValidMetrics = data.data?.novos > 0 || data.data?.pendentes > 0 || 
+
+    const hasValidMetrics = data.data?.novos > 0 || data.data?.pendentes > 0 ||
                            data.data?.progresso > 0 || data.data?.resolvidos > 0;
     console.log('Has Valid Metrics:', hasValidMetrics ? '✅' : '❌');
-    
+
   } catch (error) {
     console.error('❌ Quick Validation Failed:', error);
   }
@@ -234,6 +234,6 @@ const quickValidation = async () => {
 
 ---
 
-**Versão**: 1.0  
-**Data**: 18/08/2025  
+**Versão**: 1.0
+**Data**: 18/08/2025
 **Responsável**: Sistema de Validação Automática

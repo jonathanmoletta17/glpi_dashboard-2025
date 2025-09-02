@@ -56,31 +56,7 @@ const DashboardMetrics: React.FC<DashboardMetricsProps> = ({
     throttledUpdateFilters(updatedFilters);
   };
 
-  const renderMetricsCard = useCallback((title: string, value: number, trend?: number) => {
-    const trendColor = useMemo(() => {
-      if (trend === undefined) return '';
-      return trend > 0 ? 'text-green-500' : trend < 0 ? 'text-red-500' : 'text-gray-500';
-    }, [trend]);
 
-    const trendIcon = useMemo(() => {
-      if (trend === undefined) return '';
-      return trend > 0 ? '↗' : trend < 0 ? '↘' : '→';
-    }, [trend]);
-
-    return (
-      <div className='bg-white rounded-lg shadow-md p-6 hover:shadow-lg transition-shadow'>
-        <h3 className='text-lg font-semibold text-gray-700 mb-2'>{title}</h3>
-        <div className='flex items-center justify-between'>
-          <span className='text-3xl font-bold text-blue-600'>{value}</span>
-          {trend !== undefined && (
-            <span className={`text-sm font-medium ${trendColor}`}>
-              {trendIcon} {Math.abs(trend)}%
-            </span>
-          )}
-        </div>
-      </div>
-    );
-  }, []);
 
   const renderLevelMetrics = useCallback(
     (levelMetrics: any) => {
@@ -306,18 +282,7 @@ const DashboardMetrics: React.FC<DashboardMetricsProps> = ({
       {/* Main Metrics */}
       {data.niveis && renderNiveisMetrics(data.niveis)}
 
-      {/* Trends */}
-      {data.tendencias && (
-        <div className='bg-white rounded-lg shadow-md p-6'>
-          <h2 className='text-xl font-semibold text-gray-800 mb-4'>Tendências</h2>
-          <div className='grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4'>
-            {renderMetricsCard('Novos Tickets', parseInt(data.tendencias.novos) || 0)}
-            {renderMetricsCard('Tickets Resolvidos', parseInt(data.tendencias.resolvidos) || 0)}
-            {renderMetricsCard('Pendentes', parseInt(data.tendencias.pendentes) || 0)}
-            {renderMetricsCard('Em Progresso', parseInt(data.tendencias.progresso) || 0)}
-          </div>
-        </div>
-      )}
+
 
       {/* Applied Filters Info */}
       {useMemo(() => {

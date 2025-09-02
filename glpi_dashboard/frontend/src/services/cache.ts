@@ -81,7 +81,7 @@ class LocalCache<T> {
     }
   }
 
-  // Monitora performance de uma requisição
+
   recordRequestTime(key: string, responseTime: number): void {
     if (!this.config.autoActivate) return;
 

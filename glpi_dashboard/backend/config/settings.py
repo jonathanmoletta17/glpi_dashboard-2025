@@ -37,15 +37,15 @@ class Config:
     def _load_yaml_config(self):
         """Carrega configurações do arquivo YAML"""
         self.yaml_config = {}
-        
+
         if not YAML_AVAILABLE:
             warnings.warn("PyYAML não disponível. Usando apenas variáveis de ambiente.")
             return
-            
+
         try:
             # Caminho para o arquivo de configuração
             config_path = Path(__file__).parent.parent.parent / "config" / "system.yaml"
-            
+
             if config_path.exists():
                 with open(config_path, 'r', encoding='utf-8') as file:
                     self.yaml_config = yaml.safe_load(file)
@@ -61,7 +61,7 @@ class Config:
         # Primeiro tenta variável de ambiente
         if env_var and os.environ.get(env_var):
             return os.environ.get(env_var)
-        
+
         # Depois tenta YAML
         keys = path.split('.')
         value = self.yaml_config
@@ -70,12 +70,12 @@ class Config:
                 value = value[key]
             else:
                 return default
-        
+
         # Substitui variáveis de ambiente no valor
         if isinstance(value, str) and value.startswith("${") and value.endswith("}"):
             env_key = value[2:-1]
             return os.environ.get(env_key, default)
-        
+
         return value if value is not None else default
 
     # Flask

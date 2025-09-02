@@ -218,7 +218,7 @@ Content-Type: application/json
 
 ✅ Teste de Endpoints Principais:
   - /api/metrics: PASSOU
-  - /api/metrics/filtered: PASSOU  
+  - /api/metrics/filtered: PASSOU
   - /api/technicians/ranking: PASSOU
   - /api/tickets/new: PASSOU
 

@@ -12,12 +12,12 @@ import {
 } from '../LazyComponents';
 
 import { Card, CardContent, CardHeader } from '@/components/ui/card';
-import RequestMonitorDashboard from '../RequestMonitorDashboard';
+
 
 import { MetricsData, TicketStatus, SystemStatus, TechnicianRanking, Ticket } from '@/types';
 import { cn } from '@/lib/utils';
-import { usePerformanceMonitoring } from '@/hooks/usePerformanceMonitoring';
-import { performanceMonitor } from '../../utils/performanceMonitor';
+
+
 
 interface ModernDashboardProps {
   metrics: MetricsData;
@@ -90,49 +90,11 @@ export const ModernDashboard = React.memo<ModernDashboardProps>(function ModernD
   className,
   filters,
 }) {
-  // Estado para monitorar se o monitor está minimizado
-  const [isMonitorMinimized, setIsMonitorMinimized] = useState(() => {
-    const saved = localStorage.getItem('requestMonitorMinimized');
-    return saved ? JSON.parse(saved) : false;
-  });
 
-  // Escutar mudanças no localStorage
-  useEffect(() => {
-    const handleStorageChange = () => {
-      const saved = localStorage.getItem('requestMonitorMinimized');
-      setIsMonitorMinimized(saved ? JSON.parse(saved) : false);
-    };
 
-    window.addEventListener('storage', handleStorageChange);
 
-    // Também escutar mudanças diretas no localStorage
-    const interval = setInterval(() => {
-      const saved = localStorage.getItem('requestMonitorMinimized');
-      const currentState = saved ? JSON.parse(saved) : false;
-      if (currentState !== isMonitorMinimized) {
-        setIsMonitorMinimized(currentState);
-      }
-    }, 100);
 
-    return () => {
-      window.removeEventListener('storage', handleStorageChange);
-      clearInterval(interval);
-    };
-  }, [isMonitorMinimized]);
 
-  // Performance monitoring hooks
-  const { measureRender } = usePerformanceMonitoring('ModernDashboard');
-
-  // Track component renders
-  useEffect(() => {
-    measureRender(() => {
-      performanceMonitor.markComponentRender('ModernDashboard', {
-        metricsCount: Object.keys(metrics || {}).length,
-        technicianCount: technicianRanking.length,
-        isLoading,
-      });
-    });
-  }, [metrics, technicianRanking, isLoading, measureRender]);
 
   // Memoizar dados do ranking processados
   const processedRankingData = useMemo(() => {
@@ -198,9 +160,7 @@ export const ModernDashboard = React.memo<ModernDashboardProps>(function ModernD
       initial='hidden'
       animate='visible'
       className={cn(
-        isMonitorMinimized
-          ? 'dashboard-fullscreen-container-minimized'
-          : 'dashboard-fullscreen-container',
+        'dashboard-fullscreen-container',
         className
       )}
     >
@@ -224,10 +184,8 @@ export const ModernDashboard = React.memo<ModernDashboardProps>(function ModernD
         </motion.div>
       </div>
 
-      {/* Layout inferior com ranking e monitor de requisições */}
-      <div
-        className={isMonitorMinimized ? 'dashboard-bottom-grid-minimized' : 'dashboard-bottom-grid'}
-      >
+      {/* Layout inferior com ranking */}
+      <div className='dashboard-bottom-grid'>
         {/* Ranking de técnicos */}
         <motion.div variants={itemVariants} className='dashboard-ranking-section'>
           <Suspense fallback={<TableSkeleton />}>
@@ -240,16 +198,10 @@ export const ModernDashboard = React.memo<ModernDashboardProps>(function ModernD
           </Suspense>
         </motion.div>
 
-        {/* Monitor de requisições - só renderizar se não estiver minimizado */}
-        {!isMonitorMinimized && (
-          <motion.div variants={itemVariants} className='dashboard-monitor-section'>
-            <RequestMonitorDashboard className='h-full' />
-          </motion.div>
-        )}
+
       </div>
 
-      {/* Renderizar o monitor minimizado se necessário */}
-      {isMonitorMinimized && <RequestMonitorDashboard />}
+
     </motion.div>
   );
 });

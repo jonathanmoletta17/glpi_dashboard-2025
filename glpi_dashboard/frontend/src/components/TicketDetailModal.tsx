@@ -1,6 +1,7 @@
 import React from 'react';
 import { Ticket } from '../types/ticket';
 import { X, ExternalLink, Clock, User, Tag, Paperclip, MessageSquare } from 'lucide-react';
+import { formatDate } from '../lib/utils';
 
 interface TicketDetailModalProps {
   ticket: Ticket | null;
@@ -101,7 +102,7 @@ export const TicketDetailModal: React.FC<TicketDetailModalProps> = ({
                           )}
                           <span className="font-medium text-sm text-gray-900">{comment.author.name}</span>
                           <span className="text-xs text-gray-500">
-                            {new Date(comment.createdAt).toLocaleString('pt-BR')}
+                            {formatDate(comment.createdAt, 'time')}
                           </span>
                         </div>
                         <p className="text-sm text-gray-700">{comment.content}</p>
@@ -190,7 +191,7 @@ export const TicketDetailModal: React.FC<TicketDetailModalProps> = ({
                       </div>
                     </div>
                   </div>
-                  
+
                   {ticket.technician && (
                     <div>
                       <label className="text-sm font-medium text-gray-600 block mb-2">Técnico Responsável</label>
@@ -209,7 +210,7 @@ export const TicketDetailModal: React.FC<TicketDetailModalProps> = ({
                       </div>
                     </div>
                   )}
-                  
+
                   {ticket.group && (
                     <div>
                       <label className="text-sm font-medium text-gray-600 block mb-1">Grupo</label>
@@ -229,20 +230,20 @@ export const TicketDetailModal: React.FC<TicketDetailModalProps> = ({
                   <div>
                     <label className="text-sm font-medium text-gray-600 block mb-1">Criado em</label>
                     <p className="text-sm text-gray-900">
-                      {new Date(ticket.createdAt).toLocaleString('pt-BR')}
+                      {formatDate(ticket.createdAt, 'time')}
                     </p>
                   </div>
                   <div>
                     <label className="text-sm font-medium text-gray-600 block mb-1">Última atualização</label>
                     <p className="text-sm text-gray-900">
-                      {new Date(ticket.updatedAt).toLocaleString('pt-BR')}
+                      {formatDate(ticket.updatedAt, 'time')}
                     </p>
                   </div>
                   {ticket.dueDate && (
                     <div>
                       <label className="text-sm font-medium text-gray-600 block mb-1">Prazo</label>
                       <p className="text-sm text-gray-900">
-                        {new Date(ticket.dueDate).toLocaleString('pt-BR')}
+                        {formatDate(ticket.dueDate, 'time')}
                       </p>
                     </div>
                   )}

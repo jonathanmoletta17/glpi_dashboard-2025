@@ -2,24 +2,24 @@
 project:
   name: "GLPI Dashboard"
   type: "React + Python Flask"
-  
+
 common_issues:
   - name: "Dados Zerados"
-    check_files: 
+    check_files:
       - "frontend/src/hooks/useDashboard.ts"
       - "backend/api/routes.py"
     common_causes:
       - "Filtro de data automático"
       - "Variáveis não definidas"
       - "Problemas de API"
-      
+
   - name: "Erros de Referência"
     check_files:
       - "frontend/src/hooks/useDashboard.ts"
     search_patterns:
       - "currentDateRange"
       - "undefined variable"
-      
+
 debugging_priority:
   1. "Verificar console do navegador primeiro"
   2. "Buscar por variáveis não definidas"

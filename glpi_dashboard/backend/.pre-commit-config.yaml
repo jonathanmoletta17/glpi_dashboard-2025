@@ -1,5 +1,5 @@
 # Configuração do Pre-commit para Validação de Dependências
-# 
+#
 # Instalação:
 #   pip install pre-commit
 #   pre-commit install
@@ -77,7 +77,7 @@ fail_fast: false
 ci:
   autofix_commit_msg: |
     [pre-commit.ci] auto fixes from pre-commit hooks
-    
+
     for more information, see https://pre-commit.ci
   autofix_prs: true
   autoupdate_branch: ''

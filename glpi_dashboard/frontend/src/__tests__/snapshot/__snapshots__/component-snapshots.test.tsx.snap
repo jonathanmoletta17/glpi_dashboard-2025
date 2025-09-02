@@ -1131,11 +1131,11 @@ exports[`Testes de Snapshot de Componentes > Layouts Complexos > deve capturar s
       <div
         class="pagination-info"
       >
-        Mostrando 
+        Mostrando
         1
         -
         10
-         de 
+         de
         50
          registros
       </div>
@@ -1391,11 +1391,11 @@ exports[`Testes de Snapshot de Componentes > Paginação > deve capturar snapsho
   <div
     class="pagination-info"
   >
-    Mostrando 
+    Mostrando
     21
     -
     30
-     de 
+     de
     100
      registros
   </div>
@@ -1473,11 +1473,11 @@ exports[`Testes de Snapshot de Componentes > Paginação > deve capturar snapsho
   <div
     class="pagination-info"
   >
-    Mostrando 
+    Mostrando
     1
     -
     10
-     de 
+     de
     50
      registros
   </div>
@@ -1531,11 +1531,11 @@ exports[`Testes de Snapshot de Componentes > Paginação > deve capturar snapsho
   <div
     class="pagination-info"
   >
-    Mostrando 
+    Mostrando
     41
     -
     50
-     de 
+     de
     50
      registros
   </div>

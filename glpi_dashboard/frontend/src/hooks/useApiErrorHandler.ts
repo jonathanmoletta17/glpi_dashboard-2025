@@ -3,7 +3,7 @@ import { useState, useCallback, useRef } from 'react';
 /**
  * Tipos de erro que podem ocorrer nas requisições de API
  */
-export type ApiErrorType = 
+export type ApiErrorType =
   | 'timeout'
   | 'connection'
   | 'server'
@@ -211,7 +211,7 @@ export function useApiErrorHandler(config: ApiErrorHandlerConfig = {}) {
     ): Promise<T> => {
       const effectiveConfig = { ...config, ...customConfig };
       const effectiveMaxRetries = effectiveConfig.maxRetries ?? maxRetries;
-      
+
       let lastError: Error;
       let attempt = 0;
 
@@ -233,7 +233,7 @@ export function useApiErrorHandler(config: ApiErrorHandlerConfig = {}) {
           }));
 
           const result = await apiFunction();
-          
+
           // Sucesso - resetar estado de erro
           setErrorState({
             lastError: null,
@@ -241,7 +241,7 @@ export function useApiErrorHandler(config: ApiErrorHandlerConfig = {}) {
             retryCount: 0,
             hasMaxRetriesReached: false,
           });
-          
+
           return result;
         } catch (error) {
           // Safely handle error conversion to avoid primitive conversion issues

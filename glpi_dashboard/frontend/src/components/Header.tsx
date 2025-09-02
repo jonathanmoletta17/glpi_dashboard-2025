@@ -27,7 +27,6 @@ interface HeaderProps {
   ) => void;
   onDateRangeChange?: (dateRange: { startDate: string; endDate: string; label: string }) => void;
   onFilterTypeChange?: (type: string) => void;
-  onPerformanceDashboard?: () => void;
 }
 
 const themes: { value: Theme; label: string; icon: string }[] = [
@@ -58,7 +57,6 @@ export const Header: React.FC<HeaderProps> = ({
   onNotification,
   onDateRangeChange,
   onFilterTypeChange,
-  onPerformanceDashboard,
 }) => {
   const [showSearchResults, setShowSearchResults] = useState(false);
   const [showThemeSelector, setShowThemeSelector] = useState(false);
@@ -365,24 +363,7 @@ export const Header: React.FC<HeaderProps> = ({
 
           {/* ========== SEÇÃO DIREITA: CONTROLES + STATUS ========== */}
           <div className='flex items-center space-x-4 flex-shrink-0'>
-            {/* Performance Dashboard Button */}
-            {onPerformanceDashboard && (
-              <button
-                onClick={onPerformanceDashboard}
-                className='btn-secondary flex items-center space-x-2 px-3 py-2 rounded-xl text-sm font-medium hover:bg-blue-50 hover:text-blue-600 transition-colors'
-                title='Abrir Dashboard de Performance'
-              >
-                <svg className='w-4 h-4' fill='none' stroke='currentColor' viewBox='0 0 24 24'>
-                  <path
-                    strokeLinecap='round'
-                    strokeLinejoin='round'
-                    strokeWidth={2}
-                    d='M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z'
-                  />
-                </svg>
-                <span>Performance</span>
-              </button>
-            )}
+
 
             {/* Theme Selector */}
             <div className='relative' ref={themeRef}>

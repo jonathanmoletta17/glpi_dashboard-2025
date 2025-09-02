@@ -100,7 +100,7 @@ sequenceDiagram
     participant B as Backend
     participant C as Cache
     participant G as GLPI
-    
+
     F->>B: GET /api/metrics
     B->>C: Check cache
     alt Cache Hit
@@ -122,23 +122,23 @@ sequenceDiagram
 def get_metrics(filters):
     # 1. Validação de entrada
     validated_filters = validate_filters(filters)
-    
+
     # 2. Verificação de cache
     cache_key = generate_cache_key(validated_filters)
     cached_data = cache.get(cache_key)
-    
+
     if cached_data:
         return cached_data
-    
+
     # 3. Busca no GLPI
     glpi_data = glpi_service.search_tickets(validated_filters)
-    
+
     # 4. Transformação de dados
     metrics = transform_to_metrics(glpi_data)
-    
+
     # 5. Cache do resultado
     cache.set(cache_key, metrics, ttl=300)
-    
+
     return metrics
 ```
 
@@ -156,10 +156,10 @@ def get_metrics(filters):
 ```python
 class GLPIRepository:
     """Abstração para acesso aos dados do GLPI"""
-    
+
     def find_tickets(self, criteria: SearchCriteria) -> List[Ticket]:
         pass
-    
+
     def get_ticket_by_id(self, ticket_id: int) -> Optional[Ticket]:
         pass
 ```
@@ -169,11 +169,11 @@ class GLPIRepository:
 ```python
 class MetricsService:
     """Serviço para cálculo de métricas"""
-    
+
     def __init__(self, glpi_repo: GLPIRepository, cache: Cache):
         self.glpi_repo = glpi_repo
         self.cache = cache
-    
+
     def calculate_metrics(self, filters: MetricsFilters) -> Metrics:
         # Lógica de negócio para cálculo de métricas
         pass

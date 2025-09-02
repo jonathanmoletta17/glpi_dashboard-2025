@@ -94,7 +94,7 @@ class PromptTester:
         """Testa prompt de desenvolvimento com cenário específico"""
         prompt = self.load_prompt('development', scenario)
         response = self.simulate_ai_response(prompt)
-        
+
         return {
             'accuracy': self.measure_accuracy(response),
             'completeness': self.check_completeness(response),
@@ -154,13 +154,13 @@ class PerformanceTester:
         """Mede impacto da IA em operações específicas"""
         start_time = time.time()
         start_memory = psutil.Process().memory_info().rss
-        
+
         # Executar operação com IA
         result = self.execute_with_ai(operation)
-        
+
         end_time = time.time()
         end_memory = psutil.Process().memory_info().rss
-        
+
         return {
             'execution_time': end_time - start_time,
             'memory_usage': end_memory - start_memory,
@@ -254,7 +254,7 @@ class SandboxRunner:
     def __init__(self, config_path: str = None):
         self.config = self.load_config(config_path)
         self.results = []
-    
+
     def run_all_tests(self) -> Dict:
         """Executa todos os testes do sandbox"""
         results = {
@@ -263,46 +263,46 @@ class SandboxRunner:
             'integration_tests': self.run_integration_tests(),
             'code_quality_tests': self.run_code_quality_tests()
         }
-        
+
         self.generate_report(results)
         return results
-    
+
     def run_prompt_tests(self) -> List[Dict]:
         """Executa testes de prompts"""
         test_cases = self.load_test_cases('prompts')
         results = []
-        
+
         for case in test_cases:
             result = self.execute_prompt_test(case)
             results.append(result)
-            
+
         return results
-    
+
     def generate_report(self, results: Dict) -> None:
         """Gera relatório dos testes"""
         report_path = Path('docs/ai/sandbox/results/latest_report.json')
         report_path.parent.mkdir(parents=True, exist_ok=True)
-        
+
         with open(report_path, 'w') as f:
             json.dump(results, f, indent=2)
-        
+
         print(f"Relatório gerado: {report_path}")
 
 if __name__ == '__main__':
     parser = argparse.ArgumentParser(description='Sandbox de Testes IA')
     parser.add_argument('--config', help='Arquivo de configuração')
     parser.add_argument('--test-type', choices=['all', 'prompts', 'performance', 'integration'])
-    
+
     args = parser.parse_args()
-    
+
     runner = SandboxRunner(args.config)
-    
+
     if args.test_type == 'all':
         results = runner.run_all_tests()
     elif args.test_type == 'prompts':
         results = runner.run_prompt_tests()
     # ... outros tipos
-    
+
     print(f"Testes concluídos. Resultados: {len(results)} casos testados")
 ```
 
@@ -345,30 +345,30 @@ import plotly.express as px
 
 def create_dashboard():
     st.title('🧪 Sandbox IA - Dashboard de Métricas')
-    
+
     # Carregar dados dos testes
     results = load_test_results()
-    
+
     # Métricas principais
     col1, col2, col3, col4 = st.columns(4)
-    
+
     with col1:
         st.metric('Precisão Média', f"{results['accuracy']:.2%}")
-    
+
     with col2:
         st.metric('Tempo Médio', f"{results['avg_time']:.2f}s")
-    
+
     with col3:
         st.metric('Qualidade Código', f"{results['code_quality']:.2%}")
-    
+
     with col4:
         st.metric('Taxa Sucesso', f"{results['success_rate']:.2%}")
-    
+
     # Gráficos
     st.subheader('Performance por Tipo de Teste')
     fig = px.bar(results['by_type'], x='test_type', y='performance')
     st.plotly_chart(fig)
-    
+
     # Histórico
     st.subheader('Histórico de Testes')
     fig_timeline = px.line(results['timeline'], x='date', y='accuracy')

@@ -2,7 +2,7 @@
   "environment": "sandbox",
   "version": "1.0.0",
   "description": "Configuração do sandbox para testes de integração IA - GLPI Dashboard",
-  
+
   "ai_models": {
     "primary": "claude-3-sonnet",
     "fallback": "gpt-4",
@@ -13,7 +13,7 @@
       "temperature": 0.1
     }
   },
-  
+
   "test_settings": {
     "timeout": 30,
     "max_retries": 3,
@@ -22,7 +22,7 @@
     "fail_fast": false,
     "verbose_output": true
   },
-  
+
   "mock_data": {
     "glpi_url": "http://localhost:8080/mock-glpi",
     "redis_url": "redis://localhost:6379/15",
@@ -34,7 +34,7 @@
       "average_ms": 200
     }
   },
-  
+
   "metrics": {
     "accuracy_threshold": 0.85,
     "performance_threshold": 2.0,
@@ -42,7 +42,7 @@
     "success_rate_threshold": 0.80,
     "code_coverage_threshold": 0.75
   },
-  
+
   "test_categories": {
     "development": {
       "enabled": true,
@@ -86,7 +86,7 @@
       ]
     }
   },
-  
+
   "prompt_templates": {
     "base_context": {
       "project_name": "GLPI Dashboard",
@@ -131,7 +131,7 @@
       ]
     }
   },
-  
+
   "performance_benchmarks": {
     "api_response_time": {
       "excellent": 100,
@@ -151,7 +151,7 @@
       "max_ops_per_second": 200
     }
   },
-  
+
   "reporting": {
     "output_formats": ["json", "html", "markdown"],
     "include_details": true,
@@ -161,7 +161,7 @@
     "save_history": true,
     "max_history_files": 50
   },
-  
+
   "security": {
     "sandbox_isolation": true,
     "network_restrictions": {
@@ -181,7 +181,7 @@
       "timeout_seconds": 10
     }
   },
-  
+
   "logging": {
     "level": "INFO",
     "format": "%(asctime)s - %(name)s - %(levelname)s - %(message)s",
@@ -191,7 +191,7 @@
     "max_file_size": "10MB",
     "backup_count": 5
   },
-  
+
   "integrations": {
     "prometheus": {
       "enabled": false,
@@ -209,7 +209,7 @@
       "notify_on_success": false
     }
   },
-  
+
   "experimental": {
     "auto_fix_enabled": false,
     "learning_mode": true,

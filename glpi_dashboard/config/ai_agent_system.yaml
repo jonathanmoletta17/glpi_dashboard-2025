@@ -10,7 +10,7 @@ system:
   environment: "production"  # development, staging, production
   debug_mode: false
   log_level: "INFO"  # DEBUG, INFO, WARNING, ERROR, CRITICAL
-  
+
   # Diretórios do sistema
   directories:
     models: "./models"
@@ -33,12 +33,12 @@ hardware:
     memory_fraction: 0.9  # Fração da VRAM a ser utilizada
     allow_growth: true
     mixed_precision: true
-    
+
   # Configurações de CPU
   cpu:
     max_workers: 8
     thread_pool_size: 16
-    
+
   # Configurações de memória
   memory:
     max_ram_usage_gb: 32
@@ -58,7 +58,7 @@ models:
     precision: "fp16"
     quantization: null
     use_cases: ["reasoning", "analysis", "multilingual"]
-    
+
     # Configurações de inferência
     inference:
       max_new_tokens: 2048
@@ -67,13 +67,13 @@ models:
       top_k: 50
       repetition_penalty: 1.1
       do_sample: true
-      
+
     # Configurações de otimização
     optimization:
       flash_attention: true
       gradient_checkpointing: true
       cpu_offloading: false
-      
+
   # Modelo especializado em código Python
   codellama_python:
     name: "codellama/CodeLlama-13b-Python-hf"
@@ -83,7 +83,7 @@ models:
     precision: "fp16"
     quantization: "4bit"  # Para economizar VRAM
     use_cases: ["code_analysis", "debugging", "code_generation"]
-    
+
     inference:
       max_new_tokens: 1024
       temperature: 0.1  # Baixa para maior precisão
@@ -91,12 +91,12 @@ models:
       top_k: 40
       repetition_penalty: 1.05
       do_sample: true
-      
+
     optimization:
       flash_attention: true
       gradient_checkpointing: true
       cpu_offloading: true
-      
+
   # Modelo para análise de segurança
   security_model:
     name: "deepseek-ai/deepseek-coder-6.7b-instruct"
@@ -106,7 +106,7 @@ models:
     precision: "fp16"
     quantization: "8bit"
     use_cases: ["security_audit", "vulnerability_detection"]
-    
+
     inference:
       max_new_tokens: 512
       temperature: 0.05  # Muito baixa para máxima precisão
@@ -114,12 +114,12 @@ models:
       top_k: 30
       repetition_penalty: 1.0
       do_sample: false  # Determinístico para segurança
-      
+
     optimization:
       flash_attention: true
       gradient_checkpointing: true
       cpu_offloading: true
-      
+
   # Modelo para documentação
   documentation_model:
     name: "mistralai/Mistral-7B-Instruct-v0.2"
@@ -129,7 +129,7 @@ models:
     precision: "fp16"
     quantization: "4bit"
     use_cases: ["documentation", "comments", "explanations"]
-    
+
     inference:
       max_new_tokens: 1024
       temperature: 0.4
@@ -137,7 +137,7 @@ models:
       top_k: 50
       repetition_penalty: 1.1
       do_sample: true
-      
+
     optimization:
       flash_attention: true
       gradient_checkpointing: true
@@ -153,34 +153,34 @@ orchestration:
     task_timeout_seconds: 300
     retry_attempts: 3
     retry_delay_seconds: 5
-    
+
   # Modos de execução
   execution_modes:
     default: "adaptive"  # sequential, parallel, pipeline, collaborative, adaptive
     fallback: "sequential"
-    
+
   # Balanceamento de carga
   load_balancing:
     strategy: "round_robin"  # round_robin, least_loaded, priority_based
     health_check_interval: 30
-    
+
   # Configurações de agentes
   agents:
     code_analyst:
       model: "codellama_python"
       priority: "high"
       max_instances: 2
-      
+
     security_auditor:
       model: "security_model"
       priority: "critical"
       max_instances: 1
-      
+
     documentation_generator:
       model: "documentation_model"
       priority: "medium"
       max_instances: 2
-      
+
     reasoning_agent:
       model: "nemotron_nano"
       priority: "high"
@@ -194,7 +194,7 @@ quality_gates:
   enabled: true
   fail_fast: false  # Para em caso de falha crítica
   generate_reports: true
-  
+
   # Gates de segurança
   security:
     sql_injection_prevention:
@@ -202,56 +202,56 @@ quality_gates:
       severity: "critical"
       threshold: 0.0  # Zero tolerância
       patterns:
-        - "\$_GET\[.*\].*sql"
-        - "\$_POST\[.*\].*query"
-        - "mysql_query\(\$_"
+        - '\$_GET\[.*\].*sql'
+        - '\$_POST\[.*\].*query'
+        - 'mysql_query\(\$_'
       whitelist:
         - "prepared_statement"
         - "PDO::prepare"
-        
+
     xss_protection:
       enabled: true
       severity: "critical"
       threshold: 0.0
       patterns:
-        - "echo \$_GET"
-        - "print \$_POST"
-        - "<script.*\$_"
+        - 'echo \$_GET'
+        - 'print \$_POST'
+        - '<script.*\$_'
       whitelist:
         - "htmlspecialchars"
         - "filter_var"
-        
+
     authentication_validation:
       enabled: true
       severity: "high"
       threshold: 0.1
       patterns:
-        - "\$_SESSION\[.*\].*auth"
+        - '\$_SESSION\[.*\].*auth'
         - "login.*without.*validation"
-      
+
     authorization_checks:
       enabled: true
       severity: "high"
       threshold: 0.1
-      
+
   # Gates de performance
   performance:
     response_time:
       enabled: true
       severity: "medium"
       threshold: 2.0  # segundos
-      
+
     memory_usage:
       enabled: true
       severity: "medium"
       threshold: 512  # MB
-      
+
     database_queries:
       enabled: true
       severity: "medium"
       max_queries_per_request: 10
       slow_query_threshold: 1.0  # segundos
-      
+
   # Gates de qualidade de código
   code_quality:
     complexity:
@@ -259,34 +259,34 @@ quality_gates:
       severity: "medium"
       cyclomatic_threshold: 10
       cognitive_threshold: 15
-      
+
     test_coverage:
       enabled: true
       severity: "medium"
       minimum_coverage: 0.8  # 80%
-      
+
     documentation:
       enabled: true
       severity: "low"
       minimum_coverage: 0.7  # 70%
-      
+
     coding_standards:
       enabled: true
       severity: "low"
       standard: "PSR-12"
-      
+
   # Gates específicos do GLPI
   glpi_specific:
     glpi_hooks:
       enabled: true
       severity: "medium"
       required_hooks: ["pre_item_add", "post_item_update"]
-      
+
     glpi_rights:
       enabled: true
       severity: "high"
       check_rights_usage: true
-      
+
     glpi_database:
       enabled: true
       severity: "medium"
@@ -301,13 +301,13 @@ telemetry:
   enabled: true
   collection_interval: 30  # segundos
   retention_days: 30
-  
+
   # NVIDIA NeMo telemetria
   nemo:
     enabled: true
     observability_level: "INFO"  # DEBUG, INFO, WARNING, ERROR
     profiling_enabled: true
-    
+
     # Métricas coletadas
     metrics:
       - "latency"
@@ -316,7 +316,7 @@ telemetry:
       - "memory_usage"
       - "gpu_utilization"
       - "model_performance"
-      
+
   # Métricas do sistema
   system_metrics:
     cpu_usage: true
@@ -324,24 +324,24 @@ telemetry:
     disk_usage: true
     gpu_metrics: true
     network_io: false
-    
+
   # Métricas de aplicação
   application_metrics:
     task_completion_rate: true
     error_rate: true
     quality_gate_pass_rate: true
     model_accuracy: true
-    
+
   # Exportadores
   exporters:
     prometheus:
       enabled: false
       port: 9090
-      
+
     json_file:
       enabled: true
       file_path: "./logs/metrics.json"
-      
+
     console:
       enabled: true
       interval: 60  # segundos
@@ -353,38 +353,38 @@ logging:
   # Configurações gerais
   level: "INFO"
   format: "%(asctime)s - %(name)s - %(levelname)s - %(message)s"
-  
+
   # Handlers
   handlers:
     console:
       enabled: true
       level: "INFO"
-      
+
     file:
       enabled: true
       level: "DEBUG"
       file_path: "./logs/ai_agent_system.log"
       max_size_mb: 100
       backup_count: 5
-      
+
     error_file:
       enabled: true
       level: "ERROR"
       file_path: "./logs/errors.log"
       max_size_mb: 50
       backup_count: 3
-      
+
   # Loggers específicos
   loggers:
     nvidia_orchestrator:
       level: "INFO"
-      
+
     quality_gates:
       level: "DEBUG"
-      
+
     glpi_integration:
       level: "INFO"
-      
+
     security:
       level: "WARNING"
 
@@ -398,13 +398,13 @@ glpi_integration:
     version: "v1"
     timeout: 30
     retry_attempts: 3
-    
+
     # Autenticação
     auth:
       method: "user_token"  # user_token, app_token, session
       user_token: "${GLPI_USER_TOKEN}"  # Variável de ambiente
       app_token: "${GLPI_APP_TOKEN}"
-      
+
   # Configurações do banco de dados
   database:
     host: "localhost"
@@ -414,7 +414,7 @@ glpi_integration:
     # Credenciais via variáveis de ambiente
     username: "${GLPI_DB_USER}"
     password: "${GLPI_DB_PASSWORD}"
-    
+
   # Configurações de análise
   analysis:
     # Diretórios para análise
@@ -423,28 +423,28 @@ glpi_integration:
       - "./inc"
       - "./front"
       - "./ajax"
-      
+
     # Extensões de arquivo
     file_extensions:
       - ".php"
       - ".js"
       - ".css"
       - ".sql"
-      
+
     # Exclusões
     exclude_patterns:
       - "*/vendor/*"
       - "*/node_modules/*"
       - "*/cache/*"
       - "*/logs/*"
-      
+
   # Configurações de relatórios
   reporting:
     output_format: "json"  # json, html, pdf
     include_metrics: true
     include_recommendations: true
     include_code_samples: true
-    
+
     # Templates de relatório
     templates:
       security_audit: "./templates/security_report.html"
@@ -460,26 +460,26 @@ security:
     algorithm: "AES-256-GCM"
     key_derivation: "PBKDF2"
     iterations: 100000
-    
+
   # Configurações de acesso
   access_control:
     require_authentication: true
     session_timeout: 3600  # segundos
     max_failed_attempts: 5
     lockout_duration: 300  # segundos
-    
+
   # Configurações de auditoria
   audit:
     log_all_actions: true
     log_sensitive_data: false
     retention_days: 90
-    
+
   # Configurações de validação
   validation:
     input_sanitization: true
     output_encoding: true
     csrf_protection: true
-    
+
   # Padrões de conformidade
   compliance:
     standards:
@@ -487,7 +487,7 @@ security:
       - "ISO_27001"
       - "GDPR"
       - "LGPD"
-    
+
     # Verificações obrigatórias
     mandatory_checks:
       - "sql_injection"
@@ -505,25 +505,25 @@ development:
     enabled: false
     verbose_logging: false
     save_intermediate_results: false
-    
+
   # Configurações de teste
   testing:
     auto_run_tests: true
     test_coverage_threshold: 0.8
     performance_benchmarks: true
-    
+
   # Configurações de profiling
   profiling:
     enabled: false
     profile_models: false
     profile_quality_gates: false
-    
+
   # Configurações de cache
   cache:
     enabled: true
     ttl_seconds: 3600
     max_size_mb: 1024
-    
+
 # =============================================================================
 # CONFIGURAÇÕES DE PRODUÇÃO
 # =============================================================================
@@ -534,34 +534,34 @@ production:
     result_caching: true
     batch_processing: true
     async_execution: true
-    
+
   # Configurações de escalabilidade
   scaling:
     auto_scaling: false
     min_instances: 1
     max_instances: 4
     scale_threshold: 0.8
-    
+
   # Configurações de backup
   backup:
     enabled: true
     interval_hours: 24
     retention_days: 7
     backup_path: "./backups"
-    
+
   # Configurações de monitoramento
   monitoring:
     health_checks: true
     alerting: true
     dashboard_enabled: true
-    
+
 # =============================================================================
 # CONFIGURAÇÕES DE NOTIFICAÇÕES
 # =============================================================================
 notifications:
   # Configurações gerais
   enabled: true
-  
+
   # Canais de notificação
   channels:
     email:
@@ -570,18 +570,18 @@ notifications:
       smtp_port: 587
       username: "${SMTP_USERNAME}"
       password: "${SMTP_PASSWORD}"
-      
+
     slack:
       enabled: false
       webhook_url: "${SLACK_WEBHOOK_URL}"
-      
+
     discord:
       enabled: false
       webhook_url: "${DISCORD_WEBHOOK_URL}"
-      
+
     console:
       enabled: true
-      
+
   # Tipos de notificação
   events:
     critical_error: true
@@ -600,7 +600,7 @@ environment_variables:
     - "GLPI_APP_TOKEN"
     - "GLPI_DB_USER"
     - "GLPI_DB_PASSWORD"
-    
+
   # Variáveis opcionais
   optional:
     - "SMTP_USERNAME"
@@ -620,45 +620,45 @@ workflows:
       - name: "code_analysis"
         agent: "code_analyst"
         timeout: 300
-        
+
       - name: "security_audit"
         agent: "security_auditor"
         timeout: 600
         depends_on: ["code_analysis"]
-        
+
       - name: "documentation_generation"
         agent: "documentation_generator"
         timeout: 300
         depends_on: ["code_analysis"]
-        
+
       - name: "quality_validation"
         agent: "reasoning_agent"
         timeout: 180
         depends_on: ["code_analysis", "security_audit"]
-        
+
   # Workflow de auditoria de segurança
   security_audit:
     steps:
       - name: "vulnerability_scan"
         agent: "security_auditor"
         timeout: 600
-        
+
       - name: "compliance_check"
         agent: "reasoning_agent"
         timeout: 300
         depends_on: ["vulnerability_scan"]
-        
+
   # Workflow de geração de documentação
   documentation_generation:
     steps:
       - name: "code_documentation"
         agent: "documentation_generator"
         timeout: 300
-        
+
       - name: "api_documentation"
         agent: "documentation_generator"
         timeout: 300
-        
+
       - name: "user_guide"
         agent: "documentation_generator"
         timeout: 300
@@ -673,13 +673,13 @@ templates:
     php_class: "./templates/php_class.template"
     php_function: "./templates/php_function.template"
     javascript_module: "./templates/js_module.template"
-    
+
   # Templates de documentação
   documentation:
     api_endpoint: "./templates/api_endpoint.md"
     function_doc: "./templates/function_doc.md"
     class_doc: "./templates/class_doc.md"
-    
+
   # Templates de relatórios
   reports:
     security_report: "./templates/security_report.html"

@@ -54,12 +54,12 @@ export const TimeoutFallback: React.FC<TimeoutFallbackProps> = ({
 
   // Determinar tipo de erro
   const effectiveErrorType = errorInfo?.type || errorType || 'timeout';
-  
+
   // Determinar mensagem baseada no tipo de erro
   const getErrorMessage = () => {
     if (message) return message;
     if (errorInfo?.message) return errorInfo.message;
-    
+
     switch (effectiveErrorType) {
       case 'timeout':
         return 'A requisição demorou mais que o esperado para responder';
@@ -171,11 +171,11 @@ export const TimeoutFallback: React.FC<TimeoutFallbackProps> = ({
   const retryPercentage = (retryCount / maxRetries) * 100;
 
   return (
-    <div 
+    <div
       className={`
-        ${colors.bg} ${colors.border} ${colors.text} 
-        ${sizes.container} 
-        border rounded-lg 
+        ${colors.bg} ${colors.border} ${colors.text}
+        ${sizes.container}
+        border rounded-lg
         ${fullHeight ? 'min-h-full flex flex-col justify-center' : ''}
       `}
     >
@@ -214,7 +214,7 @@ export const TimeoutFallback: React.FC<TimeoutFallbackProps> = ({
               <span>{Math.round(retryPercentage)}%</span>
             </div>
             <div className="w-full bg-gray-200 rounded-full h-2">
-              <div 
+              <div
                 className={`h-2 rounded-full transition-all duration-300 ${
                   effectiveErrorType === 'timeout' ? 'bg-orange-500' : 'bg-red-500'
                 }`}
@@ -232,11 +232,11 @@ export const TimeoutFallback: React.FC<TimeoutFallbackProps> = ({
               onClick={onRetry}
               disabled={isRetrying}
               className={`
-                ${colors.button} text-white 
-                ${sizes.button} 
-                rounded-md font-medium 
-                flex items-center justify-center gap-2 
-                disabled:opacity-50 disabled:cursor-not-allowed 
+                ${colors.button} text-white
+                ${sizes.button}
+                rounded-md font-medium
+                flex items-center justify-center gap-2
+                disabled:opacity-50 disabled:cursor-not-allowed
                 transition-colors duration-200
                 flex-1
               `}
@@ -251,10 +251,10 @@ export const TimeoutFallback: React.FC<TimeoutFallbackProps> = ({
             <button
               onClick={onEnableOfflineMode}
               className="
-                bg-gray-600 hover:bg-gray-700 text-white 
-                px-4 py-2 text-sm 
-                rounded-md font-medium 
-                flex items-center justify-center gap-2 
+                bg-gray-600 hover:bg-gray-700 text-white
+                px-4 py-2 text-sm
+                rounded-md font-medium
+                flex items-center justify-center gap-2
                 transition-colors duration-200
                 flex-1
               "
@@ -274,7 +274,7 @@ export const TimeoutFallback: React.FC<TimeoutFallbackProps> = ({
             >
               {showDetails ? 'Ocultar' : 'Mostrar'} detalhes técnicos
             </button>
-            
+
             {showDetails && (
               <div className="mt-3 p-3 bg-gray-100 rounded text-xs font-mono text-left overflow-auto">
                 <div><strong>Tipo:</strong> {errorInfo.type}</div>

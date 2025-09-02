@@ -91,7 +91,7 @@ useEffect(() => {
       progresso: metrics.progresso,
       resolvidos: metrics.resolvidos
     });
-    
+
     if (!frontendValidation.isValid) {
       console.error('❌ VALIDAÇÃO FALHOU:', frontendValidation.errors);
     }
@@ -182,6 +182,6 @@ npm run dev
 
 ---
 
-**Data da Solução**: 18/08/2025  
-**Versão**: 1.0  
+**Data da Solução**: 18/08/2025
+**Versão**: 1.0
 **Status**: ✅ Resolvido e Testado

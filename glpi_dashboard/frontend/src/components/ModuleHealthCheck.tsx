@@ -24,9 +24,9 @@ const ModuleHealthCheck: React.FC<ModuleHealthCheckProps> = ({
   // Lista expandida de módulos para verificar
   const modulesToCheck = [
     // Componentes principais do dashboard
-    { name: 'DataIntegrityMonitor', path: './DataIntegrityMonitor' },
+
     { name: 'ProfessionalDashboard', path: './ProfessionalDashboard' },
-    
+
     // Componentes de dashboard
     { name: 'TicketChart', path: './dashboard/TicketChart' },
     { name: 'NewTicketsList', path: './dashboard/NewTicketsList' },
@@ -34,11 +34,11 @@ const ModuleHealthCheck: React.FC<ModuleHealthCheckProps> = ({
     { name: 'RankingTableWithLoading', path: './dashboard/RankingTableWithLoading' },
     { name: 'StatusCard', path: './dashboard/StatusCard' },
     { name: 'ModernDashboard', path: './dashboard/ModernDashboard' },
-    
+
     // Componentes de carregamento e UI
     { name: 'UnifiedLoading', path: './UnifiedLoading' },
     { name: 'LazyComponents', path: './LazyComponents' },
-    
+
     // Componentes de fallback e erro
     { name: 'TimeoutFallback', path: './fallback/TimeoutFallback' },
     { name: 'ErrorBoundary', path: './ErrorBoundary' }
@@ -46,12 +46,12 @@ const ModuleHealthCheck: React.FC<ModuleHealthCheckProps> = ({
 
   const checkModuleHealth = async (moduleName: string, modulePath: string): Promise<ModuleStatus> => {
     const startTime = performance.now();
-    
+
     try {
       // Tentar importar o módulo dinamicamente
       await import(/* @vite-ignore */ modulePath);
       const loadTime = performance.now() - startTime;
-      
+
       return {
         name: moduleName,
         loaded: true,
@@ -69,13 +69,13 @@ const ModuleHealthCheck: React.FC<ModuleHealthCheckProps> = ({
   const runHealthCheck = async () => {
     try {
       const results = await Promise.all(
-        modulesToCheck.map(module => 
+        modulesToCheck.map(module =>
           checkModuleHealth(module.name, module.path)
         )
       );
 
       setModuleStatuses(results);
-      
+
       const healthy = results.every(result => result.loaded);
       setIsHealthy(healthy);
 
@@ -117,8 +117,8 @@ const ModuleHealthCheck: React.FC<ModuleHealthCheckProps> = ({
     <div className="fixed bottom-4 left-4 z-50">
       <div className={`
         px-3 py-2 rounded-lg shadow-lg text-sm font-medium transition-all duration-300
-        ${isHealthy 
-          ? 'bg-green-100 text-green-800 border border-green-200' 
+        ${isHealthy
+          ? 'bg-green-100 text-green-800 border border-green-200'
           : 'bg-red-100 text-red-800 border border-red-200'
         }
       `}>
@@ -131,7 +131,7 @@ const ModuleHealthCheck: React.FC<ModuleHealthCheckProps> = ({
             Módulos: {moduleStatuses.filter(m => m.loaded).length}/{moduleStatuses.length}
           </span>
         </div>
-        
+
         {/* Detalhes expandidos em desenvolvimento */}
         {import.meta.env.MODE === 'development' && (
           <details className="mt-2">
@@ -145,8 +145,8 @@ const ModuleHealthCheck: React.FC<ModuleHealthCheckProps> = ({
                     {module.name}
                   </span>
                   <span className="opacity-75">
-                    {module.loaded 
-                      ? `${module.loadTime}ms` 
+                    {module.loaded
+                      ? `${module.loadTime}ms`
                       : '❌'
                     }
                   </span>

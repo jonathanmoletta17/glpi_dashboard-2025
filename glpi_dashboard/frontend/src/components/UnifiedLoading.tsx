@@ -15,25 +15,25 @@ interface UnifiedLoadingProps {
   type?: LoadingType;
   size?: LoadingSize;
   variant?: LoadingVariant;
-  
+
   // Conteúdo
   text?: string;
   title?: string;
-  
+
   // Configurações visuais
   fullScreen?: boolean;
   overlay?: boolean;
   className?: string;
-  
+
   // Skeleton específico
   skeletonType?: SkeletonType;
   skeletonCount?: number;
-  
+
   // Progress específico
   progress?: number;
   estimatedTime?: number;
   showTimeEstimate?: boolean;
-  
+
   // Callbacks
   onTimeout?: () => void;
   timeoutDuration?: number;
@@ -74,7 +74,7 @@ const UnifiedSkeleton: React.FC<{
   className?: string;
 }> = ({ type, count = 1, size, className = '' }) => {
   const skeletonClass = `bg-gray-200 dark:bg-gray-700 rounded animate-pulse ${className}`;
-  
+
   const renderSkeletonByType = () => {
     switch (type) {
       case 'card':
@@ -93,7 +93,7 @@ const UnifiedSkeleton: React.FC<{
             </div>
           </div>
         );
-        
+
       case 'list':
         return (
           <div className='space-y-3'>
@@ -106,7 +106,7 @@ const UnifiedSkeleton: React.FC<{
             ))}
           </div>
         );
-        
+
       case 'table':
         return (
           <div className='space-y-4'>
@@ -122,7 +122,7 @@ const UnifiedSkeleton: React.FC<{
             ))}
           </div>
         );
-        
+
       case 'metrics':
         return (
           <div className='grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6'>
@@ -142,7 +142,7 @@ const UnifiedSkeleton: React.FC<{
             ))}
           </div>
         );
-        
+
       case 'levels':
         return (
           <div className='space-y-6'>
@@ -174,14 +174,14 @@ const UnifiedSkeleton: React.FC<{
             </div>
           </div>
         );
-        
+
       default:
         return (
           <div className={`${sizeClasses[size].skeleton} w-full ${skeletonClass}`} />
         );
     }
   };
-  
+
   return <div className={className}>{renderSkeletonByType()}</div>;
 };
 
@@ -207,9 +207,9 @@ export const UnifiedLoading: React.FC<UnifiedLoadingProps> = ({
   const [elapsedTime, setElapsedTime] = useState(0);
   const [hasTimedOut, setHasTimedOut] = useState(false);
   const [calculatedProgress, setCalculatedProgress] = useState(0);
-  
+
   const config = componentConfigs.unifiedLoading;
-  
+
   // Reset states when loading changes
   useEffect(() => {
     if (isLoading) {
@@ -218,34 +218,34 @@ export const UnifiedLoading: React.FC<UnifiedLoadingProps> = ({
       setCalculatedProgress(0);
     }
   }, [isLoading]);
-  
+
   // Timer para elapsed time e progress
   useEffect(() => {
     if (!isLoading || type !== 'progress') return;
-    
+
     const interval = setInterval(() => {
       setElapsedTime(prev => {
         const newTime = prev + 1;
-        
+
         // Calcular progresso baseado no tempo estimado se não fornecido
         if (progress === undefined) {
           const progressPercent = Math.min((newTime / estimatedTime) * 100, 95);
           setCalculatedProgress(progressPercent);
         }
-        
+
         // Verificar timeout
         if (newTime >= timeoutDuration && !hasTimedOut) {
           setHasTimedOut(true);
           onTimeout?.();
         }
-        
+
         return newTime;
       });
     }, 1000);
-    
+
     return () => clearInterval(interval);
   }, [isLoading, type, estimatedTime, timeoutDuration, hasTimedOut, onTimeout, progress]);
-  
+
   const formatTime = (seconds: number) => {
     if (seconds < 60) {
       return `${seconds}s`;
@@ -254,15 +254,15 @@ export const UnifiedLoading: React.FC<UnifiedLoadingProps> = ({
     const remainingSeconds = seconds % 60;
     return `${minutes}m ${remainingSeconds}s`;
   };
-  
+
   const getStatusColor = () => {
     if (hasTimedOut) return 'text-red-600 dark:text-red-400';
     if (elapsedTime > estimatedTime * 0.8) return 'text-yellow-600 dark:text-yellow-400';
     return 'text-blue-600 dark:text-blue-400';
   };
-  
+
   if (!isLoading) return null;
-  
+
   const renderLoadingContent = () => {
     switch (type) {
       case 'skeleton':
@@ -274,7 +274,7 @@ export const UnifiedLoading: React.FC<UnifiedLoadingProps> = ({
             className={className}
           />
         );
-        
+
       case 'progress':
         const currentProgress = progress !== undefined ? progress : calculatedProgress;
         return (
@@ -284,7 +284,7 @@ export const UnifiedLoading: React.FC<UnifiedLoadingProps> = ({
                 {title}
               </h3>
             )}
-            
+
             <div className='w-full max-w-xs'>
               <div className='flex justify-between items-center mb-2'>
                 <span className={`${sizeClasses[size].text} text-gray-600 dark:text-gray-400`}>
@@ -296,7 +296,7 @@ export const UnifiedLoading: React.FC<UnifiedLoadingProps> = ({
                   </span>
                 )}
               </div>
-              
+
               <div className='w-full bg-gray-200 dark:bg-gray-700 rounded-full h-2'>
                 <motion.div
                   className='bg-blue-600 dark:bg-blue-400 h-2 rounded-full'
@@ -305,7 +305,7 @@ export const UnifiedLoading: React.FC<UnifiedLoadingProps> = ({
                   transition={{ duration: 0.5 }}
                 />
               </div>
-              
+
               <div className='flex justify-between items-center mt-2'>
                 <span className={`${sizeClasses[size].text} text-gray-500 dark:text-gray-400`}>
                   {Math.round(currentProgress)}%
@@ -320,7 +320,7 @@ export const UnifiedLoading: React.FC<UnifiedLoadingProps> = ({
             </div>
           </div>
         );
-        
+
       case 'overlay':
         return (
           <div className='fixed inset-0 bg-black bg-opacity-50 z-50 flex items-center justify-center'>
@@ -341,7 +341,7 @@ export const UnifiedLoading: React.FC<UnifiedLoadingProps> = ({
             </div>
           </div>
         );
-        
+
       default: // spinner
         const spinnerContent = (
           <div className={`flex flex-col items-center justify-center space-y-3 ${sizeClasses[size].container} ${className}`}>
@@ -353,7 +353,7 @@ export const UnifiedLoading: React.FC<UnifiedLoadingProps> = ({
             )}
           </div>
         );
-        
+
         if (fullScreen) {
           return (
             <div className='fixed inset-0 bg-white dark:bg-gray-900 bg-opacity-80 dark:bg-opacity-80 backdrop-blur-sm z-50 flex items-center justify-center'>
@@ -361,11 +361,11 @@ export const UnifiedLoading: React.FC<UnifiedLoadingProps> = ({
             </div>
           );
         }
-        
+
         return spinnerContent;
     }
   };
-  
+
   return (
     <AnimatePresence>
       {isLoading && (
@@ -431,12 +431,12 @@ export const ErrorState: React.FC<ErrorStateProps> = ({
       <div className='w-16 h-16 bg-red-100 dark:bg-red-900/20 rounded-full flex items-center justify-center'>
         <AlertCircle className='w-8 h-8 text-red-600 dark:text-red-400' />
       </div>
-      
+
       <div className='text-center space-y-2'>
         <h3 className='text-lg font-semibold text-gray-900 dark:text-white'>{title}</h3>
         <p className='text-gray-600 dark:text-gray-400 max-w-md'>{message}</p>
       </div>
-      
+
       {onRetry && (
         <button onClick={onRetry} className='btn-primary flex items-center space-x-2'>
           <svg className='w-4 h-4' fill='none' stroke='currentColor' viewBox='0 0 24 24'>

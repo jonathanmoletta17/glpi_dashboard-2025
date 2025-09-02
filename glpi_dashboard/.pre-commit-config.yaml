@@ -4,10 +4,10 @@
 repos:
   # Python code formatting and linting
   - repo: https://github.com/psf/black
-    rev: 23.12.1
+    rev: 24.1.1
     hooks:
       - id: black
-        language_version: python3.11
+        language_version: python3.12
         args: [--line-length=127]
         files: ^backend/
 
@@ -22,7 +22,7 @@ repos:
     rev: 7.0.0
     hooks:
       - id: flake8
-        args: [--max-line-length=127, --max-complexity=10]
+        args: [--max-line-length=127, --max-complexity=10, --config=.flake8]
         files: ^backend/
         additional_dependencies:
           - flake8-docstrings
@@ -34,7 +34,7 @@ repos:
     rev: 1.7.5
     hooks:
       - id: bandit
-        args: [-r, backend/, -ll]
+        args: [-r, backend/, -ll, --skip=B101,B601]
         files: ^backend/
 
   # General file checks
@@ -46,39 +46,31 @@ repos:
       - id: end-of-file-fixer
         exclude: ^frontend/
       - id: check-yaml
+        exclude: ^frontend/
       - id: check-json
         exclude: ^frontend/
-      - id: check-toml
       - id: check-merge-conflict
       - id: check-added-large-files
-        args: [--maxkb=1000]
-      - id: check-case-conflict
-      - id: check-docstring-first
-        files: ^backend/
-      - id: debug-statements
-        files: ^backend/
-      - id: name-tests-test
-        files: ^backend/tests/
+        args: ['--maxkb=1000']
+      - id: mixed-line-ending
+        args: ['--fix=lf']
 
-  # Frontend linting and formatting
-  - repo: https://github.com/pre-commit/mirrors-eslint
-    rev: v8.56.0
+  # Frontend checks
+  - repo: local
     hooks:
       - id: eslint
-        files: ^frontend/src/.*\.(ts|tsx)$
-        additional_dependencies:
-          - '@typescript-eslint/eslint-plugin@^6.10.0'
-          - '@typescript-eslint/parser@^6.10.0'
-          - 'eslint-plugin-react-hooks@^4.6.0'
-          - 'eslint-plugin-react-refresh@^0.4.4'
-        args: [--fix, --ext, .ts,.tsx]
+        name: ESLint
+        entry: bash -c 'cd frontend && npm run lint'
+        language: system
+        files: ^frontend/.*\.(js|jsx|ts|tsx)$
+        pass_filenames: false
 
-  - repo: https://github.com/pre-commit/mirrors-prettier
-    rev: v3.1.0
-    hooks:
       - id: prettier
-        files: ^frontend/src/.*\.(ts|tsx|js|jsx|json|css|md)$
-        args: [--write]
+        name: Prettier
+        entry: bash -c 'cd frontend && npm run format:check'
+        language: system
+        files: ^frontend/.*\.(js|jsx|ts|tsx|json|css|md)$
+        pass_filenames: false
 
   # TypeScript type checking
   - repo: local

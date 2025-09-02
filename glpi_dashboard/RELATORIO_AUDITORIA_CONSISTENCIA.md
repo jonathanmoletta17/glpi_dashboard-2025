@@ -1,9 +1,9 @@
 # RELATÓRIO DE AUDITORIA - CONSISTÊNCIA DE DADOS
 ## Dashboard GLPI
 
-**Data da Auditoria:** 2024-01-15  
-**Versão do Sistema:** 1.0  
-**Auditor:** Sistema Automatizado de Validação  
+**Data da Auditoria:** 2024-01-15
+**Versão do Sistema:** 1.0
+**Auditor:** Sistema Automatizado de Validação
 
 ---
 
@@ -113,7 +113,7 @@ Os totais gerais de tickets (Novos, Pendentes, Progresso, Resolvidos) não corre
 # Modificar get_general_metrics para considerar apenas N1-N4
 def _get_general_metrics_internal(self, start_date=None, end_date=None):
     # Filtrar apenas grupos N1-N4 em vez de todos os grupos
-    level_groups = [self.group_ids['N1'], self.group_ids['N2'], 
+    level_groups = [self.group_ids['N1'], self.group_ids['N2'],
                    self.group_ids['N3'], self.group_ids['N4']]
     # Aplicar filtro de grupos na consulta
 ```
@@ -204,5 +204,5 @@ A implementação de monitoramento proativo e validações backend adicionais au
 
 ---
 
-**Relatório gerado automaticamente em:** 2024-01-15  
+**Relatório gerado automaticamente em:** 2024-01-15
 **Próxima auditoria recomendada:** Após implementação das correções

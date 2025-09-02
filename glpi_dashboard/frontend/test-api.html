@@ -14,11 +14,11 @@
 </head>
 <body>
     <h1>🔍 Teste de Debug da API</h1>
-    
+
     <button onclick="testDirectFetch()">Teste Fetch Direto</button>
     <button onclick="testWithTransform()">Teste com Transformação</button>
     <button onclick="clearResults()">Limpar Resultados</button>
-    
+
     <div id="results"></div>
 
     <script>
@@ -32,14 +32,14 @@
             `;
             resultsDiv.appendChild(resultDiv);
         }
-        
+
         function clearResults() {
             document.getElementById('results').innerHTML = '';
         }
-        
+
         async function testDirectFetch() {
             console.log('🔍 Iniciando teste de fetch direto...');
-            
+
             try {
                 const response = await fetch('http://localhost:5000/api/metrics', {
                     method: 'GET',
@@ -48,18 +48,18 @@
                         'Accept': 'application/json',
                     },
                 });
-                
+
                 console.log('🔍 Response:', response);
                 console.log('🔍 Response status:', response.status);
                 console.log('🔍 Response ok:', response.ok);
-                
+
                 if (!response.ok) {
                     throw new Error(`HTTP error! status: ${response.status}`);
                 }
-                
+
                 const result = await response.json();
                 console.log('🔍 Raw result:', result);
-                
+
                 addResult('✅ Fetch Direto - Sucesso', JSON.stringify({
                     status: response.status,
                     success: result.success,
@@ -68,29 +68,29 @@
                     dataNiveis: result.data?.niveis ? 'Presente' : 'Ausente',
                     dataKeys: result.data ? Object.keys(result.data) : 'N/A'
                 }, null, 2));
-                
+
             } catch (error) {
                 console.error('🔍 Erro no fetch direto:', error);
                 addResult('❌ Fetch Direto - Erro', error.message, true);
             }
         }
-        
+
         async function testWithTransform() {
             console.log('🔍 Iniciando teste com transformação...');
-            
+
             try {
                 const response = await fetch('http://localhost:5000/api/metrics');
                 const result = await response.json();
-                
+
                 // Simular a validação isApiResponse
                 const isValidResponse = (
                     typeof result === 'object' &&
                     result !== null &&
                     typeof result.success === 'boolean'
                 );
-                
+
                 console.log('🔍 Validação isApiResponse:', isValidResponse);
-                
+
                 if (isValidResponse) {
                     // Simular transformLegacyData
                     const defaultLevel = {
@@ -100,7 +100,7 @@
                         resolvidos: 0,
                         total: 0,
                     };
-                    
+
                     let transformedData;
                     if (result.data?.niveis) {
                         console.log('🔍 Usando estrutura niveis');
@@ -126,9 +126,9 @@
                             },
                         };
                     }
-                    
+
                     console.log('🔍 Dados transformados:', transformedData);
-                    
+
                     addResult('✅ Transformação - Sucesso', JSON.stringify({
                         originalSuccess: result.success,
                         validationPassed: isValidResponse,
@@ -139,7 +139,7 @@
                         hasN3Data: transformedData.niveis.n3.total > 0,
                         hasN4Data: transformedData.niveis.n4.total > 0
                     }, null, 2));
-                    
+
                 } else {
                     addResult('❌ Transformação - Validação Falhou', JSON.stringify({
                         result,
@@ -149,7 +149,7 @@
                         successType: typeof result?.success
                     }, null, 2), true);
                 }
-                
+
             } catch (error) {
                 console.error('🔍 Erro na transformação:', error);
                 addResult('❌ Transformação - Erro', error.message, true);

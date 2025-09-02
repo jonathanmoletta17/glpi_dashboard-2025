@@ -3,24 +3,24 @@ info:
   title: GLPI Dashboard API
   description: |
     API para o Dashboard GLPI - Sistema de monitoramento e métricas de tickets.
-    
+
     Esta API fornece endpoints para:
     - Métricas de tickets (novos, pendentes, em progresso, resolvidos)
     - Ranking de técnicos
     - Alertas do sistema
     - Estatísticas de performance
     - Health checks
-    
+
     ## Autenticação
     A API utiliza tokens de autenticação do GLPI. Configure as variáveis de ambiente:
     - `GLPI_URL`: URL do servidor GLPI
     - `GLPI_USER_TOKEN`: Token do usuário
     - `GLPI_APP_TOKEN`: Token da aplicação
-    
+
     ## Rate Limiting
     - 100 requests por minuto por IP
     - 1000 requests por hora por token
-    
+
     ## Cache
     - Métricas: cache de 5 minutos
     - Rankings: cache de 15 minutos
@@ -377,7 +377,7 @@ components:
         type: string
         format: date
         example: "2024-01-01"
-    
+
     DataFim:
       name: data_fim
       in: query
@@ -387,7 +387,7 @@ components:
         type: string
         format: date
         example: "2024-01-31"
-    
+
     TipoFiltro:
       name: tipo_filtro
       in: query

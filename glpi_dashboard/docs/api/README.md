@@ -58,7 +58,7 @@ GLPI_APP_TOKEN=seu_app_token_aqui
 A API suporta três tipos de filtros de data:
 
 - `creation`: Filtro por data de criação (padrão)
-- `modification`: Filtro por data de modificação  
+- `modification`: Filtro por data de modificação
 - `current_status`: Filtro por status atual
 
 ### Exemplo de Uso
@@ -89,7 +89,7 @@ GET /api/metrics/filtered?data_inicio=2024-01-01&data_fim=2024-01-07&tipo_filtro
   },
   "tendencias": {
     "novos": "0",
-    "pendentes": "0", 
+    "pendentes": "0",
     "progresso": "0",
     "resolvidos": "0"
   },

@@ -235,7 +235,7 @@ export interface MockResponseContext {
 }
 
 // Tipos para testes
-export interface TestMetrics {
+export interface MockTestMetrics {
   totalTickets: number;
   openTickets: number;
   closedTickets: number;

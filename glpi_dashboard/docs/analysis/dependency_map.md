@@ -14,33 +14,33 @@ graph TB
         FE_HOOKS["Hooks"]
         FE_SERVICES["Serviços"]
         FE_UTILS["Utilitários"]
-        
+
         FE --> FE_COMP
         FE --> FE_HOOKS
         FE --> FE_SERVICES
         FE --> FE_UTILS
     end
-    
+
     subgraph "Backend (Flask/Python)"
         BE["Flask App"]
         BE_API["API Routes"]
         BE_SERVICES["Serviços"]
         BE_UTILS["Utilitários"]
         BE_CONFIG["Configuração"]
-        
+
         BE --> BE_API
         BE --> BE_SERVICES
         BE --> BE_UTILS
         BE --> BE_CONFIG
     end
-    
+
     subgraph "Serviços Externos"
         GLPI["GLPI API"]
         REDIS["Redis Cache"]
         PROMETHEUS["Prometheus"]
         NOTIFICATIONS["Notificações"]
     end
-    
+
     FE_SERVICES --> BE_API
     BE_SERVICES --> GLPI
     BE --> REDIS
@@ -167,7 +167,7 @@ sequenceDiagram
     participant GLPI as GLPI API
     participant CACHE as Redis Cache
     participant PROM as Prometheus
-    
+
     FE->>API: GET /api/metrics
     API->>CACHE: Verificar cache
     alt Cache Hit
@@ -325,6 +325,6 @@ sequenceDiagram
 
 ---
 
-**Última Atualização:** Janeiro 2025  
-**Versão:** 1.0.0  
+**Última Atualização:** Janeiro 2025
+**Versão:** 1.0.0
 **Responsável:** Análise Automatizada de Dependências

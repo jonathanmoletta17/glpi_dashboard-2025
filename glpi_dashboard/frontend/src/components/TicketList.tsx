@@ -260,9 +260,9 @@ export const TicketList: React.FC<TicketListProps> = ({ onTicketClick }) => {
                     <h3 className="font-semibold text-gray-900 text-lg">{ticket.title}</h3>
                     <span className="text-sm text-gray-500">#{ticket.id}</span>
                   </div>
-                  
+
                   <p className="text-gray-600 mb-4 line-clamp-2">{ticket.description}</p>
-                  
+
                   <div className="flex items-center gap-6 text-sm text-gray-500">
                     <div className="flex items-center gap-2">
                       <User className="w-4 h-4" />
@@ -277,7 +277,7 @@ export const TicketList: React.FC<TicketListProps> = ({ onTicketClick }) => {
                     </div>
                   </div>
                 </div>
-                
+
                 <div className="flex flex-col items-end gap-2">
                   <span className={`px-3 py-1 rounded-full text-xs font-medium ${
                     ticket.priority === 'urgente' ? 'bg-red-100 text-red-800' :
@@ -287,7 +287,7 @@ export const TicketList: React.FC<TicketListProps> = ({ onTicketClick }) => {
                   }`}>
                     {ticket.priority.charAt(0).toUpperCase() + ticket.priority.slice(1)}
                   </span>
-                  
+
                   {ticket.technician && (
                     <div className="flex items-center gap-2 text-sm text-gray-600">
                       {ticket.technician.avatar && (
@@ -302,7 +302,7 @@ export const TicketList: React.FC<TicketListProps> = ({ onTicketClick }) => {
                   )}
                 </div>
               </div>
-              
+
               {ticket.tags && ticket.tags.length > 0 && (
                 <div className="flex flex-wrap gap-2 mt-4">
                   {ticket.tags.slice(0, 3).map((tag, index) => (

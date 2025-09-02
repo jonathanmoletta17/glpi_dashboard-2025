@@ -72,7 +72,7 @@ Este arquivo contém prompts pré-definidos e contextualizados para acelerar o d
 @cache.cached(timeout=300)
 def [nome]():
     correlation_id = request.headers.get('X-Correlation-ID', generate_correlation_id())
-    
+
     try:
         # Validação
         # Lógica de negócio
@@ -113,7 +113,7 @@ export const [Nome]: React.FC<[Nome]Props> = ({ ...props }) => {
   // Estado local
   // Efeitos
   // Handlers
-  
+
   return (
     <div className="..." role="..." aria-label="...">
       {/* JSX aqui */}
@@ -157,29 +157,29 @@ export const [Nome]: React.FC<[Nome]Props> = ({ ...props }) => {
 class GLPIService:
     def new_method(self, params):
         correlation_id = generate_correlation_id()
-        
+
         try:
             # Cache check
             cache_key = f"glpi:{method}:{hash(params)}"
             cached = self.cache.get(cache_key)
             if cached:
                 return cached
-            
+
             # GLPI call
             response = self._make_authenticated_request(
                 endpoint='/search/[ItemType]',
                 params=params,
                 correlation_id=correlation_id
             )
-            
+
             # Process response
             processed_data = self._process_response(response)
-            
+
             # Cache result
             self.cache.set(cache_key, processed_data, timeout=300)
-            
+
             return processed_data
-            
+
         except Exception as e:
             logger.error(f"GLPI integration error", extra={
                 "correlation_id": correlation_id,
@@ -217,15 +217,15 @@ class TestGLPIService:
     @pytest.fixture
     def glpi_service(self):
         return GLPIService()
-    
+
     @patch('backend.services.glpi_service.requests.post')
     def test_method_success(self, mock_post, glpi_service):
         # Arrange
         mock_post.return_value.json.return_value = {'data': 'test'}
-        
+
         # Act
         result = glpi_service.method()
-        
+
         # Assert
         assert result == expected_result
         mock_post.assert_called_once()
@@ -242,13 +242,13 @@ describe('Component', () => {
     render(<Component />);
     expect(screen.getByRole('button')).toBeInTheDocument();
   });
-  
+
   it('should handle user interaction', async () => {
     const user = userEvent.setup();
     render(<Component />);
-    
+
     await user.click(screen.getByRole('button'));
-    
+
     await waitFor(() => {
       expect(screen.getByText('Expected text')).toBeInTheDocument();
     });

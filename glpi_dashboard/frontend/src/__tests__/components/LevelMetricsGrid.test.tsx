@@ -63,12 +63,7 @@ const mockMetrics: MetricsData = {
       total: 124,
     },
   },
-  tendencias: {
-    novos: 12,
-    pendentes: -5,
-    progresso: 8,
-    resolvidos: 15,
-  },
+
   filtros_aplicados: [],
   tempo_execucao: 150,
   timestamp: '2024-01-15T10:30:00Z',

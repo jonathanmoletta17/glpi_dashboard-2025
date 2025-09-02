@@ -3,8 +3,8 @@ import { motion } from 'framer-motion';
 import { StatusCard } from './StatusCard';
 import { MetricsData, TicketStatus } from '@/types';
 import { Ticket, Clock, AlertTriangle, CheckCircle } from 'lucide-react';
-import { usePerformanceMonitoring, useRenderTracker } from '../../hooks/usePerformanceMonitoring';
-import { performanceMonitor } from '../../utils/performanceMonitor';
+
+
 import { useThrottledCallback } from '../../hooks/useDebounce';
 
 interface MetricsGridProps {
@@ -13,19 +13,7 @@ interface MetricsGridProps {
   className?: string;
 }
 
-// Funções auxiliares movidas para fora do componente
-function getTrendDirection(trend?: string): 'up' | 'down' | 'stable' {
-  if (!trend) return 'stable';
-  const value = parseFloat(trend.replace('%', '').replace('+', ''));
-  if (value > 0) return 'up';
-  if (value < 0) return 'down';
-  return 'stable';
-}
 
-function parseTrendValue(trend?: string): number {
-  if (!trend) return 0;
-  return Math.abs(parseFloat(trend.replace('%', '').replace('+', '')));
-}
 
 // Variantes de animação movidas para fora do componente
 const containerVariants = {
@@ -55,22 +43,7 @@ export const MetricsGrid = React.memo<MetricsGridProps>(function MetricsGrid({
   onFilterByStatus,
   className,
 }) {
-  // Performance monitoring hooks
-  const { measureRender } = usePerformanceMonitoring('MetricsGrid');
-  const { trackRender } = useRenderTracker('MetricsGrid');
 
-  // Track component renders
-  useEffect(() => {
-    // Performance tracking
-    trackRender();
-
-    measureRender(() => {
-      performanceMonitor.markComponentRender('MetricsGrid', {
-        hasMetrics: !!metrics,
-        metricsKeys: metrics ? Object.keys(metrics).length : 0,
-      });
-    });
-  }, [metrics, trackRender, measureRender, onFilterByStatus]);
 
   // Componente renderizado com métricas válidas
 
@@ -88,27 +61,19 @@ export const MetricsGrid = React.memo<MetricsGridProps>(function MetricsGrid({
 
   // Callbacks memoizados para os cliques com throttle
   const handleNewClickImmediate = useCallback(() => {
-    performanceMonitor.startMeasure('filter-click-new');
     onFilterByStatus?.('new');
-    performanceMonitor.endMeasure('filter-click-new');
   }, [onFilterByStatus]);
 
   const handleProgressClickImmediate = useCallback(() => {
-    performanceMonitor.startMeasure('filter-click-progress');
     onFilterByStatus?.('progress');
-    performanceMonitor.endMeasure('filter-click-progress');
   }, [onFilterByStatus]);
 
   const handlePendingClickImmediate = useCallback(() => {
-    performanceMonitor.startMeasure('filter-click-pending');
     onFilterByStatus?.('pending');
-    performanceMonitor.endMeasure('filter-click-pending');
   }, [onFilterByStatus]);
 
   const handleResolvedClickImmediate = useCallback(() => {
-    performanceMonitor.startMeasure('filter-click-resolved');
     onFilterByStatus?.('resolved');
-    performanceMonitor.endMeasure('filter-click-resolved');
   }, [onFilterByStatus]);
 
   // Throttled versions to prevent rapid clicks
@@ -125,11 +90,7 @@ export const MetricsGrid = React.memo<MetricsGridProps>(function MetricsGrid({
         value: metrics.novos || 0,
         status: 'new' as const,
         icon: Ticket,
-        trend: {
-          direction: getTrendDirection(metrics.tendencias?.novos),
-          value: parseTrendValue(metrics.tendencias?.novos),
-          label: 'vs. período anterior',
-        },
+
         onClick: handleNewClick,
       },
       {
@@ -137,11 +98,7 @@ export const MetricsGrid = React.memo<MetricsGridProps>(function MetricsGrid({
         value: metrics.progresso || 0,
         status: 'progress' as const,
         icon: Clock,
-        trend: {
-          direction: getTrendDirection(metrics.tendencias?.progresso),
-          value: parseTrendValue(metrics.tendencias?.progresso),
-          label: 'vs. período anterior',
-        },
+
         onClick: handleProgressClick,
       },
       {
@@ -149,11 +106,7 @@ export const MetricsGrid = React.memo<MetricsGridProps>(function MetricsGrid({
         value: metrics.pendentes || 0,
         status: 'pending' as const,
         icon: AlertTriangle,
-        trend: {
-          direction: getTrendDirection(metrics.tendencias?.pendentes),
-          value: parseTrendValue(metrics.tendencias?.pendentes),
-          label: 'vs. período anterior',
-        },
+
         onClick: handlePendingClick,
       },
       {
@@ -161,11 +114,7 @@ export const MetricsGrid = React.memo<MetricsGridProps>(function MetricsGrid({
         value: metrics.resolvidos || 0,
         status: 'resolved' as const,
         icon: CheckCircle,
-        trend: {
-          direction: getTrendDirection(metrics.tendencias?.resolvidos),
-          value: parseTrendValue(metrics.tendencias?.resolvidos),
-          label: 'vs. período anterior',
-        },
+
         onClick: handleResolvedClick,
       },
     ];
@@ -187,7 +136,6 @@ export const MetricsGrid = React.memo<MetricsGridProps>(function MetricsGrid({
             value={card.value}
             status={card.status}
             icon={card.icon}
-            trend={card.trend}
             className='h-full cursor-pointer'
             onClick={card.onClick}
           />

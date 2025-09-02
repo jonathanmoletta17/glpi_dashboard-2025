@@ -4,7 +4,7 @@ coverage:
   precision: 2
   round: down
   range: "70...100"
-  
+
   status:
     project:
       default:
@@ -23,7 +23,7 @@ coverage:
         paths:
           - "frontend/src/"
         if_ci_failed: error
-    
+
     patch:
       default:
         target: 70%
@@ -83,7 +83,7 @@ notification:
       branches: null
       threshold: null
       message: null
-      
+
   slack:
     default:
       only_pulls: false
@@ -91,7 +91,7 @@ notification:
       message: |
         Coverage for {{ owner.username }}/{{ repo.name }} changed by {{ range delta }}% ({{ after }}%)
         {{ commit.message }}
-        
+
   webhook:
     default:
       only_pulls: false

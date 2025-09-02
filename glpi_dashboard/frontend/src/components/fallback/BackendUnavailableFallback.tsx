@@ -87,7 +87,7 @@ const BackendUnavailableFallback: React.FC<BackendUnavailableFallbackProps> = ({
           <p className='text-gray-600 dark:text-gray-400 leading-relaxed'>
             {config.message}
           </p>
-          
+
           {type === 'timeout' && (
             <div className='text-sm text-gray-500 dark:text-gray-500 space-y-1'>
               <p>💡 <strong>Dicas:</strong></p>
@@ -98,7 +98,7 @@ const BackendUnavailableFallback: React.FC<BackendUnavailableFallbackProps> = ({
               </ul>
             </div>
           )}
-          
+
           {type === 'connection' && (
             <div className='text-sm text-gray-500 dark:text-gray-500 space-y-1'>
               <p>💡 <strong>Possíveis causas:</strong></p>
@@ -121,7 +121,7 @@ const BackendUnavailableFallback: React.FC<BackendUnavailableFallbackProps> = ({
               <span>Tentar Novamente</span>
             </button>
           )}
-          
+
           {showMockData && onEnableOfflineMode && (
             <button
               onClick={onEnableOfflineMode}
@@ -132,7 +132,7 @@ const BackendUnavailableFallback: React.FC<BackendUnavailableFallbackProps> = ({
             </button>
           )}
         </div>
-        
+
         {showMockData && (
           <div className='text-xs text-gray-500 dark:text-gray-500 text-center max-w-sm'>
             <p>O modo offline mostra dados de exemplo para demonstração da interface.</p>

@@ -14,7 +14,7 @@ def create_directories():
     """Cria diretórios necessários do sistema"""
     directories = [
         "models",
-        "logs", 
+        "logs",
         "cache",
         "temp",
         "reports",
@@ -22,26 +22,26 @@ def create_directories():
         "templates",
         "data"
     ]
-    
+
     print("📁 Criando diretórios do sistema...")
     for directory in directories:
         Path(directory).mkdir(exist_ok=True)
         print(f"  ✅ {directory}/")
-    
+
     return True
 
 def check_system_requirements():
     """Verifica requisitos do sistema"""
     print("🔍 Verificando requisitos do sistema...")
-    
+
     # Verificar Python
     import sys
     python_version = sys.version_info
     print(f"  Python: {python_version.major}.{python_version.minor}.{python_version.micro}")
-    
+
     # Verificar PyTorch
     print(f"  PyTorch: {torch.__version__}")
-    
+
     # Verificar CUDA
     if torch.cuda.is_available():
         gpu_name = torch.cuda.get_device_name(0)
@@ -50,7 +50,7 @@ def check_system_requirements():
         print(f"  CUDA: {torch.version.cuda}")
     else:
         print("  GPU: Não disponível")
-    
+
     # Verificar dependências
     try:
         import transformers
@@ -58,14 +58,14 @@ def check_system_requirements():
     except ImportError:
         print("  ❌ Transformers não instalado")
         return False
-    
+
     try:
         import accelerate
         print(f"  Accelerate: {accelerate.__version__}")
     except ImportError:
         print("  ❌ Accelerate não instalado")
         return False
-    
+
     return True
 
 def load_working_models():
@@ -80,10 +80,10 @@ def load_working_models():
 def create_system_config():
     """Cria configuração personalizada do sistema"""
     print("⚙️ Criando configuração do sistema...")
-    
+
     # Verificar modelos disponíveis
     working_models = load_working_models()
-    
+
     # Configuração básica
     config = {
         "system": {
@@ -115,39 +115,39 @@ def create_system_config():
             "ai_assistance": True
         }
     }
-    
+
     # Salvar configuração
     config_file = Path("../system.yaml")
     with open(config_file, 'w', encoding='utf-8') as f:
         yaml.dump(config, f, default_flow_style=False, allow_unicode=True)
-    
+
     print(f"  ✅ Configuração salva em: {config_file}")
     return config
 
 def test_system_integration():
     """Testa integração básica do sistema"""
     print("🧪 Testando integração do sistema...")
-    
+
     try:
         # Teste básico de importações
         from transformers import AutoTokenizer
         print("  ✅ Transformers funcionando")
-        
+
         # Teste de GPU se disponível
         if torch.cuda.is_available():
             test_tensor = torch.randn(10, 10).cuda()
             result = test_tensor @ test_tensor.T
             print("  ✅ GPU funcionando")
-        
+
         # Teste de modelo simples se disponível
         working_models = load_working_models()
         if working_models:
             model_name = working_models[0]
             tokenizer = AutoTokenizer.from_pretrained(model_name)
             print(f"  ✅ Modelo {model_name} acessível")
-        
+
         return True
-        
+
     except Exception as e:
         print(f"  ❌ Erro na integração: {e}")
         return False
@@ -155,9 +155,9 @@ def test_system_integration():
 def generate_system_report():
     """Gera relatório do sistema"""
     print("📊 Gerando relatório do sistema...")
-    
+
     working_models = load_working_models()
-    
+
     report = {
         "timestamp": datetime.now().isoformat(),
         "system_status": "operational",
@@ -176,21 +176,21 @@ def generate_system_report():
             "Implementar workflows automatizados"
         ]
     }
-    
+
     # Salvar relatório
     report_file = Path("reports/system_setup_report.json")
     report_file.parent.mkdir(exist_ok=True)
-    
+
     with open(report_file, 'w', encoding='utf-8') as f:
         json.dump(report, f, indent=2, ensure_ascii=False)
-    
+
     print(f"  ✅ Relatório salvo em: {report_file}")
     return report
 
 def main():
     print("🚀 GLPI Dashboard AI Agent System - Configuração")
     print("=" * 60)
-    
+
     # Executar configuração
     steps = [
         ("Criar diretórios", create_directories),
@@ -199,9 +199,9 @@ def main():
         ("Testar integração", test_system_integration),
         ("Gerar relatório", generate_system_report)
     ]
-    
+
     results = {}
-    
+
     for step_name, step_func in steps:
         print(f"\n{step_name}...")
         try:
@@ -214,17 +214,17 @@ def main():
         except Exception as e:
             print(f"❌ Erro em {step_name}: {e}")
             results[step_name] = False
-    
+
     # Resumo final
     print("\n" + "=" * 60)
     print("RESUMO DA CONFIGURAÇÃO")
     print("=" * 60)
-    
+
     success_count = sum(1 for result in results.values() if result)
     total_count = len(results)
-    
+
     print(f"✅ Etapas concluídas: {success_count}/{total_count}")
-    
+
     if success_count == total_count:
         print("🎉 Sistema configurado com sucesso!")
         print("\n📋 Próximos passos:")

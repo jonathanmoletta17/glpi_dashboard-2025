@@ -418,13 +418,13 @@ from services.glpi_service import GLPIService
 # Docstrings
 def get_dashboard_metrics(date_filter: Optional[str] = None) -> Dict[str, Any]:
     """Obtém métricas do dashboard com filtro de data opcional.
-    
+
     Args:
         date_filter: Filtro de data no formato 'YYYY-MM-DD'
-        
+
     Returns:
         Dict contendo métricas do dashboard
-        
+
     Raises:
         ValueError: Se date_filter tem formato inválido
         GLPIServiceError: Se falha na comunicação com GLPI

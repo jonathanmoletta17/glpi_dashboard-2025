@@ -406,17 +406,17 @@ const addTestStyles = () => {
     /* Reset básico */
     * { margin: 0; padding: 0; box-sizing: border-box; }
     body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; }
-    
+
     /* Dashboard */
     .dashboard { padding: 20px; background: #f5f5f5; min-height: 100vh; }
     .dashboard-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px; }
     .dashboard-header h1 { color: #333; font-size: 24px; }
     .header-actions { display: flex; gap: 10px; }
-    
+
     .dashboard-filters { display: flex; gap: 15px; align-items: end; margin-bottom: 20px; padding: 15px; background: white; border-radius: 8px; }
     .filter-group { display: flex; flex-direction: column; gap: 5px; }
     .filter-group label { font-size: 12px; color: #666; }
-    
+
     .dashboard-metrics { display: grid; grid-template-columns: repeat(4, 1fr); gap: 20px; margin-bottom: 30px; }
     .metric-card { background: white; padding: 20px; border-radius: 8px; box-shadow: 0 2px 4px rgba(0,0,0,0.1); }
     .metric-card h3 { font-size: 14px; color: #666; margin-bottom: 10px; }
@@ -425,13 +425,13 @@ const addTestStyles = () => {
     .metric-change.positive { color: #10b981; }
     .metric-change.negative { color: #ef4444; }
     .metric-change.neutral { color: #6b7280; }
-    
+
     .dashboard-charts { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; }
     .chart-container { background: white; padding: 20px; border-radius: 8px; box-shadow: 0 2px 4px rgba(0,0,0,0.1); }
     .chart { height: 300px; display: flex; flex-direction: column; align-items: center; justify-content: center; }
     .chart-title { font-weight: bold; margin-bottom: 10px; }
     .chart-data { font-size: 12px; color: #666; }
-    
+
     /* Buttons */
     .btn { padding: 8px 16px; border: none; border-radius: 6px; cursor: pointer; font-size: 14px; font-weight: 500; }
     .btn-primary { background: #3b82f6; color: white; }
@@ -439,11 +439,11 @@ const addTestStyles = () => {
     .btn-sm { padding: 6px 12px; font-size: 12px; }
     .btn-xs { padding: 4px 8px; font-size: 11px; }
     .btn:disabled { opacity: 0.5; cursor: not-allowed; }
-    
+
     /* Forms */
     .form-input, .form-textarea, .form-select { padding: 8px 12px; border: 1px solid #d1d5db; border-radius: 6px; font-size: 14px; }
     .form-input:focus, .form-textarea:focus, .form-select:focus { outline: none; border-color: #3b82f6; }
-    
+
     /* Ticket List */
     .ticket-list { padding: 20px; }
     .list-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px; }
@@ -451,7 +451,7 @@ const addTestStyles = () => {
     .list-filters { display: flex; gap: 15px; margin-bottom: 20px; }
     .search-input { flex: 1; padding: 8px 12px; border: 1px solid #d1d5db; border-radius: 6px; }
     .filter-select { padding: 8px 12px; border: 1px solid #d1d5db; border-radius: 6px; }
-    
+
     .ticket-cards { display: grid; gap: 15px; }
     .ticket-card { background: white; padding: 20px; border-radius: 8px; box-shadow: 0 2px 4px rgba(0,0,0,0.1); }
     .ticket-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 15px; }
@@ -459,18 +459,18 @@ const addTestStyles = () => {
     .ticket-content p { color: #666; margin-bottom: 10px; }
     .ticket-meta { display: flex; gap: 15px; font-size: 12px; }
     .ticket-actions { display: flex; gap: 10px; margin-top: 15px; }
-    
+
     /* Status and Priority */
     .status { padding: 4px 8px; border-radius: 4px; font-size: 12px; font-weight: 500; }
     .status-open { background: #dbeafe; color: #1e40af; }
     .status-progress { background: #fef3c7; color: #92400e; }
     .status-closed { background: #d1fae5; color: #065f46; }
-    
+
     .priority { padding: 4px 8px; border-radius: 4px; font-size: 12px; font-weight: 500; }
     .priority-high { background: #fee2e2; color: #991b1b; }
     .priority-medium { background: #fef3c7; color: #92400e; }
     .priority-low { background: #d1fae5; color: #065f46; }
-    
+
     /* Forms */
     .ticket-form { padding: 20px; max-width: 600px; margin: 0 auto; }
     .form-header { margin-bottom: 20px; }
@@ -479,7 +479,7 @@ const addTestStyles = () => {
     .form-group label { display: block; margin-bottom: 5px; font-weight: 500; color: #333; }
     .form-row { display: grid; grid-template-columns: 1fr 1fr; gap: 15px; }
     .form-actions { display: flex; gap: 10px; margin-top: 20px; }
-    
+
     /* Modal */
     .modal-overlay { position: fixed; top: 0; left: 0; right: 0; bottom: 0; background: rgba(0,0,0,0.5); display: flex; align-items: center; justify-content: center; }
     .modal { background: white; border-radius: 8px; box-shadow: 0 10px 25px rgba(0,0,0,0.2); max-width: 400px; width: 100%; }
@@ -490,7 +490,7 @@ const addTestStyles = () => {
     .warning-message, .error-message { padding: 10px; border-radius: 6px; margin-top: 10px; }
     .warning-message { background: #fef3c7; color: #92400e; }
     .error-message { background: #fee2e2; color: #991b1b; }
-    
+
     /* Table */
     .data-table { padding: 20px; }
     .table-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px; }
@@ -500,11 +500,11 @@ const addTestStyles = () => {
     .table th, .table td { padding: 12px; text-align: left; border-bottom: 1px solid #e5e7eb; }
     .table th { background: #f9fafb; font-weight: 600; color: #374151; }
     .table tbody tr:hover { background: #f9fafb; }
-    
+
     .table-pagination { display: flex; justify-content: between; align-items: center; margin-top: 15px; }
     .pagination-info { color: #6b7280; font-size: 14px; }
     .pagination-controls { display: flex; gap: 5px; }
-    
+
     /* Icons */
     .icon { display: inline-block; width: 16px; height: 16px; text-align: center; }
   `;

@@ -377,13 +377,13 @@ class Ticket:
     updated_at: datetime
     assigned_technician_id: Optional[int] = None
     group_id: Optional[int] = None
-    
+
     def is_new(self) -> bool:
         return self.status == TicketStatus.NEW
-    
+
     def is_resolved(self) -> bool:
         return self.status in [TicketStatus.SOLVED, TicketStatus.CLOSED]
-    
+
     def days_since_creation(self) -> int:
         return (datetime.now() - self.created_at).days
 ```
@@ -400,11 +400,11 @@ class TicketStatus(Enum):
     PENDING = 4
     SOLVED = 5
     CLOSED = 6
-    
+
     @classmethod
     def get_processing_statuses(cls):
         return [cls.PROCESSING_ASSIGNED, cls.PROCESSING_PLANNED]
-    
+
     @classmethod
     def get_resolved_statuses(cls):
         return [cls.SOLVED, cls.CLOSED]
@@ -426,7 +426,7 @@ class MetricCalculator:
             'processing': 0,
             'resolved': 0
         }
-        
+
         for ticket in tickets:
             if ticket.status == TicketStatus.NEW:
                 metrics['new'] += 1
@@ -436,11 +436,11 @@ class MetricCalculator:
                 metrics['processing'] += 1
             elif ticket.status in TicketStatus.get_resolved_statuses():
                 metrics['resolved'] += 1
-                
+
         return metrics
-    
+
     @staticmethod
-    def calculate_trend(current_metrics: Dict[str, int], 
+    def calculate_trend(current_metrics: Dict[str, int],
                        previous_metrics: Dict[str, int]) -> Dict[str, float]:
         trends = {}
         for key in current_metrics:
@@ -465,42 +465,42 @@ from ...domain.repositories.ticket_repository import TicketRepository
 from ...domain.services.metric_calculator import MetricCalculator
 
 class GetDashboardMetrics:
-    def __init__(self, 
+    def __init__(self,
                  ticket_repository: TicketRepository,
                  cache_service: CacheService,
                  metric_calculator: MetricCalculator):
         self.ticket_repository = ticket_repository
         self.cache_service = cache_service
         self.metric_calculator = metric_calculator
-    
+
     async def execute(self, date_range: Optional[DateRangeDTO] = None) -> DashboardMetricsDTO:
         # Verificar cache
         cache_key = f"dashboard_metrics_{date_range.start_date}_{date_range.end_date}" if date_range else "dashboard_metrics_all"
         cached_result = await self.cache_service.get(cache_key)
-        
+
         if cached_result:
             return DashboardMetricsDTO.from_dict(cached_result)
-        
+
         # Buscar tickets
         tickets = await self.ticket_repository.get_tickets_by_date_range(
             start_date=date_range.start_date if date_range else None,
             end_date=date_range.end_date if date_range else None
         )
-        
+
         # Calcular métricas
         general_metrics = self.metric_calculator.calculate_status_metrics(tickets)
-        
+
         # Calcular métricas por nível
         level_metrics = {}
         for level in ['N1', 'N2', 'N3', 'N4']:
             level_tickets = [t for t in tickets if self._get_ticket_level(t) == level]
             level_metrics[level] = self.metric_calculator.calculate_status_metrics(level_tickets)
-        
+
         # Calcular tendências
         previous_period_tickets = await self._get_previous_period_tickets(date_range)
         previous_metrics = self.metric_calculator.calculate_status_metrics(previous_period_tickets)
         trends = self.metric_calculator.calculate_trend(general_metrics, previous_metrics)
-        
+
         # Criar DTO de resposta
         result = DashboardMetricsDTO(
             general_metrics=general_metrics,
@@ -509,17 +509,17 @@ class GetDashboardMetrics:
             total_tickets=len(tickets),
             date_range=date_range
         )
-        
+
         # Salvar no cache
         await self.cache_service.set(cache_key, result.to_dict(), ttl=300)
-        
+
         return result
-    
+
     def _get_ticket_level(self, ticket) -> str:
         # Lógica para determinar o nível do ticket
         # Implementar baseado nas regras de negócio
         pass
-    
+
     async def _get_previous_period_tickets(self, date_range):
         # Lógica para buscar tickets do período anterior
         pass
@@ -544,7 +544,7 @@ class DashboardMetricsDTO:
     trends: Dict[str, float]
     total_tickets: int
     date_range: Optional[DateRangeDTO] = None
-    
+
     def to_dict(self) -> Dict:
         return {
             'general_metrics': self.general_metrics,
@@ -556,7 +556,7 @@ class DashboardMetricsDTO:
                 'end_date': self.date_range.end_date.isoformat()
             } if self.date_range else None
         }
-    
+
     @classmethod
     def from_dict(cls, data: Dict) -> 'DashboardMetricsDTO':
         date_range = None
@@ -565,7 +565,7 @@ class DashboardMetricsDTO:
                 start_date=datetime.fromisoformat(data['date_range']['start_date']),
                 end_date=datetime.fromisoformat(data['date_range']['end_date'])
             )
-        
+
         return cls(
             general_metrics=data['general_metrics'],
             level_metrics=data['level_metrics'],
@@ -591,8 +591,8 @@ class GLPITicketRepository(TicketRepository):
     def __init__(self, glpi_client: GLPIClient, response_mapper: GLPIResponseMapper):
         self.glpi_client = glpi_client
         self.response_mapper = response_mapper
-    
-    async def get_tickets_by_date_range(self, 
+
+    async def get_tickets_by_date_range(self,
                                        start_date: Optional[datetime] = None,
                                        end_date: Optional[datetime] = None) -> List[Ticket]:
         # Construir query para GLPI
@@ -601,19 +601,19 @@ class GLPITicketRepository(TicketRepository):
             query_params['date_creation'] = f'>={start_date.strftime("%Y-%m-%d")}'
         if end_date:
             query_params['date_creation'] = f'<={end_date.strftime("%Y-%m-%d")}'
-        
+
         # Fazer requisição para GLPI
         raw_tickets = await self.glpi_client.search_tickets(query_params)
-        
+
         # Mapear resposta para entidades de domínio
         return [self.response_mapper.map_to_ticket(raw_ticket) for raw_ticket in raw_tickets]
-    
+
     async def get_ticket_by_id(self, ticket_id: int) -> Optional[Ticket]:
         raw_ticket = await self.glpi_client.get_ticket(ticket_id)
         if raw_ticket:
             return self.response_mapper.map_to_ticket(raw_ticket)
         return None
-    
+
     async def get_tickets_by_technician(self, technician_id: int) -> List[Ticket]:
         query_params = {'users_id_assign': technician_id}
         raw_tickets = await self.glpi_client.search_tickets(query_params)
@@ -634,22 +634,22 @@ class GLPIClient:
         self.base_url = base_url.rstrip('/')
         self.auth_manager = auth_manager
         self.query_builder = GLPIQueryBuilder()
-    
+
     async def search_tickets(self, filters: Dict) -> List[Dict]:
         try:
             session_token = await self.auth_manager.get_valid_token()
-            
+
             # Construir query
             query_string = self.query_builder.build_search_query('Ticket', filters)
             url = f"{self.base_url}/search/Ticket?{query_string}"
-            
+
             # Fazer requisição
             headers = {
                 'Session-Token': session_token,
                 'App-Token': self.auth_manager.app_token,
                 'Content-Type': 'application/json'
             }
-            
+
             async with aiohttp.ClientSession() as session:
                 async with session.get(url, headers=headers) as response:
                     if response.status == 200:
@@ -657,21 +657,21 @@ class GLPIClient:
                         return data.get('data', [])
                     else:
                         raise ExternalAPIException(f"GLPI API error: {response.status}")
-                        
+
         except Exception as e:
             raise ExternalAPIException(f"Failed to search tickets: {str(e)}")
-    
+
     async def get_ticket(self, ticket_id: int) -> Optional[Dict]:
         try:
             session_token = await self.auth_manager.get_valid_token()
             url = f"{self.base_url}/Ticket/{ticket_id}"
-            
+
             headers = {
                 'Session-Token': session_token,
                 'App-Token': self.auth_manager.app_token,
                 'Content-Type': 'application/json'
             }
-            
+
             async with aiohttp.ClientSession() as session:
                 async with session.get(url, headers=headers) as response:
                     if response.status == 200:
@@ -680,7 +680,7 @@ class GLPIClient:
                         return None
                     else:
                         raise ExternalAPIException(f"GLPI API error: {response.status}")
-                        
+
         except Exception as e:
             raise ExternalAPIException(f"Failed to get ticket {ticket_id}: {str(e)}")
 ```
@@ -718,13 +718,13 @@ async def get_dashboard_metrics(
                 date_range = DateRangeDTO(start_date=start_dt, end_date=end_dt)
             except ValueError:
                 raise HTTPException(status_code=400, detail="Invalid date format. Use YYYY-MM-DD")
-        
+
         # Executar caso de uso
         result = await use_case.execute(date_range)
-        
+
         # Converter para response model
         return DashboardMetricsResponse.from_dto(result)
-        
+
     except Exception as e:
         raise HTTPException(status_code=500, detail=f"Internal server error: {str(e)}")
 
@@ -739,12 +739,12 @@ async def get_dashboard_metrics_post(
         date_range = None
         if request.start_date and request.end_date:
             date_range = DateRangeDTO(start_date=request.start_date, end_date=request.end_date)
-        
+
         # Executar caso de uso
         result = await use_case.execute(date_range)
-        
+
         return DashboardMetricsResponse.from_dto(result)
-        
+
     except Exception as e:
         raise HTTPException(status_code=500, detail=f"Internal server error: {str(e)}")
 ```
@@ -767,7 +767,7 @@ class DashboardMetricsResponse(BaseModel):
     trends: Dict[str, float]
     total_tickets: int
     date_range: Optional[DateRangeResponse] = None
-    
+
     @classmethod
     def from_dto(cls, dto: DashboardMetricsDTO) -> 'DashboardMetricsResponse':
         date_range = None
@@ -776,7 +776,7 @@ class DashboardMetricsResponse(BaseModel):
                 start_date=dto.date_range.start_date,
                 end_date=dto.date_range.end_date
             )
-        
+
         return cls(
             general_metrics=dto.general_metrics,
             level_metrics=dto.level_metrics,
@@ -784,7 +784,7 @@ class DashboardMetricsResponse(BaseModel):
             total_tickets=dto.total_tickets,
             date_range=date_range
         )
-    
+
     class Config:
         json_encoders = {
             datetime: lambda v: v.isoformat()
@@ -804,7 +804,7 @@ import { DashboardMetrics, DateRange } from '../types/dashboard.types'
 export const useDashboardData = () => {
   const dateRange = useAppSelector(state => state.filters.dateRange)
   const refreshInterval = useAppSelector(state => state.ui.refreshInterval)
-  
+
   const {
     data: metrics,
     isLoading,
@@ -817,7 +817,7 @@ export const useDashboardData = () => {
     staleTime: 3 * 60 * 1000, // 3 minutes
     cacheTime: 10 * 60 * 1000, // 10 minutes
   })
-  
+
   return {
     metrics,
     isLoading,
@@ -885,19 +885,19 @@ import { ErrorState } from '../../../shared/components/feedback/error-state'
 
 export const MetricsGrid: React.FC = () => {
   const { metrics, isLoading, error } = useDashboardData()
-  
+
   if (isLoading) {
     return <LoadingSpinner />
   }
-  
+
   if (error) {
     return <ErrorState message={error} />
   }
-  
+
   if (!metrics) {
     return null
   }
-  
+
   return (
     <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
       <MetricCard
@@ -953,24 +953,24 @@ class TestMetricCalculator:
             Ticket(2, "Ticket 2", TicketStatus.PENDING, Priority.MEDIUM, datetime.now(), datetime.now()),
             Ticket(3, "Ticket 3", TicketStatus.SOLVED, Priority.LOW, datetime.now(), datetime.now()),
         ]
-        
+
         # Act
         metrics = MetricCalculator.calculate_status_metrics(tickets)
-        
+
         # Assert
         assert metrics['new'] == 1
         assert metrics['pending'] == 1
         assert metrics['processing'] == 0
         assert metrics['resolved'] == 1
-    
+
     def test_calculate_trend_with_positive_change(self):
         # Arrange
         current = {'new': 10, 'pending': 5}
         previous = {'new': 8, 'pending': 4}
-        
+
         # Act
         trends = MetricCalculator.calculate_trend(current, previous)
-        
+
         # Assert
         assert trends['new'] == 25.0  # (10-8)/8 * 100
         assert trends['pending'] == 25.0  # (5-4)/4 * 100
@@ -993,17 +993,17 @@ class TestGetDashboardMetrics:
         cache_service = Mock()
         metric_calculator = Mock()
         return ticket_repository, cache_service, metric_calculator
-    
+
     async def test_execute_with_cache_hit(self, mock_dependencies):
         # Arrange
         ticket_repo, cache_service, metric_calc = mock_dependencies
         cache_service.get = AsyncMock(return_value={'general_metrics': {'new': 5}})
-        
+
         use_case = GetDashboardMetrics(ticket_repo, cache_service, metric_calc)
-        
+
         # Act
         result = await use_case.execute()
-        
+
         # Assert
         cache_service.get.assert_called_once()
         ticket_repo.get_tickets_by_date_range.assert_not_called()
@@ -1025,14 +1025,14 @@ class TestGLPIIntegration:
         client = GLPIClient("https://test-glpi.com", auth_manager)
         mapper = GLPIResponseMapper()
         return GLPITicketRepository(client, mapper)
-    
+
     async def test_get_tickets_by_date_range_integration(self, glpi_repository):
         # Test real integration with GLPI API
         start_date = datetime(2024, 1, 1)
         end_date = datetime(2024, 1, 31)
-        
+
         tickets = await glpi_repository.get_tickets_by_date_range(start_date, end_date)
-        
+
         assert isinstance(tickets, list)
         for ticket in tickets:
             assert ticket.created_at >= start_date
@@ -1063,7 +1063,7 @@ describe('MetricsGrid', () => {
     const queryClient = new QueryClient({
       defaultOptions: { queries: { retry: false } }
     })
-    
+
     return render(
       <Provider store={store}>
         <QueryClientProvider client={queryClient}>
@@ -1072,19 +1072,19 @@ describe('MetricsGrid', () => {
       </Provider>
     )
   }
-  
+
   it('should render all metric cards', () => {
     renderWithProviders(<MetricsGrid />)
-    
+
     expect(screen.getByText('Novos')).toBeInTheDocument()
     expect(screen.getByText('Pendentes')).toBeInTheDocument()
     expect(screen.getByText('Em Progresso')).toBeInTheDocument()
     expect(screen.getByText('Resolvidos')).toBeInTheDocument()
   })
-  
+
   it('should display correct metric values', () => {
     renderWithProviders(<MetricsGrid />)
-    
+
     expect(screen.getByText('10')).toBeInTheDocument() // new tickets
     expect(screen.getByText('5')).toBeInTheDocument()  // pending tickets
   })

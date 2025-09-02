@@ -6,7 +6,7 @@
 
 #### **Prompt:**
 ```
-Analise e refatore o arquivo backend/app.py para consolidar a aplicação principal Flask. 
+Analise e refatore o arquivo backend/app.py para consolidar a aplicação principal Flask.
 
 CONTEXTO ATUAL:
 - O arquivo app.py é a aplicação principal Flask do dashboard GLPI

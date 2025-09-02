@@ -5,13 +5,8 @@
 
 import { lazy } from 'react';
 
-// Componentes de dashboard secundários
-export const LazyPerformanceDashboard = lazy(() =>
-  import('./PerformanceDashboard').then(module => ({ default: module.default }))
-);
-export const LazyDataIntegrityMonitor = lazy(() =>
-  import('./DataIntegrityMonitor').then(module => ({ default: module.default }))
-);
+
+
 
 // Componentes de dashboard que podem ser carregados sob demanda
 export const LazyTicketChart = lazy(() =>

@@ -233,7 +233,7 @@ Este relatório apresenta uma análise abrangente da cobertura e qualidade dos t
    ❌ Resolver dependências PostgreSQL (PENDENTE)
    ❌ Corrigir AttributeError em MetricsQueryFactory (PENDENTE)
    ❌ Corrigir TypeError em inicializações (PENDENTE)
-   
+
    # Frontend
    ❌ Corrigir problemas de serialização "could not be cloned" (PENDENTE)
    ❌ Corrigir configuração de cobertura (PENDENTE)
@@ -254,7 +254,7 @@ Este relatório apresenta uma análise abrangente da cobertura e qualidade dos t
    # .github/workflows/tests.yml
    - name: Run Backend Tests
      run: pytest --cov=backend --cov-fail-under=80
-   
+
    - name: Run Frontend Tests
      run: npm test -- --coverage --watchAll=false
    ```
@@ -383,7 +383,7 @@ Antes de implementar novos testes, é essencial estabilizar os testes existentes
 
 ---
 
-**Relatório gerado em**: 18 de agosto de 2025  
-**Versão**: 1.1 (Atualizado com resultados da execução)  
-**Última atualização**: Análise completa de cobertura executada  
+**Relatório gerado em**: 18 de agosto de 2025
+**Versão**: 1.1 (Atualizado com resultados da execução)
+**Última atualização**: Análise completa de cobertura executada
 **Próxima revisão**: Após correção dos problemas críticos identificados

@@ -210,7 +210,7 @@ O pipeline salva os seguintes artifacts:
    ```bash
    # Backend
    pip list --outdated
-   
+
    # Frontend
    npm outdated
    ```
@@ -223,7 +223,7 @@ O pipeline salva os seguintes artifacts:
    ```bash
    # Instalar act
    # https://github.com/nektos/act
-   
+
    # Executar pipeline localmente
    act push
    ```

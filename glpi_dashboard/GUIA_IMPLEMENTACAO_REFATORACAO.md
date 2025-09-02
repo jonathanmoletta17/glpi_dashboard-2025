@@ -334,43 +334,43 @@ from backend.core.infrastructure.config.dependencies import (
 async def validate_architecture():
     """Valida a nova arquitetura"""
     print("🔍 Validando nova arquitetura...")
-    
+
     try:
         # Testar caso de uso
         use_case = get_dashboard_metrics_use_case()
         metrics = await use_case.execute()
-        
+
         print(f"✅ Métricas obtidas: {metrics.total_tickets} tickets")
         print(f"✅ Métricas gerais: {metrics.general_metrics}")
-        
+
         # Validar consistência
         total_by_levels = sum(
-            sum(level_metrics.values()) 
+            sum(level_metrics.values())
             for level_metrics in metrics.level_metrics.values()
         )
-        
+
         general_total = sum(metrics.general_metrics.values())
-        
+
         if abs(total_by_levels - general_total) < 5:  # Tolerância de 5
             print("✅ Consistência de dados OK")
         else:
             print(f"❌ Inconsistência detectada: {total_by_levels} vs {general_total}")
             return False
-        
+
         # Testar cache
         cache_service = get_cache_service()
         await cache_service.set("test_key", "test_value", 60)
         cached_value = await cache_service.get("test_key")
-        
+
         if cached_value == "test_value":
             print("✅ Cache funcionando")
         else:
             print("❌ Cache não funcionando")
             return False
-        
+
         print("🎉 Validação concluída com sucesso!")
         return True
-        
+
     except Exception as e:
         print(f"❌ Erro na validação: {str(e)}")
         return False

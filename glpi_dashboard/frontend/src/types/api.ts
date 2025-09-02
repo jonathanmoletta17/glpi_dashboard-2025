@@ -10,13 +10,7 @@ export interface LevelMetrics {
   abertos?: number;
   fechados?: number;
   atrasados?: number;
-  tendencia_novos?: number;
-  tendencia_pendentes?: number;
-  tendencia_progresso?: number;
-  tendencia_resolvidos?: number;
-  tendencia_abertos?: number;
-  tendencia_fechados?: number;
-  tendencia_atrasados?: number;
+
 }
 
 // Métricas de níveis
@@ -28,13 +22,7 @@ export interface NiveisMetrics {
   // Removido geral: LevelMetrics; pois não existe nos dados do backend
 }
 
-// Tendências
-export interface TendenciasMetrics {
-  novos: string;
-  pendentes: string;
-  progresso: string;
-  resolvidos: string;
-}
+
 
 // Métricas do dashboard
 export interface DashboardMetrics {
@@ -46,7 +34,7 @@ export interface DashboardMetrics {
   total?: number;
   // Estrutura por níveis
   niveis: NiveisMetrics;
-  tendencias?: TendenciasMetrics;
+
   filtros_aplicados?: any;
   tempo_execucao?: number;
   timestamp?: string;
@@ -226,7 +214,7 @@ export interface UserPreferences {
   dashboard: {
     defaultView: 'cards' | 'table' | 'chart';
     autoRefresh: boolean;
-    showTrends: boolean;
+
   };
 }
 
@@ -344,7 +332,7 @@ export const transformLegacyData = (legacyData: any): DashboardMetrics => {
         n4: legacyData.niveis.n4 || defaultLevel,
         // Removido geral: não existe nos dados do backend
       },
-      tendencias: legacyData?.tendencias,
+
       filtros_aplicados: legacyData?.filtros_aplicados,
       tempo_execucao: legacyData?.tempo_execucao,
       timestamp: legacyData?.timestamp,
@@ -371,7 +359,7 @@ export const transformLegacyData = (legacyData: any): DashboardMetrics => {
       n4: legacyData?.n4 || defaultLevel,
       // Removido geral: não existe nos dados do backend
     },
-    tendencias: legacyData?.tendencias,
+
     filtros_aplicados: legacyData?.filtros_aplicados,
     tempo_execucao: legacyData?.tempo_execucao,
     timestamp: legacyData?.timestamp,

@@ -68,18 +68,18 @@ const formatDate = (dateString: string) => {
 
 const formatHtmlContent = (content: string): string => {
   if (!content) return '';
-  
+
   let formatted = content;
-  
+
   // Decodificar entidades HTML numéricas e hexadecimais
   formatted = formatted.replace(/&#(\d+);/g, (match, dec) => {
     return String.fromCharCode(parseInt(dec, 10));
   });
-  
+
   formatted = formatted.replace(/&#x([0-9A-Fa-f]+);/g, (match, hex) => {
     return String.fromCharCode(parseInt(hex, 16));
   });
-  
+
   // Converter entidades HTML comuns
   formatted = formatted
     .replace(/&nbsp;/g, ' ')
@@ -88,13 +88,13 @@ const formatHtmlContent = (content: string): string => {
     .replace(/&gt;/g, '>')
     .replace(/&quot;/g, '"')
     .replace(/&#39;/g, "'");
-  
+
   // Remover tags HTML e manter apenas o texto
   formatted = formatted.replace(/<[^>]*>/g, '');
-  
+
   // Limpar espaços extras
   formatted = formatted.replace(/\s+/g, ' ').trim();
-  
+
   return formatted;
 };
 
@@ -141,7 +141,7 @@ export const TicketCard: React.FC<TicketCardProps> = ({
           {ticket.title}
         </h3>
         <div className="flex items-center gap-2">
-          <span 
+          <span
             className={cn(
               'inline-flex items-center gap-1 px-2 py-1 rounded-full text-xs font-medium',
               ticket.status === 'open' && 'bg-red-100 text-red-800',
@@ -187,7 +187,7 @@ export const TicketCard: React.FC<TicketCardProps> = ({
 
       {/* Priority and Category */}
       <div className="flex justify-between items-center mb-3">
-        <span 
+        <span
           className={cn(
             'px-2 py-1 rounded text-xs font-medium',
             ticket.priority === 'high' && 'bg-red-100 text-red-800',

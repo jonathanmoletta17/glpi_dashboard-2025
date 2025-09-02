@@ -65,12 +65,7 @@ export const useDashboard = (initialFilters: FilterParams = {}): UseDashboardRet
   // Removed unused state variables
   const [filters, setFilters] = useState<FilterParams>(initialFilters);
   // Derivar dados dos resultados da API
-  const levelMetrics = data?.niveis
-    ? {
-        ...data.niveis,
-        tendencias: data.tendencias,
-      }
-    : null;
+  const levelMetrics = data?.niveis || null;
 
   // Debug logs temporários
   console.log('🔍 useDashboard - data completo:', data);

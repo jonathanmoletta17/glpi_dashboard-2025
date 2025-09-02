@@ -24,11 +24,11 @@ A refatoração progressiva implementa o padrão **Strangler Fig** para permitir
 
 ### Benefícios
 
-✅ **Zero Downtime**: Migração sem interrupção do serviço  
-✅ **Rollback Seguro**: Possibilidade de voltar ao sistema legado instantaneamente  
-✅ **Validação Contínua**: Comparação automática entre sistemas  
-✅ **Migração Gradual**: Controle fino sobre o percentual de tráfego migrado  
-✅ **Observabilidade**: Monitoramento detalhado de performance e dados  
+✅ **Zero Downtime**: Migração sem interrupção do serviço
+✅ **Rollback Seguro**: Possibilidade de voltar ao sistema legado instantaneamente
+✅ **Validação Contínua**: Comparação automática entre sistemas
+✅ **Migração Gradual**: Controle fino sobre o percentual de tráfego migrado
+✅ **Observabilidade**: Monitoramento detalhado de performance e dados
 
 ## 🏗️ Arquitetura
 
@@ -59,7 +59,7 @@ A refatoração progressiva implementa o padrão **Strangler Fig** para permitir
 ```python
 class ProgressiveRefactoringService:
     """Orquestra a migração entre sistemas legado e novo."""
-    
+
     async def get_dashboard_metrics(self, filters: Dict[str, Any]) -> Dict[str, Any]:
         """Obtém métricas usando estratégia baseada na fase atual."""
 ```
@@ -68,7 +68,7 @@ class ProgressiveRefactoringService:
 ```python
 class RefactoringController:
     """Integra o serviço de refatoração com rotas Flask."""
-    
+
     async def handle_metrics_request(self, request_data: Dict[str, Any]) -> Dict[str, Any]:
         """Processa requisições de métricas com refatoração."""
 ```
@@ -77,7 +77,7 @@ class RefactoringController:
 ```python
 class RefactoringConfig:
     """Configuração da refatoração progressiva."""
-    
+
     phase: RefactoringPhase
     migration_percentage: float
     enable_validation: bool

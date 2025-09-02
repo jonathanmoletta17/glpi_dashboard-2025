@@ -1913,7 +1913,7 @@ class GLPIService:
                     metrics[level_name] = {}
 
             return metrics
-        
+
         except Exception as e:
             self.logger.error(
                 f"[{datetime.datetime.now(tz=datetime.timezone.utc).isoformat()}] Erro geral no _get_metrics_by_level_internal: {e}"
@@ -1927,7 +1927,7 @@ class GLPIService:
 
         try:
             self.logger.debug(f"Buscando detalhes do ticket ID: {ticket_id}")
-            
+
             # Buscar o ticket pelo ID
             url = f"{self.base_url}/Ticket/{ticket_id}"
             params = {
@@ -1947,12 +1947,12 @@ class GLPIService:
                 "with_notes": True,
                 "with_logs": True
             }
-            
+
             response = self.session.get(url, params=params, timeout=30)
-            
+
             if response.status_code == 200:
                 ticket_data = response.json()
-                
+
                 if ticket_data:
                     # Processar e enriquecer os dados do ticket
                     processed_ticket = self._process_ticket_details(ticket_data)
@@ -1967,11 +1967,11 @@ class GLPIService:
             else:
                 self.logger.error(f"Erro ao buscar ticket {ticket_id}: {response.status_code} - {response.text}")
                 return None
-                
+
         except Exception as e:
             self.logger.error(f"Erro ao buscar detalhes do ticket {ticket_id}: {e}", exc_info=True)
             return None
-    
+
     def _process_ticket_details(self, ticket_data: Dict) -> Dict[str, any]:
         """Processa e enriquece os dados do ticket com informações adicionais"""
         try:
@@ -2026,25 +2026,25 @@ class GLPIService:
                 "attachments": [],
                 "tags": []
             }
-            
+
             return processed
-            
+
         except Exception as e:
             self.logger.error(f"Erro ao processar dados do ticket: {e}", exc_info=True)
             return ticket_data
-    
+
     def _map_ticket_priority(self, priority_id: int) -> str:
         """Mapeia ID de prioridade para nome legível"""
         priority_map = {
             1: "muito_baixa",
-            2: "baixa", 
+            2: "baixa",
             3: "normal",
             4: "alta",
             5: "muito_alta",
             6: "critica"
         }
         return priority_map.get(priority_id, "normal")
-    
+
     def _map_ticket_status(self, status_id: int) -> str:
         """Mapeia ID de status para nome legível"""
         status_map = {
@@ -7051,7 +7051,7 @@ class GLPIService:
             correlation_id: ID de correlação para logs
             entity_id: ID da entidade para filtrar técnicos
         """
-        from utils.observability import ObservabilityLogger
+        from utils.structured_logging import glpi_logger
 
         # Log simples para confirmar que o método está sendo chamado
         print(
@@ -7059,10 +7059,10 @@ class GLPIService:
         )
 
         if not correlation_id:
-            obs_logger = ObservabilityLogger("glpi_service")
+            obs_logger = glpi_logger
             correlation_id = obs_logger.generate_correlation_id()
         else:
-            obs_logger = ObservabilityLogger("glpi_service")
+            obs_logger = glpi_logger
 
         if not self._ensure_authenticated():
             obs_logger.emit_warning(

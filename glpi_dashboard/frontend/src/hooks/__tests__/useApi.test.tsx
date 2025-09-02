@@ -29,7 +29,7 @@ describe('useApi Hook', () => {
   });
 
   it('deve gerenciar estado de loading corretamente', async () => {
-    const mockData = { niveis: {}, tendencias: {} };
+    const mockData = { niveis: {} };
     const mockGetMetrics = vi.mocked(apiService.getMetrics);
     mockGetMetrics.mockImplementation(
       () => new Promise(resolve => setTimeout(() => resolve(mockData), 100))
@@ -97,7 +97,7 @@ describe('useApi Hook', () => {
     });
 
     // Segunda requisição com sucesso
-    mockGetMetrics.mockResolvedValueOnce({ niveis: {}, tendencias: {} });
+    mockGetMetrics.mockResolvedValueOnce({ niveis: {} });
 
     act(() => {
       result.current.execute();
@@ -111,12 +111,12 @@ describe('useApi Hook', () => {
       expect(result.current.loading).toBe(false);
     });
 
-    expect(result.current.data).toEqual({ niveis: {}, tendencias: {} });
+    expect(result.current.data).toEqual({ niveis: {} });
     expect(result.current.error).toBeNull();
   });
 
   it('deve resetar estado corretamente', async () => {
-    const mockData = { niveis: {}, tendencias: {} };
+    const mockData = { niveis: {} };
     const mockGetMetrics = vi.mocked(apiService.getMetrics);
     mockGetMetrics.mockResolvedValue(mockData);
 
@@ -142,7 +142,7 @@ describe('useApi Hook', () => {
   });
 
   it('deve aceitar parâmetros na função execute', async () => {
-    const mockData = { niveis: {}, tendencias: {} };
+    const mockData = { niveis: {} };
     const mockGetMetrics = vi.mocked(apiService.getMetrics);
     mockGetMetrics.mockResolvedValue(mockData);
 
@@ -202,7 +202,7 @@ describe('useApi Hook', () => {
   });
 
   it('deve executar automaticamente se autoExecute for true', async () => {
-    const mockData = { niveis: {}, tendencias: {} };
+    const mockData = { niveis: {} };
     const mockGetMetrics = vi.mocked(apiService.getMetrics);
     mockGetMetrics.mockResolvedValue(mockData);
 
@@ -214,7 +214,7 @@ describe('useApi Hook', () => {
   });
 
   it('deve reexecutar quando dependências mudarem', async () => {
-    const mockData = { niveis: {}, tendencias: {} };
+    const mockData = { niveis: {} };
     const mockGetMetrics = vi.mocked(apiService.getMetrics);
     mockGetMetrics.mockResolvedValue(mockData);
 

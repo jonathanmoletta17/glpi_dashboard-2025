@@ -101,19 +101,19 @@ project:
   name: "GLPI Dashboard"
   type: "Full-stack Web Application"
   stack: ["Python", "Flask", "React", "TypeScript"]
-  
+
 architecture:
   pattern: "Clean Architecture"
   backend: "Flask REST API"
   frontend: "React SPA"
   database: "GLPI MySQL"
   cache: "Redis"
-  
+
 standards:
   code_style: "PEP8 (Python), ESLint (TypeScript)"
   testing: "pytest, Jest, Playwright"
   documentation: "Markdown, JSDoc, Sphinx"
-  
+
 key_files:
   - "backend/api/routes.py"
   - "backend/services/glpi_service.py"
@@ -166,10 +166,10 @@ Serviços mock para desenvolvimento offline:
 ```python
 class MockGLPIService:
     """Mock service para desenvolvimento sem GLPI real"""
-    
+
     def get_metrics(self, filters=None):
         return self._load_mock_data('metrics.json')
-    
+
     def get_tickets(self, filters=None):
         return self._load_mock_data('tickets.json')
 ```

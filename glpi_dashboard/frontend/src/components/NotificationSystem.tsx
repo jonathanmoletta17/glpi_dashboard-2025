@@ -173,11 +173,11 @@ export const NotificationSystem: React.FC<NotificationSystemProps> = ({
           from { width: 100%; }
           to { width: 0%; }
         }
-        
+
         .animate-fade-in {
           animation: fadeIn 0.3s ease-out;
         }
-        
+
         @keyframes fadeIn {
           from {
             opacity: 0;

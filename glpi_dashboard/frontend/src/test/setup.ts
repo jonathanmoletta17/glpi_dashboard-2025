@@ -103,6 +103,11 @@ vi.mock('axios', () => ({
     head: vi.fn(),
   },
   AxiosError: class AxiosError extends Error {
+    code?: string;
+    config?: any;
+    request?: any;
+    response?: any;
+
     constructor(message: string, code?: string, config?: any, request?: any, response?: any) {
       super(message);
       this.name = 'AxiosError';

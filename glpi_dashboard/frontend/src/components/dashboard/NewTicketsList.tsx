@@ -5,7 +5,7 @@ import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
 import { AlertCircle, Clock, User, Calendar, RefreshCw, ExternalLink } from 'lucide-react';
 import { NewTicket, Ticket } from '@/types';
-import { cn, formatRelativeTime } from '@/lib/utils';
+import { cn, formatRelativeTime, formatDate } from '@/lib/utils';
 import { apiService } from '@/services/api';
 import { useThrottledCallback } from '@/hooks/useDebounce';
 import { useSmartRefresh } from '@/hooks/useSmartRefresh';
@@ -76,20 +76,7 @@ const getPriorityConfig = (priority: string) => {
   return priorityConfig[priority as keyof typeof priorityConfig] || priorityConfig['Normal'];
 };
 
-// Função auxiliar para formatação de data
-const formatDate = (dateString: string) => {
-  try {
-    const date = new Date(dateString);
-    return date.toLocaleDateString('pt-BR', {
-      day: '2-digit',
-      month: '2-digit',
-      hour: '2-digit',
-      minute: '2-digit',
-    });
-  } catch {
-    return 'Data inválida';
-  }
-};
+
 
 // Componente TicketItem memoizado
 const TicketItem = React.memo<{ ticket: NewTicket; index: number; onTicketClick?: (ticket: Ticket) => void }>(({ ticket, onTicketClick }) => {

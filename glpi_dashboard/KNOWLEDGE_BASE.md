@@ -242,6 +242,6 @@ REDIS_URL=redis://localhost:6379
 
 ---
 
-**Documento gerado em**: Janeiro 2025  
-**Versão**: 1.0  
+**Documento gerado em**: Janeiro 2025
+**Versão**: 1.0
 **Autor**: Análise automatizada do sistema

@@ -33,25 +33,25 @@ export const MetricsGrid = React.memo<MetricsGridProps>(function MetricsGrid({
       {
         type: 'new' as TicketStatus,
         value: metrics.novos || 0,
-        change: metrics.tendencias?.novos || '0',
+        change: '0',
       },
       {
         type: 'progress' as TicketStatus,
         value: metrics.progresso || 0,
-        change: metrics.tendencias?.progresso || '0',
+        change: '0',
       },
       {
         type: 'pending' as TicketStatus,
         value: metrics.pendentes || 0,
-        change: metrics.tendencias?.pendentes || '0',
+        change: '0',
       },
       {
         type: 'resolved' as TicketStatus,
         value: metrics.resolvidos || 0,
-        change: metrics.tendencias?.resolvidos || '0',
+        change: '0',
       },
     ],
-    [metrics.novos, metrics.progresso, metrics.pendentes, metrics.resolvidos, metrics.tendencias]
+    [metrics.novos, metrics.progresso, metrics.pendentes, metrics.resolvidos]
   );
 
   // Memoizar estatísticas calculadas

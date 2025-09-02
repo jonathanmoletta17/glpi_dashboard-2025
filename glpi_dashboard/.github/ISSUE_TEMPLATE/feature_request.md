@@ -90,16 +90,16 @@ Estou sempre frustrado quando [...]
 <!-- Links para documentação, issues relacionadas, etc. -->
 
 - Issue relacionada: #
-- Documentação: 
-- Referência externa: 
+- Documentação:
+- Referência externa:
 
 ## 🧪 Como Testar
 
 <!-- Descreva como esta funcionalidade deveria ser testada -->
 
-1. 
-2. 
-3. 
+1.
+2.
+3.
 
 ## 📝 Informações Adicionais
 

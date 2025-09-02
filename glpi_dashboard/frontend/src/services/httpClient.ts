@@ -15,7 +15,7 @@ const getEnvVar = (key: string, defaultValue: string = '') => {
 // Configuração da API usando variáveis de ambiente
 export const API_CONFIG = {
   BASE_URL: getEnvVar('VITE_API_BASE_URL', 'http://localhost:5000/api'),
-  TIMEOUT: parseInt(getEnvVar('VITE_API_TIMEOUT', '30000')),
+  TIMEOUT: parseInt(getEnvVar('VITE_API_TIMEOUT', '120000')),
   RETRY_ATTEMPTS: parseInt(getEnvVar('VITE_API_RETRY_ATTEMPTS', '3')),
   RETRY_DELAY: parseInt(getEnvVar('VITE_API_RETRY_DELAY', '1000')),
 };

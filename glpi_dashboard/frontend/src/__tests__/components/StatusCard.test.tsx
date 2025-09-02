@@ -5,7 +5,7 @@
 import { describe, it, expect, vi, beforeEach } from 'vitest';
 import { render, screen, fireEvent } from '@testing-library/react';
 import { StatusCard } from '../../components/dashboard/StatusCard';
-import { Ticket, TrendingUp, TrendingDown } from 'lucide-react';
+import { Ticket } from 'lucide-react';
 
 // Mock do framer-motion
 vi.mock('framer-motion', () => ({

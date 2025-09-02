@@ -212,7 +212,7 @@ npx vitest --ui
 
 ### Conclusão
 
-O projeto possui uma estrutura sólida de testes e componentes. Os testes criados para StatusCard e LevelMetricsGrid fornecem cobertura abrangente que, quando funcionando corretamente, garantem a exibição dos cards de status por nível. 
+O projeto possui uma estrutura sólida de testes e componentes. Os testes criados para StatusCard e LevelMetricsGrid fornecem cobertura abrangente que, quando funcionando corretamente, garantem a exibição dos cards de status por nível.
 
 As principais ações para diagnóstico são:
 1. Verificação em tempo real no navegador

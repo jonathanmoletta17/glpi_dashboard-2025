@@ -260,6 +260,6 @@ services:
 
 ---
 
-**Última atualização**: 28/01/2025  
-**Versão**: 1.0.0  
+**Última atualização**: 28/01/2025
+**Versão**: 1.0.0
 **Maintainer**: GLPI Dashboard Team

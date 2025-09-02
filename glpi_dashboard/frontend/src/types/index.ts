@@ -10,12 +10,7 @@ export interface MetricsData {
     n3: LevelMetrics;
     n4: LevelMetrics;
   };
-  tendencias: {
-    novos: string;
-    pendentes: string;
-    progresso: string;
-    resolvidos: string;
-  };
+
 }
 
 export interface LevelMetrics {

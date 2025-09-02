@@ -114,7 +114,7 @@ describe('ApiConsumer Component', () => {
         n3: { novos: 2, pendentes: 1, progresso: 1, resolvidos: 3, total: 7 },
         n4: { novos: 0, pendentes: 0, progresso: 0, resolvidos: 2, total: 2 },
       },
-      tendencias: { novos: '+5%', pendentes: '-2%', progresso: '+1%', resolvidos: '+10%' },
+
     };
 
     const mockGetMetrics = vi.mocked(apiService.getMetrics);
@@ -171,7 +171,7 @@ describe('ApiConsumer Component', () => {
     });
 
     // Segunda requisição com sucesso
-    mockGetMetrics.mockResolvedValueOnce({ niveis: {}, tendencias: {} });
+    mockGetMetrics.mockResolvedValueOnce({ niveis: {} });
 
     fireEvent.click(fetchButton);
 

@@ -29,31 +29,31 @@ export const HealthCheck: React.FC<HealthCheckProps> = ({
 
   const performHealthCheck = useCallback(async () => {
     if (isChecking) return; // Evitar múltiplas verificações simultâneas
-    
+
     setIsChecking(true);
     const startTime = performance.now();
-    
+
     try {
       console.log('🏥 HealthCheck - Verificando saúde da API...');
-      
+
       const response = await apiService.healthCheck();
       const responseTime = performance.now() - startTime;
-      
+
       const newStatus: HealthStatus = {
         isHealthy: true,
         lastCheck: new Date(),
         responseTime,
         details: response
       };
-      
+
       console.log(`✅ HealthCheck - API saudável (${responseTime.toFixed(2)}ms)`, response);
       setHealthStatus(newStatus);
       onStatusChange?.(true, response);
-      
+
     } catch (error) {
       const responseTime = performance.now() - startTime;
       const errorMessage = error instanceof Error ? error.message : 'Erro desconhecido';
-      
+
       const newStatus: HealthStatus = {
         isHealthy: false,
         lastCheck: new Date(),
@@ -61,7 +61,7 @@ export const HealthCheck: React.FC<HealthCheckProps> = ({
         error: errorMessage,
         details: error
       };
-      
+
       console.error(`❌ HealthCheck - API não saudável (${responseTime.toFixed(2)}ms):`, error);
       setHealthStatus(newStatus);
       onStatusChange?.(false, error);
@@ -74,12 +74,12 @@ export const HealthCheck: React.FC<HealthCheckProps> = ({
   useEffect(() => {
     // Verificação inicial
     performHealthCheck();
-    
+
     // Configurar verificação periódica
     const intervalId = setInterval(() => {
       performHealthCheck();
     }, interval);
-    
+
     return () => {
       clearInterval(intervalId);
     };
@@ -137,13 +137,13 @@ export const HealthCheck: React.FC<HealthCheckProps> = ({
             {getStatusText()}
           </span>
         </div>
-        
+
         {healthStatus.lastCheck && (
           <div className="text-xs text-gray-500 dark:text-gray-400 mt-1">
             Última verificação: {healthStatus.lastCheck.toLocaleTimeString()}
           </div>
         )}
-        
+
         {!healthStatus.isHealthy && healthStatus.error && (
           <div className="text-xs text-red-600 dark:text-red-400 mt-1 max-w-xs truncate" title={healthStatus.error}>
             {healthStatus.error}

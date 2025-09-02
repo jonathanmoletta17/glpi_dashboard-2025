@@ -5,7 +5,7 @@
 source = .
 
 # Arquivos e diretórios a serem omitidos
-omit = 
+omit =
     */tests/*
     */test_*
     */__pycache__/*
@@ -45,7 +45,7 @@ omit =
     */__init__.py
 
 # Incluir arquivos específicos mesmo se estiverem em diretórios omitidos
-include = 
+include =
     */api/*
     */services/*
     */utils/*
@@ -79,7 +79,7 @@ concurrency = multiprocessing,thread
 data_file = .coverage
 timid = False
 cover_pylib = False
-plug_ins = 
+plug_ins =
     django_coverage_plugin
 
 # Configurações de contexto
@@ -107,44 +107,44 @@ exclude_lines =
     if __name__ == .__main__.:
     class .*\bProtocol\):
     @(abc\.)?abstractmethod
-    
+
     # Excluir imports condicionais
     if TYPE_CHECKING:
     if typing.TYPE_CHECKING:
-    
+
     # Excluir código de debug
     if DEBUG:
     if __debug__:
-    
+
     # Excluir código específico de plataforma
     if sys.platform
     if platform.system
-    
+
     # Excluir tratamento de exceções específicas
     except ImportError:
     except ModuleNotFoundError:
     except AttributeError:
-    
+
     # Excluir código de fallback
     except.*:
         pass
     except.*:
         continue
-    
+
     # Excluir logging de debug
     logger.debug
     log.debug
-    
+
     # Excluir código de desenvolvimento
     # pragma: dev
     # TODO:
     # FIXME:
     # XXX:
-    
+
     # Excluir código de compatibilidade
     # pragma: py2
     # pragma: py3
-    
+
     # Excluir código específico de ambiente
     # pragma: windows
     # pragma: linux
@@ -160,7 +160,7 @@ title = Backend Coverage Report
 show_contexts = True
 skip_covered = False
 skip_empty = False
-extra_css = 
+extra_css =
     .coverage-summary { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; }
     .coverage-summary th { background-color: #f0f0f0; }
     .coverage-summary .high { background-color: #d4edda; }

@@ -26,7 +26,7 @@ export interface SchemaDefinition {
 }
 
 // Resultado de validação
-export interface ValidationResult {
+export interface ContractValidationResult {
   success: boolean;
   data?: any;
   error?: string;
@@ -34,7 +34,7 @@ export interface ValidationResult {
 
 // Schema validator
 export interface SchemaValidator {
-  validate: (data: any) => ValidationResult;
+  validate: (data: any) => ContractValidationResult;
 }
 
 // Tipos para testes de contrato
@@ -104,9 +104,9 @@ export interface MockHandler {
 
 // Tipos para validação de dados
 export interface DataValidator {
-  validateSchema: (data: any, schema: SchemaDefinition) => ValidationResult;
-  validateContract: (response: any, contract: ApiContract) => ValidationResult;
-  validateRequest: (request: any, contract: ApiContract) => ValidationResult;
+  validateSchema: (data: any, schema: SchemaDefinition) => ContractValidationResult;
+  validateContract: (response: any, contract: ApiContract) => ContractValidationResult;
+  validateRequest: (request: any, contract: ApiContract) => ContractValidationResult;
 }
 
 // Tipos para geração de dados de teste

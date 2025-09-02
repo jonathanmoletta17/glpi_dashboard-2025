@@ -21,11 +21,7 @@ const mockMetrics: MetricsData = {
   closed_tickets: 75,
   pending_tickets: 10,
   in_progress_tickets: 15,
-  tendencias: {
-    total_tickets: { valor: 5, tipo: 'aumento' },
-    open_tickets: { valor: 2, tipo: 'aumento' },
-    closed_tickets: { valor: 3, tipo: 'aumento' },
-  },
+
 };
 
 const mockTechnicianRanking: TechnicianRanking[] = [

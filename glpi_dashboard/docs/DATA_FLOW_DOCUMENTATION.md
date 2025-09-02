@@ -55,7 +55,7 @@ class TechnicianLevel(str, Enum):
         },
         {
             "id": "32",
-            "level": "N3", 
+            "level": "N3",
             "name": "Silvio Godinho Valim",
             "nome": "Silvio Godinho Valim",
             "rank": 2,
@@ -195,7 +195,7 @@ export const processApiData = (apiResponse: ApiResponse): ProcessedData => {
   if (!apiResponse?.data || !Array.isArray(apiResponse.data)) {
     throw new Error('Estrutura de dados inválida: esperado array em data');
   }
-  
+
   return {
     technicians: apiResponse.data.map(tech => ({
       id: tech.id,
@@ -240,7 +240,7 @@ export const useSmartRefresh = (refreshFn: () => Promise<void>, interval = 30000
 const MetricsCard: React.FC<MetricsCardProps> = ({ filters }) => {
   const [data, setData] = useState<ProcessedData | null>(null);
   const [loading, setLoading] = useState(false);
-  
+
   const loadMetrics = useCallback(async () => {
     setLoading(true);
     try {
@@ -253,7 +253,7 @@ const MetricsCard: React.FC<MetricsCardProps> = ({ filters }) => {
       setLoading(false);
     }
   }, [filters]);
-  
+
   // Auto-refresh inteligente
   useSmartRefresh(loadMetrics, 30000);
 };

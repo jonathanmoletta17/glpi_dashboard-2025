@@ -125,18 +125,18 @@ $BaseDir = "{self.base_dir}"
 
 try {{
     Set-Location $BaseDir
-    
+
     # Ativar ambiente virtual se existir
     if (Test-Path ".venv\Scripts\Activate.ps1") {{
         & ".venv\Scripts\Activate.ps1"
     }} elseif (Test-Path "..\venv\Scripts\Activate.ps1") {{
         & "..\venv\Scripts\Activate.ps1"
     }}
-    
+
     # Executar monitoramento
     Write-Host "Iniciando monitoramento..." -ForegroundColor Green
     python monitoring_system.py
-    
+
     if ($LASTEXITCODE -eq 0) {{
         Write-Host "Monitoramento executado com sucesso" -ForegroundColor Green
         Write-Host "Timestamp: $(Get-Date)" -ForegroundColor Gray
