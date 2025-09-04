@@ -66,9 +66,7 @@ class DateValidator:
             return False
 
     @classmethod
-    def normalize_date_filters(
-        cls, filters: Dict[str, Any]
-    ) -> Tuple[Optional[str], Optional[str], Dict[str, str]]:
+    def normalize_date_filters(cls, filters: Dict[str, Any]) -> Tuple[Optional[str], Optional[str], Dict[str, str]]:
         """Normaliza e valida filtros de data de um dicionário de parâmetros.
 
         Args:
@@ -140,9 +138,7 @@ class DateValidator:
                 "end_date": today.strftime(cls.DATE_FORMAT),
             },
             "last_month": {
-                "start_date": (today.replace(day=1) - timedelta(days=1))
-                .replace(day=1)
-                .strftime(cls.DATE_FORMAT),
+                "start_date": (today.replace(day=1) - timedelta(days=1)).replace(day=1).strftime(cls.DATE_FORMAT),
                 "end_date": (today.replace(day=1) - timedelta(days=1)).strftime(cls.DATE_FORMAT),
             },
         }
@@ -212,9 +208,7 @@ class DateValidator:
 
         # Validar datas se fornecidas
         if start_date and not cls.validate_date_format(start_date):
-            raise DateValidationError(
-                f"Formato de start_date inválido: {start_date}. Use YYYY-MM-DD"
-            )
+            raise DateValidationError(f"Formato de start_date inválido: {start_date}. Use YYYY-MM-DD")
 
         if end_date and not cls.validate_date_format(end_date):
             raise DateValidationError(f"Formato de end_date inválido: {end_date}. Use YYYY-MM-DD")
@@ -261,9 +255,7 @@ class DateValidator:
         return criterios
 
     @classmethod
-    def normalize_filters_with_predefined(
-        cls, filters: Dict[str, Any]
-    ) -> Tuple[Optional[str], Optional[str], Dict[str, str]]:
+    def normalize_filters_with_predefined(cls, filters: Dict[str, Any]) -> Tuple[Optional[str], Optional[str], Dict[str, str]]:
         """Normaliza filtros suportando ranges predefinidos e datas customizadas.
 
         Args:
@@ -291,9 +283,7 @@ class DateValidator:
             filters["start_date"] = start_date
             filters["end_date"] = end_date
 
-            logger.info(
-                f"[OBSERVABILITY] Range predefinido '{date_range}' expandido para janela: {start_date} até {end_date}"
-            )
+            logger.info(f"[OBSERVABILITY] Range predefinido '{date_range}' expandido para janela: {start_date} até {end_date}")
 
             # Log adicional sobre o tipo de range
             from datetime import datetime
@@ -319,15 +309,11 @@ def validate_date_range(start_date: Optional[str], end_date: Optional[str]) -> b
     return DateValidator.validate_date_range(start_date, end_date)
 
 
-def normalize_date_filters(
-    filters: Dict[str, Any]
-) -> Tuple[Optional[str], Optional[str], Dict[str, str]]:
+def normalize_date_filters(filters: Dict[str, Any]) -> Tuple[Optional[str], Optional[str], Dict[str, str]]:
     """Função de conveniência para normalizar filtros de data."""
     return DateValidator.normalize_date_filters(filters)
 
 
-def normalize_filters_with_predefined(
-    filters: Dict[str, Any]
-) -> Tuple[Optional[str], Optional[str], Dict[str, str]]:
+def normalize_filters_with_predefined(filters: Dict[str, Any]) -> Tuple[Optional[str], Optional[str], Dict[str, str]]:
     """Função de conveniência para normalizar filtros com suporte a ranges predefinidos."""
     return DateValidator.normalize_filters_with_predefined(filters)

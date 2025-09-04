@@ -9,6 +9,7 @@ from functools import wraps
 from typing import Any, Callable
 
 from flask import jsonify, request
+
 from utils.date_validator import DateValidator
 from utils.performance import extract_filter_params
 from utils.response_formatter import ResponseFormatter
@@ -69,24 +70,14 @@ def validate_date_params(support_predefined: bool = True):
                             f"[OBSERVABILITY] Filtro de data inicial aplicado em {func.__name__}: a partir de {start_date}"
                         )
                     elif end_date:
-                        logger.info(
-                            f"[OBSERVABILITY] Filtro de data final aplicado em {func.__name__}: até {end_date}"
-                        )
+                        logger.info(f"[OBSERVABILITY] Filtro de data final aplicado em {func.__name__}: até {end_date}")
 
                     # Log dos parâmetros originais recebidos
-                    original_params = {
-                        k: v
-                        for k, v in filters.items()
-                        if k in ["start_date", "end_date", "date_range"]
-                    }
+                    original_params = {k: v for k, v in filters.items() if k in ["start_date", "end_date", "date_range"]}
                     if original_params:
-                        logger.info(
-                            f"[OBSERVABILITY] Parâmetros de data originais em {func.__name__}: {original_params}"
-                        )
+                        logger.info(f"[OBSERVABILITY] Parâmetros de data originais em {func.__name__}: {original_params}")
                 else:
-                    logger.info(
-                        f"[OBSERVABILITY] Nenhum filtro de data aplicado em {func.__name__} - usando dados completos"
-                    )
+                    logger.info(f"[OBSERVABILITY] Nenhum filtro de data aplicado em {func.__name__} - usando dados completos")
 
                 return func(*args, **kwargs)
 
@@ -127,9 +118,7 @@ def require_date_range():
             # Se há outros erros de validação, retornar erro 400
             if errors:
                 error_messages = list(errors.values())
-                error_response = ResponseFormatter.format_error_response(
-                    error_messages[0], error_messages
-                )
+                error_response = ResponseFormatter.format_error_response(error_messages[0], error_messages)
                 return jsonify(error_response), 400
 
             # Adicionar datas validadas aos kwargs
@@ -137,9 +126,7 @@ def require_date_range():
             kwargs["validated_end_date"] = end_date
             kwargs["validated_filters"] = filters
 
-            logger.debug(
-                f"Range de datas obrigatório validado para {func.__name__}: {start_date} - {end_date}"
-            )
+            logger.debug(f"Range de datas obrigatório validado para {func.__name__}: {start_date} - {end_date}")
 
             return func(*args, **kwargs)
 
@@ -172,9 +159,7 @@ def log_date_usage():
             active_params = {k: v for k, v in date_params.items() if v is not None}
 
             if active_params:
-                logger.info(
-                    f"Endpoint {func.__name__} chamado com parâmetros de data: {active_params}"
-                )
+                logger.info(f"Endpoint {func.__name__} chamado com parâmetros de data: {active_params}")
             else:
                 logger.debug(f"Endpoint {func.__name__} chamado sem filtros de data")
 

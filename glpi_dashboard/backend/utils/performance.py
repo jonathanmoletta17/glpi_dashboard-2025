@@ -5,8 +5,9 @@ import time
 from functools import wraps
 from typing import Any, Dict, List, Optional
 
-from config.settings import active_config
 from flask import g, request
+
+from config.settings import active_config
 
 logger = logging.getLogger("performance")
 
@@ -147,9 +148,7 @@ def monitor_performance(func):
             except:
                 target_p95 = 300
             if duration * 1000 > target_p95:
-                logger.warning(
-                    f"Slow request: {func.__name__} took {duration*1000:.2f}ms (target: {target_p95}ms)"
-                )
+                logger.warning(f"Slow request: {func.__name__} took {duration*1000:.2f}ms (target: {target_p95}ms)")
 
     return wrapper
 

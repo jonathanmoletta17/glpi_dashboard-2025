@@ -27,35 +27,22 @@ class GLPIService:
             config_obj = active_config()
             if not hasattr(config_obj, "GLPI_URL") or not config_obj.GLPI_URL:
                 raise ValueError("GLPI_URL não está configurado")
-            if (
-                not hasattr(config_obj, "GLPI_APP_TOKEN")
-                or not config_obj.GLPI_APP_TOKEN
-            ):
+            if not hasattr(config_obj, "GLPI_APP_TOKEN") or not config_obj.GLPI_APP_TOKEN:
                 raise ValueError("GLPI_APP_TOKEN não está configurado")
-            if (
-                not hasattr(config_obj, "GLPI_USER_TOKEN")
-                or not config_obj.GLPI_USER_TOKEN
-            ):
+            if not hasattr(config_obj, "GLPI_USER_TOKEN") or not config_obj.GLPI_USER_TOKEN:
                 raise ValueError("GLPI_USER_TOKEN não está configurado")
 
-            self.glpi_url = config_obj.GLPI_URL.rstrip(
-                "/"
-            )  # Remove trailing slash
+            self.glpi_url = config_obj.GLPI_URL.rstrip("/")  # Remove trailing slash
             self.app_token = config_obj.GLPI_APP_TOKEN
             self.user_token = config_obj.GLPI_USER_TOKEN
 
             # Validar formato da URL
             if not self.glpi_url.startswith(("http://", "https://")):
-                raise ValueError(
-                    f"GLPI_URL deve começar com http:// ou https://, "
-                    f"recebido: {self.glpi_url}"
-                )
+                raise ValueError(f"GLPI_URL deve começar com http:// ou https://, " f"recebido: {self.glpi_url}")
 
             # Inicializar loggers com tratamento de erro
             try:
-                self.structured_logger = create_glpi_logger(
-                    getattr(config_obj, "LOG_LEVEL", "INFO")
-                )
+                self.structured_logger = create_glpi_logger(getattr(config_obj, "LOG_LEVEL", "INFO"))
             except Exception as e:
                 # Fallback para logger padrão se structured_logger falhar
                 self.structured_logger = None
@@ -130,18 +117,12 @@ class GLPIService:
                 self.logger.warning("cache_key deve ser uma string não vazia")
                 return False
 
-            if sub_key is not None and (
-                not isinstance(sub_key, str) or not sub_key.strip()
-            ):
-                self.logger.warning(
-                    "sub_key deve ser uma string não vazia ou None"
-                )
+            if sub_key is not None and (not isinstance(sub_key, str) or not sub_key.strip()):
+                self.logger.warning("sub_key deve ser uma string não vazia ou None")
                 return False
 
             # Verificar se o cache existe
-            if not hasattr(self, "_cache") or not isinstance(
-                self._cache, dict
-            ):
+            if not hasattr(self, "_cache") or not isinstance(self._cache, dict):
                 self.logger.warning("Cache não inicializado corretamente")
                 return False
 
@@ -155,26 +136,19 @@ class GLPIService:
 
             timestamp = cache_data.get("timestamp")
             if timestamp is None or not isinstance(timestamp, (int, float)):
-                self.logger.warning(
-                    f"Timestamp inválido no cache para {cache_key}"
-                )
+                self.logger.warning(f"Timestamp inválido no cache para {cache_key}")
                 return False
 
             current_time = time.time()
             ttl = cache_data.get("ttl", 300)  # Default 5 minutos
 
             if not isinstance(ttl, (int, float)) or ttl <= 0:
-                self.logger.warning(
-                    f"TTL inválido no cache para {cache_key}: {ttl}"
-                )
+                self.logger.warning(f"TTL inválido no cache para {cache_key}: {ttl}")
                 return False
 
             is_valid = (current_time - timestamp) < ttl
             if not is_valid:
-                self.logger.debug(
-                    f"Cache expirado para {cache_key}: "
-                    f"idade={current_time - timestamp:.1f}s, TTL={ttl}s"
-                )
+                self.logger.debug(f"Cache expirado para {cache_key}: " f"idade={current_time - timestamp:.1f}s, TTL={ttl}s")
 
             return is_valid
 
@@ -190,18 +164,12 @@ class GLPIService:
                 self.logger.warning("cache_key deve ser uma string não vazia")
                 return None
 
-            if sub_key is not None and (
-                not isinstance(sub_key, str) or not sub_key.strip()
-            ):
-                self.logger.warning(
-                    "sub_key deve ser uma string não vazia ou None"
-                )
+            if sub_key is not None and (not isinstance(sub_key, str) or not sub_key.strip()):
+                self.logger.warning("sub_key deve ser uma string não vazia ou None")
                 return None
 
             # Verificar se o cache existe
-            if not hasattr(self, "_cache") or not isinstance(
-                self._cache, dict
-            ):
+            if not hasattr(self, "_cache") or not isinstance(self._cache, dict):
                 self.logger.warning("Cache não inicializado corretamente")
                 return None
 
@@ -211,22 +179,16 @@ class GLPIService:
                 cache_entry = self._cache.get(cache_key, {})
 
             if not isinstance(cache_entry, dict):
-                self.logger.warning(
-                    f"Entrada de cache inválida para {cache_key}"
-                )
+                self.logger.warning(f"Entrada de cache inválida para {cache_key}")
                 return None
 
             return cache_entry.get("data")
 
         except Exception as e:
-            self.logger.error(
-                f"Erro ao obter dados do cache para {cache_key}: {e}"
-            )
+            self.logger.error(f"Erro ao obter dados do cache para {cache_key}: {e}")
             return None
 
-    def _set_cache_data(
-        self, cache_key: str, data, ttl: int = 300, sub_key: str = None
-    ):
+    def _set_cache_data(self, cache_key: str, data, ttl: int = 300, sub_key: str = None):
         """Define dados no cache com validações robustas"""
         try:
             # Validar parâmetros de entrada
@@ -234,18 +196,12 @@ class GLPIService:
                 self.logger.warning("cache_key deve ser uma string não vazia")
                 return
 
-            if sub_key is not None and (
-                not isinstance(sub_key, str) or not sub_key.strip()
-            ):
-                self.logger.warning(
-                    "sub_key deve ser uma string não vazia ou None"
-                )
+            if sub_key is not None and (not isinstance(sub_key, str) or not sub_key.strip()):
+                self.logger.warning("sub_key deve ser uma string não vazia ou None")
                 return
 
             if not isinstance(ttl, (int, float)) or ttl <= 0:
-                self.logger.warning(
-                    f"TTL deve ser um número positivo, recebido: {ttl}"
-                )
+                self.logger.warning(f"TTL deve ser um número positivo, recebido: {ttl}")
                 ttl = 300  # Fallback para 5 minutos
 
             # Verificar se o cache existe
@@ -261,36 +217,24 @@ class GLPIService:
                 if cache_key not in self._cache:
                     self._cache[cache_key] = {}
                 elif not isinstance(self._cache[cache_key], dict):
-                    self.logger.warning(
-                        f"Entrada de cache corrompida para {cache_key}, reinicializando"
-                    )
+                    self.logger.warning(f"Entrada de cache corrompida para {cache_key}, reinicializando")
                     self._cache[cache_key] = {}
 
                 self._cache[cache_key][sub_key] = cache_entry
-                self.logger.debug(
-                    f"Cache definido para {cache_key}[{sub_key}] com TTL {ttl}s"
-                )
+                self.logger.debug(f"Cache definido para {cache_key}[{sub_key}] com TTL {ttl}s")
             else:
                 self._cache[cache_key] = cache_entry
-                self.logger.debug(
-                    f"Cache definido para {cache_key} com TTL {ttl}s"
-                )
+                self.logger.debug(f"Cache definido para {cache_key} com TTL {ttl}s")
 
         except Exception as e:
-            self.logger.error(
-                f"Erro ao definir dados do cache para {cache_key}: {e}"
-            )
+            self.logger.error(f"Erro ao definir dados do cache para {cache_key}: {e}")
 
     def _is_token_expired(self) -> bool:
         """Verifica se o token de sessão está expirado com validações robustas"""
         try:
             # Verificar se o timestamp de criação existe e é válido
-            if not self.token_created_at or not isinstance(
-                self.token_created_at, (int, float)
-            ):
-                self.logger.debug(
-                    "Timestamp de criação do token não existe ou é inválido"
-                )
+            if not self.token_created_at or not isinstance(self.token_created_at, (int, float)):
+                self.logger.debug("Timestamp de criação do token não existe ou é inválido")
                 return True
 
             # Verificar se o session_timeout é válido
@@ -299,31 +243,23 @@ class GLPIService:
                 or not isinstance(self.session_timeout, (int, float))
                 or self.session_timeout <= 0
             ):
-                self.logger.warning(
-                    "session_timeout inválido, usando padrão de 3600s"
-                )
+                self.logger.warning("session_timeout inválido, usando padrão de 3600s")
                 self.session_timeout = 3600
 
             current_time = time.time()
 
             # Verificar se o timestamp não é futuro (proteção contra clock skew)
             if self.token_created_at > current_time:
-                self.logger.warning(
-                    "Timestamp do token está no futuro, considerando expirado"
-                )
+                self.logger.warning("Timestamp do token está no futuro, considerando expirado")
                 return True
 
             token_age = current_time - self.token_created_at
             is_expired = token_age >= self.session_timeout
 
             if is_expired:
-                self.logger.debug(
-                    f"Token expirado (idade: {token_age:.0f}s, timeout: {self.session_timeout}s)"
-                )
+                self.logger.debug(f"Token expirado (idade: {token_age:.0f}s, timeout: {self.session_timeout}s)")
             else:
-                self.logger.debug(
-                    f"Token válido (idade: {token_age:.0f}s, timeout: {self.session_timeout}s)"
-                )
+                self.logger.debug(f"Token válido (idade: {token_age:.0f}s, timeout: {self.session_timeout}s)")
 
             return is_expired
 
@@ -335,14 +271,8 @@ class GLPIService:
         """Garante que temos um token válido, re-autenticando se necessário com validações robustas"""
         try:
             # Verificar se o token existe e é válido
-            if (
-                not self.session_token
-                or not isinstance(self.session_token, str)
-                or not self.session_token.strip()
-            ):
-                self.logger.info(
-                    "Token de sessão não existe ou é inválido, autenticando..."
-                )
+            if not self.session_token or not isinstance(self.session_token, str) or not self.session_token.strip():
+                self.logger.info("Token de sessão não existe ou é inválido, autenticando...")
                 return self._authenticate_with_retry()
 
             # Verificar se o token está expirado
@@ -365,11 +295,7 @@ class GLPIService:
         """Autentica com retry automático e backoff exponencial com validações robustas"""
         try:
             # Validar configurações de retry
-            if (
-                not hasattr(self, "max_retries")
-                or not isinstance(self.max_retries, int)
-                or self.max_retries <= 0
-            ):
+            if not hasattr(self, "max_retries") or not isinstance(self.max_retries, int) or self.max_retries <= 0:
                 self.logger.warning("max_retries inválido, usando padrão de 3")
                 self.max_retries = 3
 
@@ -378,100 +304,64 @@ class GLPIService:
                 or not isinstance(self.retry_delay_base, (int, float))
                 or self.retry_delay_base <= 0
             ):
-                self.logger.warning(
-                    "retry_delay_base inválido, usando padrão de 2"
-                )
+                self.logger.warning("retry_delay_base inválido, usando padrão de 2")
                 self.retry_delay_base = 2
 
             for attempt in range(self.max_retries):
                 try:
-                    self.logger.info(
-                        f"Tentativa de autenticação {attempt + 1}/{self.max_retries}"
-                    )
+                    self.logger.info(f"Tentativa de autenticação {attempt + 1}/{self.max_retries}")
 
                     if self._perform_authentication():
-                        self.logger.info(
-                            f"Autenticação bem-sucedida na tentativa {attempt + 1}"
-                        )
+                        self.logger.info(f"Autenticação bem-sucedida na tentativa {attempt + 1}")
                         return True
 
                     if attempt < self.max_retries - 1:
-                        delay = min(
-                            self.retry_delay_base**attempt, 30
-                        )  # Máximo de 30 segundos
+                        delay = min(self.retry_delay_base**attempt, 30)  # Máximo de 30 segundos
                         self.logger.warning(
                             f"Tentativa {attempt + 1} falhou, aguardando {delay}s antes da próxima tentativa..."
                         )
                         time.sleep(delay)
 
                 except requests.exceptions.Timeout as e:
-                    self.logger.error(
-                        f"Timeout na tentativa {attempt + 1}: {e}"
-                    )
+                    self.logger.error(f"Timeout na tentativa {attempt + 1}: {e}")
                     if attempt < self.max_retries - 1:
                         delay = min(self.retry_delay_base**attempt, 30)
                         time.sleep(delay)
 
                 except requests.exceptions.ConnectionError as e:
-                    self.logger.error(
-                        f"Erro de conexão na tentativa {attempt + 1}: {e}"
-                    )
+                    self.logger.error(f"Erro de conexão na tentativa {attempt + 1}: {e}")
                     if attempt < self.max_retries - 1:
                         delay = min(self.retry_delay_base**attempt, 30)
                         time.sleep(delay)
 
                 except Exception as e:
-                    self.logger.error(
-                        f"Erro na tentativa {attempt + 1} de autenticação: {e}"
-                    )
+                    self.logger.error(f"Erro na tentativa {attempt + 1} de autenticação: {e}")
                     if attempt < self.max_retries - 1:
                         delay = min(self.retry_delay_base**attempt, 30)
                         time.sleep(delay)
 
-            self.logger.error(
-                f"Falha na autenticação após {self.max_retries} tentativas"
-            )
+            self.logger.error(f"Falha na autenticação após {self.max_retries} tentativas")
             return False
 
         except Exception as e:
-            self.logger.error(
-                f"Erro crítico no processo de autenticação com retry: {e}"
-            )
+            self.logger.error(f"Erro crítico no processo de autenticação com retry: {e}")
             return False
 
     def _perform_authentication(self) -> bool:
         """Executa o processo de autenticação com validações robustas"""
         try:
             # Validar tokens de autenticação
-            if (
-                not self.app_token
-                or not isinstance(self.app_token, str)
-                or not self.app_token.strip()
-            ):
-                self.logger.error(
-                    "GLPI_APP_TOKEN não está configurado ou é inválido"
-                )
+            if not self.app_token or not isinstance(self.app_token, str) or not self.app_token.strip():
+                self.logger.error("GLPI_APP_TOKEN não está configurado ou é inválido")
                 return False
 
-            if (
-                not self.user_token
-                or not isinstance(self.user_token, str)
-                or not self.user_token.strip()
-            ):
-                self.logger.error(
-                    "GLPI_USER_TOKEN não está configurado ou é inválido"
-                )
+            if not self.user_token or not isinstance(self.user_token, str) or not self.user_token.strip():
+                self.logger.error("GLPI_USER_TOKEN não está configurado ou é inválido")
                 return False
 
             # Validar URL do GLPI
-            if (
-                not self.glpi_url
-                or not isinstance(self.glpi_url, str)
-                or not self.glpi_url.strip()
-            ):
-                self.logger.error(
-                    "GLPI_URL não está configurado ou é inválido"
-                )
+            if not self.glpi_url or not isinstance(self.glpi_url, str) or not self.glpi_url.strip():
+                self.logger.error("GLPI_URL não está configurado ou é inválido")
                 return False
 
             # Validar session_timeout
@@ -480,9 +370,7 @@ class GLPIService:
                 or not isinstance(self.session_timeout, (int, float))
                 or self.session_timeout <= 0
             ):
-                self.logger.warning(
-                    "session_timeout inválido, usando padrão de 3600s"
-                )
+                self.logger.warning("session_timeout inválido, usando padrão de 3600s")
                 self.session_timeout = 3600
 
             session_headers = {
@@ -502,46 +390,32 @@ class GLPIService:
 
             # Verificar status code
             if response.status_code != 200:
-                self.logger.error(
-                    f"Falha na autenticação - Status: {response.status_code}, Resposta: {response.text}"
-                )
+                self.logger.error(f"Falha na autenticação - Status: {response.status_code}, Resposta: {response.text}")
                 return False
 
             # Validar resposta JSON
             try:
                 response_data = response.json()
             except ValueError as e:
-                self.logger.error(
-                    f"Resposta de autenticação não é JSON válido: {e}"
-                )
+                self.logger.error(f"Resposta de autenticação não é JSON válido: {e}")
                 return False
 
             # Validar presença do session_token
             if not response_data or "session_token" not in response_data:
-                self.logger.error(
-                    f"session_token não encontrado na resposta: {response_data}"
-                )
+                self.logger.error(f"session_token não encontrado na resposta: {response_data}")
                 return False
 
             session_token = response_data["session_token"]
-            if (
-                not session_token
-                or not isinstance(session_token, str)
-                or not session_token.strip()
-            ):
+            if not session_token or not isinstance(session_token, str) or not session_token.strip():
                 self.logger.error(f"session_token inválido: {session_token}")
                 return False
 
             # Definir dados da sessão
             self.session_token = session_token
             self.token_created_at = time.time()
-            self.token_expires_at = (
-                self.token_created_at + self.session_timeout
-            )
+            self.token_expires_at = self.token_created_at + self.session_timeout
 
-            self.logger.info(
-                f"Autenticação bem-sucedida! Token expira em {self.session_timeout}s"
-            )
+            self.logger.info(f"Autenticação bem-sucedida! Token expira em {self.session_timeout}s")
             return True
 
         except requests.exceptions.Timeout as e:
@@ -569,30 +443,16 @@ class GLPIService:
         try:
             # Garantir autenticação
             if not self._ensure_authenticated():
-                self.logger.error(
-                    "Não foi possível obter headers - falha na autenticação"
-                )
+                self.logger.error("Não foi possível obter headers - falha na autenticação")
                 return None
 
             # Validar tokens necessários
-            if (
-                not self.app_token
-                or not isinstance(self.app_token, str)
-                or not self.app_token.strip()
-            ):
-                self.logger.error(
-                    "app_token não está disponível ou é inválido"
-                )
+            if not self.app_token or not isinstance(self.app_token, str) or not self.app_token.strip():
+                self.logger.error("app_token não está disponível ou é inválido")
                 return None
 
-            if (
-                not self.session_token
-                or not isinstance(self.session_token, str)
-                or not self.session_token.strip()
-            ):
-                self.logger.error(
-                    "session_token não está disponível ou é inválido"
-                )
+            if not self.session_token or not isinstance(self.session_token, str) or not self.session_token.strip():
+                self.logger.error("session_token não está disponível ou é inválido")
                 return None
 
             headers = {
@@ -620,8 +480,7 @@ class GLPIService:
             if (
                 not method
                 or not isinstance(method, str)
-                or method.strip().upper()
-                not in ["GET", "POST", "PUT", "DELETE", "PATCH"]
+                or method.strip().upper() not in ["GET", "POST", "PUT", "DELETE", "PATCH"]
             ):
                 self.logger.error(f"Método HTTP inválido: {method}")
                 return None
@@ -634,11 +493,7 @@ class GLPIService:
             url = url.strip()
 
             # Validar configurações de retry
-            if (
-                not hasattr(self, "max_retries")
-                or not isinstance(self.max_retries, int)
-                or self.max_retries <= 0
-            ):
+            if not hasattr(self, "max_retries") or not isinstance(self.max_retries, int) or self.max_retries <= 0:
                 self.logger.warning("max_retries inválido, usando padrão de 3")
                 self.max_retries = 3
 
@@ -647,9 +502,7 @@ class GLPIService:
                 or not isinstance(self.retry_delay_base, (int, float))
                 or self.retry_delay_base <= 0
             ):
-                self.logger.warning(
-                    "retry_delay_base inválido, usando padrão de 2"
-                )
+                self.logger.warning("retry_delay_base inválido, usando padrão de 2")
                 self.retry_delay_base = 2
 
             # Usar timeout configurado se não fornecido
@@ -659,15 +512,10 @@ class GLPIService:
                     kwargs["timeout"] = config_obj.API_TIMEOUT
                 except (AttributeError, NameError):
                     kwargs["timeout"] = 30  # Fallback
-                    self.logger.warning(
-                        "API_TIMEOUT não configurado, usando 30s"
-                    )
+                    self.logger.warning("API_TIMEOUT não configurado, usando 30s")
 
             # Validar timeout
-            if (
-                not isinstance(kwargs["timeout"], (int, float))
-                or kwargs["timeout"] <= 0
-            ):
+            if not isinstance(kwargs["timeout"], (int, float)) or kwargs["timeout"] <= 0:
                 kwargs["timeout"] = 30
                 self.logger.warning("Timeout inválido, usando 30s")
 
@@ -675,9 +523,7 @@ class GLPIService:
                 try:
                     headers = self.get_api_headers()
                     if not headers:
-                        self.logger.error(
-                            f"Falha ao obter headers de autenticação (tentativa {attempt + 1})"
-                        )
+                        self.logger.error(f"Falha ao obter headers de autenticação (tentativa {attempt + 1})")
                         if attempt < self.max_retries - 1:
                             delay = min(self.retry_delay_base**attempt, 30)
                             time.sleep(delay)
@@ -685,15 +531,11 @@ class GLPIService:
                         return None
 
                     # Adicionar headers customizados se fornecidos
-                    if "headers" in kwargs and isinstance(
-                        kwargs["headers"], dict
-                    ):
+                    if "headers" in kwargs and isinstance(kwargs["headers"], dict):
                         headers.update(kwargs["headers"])
                     kwargs["headers"] = headers
 
-                    self.logger.debug(
-                        f"Fazendo requisição {method} para {url} (tentativa {attempt + 1})"
-                    )
+                    self.logger.debug(f"Fazendo requisição {method} para {url} (tentativa {attempt + 1})")
 
                     # Log estruturado da chamada de API com correlation_id
                     if self.structured_logger and correlation_id:
@@ -709,9 +551,7 @@ class GLPIService:
                     start_time = time.time()
 
                     # Log detalhado antes da requisição
-                    self.logger.debug(
-                        f"[DEBUG] Fazendo requisição {method} para {url}"
-                    )
+                    self.logger.debug(f"[DEBUG] Fazendo requisição {method} para {url}")
                     self.logger.debug(f"[DEBUG] Headers: {headers}")
                     self.logger.debug(f"[DEBUG] Kwargs: {kwargs}")
 
@@ -719,19 +559,11 @@ class GLPIService:
                     response_time = time.time() - start_time
 
                     # Log detalhado da resposta
-                    self.logger.debug(
-                        f"[DEBUG] Response status: {response.status_code}"
-                    )
-                    self.logger.debug(
-                        f"[DEBUG] Response headers: {dict(response.headers)}"
-                    )
-                    self.logger.debug(
-                        f"[DEBUG] Response text (primeiros 200 chars): {response.text[:200]}"
-                    )
+                    self.logger.debug(f"[DEBUG] Response status: {response.status_code}")
+                    self.logger.debug(f"[DEBUG] Response headers: {dict(response.headers)}")
+                    self.logger.debug(f"[DEBUG] Response text (primeiros 200 chars): {response.text[:200]}")
                     self.logger.debug(f"[DEBUG] Response OK: {response.ok}")
-                    self.logger.debug(
-                        f"[DEBUG] Response type: {type(response)}"
-                    )
+                    self.logger.debug(f"[DEBUG] Response type: {type(response)}")
 
                     # Requisição processada com sucesso
 
@@ -753,30 +585,22 @@ class GLPIService:
 
                     # Log de performance e alertas para requisições lentas
                     if response_time > 5.0:
-                        self.logger.warning(
-                            f"Requisição lenta detectada: {response_time:.2f}s para {method} {url}"
-                        )
+                        self.logger.warning(f"Requisição lenta detectada: {response_time:.2f}s para {method} {url}")
                         # Registrar alerta para resposta lenta
                         alert_manager.record_metric(
                             "glpi_response_time",
                             response_time,
                             {
                                 "method": method,
-                                "endpoint": url.split("/")[-1]
-                                if "/" in url
-                                else url,
+                                "endpoint": url.split("/")[-1] if "/" in url else url,
                             },
                         )
                     else:
-                        self.logger.debug(
-                            f"Requisição completada em {response_time:.2f}s"
-                        )
+                        self.logger.debug(f"Requisição completada em {response_time:.2f}s")
 
                     # Se recebemos 401 ou 403, token pode estar expirado
                     if response.status_code in [401, 403]:
-                        self.logger.warning(
-                            f"Recebido status {response.status_code}, token pode estar expirado"
-                        )
+                        self.logger.warning(f"Recebido status {response.status_code}, token pode estar expirado")
                         # Limpar token para forçar re-autenticação
                         self.session_token = None
                         self.token_created_at = None
@@ -790,31 +614,18 @@ class GLPIService:
 
                     # Log de status codes problemáticos
                     if response.status_code >= 500:
-                        self.logger.error(
-                            f"Erro do servidor GLPI: {response.status_code} - {response.text[:200]}"
-                        )
+                        self.logger.error(f"Erro do servidor GLPI: {response.status_code} - {response.text[:200]}")
                     elif response.status_code >= 400:
-                        self.logger.warning(
-                            f"Erro na requisição: {response.status_code} - {response.text[:200]}"
-                        )
-                    elif (
-                        response.status_code >= 200
-                        and response.status_code < 300
-                    ):
-                        self.logger.debug(
-                            f"Requisição bem-sucedida: {response.status_code}"
-                        )
+                        self.logger.warning(f"Erro na requisição: {response.status_code} - {response.text[:200]}")
+                    elif response.status_code >= 200 and response.status_code < 300:
+                        self.logger.debug(f"Requisição bem-sucedida: {response.status_code}")
 
                     return response
 
                 except requests.exceptions.Timeout as e:
-                    self.logger.warning(
-                        f"Timeout na requisição (tentativa {attempt + 1}): {e}"
-                    )
+                    self.logger.warning(f"Timeout na requisição (tentativa {attempt + 1}): {e}")
                     # Incrementar contador de erros Prometheus
-                    prometheus_metrics.glpi_errors_total.labels(
-                        method=method, error_type="timeout"
-                    ).inc()
+                    prometheus_metrics.glpi_errors_total.labels(method=method, error_type="timeout").inc()
 
                     # Log estruturado do erro
                     glpi_logger.log_error(
@@ -832,13 +643,9 @@ class GLPIService:
                         continue
 
                 except requests.exceptions.ConnectionError as e:
-                    self.logger.error(
-                        f"Erro de conexão (tentativa {attempt + 1}): {e}"
-                    )
+                    self.logger.error(f"Erro de conexão (tentativa {attempt + 1}): {e}")
                     # Incrementar contador de erros Prometheus
-                    prometheus_metrics.glpi_errors_total.labels(
-                        method=method, error_type="connection_error"
-                    ).inc()
+                    prometheus_metrics.glpi_errors_total.labels(method=method, error_type="connection_error").inc()
 
                     # Log estruturado do erro
                     glpi_logger.log_error(
@@ -856,32 +663,24 @@ class GLPIService:
                         continue
 
                 except requests.exceptions.RequestException as e:
-                    self.logger.error(
-                        f"Erro na requisição (tentativa {attempt + 1}): {e}"
-                    )
+                    self.logger.error(f"Erro na requisição (tentativa {attempt + 1}): {e}")
                     if attempt < self.max_retries - 1:
                         delay = min(self.retry_delay_base**attempt, 30)
                         time.sleep(delay)
                         continue
 
                 except Exception as e:
-                    self.logger.error(
-                        f"Erro inesperado na requisição (tentativa {attempt + 1}): {e}"
-                    )
+                    self.logger.error(f"Erro inesperado na requisição (tentativa {attempt + 1}): {e}")
                     if attempt < self.max_retries - 1:
                         delay = min(self.retry_delay_base**attempt, 30)
                         time.sleep(delay)
                         continue
 
-            self.logger.error(
-                f"Todas as {self.max_retries} tentativas falharam para {method} {url}"
-            )
+            self.logger.error(f"Todas as {self.max_retries} tentativas falharam para {method} {url}")
             return None
 
         except Exception as e:
-            self.logger.error(
-                f"Erro crítico no método _make_authenticated_request: {e}"
-            )
+            self.logger.error(f"Erro crítico no método _make_authenticated_request: {e}")
             return None
 
     def discover_field_ids(self) -> bool:
@@ -895,13 +694,9 @@ class GLPIService:
                 return True
 
             # Validar estado da instância
-            if not hasattr(self, "field_ids") or not isinstance(
-                self.field_ids, dict
-            ):
+            if not hasattr(self, "field_ids") or not isinstance(self.field_ids, dict):
                 self.field_ids = {}
-                self.logger.warning(
-                    "field_ids não inicializado, criando novo dicionário"
-                )
+                self.logger.warning("field_ids não inicializado, criando novo dicionário")
 
             if not hasattr(self, "glpi_url") or not self.glpi_url:
                 self.logger.error("glpi_url não configurado")
@@ -910,29 +705,21 @@ class GLPIService:
 
             # Verificar autenticação
             if not self._ensure_authenticated():
-                self.logger.error(
-                    "Falha na autenticação para descobrir field IDs"
-                )
+                self.logger.error("Falha na autenticação para descobrir field IDs")
                 self._apply_fallback_field_ids()
                 return False
 
             try:
                 self.logger.debug("Iniciando descoberta de IDs de campos")
-                response = self._make_authenticated_request(
-                    "GET", f"{self.glpi_url}/listSearchOptions/Ticket"
-                )
+                response = self._make_authenticated_request("GET", f"{self.glpi_url}/listSearchOptions/Ticket")
 
                 if not response:
                     self.logger.error("Resposta nula ao descobrir field IDs")
                     self._apply_fallback_field_ids()
-                    return (
-                        True  # Retorna True porque fallbacks foram aplicados
-                    )
+                    return True  # Retorna True porque fallbacks foram aplicados
 
                 if not response.ok:
-                    self.logger.error(
-                        f"Falha ao descobrir field IDs: HTTP {response.status_code}"
-                    )
+                    self.logger.error(f"Falha ao descobrir field IDs: HTTP {response.status_code}")
                     self._apply_fallback_field_ids()
                     return True
 
@@ -940,16 +727,12 @@ class GLPIService:
                 try:
                     search_options = response.json()
                 except ValueError as e:
-                    self.logger.error(
-                        f"Resposta JSON inválida ao descobrir field IDs: {e}"
-                    )
+                    self.logger.error(f"Resposta JSON inválida ao descobrir field IDs: {e}")
                     self._apply_fallback_field_ids()
                     return True
 
                 if not isinstance(search_options, dict):
-                    self.logger.error(
-                        "Formato de resposta inválido para search options"
-                    )
+                    self.logger.error("Formato de resposta inválido para search options")
                     self._apply_fallback_field_ids()
                     return True
 
@@ -995,10 +778,7 @@ class GLPIService:
 
                 for field_id, field_info in search_options.items():
                     try:
-                        if (
-                            not isinstance(field_info, dict)
-                            or "name" not in field_info
-                        ):
+                        if not isinstance(field_info, dict) or "name" not in field_info:
                             continue
 
                         field_name = str(field_info["name"]).strip()
@@ -1007,52 +787,37 @@ class GLPIService:
 
                         # Buscar campo de grupo técnico
                         if not fields_found["GROUP"] and any(
-                            name.lower() in field_name.lower()
-                            for name in tech_group_field_names
+                            name.lower() in field_name.lower() for name in tech_group_field_names
                         ):
                             self.field_ids["GROUP"] = str(field_id)
                             fields_found["GROUP"] = True
-                            self.logger.info(
-                                f"Campo GROUP encontrado: ID {field_id} - {field_name}"
-                            )
+                            self.logger.info(f"Campo GROUP encontrado: ID {field_id} - {field_name}")
 
                         # Buscar campo de status
                         elif not fields_found["STATUS"] and any(
-                            name.lower() in field_name.lower()
-                            for name in status_field_names
+                            name.lower() in field_name.lower() for name in status_field_names
                         ):
                             self.field_ids["STATUS"] = str(field_id)
                             fields_found["STATUS"] = True
-                            self.logger.info(
-                                f"Campo STATUS encontrado: ID {field_id} - {field_name}"
-                            )
+                            self.logger.info(f"Campo STATUS encontrado: ID {field_id} - {field_name}")
 
                         # Buscar campo de técnico
-                        elif not fields_found["TECH"] and any(
-                            name.lower() in field_name.lower()
-                            for name in tech_field_names
-                        ):
+                        elif not fields_found["TECH"] and any(name.lower() in field_name.lower() for name in tech_field_names):
                             self.field_ids["TECH"] = str(field_id)
                             fields_found["TECH"] = True
-                            self.logger.info(
-                                f"Campo TECH encontrado: ID {field_id} - {field_name}"
-                            )
+                            self.logger.info(f"Campo TECH encontrado: ID {field_id} - {field_name}")
 
                         # Parar se todos os campos foram encontrados
                         if all(fields_found.values()):
                             break
 
                     except Exception as e:
-                        self.logger.warning(
-                            f"Erro ao processar campo {field_id}: {e}"
-                        )
+                        self.logger.warning(f"Erro ao processar campo {field_id}: {e}")
                         continue
 
                 # Forçar ID 15 para data de criação (padrão GLPI)
                 self.field_ids["DATE_CREATION"] = "15"
-                self.logger.info(
-                    "Campo DATE_CREATION definido como ID 15 (padrão GLPI)"
-                )
+                self.logger.info("Campo DATE_CREATION definido como ID 15 (padrão GLPI)")
 
                 # Aplicar fallbacks para campos não encontrados
                 self._apply_fallback_field_ids()
@@ -1060,51 +825,35 @@ class GLPIService:
                 # Verificar se todos os campos essenciais estão presentes
                 required_fields = ["GROUP", "STATUS", "DATE_CREATION", "TECH"]
                 missing_fields = [
-                    field
-                    for field in required_fields
-                    if field not in self.field_ids or not self.field_ids[field]
+                    field for field in required_fields if field not in self.field_ids or not self.field_ids[field]
                 ]
 
                 if missing_fields:
-                    self.logger.error(
-                        f"Campos críticos ainda ausentes: {missing_fields}"
-                    )
+                    self.logger.error(f"Campos críticos ainda ausentes: {missing_fields}")
                     return False
 
                 # Salvar no cache para evitar descobertas futuras
-                self._set_cache_data(
-                    "field_ids", self.field_ids.copy(), ttl=1800
-                )  # 30 minutos
-                self.logger.info(
-                    f"IDs de campos descobertos com sucesso e salvos no cache: {self.field_ids}"
-                )
+                self._set_cache_data("field_ids", self.field_ids.copy(), ttl=1800)  # 30 minutos
+                self.logger.info(f"IDs de campos descobertos com sucesso e salvos no cache: {self.field_ids}")
                 return True
 
             except requests.exceptions.RequestException as e:
-                self.logger.error(
-                    f"Erro de requisição ao descobrir IDs dos campos: {e}"
-                )
+                self.logger.error(f"Erro de requisição ao descobrir IDs dos campos: {e}")
                 self._apply_fallback_field_ids()
                 return True
 
             except Exception as e:
-                self.logger.error(
-                    f"Erro inesperado ao descobrir IDs dos campos: {e}"
-                )
+                self.logger.error(f"Erro inesperado ao descobrir IDs dos campos: {e}")
                 self._apply_fallback_field_ids()
                 return True
 
         except Exception as e:
-            self.logger.error(
-                f"Erro crítico no método discover_field_ids: {e}"
-            )
+            self.logger.error(f"Erro crítico no método discover_field_ids: {e}")
             # Tentar aplicar fallbacks mesmo em caso de erro crítico
             try:
                 self._apply_fallback_field_ids()
             except Exception as fallback_error:
-                self.logger.error(
-                    f"Erro ao aplicar fallbacks: {fallback_error}"
-                )
+                self.logger.error(f"Erro ao aplicar fallbacks: {fallback_error}")
                 return False
             return True
 
@@ -1114,13 +863,9 @@ class GLPIService:
             # Validar se field_ids existe e é um dicionário
             if not hasattr(self, "field_ids"):
                 self.field_ids = {}
-                self.logger.warning(
-                    "field_ids não existe, criando novo dicionário"
-                )
+                self.logger.warning("field_ids não existe, criando novo dicionário")
             elif not isinstance(self.field_ids, dict):
-                self.logger.error(
-                    f"field_ids tem tipo inválido: {type(self.field_ids)}, recriando"
-                )
+                self.logger.error(f"field_ids tem tipo inválido: {type(self.field_ids)}, recriando")
                 self.field_ids = {}
 
             # Definir fallbacks padrão do GLPI
@@ -1141,9 +886,7 @@ class GLPIService:
                         or not str(self.field_ids[field_name]).strip()
                     ):
                         self.field_ids[field_name] = str(fallback_id)
-                        self.logger.warning(
-                            f"Campo {field_name} não encontrado ou vazio, usando fallback ID {fallback_id}"
-                        )
+                        self.logger.warning(f"Campo {field_name} não encontrado ou vazio, usando fallback ID {fallback_id}")
                     else:
                         # Validar se o ID existente é válido
                         existing_id = str(self.field_ids[field_name]).strip()
@@ -1153,14 +896,10 @@ class GLPIService:
                             )
                             self.field_ids[field_name] = str(fallback_id)
                         else:
-                            self.logger.debug(
-                                f"Campo {field_name} já configurado com ID {existing_id}"
-                            )
+                            self.logger.debug(f"Campo {field_name} já configurado com ID {existing_id}")
 
                 except Exception as e:
-                    self.logger.error(
-                        f"Erro ao processar fallback para campo {field_name}: {e}"
-                    )
+                    self.logger.error(f"Erro ao processar fallback para campo {field_name}: {e}")
                     # Em caso de erro, aplicar o fallback mesmo assim
                     self.field_ids[field_name] = str(fallback_id)
 
@@ -1168,18 +907,12 @@ class GLPIService:
             required_fields = ["GROUP", "STATUS", "TECH", "DATE_CREATION"]
             for field in required_fields:
                 if field not in self.field_ids or not self.field_ids[field]:
-                    self.logger.error(
-                        f"Campo crítico {field} ainda não configurado após fallbacks"
-                    )
+                    self.logger.error(f"Campo crítico {field} ainda não configurado após fallbacks")
                     if field in fallbacks:
                         self.field_ids[field] = str(fallbacks[field])
-                        self.logger.warning(
-                            f"Forçando fallback para campo crítico {field}: {fallbacks[field]}"
-                        )
+                        self.logger.warning(f"Forçando fallback para campo crítico {field}: {fallbacks[field]}")
 
-            self.logger.debug(
-                f"Fallbacks aplicados. field_ids final: {self.field_ids}"
-            )
+            self.logger.debug(f"Fallbacks aplicados. field_ids final: {self.field_ids}")
 
         except Exception as e:
             self.logger.error(f"Erro crítico ao aplicar fallbacks: {e}")
@@ -1191,13 +924,9 @@ class GLPIService:
                     "TECH": "5",
                     "DATE_CREATION": "15",
                 }
-                self.logger.warning(
-                    "Aplicada configuração mínima de fallbacks devido a erro crítico"
-                )
+                self.logger.warning("Aplicada configuração mínima de fallbacks devido a erro crítico")
             except Exception as critical_error:
-                self.logger.error(
-                    f"Falha crítica ao aplicar configuração mínima: {critical_error}"
-                )
+                self.logger.error(f"Falha crítica ao aplicar configuração mínima: {critical_error}")
                 raise
 
     def _get_technician_name(self, tech_id: str) -> str:
@@ -1216,9 +945,7 @@ class GLPIService:
 
             # Se não for um ID numérico, retornar o nome baseado no ID
             if not tech_id.isdigit():
-                self.logger.debug(
-                    f"tech_id não numérico: {tech_id}, retornando nome baseado no ID"
-                )
+                self.logger.debug(f"tech_id não numérico: {tech_id}, retornando nome baseado no ID")
                 return f"Técnico {tech_id}"
 
             # Verificar configurações necessárias
@@ -1228,29 +955,21 @@ class GLPIService:
 
             try:
                 self.logger.debug(f"Buscando dados do técnico {tech_id}")
-                user_response = self._make_authenticated_request(
-                    "GET", f"{self.glpi_url}/User/{tech_id}"
-                )
+                user_response = self._make_authenticated_request("GET", f"{self.glpi_url}/User/{tech_id}")
 
                 if not user_response:
-                    self.logger.warning(
-                        f"Resposta nula ao buscar usuário {tech_id}"
-                    )
+                    self.logger.warning(f"Resposta nula ao buscar usuário {tech_id}")
                     return f"Técnico {tech_id}"
 
                 if not user_response.ok:
-                    self.logger.warning(
-                        f"Falha ao obter dados do usuário {tech_id}: HTTP {user_response.status_code}"
-                    )
+                    self.logger.warning(f"Falha ao obter dados do usuário {tech_id}: HTTP {user_response.status_code}")
                     return f"Técnico {tech_id}"
 
                 # Validar resposta JSON
                 try:
                     user_data = user_response.json()
                 except ValueError as e:
-                    self.logger.error(
-                        f"Resposta JSON inválida para usuário {tech_id}: {e}"
-                    )
+                    self.logger.error(f"Resposta JSON inválida para usuário {tech_id}: {e}")
                     return f"Técnico {tech_id}"
 
                 if not user_data:
@@ -1263,22 +982,16 @@ class GLPIService:
                     if user_data and isinstance(user_data[0], dict):
                         user_info = user_data[0]
                     else:
-                        self.logger.warning(
-                            f"Lista de dados inválida para usuário {tech_id}"
-                        )
+                        self.logger.warning(f"Lista de dados inválida para usuário {tech_id}")
                         return f"Técnico {tech_id}"
                 elif isinstance(user_data, dict):
                     user_info = user_data
                 else:
-                    self.logger.warning(
-                        f"Formato de dados inválido para usuário {tech_id}: {type(user_data)}"
-                    )
+                    self.logger.warning(f"Formato de dados inválido para usuário {tech_id}: {type(user_data)}")
                     return f"Técnico {tech_id}"
 
                 if not user_info or not isinstance(user_info, dict):
-                    self.logger.warning(
-                        f"user_info inválido para usuário {tech_id}"
-                    )
+                    self.logger.warning(f"user_info inválido para usuário {tech_id}")
                     return f"Técnico {tech_id}"
 
                 # Tentar diferentes campos de nome em ordem de prioridade
@@ -1299,14 +1012,10 @@ class GLPIService:
                                 "none",
                                 "",
                             ]:
-                                self.logger.debug(
-                                    f"Nome encontrado para técnico {tech_id}: {name} (campo: {field})"
-                                )
+                                self.logger.debug(f"Nome encontrado para técnico {tech_id}: {name} (campo: {field})")
                                 return name
                     except Exception as e:
-                        self.logger.warning(
-                            f"Erro ao processar campo {field} para usuário {tech_id}: {e}"
-                        )
+                        self.logger.warning(f"Erro ao processar campo {field} para usuário {tech_id}: {e}")
                         continue
 
                 # Tentar combinar firstname + lastname
@@ -1317,47 +1026,31 @@ class GLPIService:
                     if firstname and lastname:
                         combined_name = f"{firstname} {lastname}".strip()
                         if combined_name:
-                            self.logger.debug(
-                                f"Nome combinado para técnico {tech_id}: {combined_name}"
-                            )
+                            self.logger.debug(f"Nome combinado para técnico {tech_id}: {combined_name}")
                             return combined_name
                     elif firstname:
-                        self.logger.debug(
-                            f"Apenas primeiro nome para técnico {tech_id}: {firstname}"
-                        )
+                        self.logger.debug(f"Apenas primeiro nome para técnico {tech_id}: {firstname}")
                         return firstname
                     elif lastname:
-                        self.logger.debug(
-                            f"Apenas sobrenome para técnico {tech_id}: {lastname}"
-                        )
+                        self.logger.debug(f"Apenas sobrenome para técnico {tech_id}: {lastname}")
                         return lastname
                 except Exception as e:
-                    self.logger.warning(
-                        f"Erro ao combinar nomes para usuário {tech_id}: {e}"
-                    )
+                    self.logger.warning(f"Erro ao combinar nomes para usuário {tech_id}: {e}")
 
                 # Fallback final
-                self.logger.warning(
-                    f"Nenhum nome válido encontrado para técnico {tech_id}"
-                )
+                self.logger.warning(f"Nenhum nome válido encontrado para técnico {tech_id}")
                 return f"Técnico {tech_id}"
 
             except requests.exceptions.RequestException as e:
-                self.logger.error(
-                    f"Erro de requisição ao buscar técnico {tech_id}: {e}"
-                )
+                self.logger.error(f"Erro de requisição ao buscar técnico {tech_id}: {e}")
                 return f"Técnico {tech_id}"
 
             except Exception as e:
-                self.logger.error(
-                    f"Erro inesperado ao buscar técnico {tech_id}: {e}"
-                )
+                self.logger.error(f"Erro inesperado ao buscar técnico {tech_id}: {e}")
                 return f"Técnico {tech_id}"
 
         except Exception as e:
-            self.logger.error(
-                f"Erro crítico no método _get_technician_name para {tech_id}: {e}"
-            )
+            self.logger.error(f"Erro crítico no método _get_technician_name para {tech_id}: {e}")
             return f'Técnico {tech_id if tech_id else "Desconhecido"}'
 
     def get_ticket_count_by_hierarchy(
@@ -1372,17 +1065,11 @@ class GLPIService:
         try:
             # Validações de entrada
             if not isinstance(level, str) or not level.strip():
-                self.logger.error(
-                    f"[{datetime.now(tz=datetime.timezone.utc).isoformat()}] level inválido: {level}"
-                )
+                self.logger.error(f"[{datetime.now(tz=datetime.timezone.utc).isoformat()}] level inválido: {level}")
                 return 0
 
-            if not isinstance(status_id, (int, str)) or (
-                isinstance(status_id, str) and not status_id.strip()
-            ):
-                self.logger.error(
-                    f"[{datetime.now(tz=datetime.timezone.utc).isoformat()}] status_id inválido: {status_id}"
-                )
+            if not isinstance(status_id, (int, str)) or (isinstance(status_id, str) and not status_id.strip()):
+                self.logger.error(f"[{datetime.now(tz=datetime.timezone.utc).isoformat()}] status_id inválido: {status_id}")
                 return 0
 
             # Converter status_id para int se necessário
@@ -1409,23 +1096,17 @@ class GLPIService:
 
             # Verificar configuração básica
             if not hasattr(self, "glpi_url") or not self.glpi_url:
-                self.logger.error(
-                    f"[{datetime.now(tz=datetime.timezone.utc).isoformat()}] GLPI URL não configurada"
-                )
+                self.logger.error(f"[{datetime.now(tz=datetime.timezone.utc).isoformat()}] GLPI URL não configurada")
                 return 0
 
             # Garantir autenticação
             if not self._ensure_authenticated():
-                self.logger.error(
-                    f"[{datetime.now(tz=datetime.timezone.utc).isoformat()}] Falha na autenticação"
-                )
+                self.logger.error(f"[{datetime.now(tz=datetime.timezone.utc).isoformat()}] Falha na autenticação")
                 return 0
 
             if not self.field_ids:
                 if not self.discover_field_ids():
-                    timestamp = datetime.now(
-                        tz=datetime.timezone.utc
-                    ).isoformat()
+                    timestamp = datetime.now(tz=datetime.timezone.utc).isoformat()
                     self.logger.error(
                         f"[{timestamp}] Falha ao descobrir field_ids - "
                         f"level: {level}, status_id: {status_id}, "
@@ -1496,9 +1177,7 @@ class GLPIService:
                         # Verificar campo 'content-range'
                         if "content-range" in data:
                             try:
-                                total_count = int(
-                                    data["content-range"].split("/")[-1]
-                                )
+                                total_count = int(data["content-range"].split("/")[-1])
                                 self.logger.info(
                                     f"[{datetime.datetime.now(tz=datetime.timezone.utc).isoformat()}] Contagem extraída do content-range no JSON: {total_count}"
                                 )
@@ -1548,14 +1227,10 @@ class GLPIService:
                 return 0
 
         except requests.exceptions.RequestException as e:
-            self.logger.error(
-                f"[{datetime.datetime.now(tz=datetime.timezone.utc).isoformat()}] Erro de requisição: {e}"
-            )
+            self.logger.error(f"[{datetime.datetime.now(tz=datetime.timezone.utc).isoformat()}] Erro de requisição: {e}")
             return 0
         except Exception as e:
-            self.logger.error(
-                f"[{datetime.datetime.now(tz=datetime.timezone.utc).isoformat()}] Erro inesperado: {e}"
-            )
+            self.logger.error(f"[{datetime.datetime.now(tz=datetime.timezone.utc).isoformat()}] Erro inesperado: {e}")
             return 0
 
     def get_ticket_count(
@@ -1569,17 +1244,13 @@ class GLPIService:
         """Busca o total de tickets para um grupo e status específicos, com filtro de data opcional"""
         try:
             # Validações de entrada
-            if not isinstance(group_id, (int, str)) or (
-                isinstance(group_id, str) and not group_id.strip()
-            ):
+            if not isinstance(group_id, (int, str)) or (isinstance(group_id, str) and not group_id.strip()):
                 self.logger.error(
                     f"[{datetime.datetime.now(tz=datetime.timezone.utc).isoformat()}] group_id inválido: {group_id}"
                 )
                 return 0
 
-            if not isinstance(status_id, (int, str)) or (
-                isinstance(status_id, str) and not status_id.strip()
-            ):
+            if not isinstance(status_id, (int, str)) or (isinstance(status_id, str) and not status_id.strip()):
                 self.logger.error(
                     f"[{datetime.datetime.now(tz=datetime.timezone.utc).isoformat()}] status_id inválido: {status_id}"
                 )
@@ -1610,23 +1281,17 @@ class GLPIService:
 
             # Verificar configuração básica
             if not hasattr(self, "glpi_url") or not self.glpi_url:
-                self.logger.error(
-                    f"[{datetime.datetime.now(tz=datetime.timezone.utc).isoformat()}] GLPI URL não configurada"
-                )
+                self.logger.error(f"[{datetime.datetime.now(tz=datetime.timezone.utc).isoformat()}] GLPI URL não configurada")
                 return 0
 
             # Garantir autenticação
             if not self._ensure_authenticated():
-                self.logger.error(
-                    f"[{datetime.datetime.now(tz=datetime.timezone.utc).isoformat()}] Falha na autenticação"
-                )
+                self.logger.error(f"[{datetime.datetime.now(tz=datetime.timezone.utc).isoformat()}] Falha na autenticação")
                 return 0
 
             if not self.field_ids:
                 if not self.discover_field_ids():
-                    timestamp = datetime.datetime.now(
-                        tz=datetime.timezone.utc
-                    ).isoformat()
+                    timestamp = datetime.datetime.now(tz=datetime.timezone.utc).isoformat()
                     self.logger.error(
                         f"[{timestamp}] Falha ao descobrir field_ids - "
                         f"group_id: {group_id}, status_id: {status_id}, "
@@ -1635,9 +1300,7 @@ class GLPIService:
                     return 0
 
             # Verificar se field_ids necessários estão disponíveis
-            if not self.field_ids.get("GROUP") or not self.field_ids.get(
-                "STATUS"
-            ):
+            if not self.field_ids.get("GROUP") or not self.field_ids.get("STATUS"):
                 self.logger.error(
                     f"[{datetime.datetime.now(tz=datetime.timezone.utc).isoformat()}] Field IDs críticos não encontrados: GROUP={self.field_ids.get('GROUP')}, STATUS={self.field_ids.get('STATUS')}"
                 )
@@ -1656,9 +1319,7 @@ class GLPIService:
             }
 
             # Log de observabilidade: parâmetros GLPI
-            timestamp = datetime.datetime.now(
-                tz=datetime.timezone.utc
-            ).isoformat()
+            timestamp = datetime.datetime.now(tz=datetime.timezone.utc).isoformat()
             self.logger.info(
                 f"[{timestamp}] GLPI Query Parameters - "
                 f"group_id: {group_id}, status_id: {status_id}, "
@@ -1667,19 +1328,13 @@ class GLPIService:
             )
 
             # Adicionar filtros de data se fornecidos usando função utilitária
-            if (start_date and start_date.strip()) or (
-                end_date and end_date.strip()
-            ):
+            if (start_date and start_date.strip()) or (end_date and end_date.strip()):
                 try:
-                    date_criteria = (
-                        DateValidator.construir_criterios_filtro_data(
-                            start_date=start_date.strip()
-                            if start_date
-                            else None,
-                            end_date=end_date.strip() if end_date else None,
-                            field_id="15",
-                            criteria_start_index=2,
-                        )
+                    date_criteria = DateValidator.construir_criterios_filtro_data(
+                        start_date=start_date.strip() if start_date else None,
+                        end_date=end_date.strip() if end_date else None,
+                        field_id="15",
+                        criteria_start_index=2,
                     )
                     search_params.update(date_criteria)
                 except ValueError as e:
@@ -1696,9 +1351,7 @@ class GLPIService:
                 )
 
                 if not response:
-                    timestamp = datetime.datetime.now(
-                        tz=datetime.timezone.utc
-                    ).isoformat()
+                    timestamp = datetime.datetime.now(tz=datetime.timezone.utc).isoformat()
                     self.logger.error(
                         f"[{timestamp}] Resposta vazia da API GLPI - "
                         f"group_id: {group_id}, status_id: {status_id}, "
@@ -1708,9 +1361,7 @@ class GLPIService:
 
                 # Verificar se o status code é válido (200 OK ou 206 Partial Content)
                 if response.status_code not in [200, 206]:
-                    timestamp = datetime.datetime.now(
-                        tz=datetime.timezone.utc
-                    ).isoformat()
+                    timestamp = datetime.datetime.now(tz=datetime.timezone.utc).isoformat()
                     self.logger.error(
                         f"[{timestamp}] API GLPI retornou status {response.status_code} - "
                         f"group_id: {group_id}, status_id: {status_id}, "
@@ -1736,9 +1387,7 @@ class GLPIService:
                             return 0
 
                         total = int(total_str)
-                        timestamp = datetime.datetime.now(
-                            tz=datetime.timezone.utc
-                        ).isoformat()
+                        timestamp = datetime.datetime.now(tz=datetime.timezone.utc).isoformat()
                         self.logger.info(
                             f"[{timestamp}] GLPI Query Result - "
                             f"group_id: {group_id}, status_id: {status_id}, "
@@ -1754,18 +1403,13 @@ class GLPIService:
                 # Verificar se há content-range no corpo da resposta JSON
                 try:
                     response_data = response.json()
-                    if (
-                        isinstance(response_data, dict)
-                        and "content-range" in response_data
-                    ):
+                    if isinstance(response_data, dict) and "content-range" in response_data:
                         content_range = response_data["content-range"]
                         if content_range and "/" in content_range:
                             total_str = content_range.split("/")[-1]
                             if total_str.isdigit():
                                 total = int(total_str)
-                                timestamp = datetime.datetime.now(
-                                    tz=datetime.timezone.utc
-                                ).isoformat()
+                                timestamp = datetime.datetime.now(tz=datetime.timezone.utc).isoformat()
                                 self.logger.info(
                                     f"[{timestamp}] GLPI Query Result - "
                                     f"group_id: {group_id}, status_id: {status_id}, "
@@ -1782,15 +1426,10 @@ class GLPIService:
                             )
 
                     # Verificar se há totalcount no JSON (alternativa)
-                    if (
-                        isinstance(response_data, dict)
-                        and "totalcount" in response_data
-                    ):
+                    if isinstance(response_data, dict) and "totalcount" in response_data:
                         total = response_data["totalcount"]
                         if isinstance(total, int):
-                            timestamp = datetime.datetime.now(
-                                tz=datetime.timezone.utc
-                            ).isoformat()
+                            timestamp = datetime.datetime.now(tz=datetime.timezone.utc).isoformat()
                             self.logger.info(
                                 f"[{timestamp}] GLPI Query Result - "
                                 f"group_id: {group_id}, status_id: {status_id}, "
@@ -1825,9 +1464,7 @@ class GLPIService:
                 )
                 return 0
             except Exception as e:
-                timestamp = datetime.datetime.now(
-                    tz=datetime.timezone.utc
-                ).isoformat()
+                timestamp = datetime.datetime.now(tz=datetime.timezone.utc).isoformat()
                 self.logger.error(
                     f"[{timestamp}] Exceção inesperada ao buscar contagem de tickets: {str(e)} - "
                     f"group_id: {group_id}, status_id: {status_id}, "
@@ -1865,16 +1502,12 @@ class GLPIService:
                 return {}
 
             if not hasattr(self, "glpi_url") or not self.glpi_url:
-                self.logger.error(
-                    f"[{datetime.datetime.now(tz=datetime.timezone.utc).isoformat()}] GLPI URL não configurada"
-                )
+                self.logger.error(f"[{datetime.datetime.now(tz=datetime.timezone.utc).isoformat()}] GLPI URL não configurada")
                 return {}
 
             # Garantir autenticação
             if not self._ensure_authenticated():
-                self.logger.error(
-                    f"[{datetime.datetime.now(tz=datetime.timezone.utc).isoformat()}] Falha na autenticação"
-                )
+                self.logger.error(f"[{datetime.datetime.now(tz=datetime.timezone.utc).isoformat()}] Falha na autenticação")
                 return {}
 
             # Descobrir field_ids se necessário
@@ -1884,9 +1517,7 @@ class GLPIService:
                 )
                 return {}
 
-            return self._get_metrics_by_level_internal_hierarchy(
-                start_date, end_date, correlation_id
-            )
+            return self._get_metrics_by_level_internal_hierarchy(start_date, end_date, correlation_id)
 
         except Exception as e:
             self.logger.error(
@@ -1937,17 +1568,13 @@ class GLPIService:
                     return {}
 
             # Verificar se as configurações necessárias estão disponíveis
-            if not hasattr(self, "service_levels") or not isinstance(
-                self.service_levels, dict
-            ):
+            if not hasattr(self, "service_levels") or not isinstance(self.service_levels, dict):
                 self.logger.error(
                     f"[{datetime.datetime.now(tz=datetime.timezone.utc).isoformat()}] service_levels inválido: {getattr(self, 'service_levels', None)}"
                 )
                 return {}
 
-            if not hasattr(self, "status_map") or not isinstance(
-                self.status_map, dict
-            ):
+            if not hasattr(self, "status_map") or not isinstance(self.status_map, dict):
                 self.logger.error(
                     f"[{datetime.datetime.now(tz=datetime.timezone.utc).isoformat()}] status_map inválido: {getattr(self, 'status_map', None)}"
                 )
@@ -1960,9 +1587,7 @@ class GLPIService:
                 return {}
 
             if not self.status_map:
-                self.logger.warning(
-                    f"[{datetime.datetime.now(tz=datetime.timezone.utc).isoformat()}] status_map está vazio"
-                )
+                self.logger.warning(f"[{datetime.datetime.now(tz=datetime.timezone.utc).isoformat()}] status_map está vazio")
                 return {}
 
             metrics = {}
@@ -1976,9 +1601,7 @@ class GLPIService:
                         )
                         continue
 
-                    if not isinstance(group_id, (int, str)) or (
-                        isinstance(group_id, str) and not group_id.strip()
-                    ):
+                    if not isinstance(group_id, (int, str)) or (isinstance(group_id, str) and not group_id.strip()):
                         self.logger.warning(
                             f"[{datetime.datetime.now(tz=datetime.timezone.utc).isoformat()}] group_id inválido para {level_name}: {group_id}"
                         )
@@ -1989,18 +1612,13 @@ class GLPIService:
                     for status_name, status_id in self.status_map.items():
                         try:
                             # Validar status_name e status_id
-                            if not status_name or not isinstance(
-                                status_name, str
-                            ):
+                            if not status_name or not isinstance(status_name, str):
                                 self.logger.warning(
                                     f"[{datetime.datetime.now(tz=datetime.timezone.utc).isoformat()}] status_name inválido: {status_name}"
                                 )
                                 continue
 
-                            if not isinstance(status_id, (int, str)) or (
-                                isinstance(status_id, str)
-                                and not status_id.strip()
-                            ):
+                            if not isinstance(status_id, (int, str)) or (isinstance(status_id, str) and not status_id.strip()):
                                 self.logger.warning(
                                     f"[{datetime.datetime.now(tz=datetime.timezone.utc).isoformat()}] status_id inválido para {status_name}: {status_id}"
                                 )
@@ -2013,9 +1631,7 @@ class GLPIService:
                                 end_date,
                                 correlation_id,
                             )
-                            level_metrics[status_name] = (
-                                count if count is not None else 0
-                            )
+                            level_metrics[status_name] = count if count is not None else 0
 
                         except Exception as e:
                             self.logger.error(
@@ -2039,9 +1655,7 @@ class GLPIService:
             )
             return {}
 
-    def debug_technician_tickets(
-        self, technician_id: str, correlation_id: str = None
-    ) -> Dict[str, any]:
+    def debug_technician_tickets(self, technician_id: str, correlation_id: str = None) -> Dict[str, any]:
         """Debug específico dos tickets de um técnico"""
         try:
             if not self._ensure_authenticated():
@@ -2077,50 +1691,34 @@ class GLPIService:
                 "forcedisplay[4]": str(tech_field_id),  # Técnico
             }
 
-            response = self._make_authenticated_request(
-                "GET", f"{self.glpi_url}/search/Ticket", params=search_params
-            )
+            response = self._make_authenticated_request("GET", f"{self.glpi_url}/search/Ticket", params=search_params)
 
             if response and response.status_code in [200, 206]:
                 tickets_data = response.json()
                 debug_data["api_response"] = {
                     "status_code": response.status_code,
                     "headers": dict(response.headers),
-                    "data_keys": list(tickets_data.keys())
-                    if isinstance(tickets_data, dict)
-                    else "not_dict",
+                    "data_keys": list(tickets_data.keys()) if isinstance(tickets_data, dict) else "not_dict",
                 }
 
                 if isinstance(tickets_data, dict) and "data" in tickets_data:
-                    debug_data["tickets"] = tickets_data["data"][
-                        :5
-                    ]  # Primeiros 5
-                    debug_data["total_count"] = tickets_data.get(
-                        "totalcount", 0
-                    )
+                    debug_data["tickets"] = tickets_data["data"][:5]  # Primeiros 5
+                    debug_data["total_count"] = tickets_data.get("totalcount", 0)
                 else:
-                    debug_data["tickets"] = (
-                        tickets_data if isinstance(tickets_data, list) else []
-                    )
+                    debug_data["tickets"] = tickets_data if isinstance(tickets_data, list) else []
             else:
                 debug_data["api_error"] = {
-                    "status_code": response.status_code
-                    if response
-                    else "no_response",
+                    "status_code": response.status_code if response else "no_response",
                     "text": response.text if response else "no_response",
                 }
 
             return debug_data
 
         except Exception as e:
-            self.logger.error(
-                f"Erro no debug do técnico {technician_id}: {e}", exc_info=True
-            )
+            self.logger.error(f"Erro no debug do técnico {technician_id}: {e}", exc_info=True)
             return {"error": str(e), "technician_id": technician_id}
 
-    def debug_technician_tickets_general(
-        self, limit: int = 5, correlation_id: str = None
-    ) -> Dict[str, any]:
+    def debug_technician_tickets_general(self, limit: int = 5, correlation_id: str = None) -> Dict[str, any]:
         """Debug geral dos tickets dos técnicos"""
         try:
             if not self._ensure_authenticated():
@@ -2147,41 +1745,28 @@ class GLPIService:
                     # Buscar alguns técnicos
                     try:
                         # Buscar usuários com perfil de técnico (ID 6)
-                        profile_users_response = (
-                            self._make_authenticated_request(
-                                "GET",
-                                f"{self.glpi_url}/Profile_User",
-                                params={
-                                    "range": f"0-{limit - 1}",
-                                    "criteria[0][field]": "profiles_id",
-                                    "criteria[0][value]": "6",
-                                },
-                            )
+                        profile_users_response = self._make_authenticated_request(
+                            "GET",
+                            f"{self.glpi_url}/Profile_User",
+                            params={
+                                "range": f"0-{limit - 1}",
+                                "criteria[0][field]": "profiles_id",
+                                "criteria[0][value]": "6",
+                            },
                         )
 
-                        if (
-                            profile_users_response
-                            and profile_users_response.ok
-                        ):
+                        if profile_users_response and profile_users_response.ok:
                             profile_data = profile_users_response.json()
                             debug_data["profile_users_response"] = {
                                 "status": "success",
-                                "count": len(profile_data)
-                                if isinstance(profile_data, list)
-                                else 0,
+                                "count": len(profile_data) if isinstance(profile_data, list) else 0,
                             }
 
                             # Para cada técnico, buscar alguns tickets
-                            for i, profile_user in enumerate(
-                                profile_data[:limit]
-                                if isinstance(profile_data, list)
-                                else []
-                            ):
+                            for i, profile_user in enumerate(profile_data[:limit] if isinstance(profile_data, list) else []):
                                 user_id = profile_user.get("users_id")
                                 if user_id:
-                                    tech_debug = self.debug_technician_tickets(
-                                        str(user_id), correlation_id
-                                    )
+                                    tech_debug = self.debug_technician_tickets(str(user_id), correlation_id)
                                     debug_data["technicians"].append(
                                         {
                                             "user_id": user_id,
@@ -2191,9 +1776,7 @@ class GLPIService:
                         else:
                             debug_data["profile_users_response"] = {
                                 "status": "error",
-                                "status_code": profile_users_response.status_code
-                                if profile_users_response
-                                else "no_response",
+                                "status_code": profile_users_response.status_code if profile_users_response else "no_response",
                             }
 
                     except Exception as e:
@@ -2202,9 +1785,7 @@ class GLPIService:
             return debug_data
 
         except Exception as e:
-            self.logger.error(
-                f"Erro no debug geral dos técnicos: {e}", exc_info=True
-            )
+            self.logger.error(f"Erro no debug geral dos técnicos: {e}", exc_info=True)
             return {"error": str(e)}
 
     def get_ticket_by_id(self, ticket_id: int) -> Dict[str, any]:
@@ -2242,12 +1823,8 @@ class GLPIService:
 
                 if ticket_data:
                     # Processar e enriquecer os dados do ticket
-                    processed_ticket = self._process_ticket_details(
-                        ticket_data
-                    )
-                    self.logger.info(
-                        f"Detalhes do ticket {ticket_id} obtidos com sucesso"
-                    )
+                    processed_ticket = self._process_ticket_details(ticket_data)
+                    self.logger.info(f"Detalhes do ticket {ticket_id} obtidos com sucesso")
                     return processed_ticket
                 else:
                     self.logger.warning(f"Ticket {ticket_id} não encontrado")
@@ -2256,9 +1833,7 @@ class GLPIService:
                 self.logger.warning(f"Ticket {ticket_id} não encontrado (404)")
                 return None
             else:
-                self.logger.error(
-                    f"Erro ao buscar ticket {ticket_id}: {response.status_code} - {response.text}"
-                )
+                self.logger.error(f"Erro ao buscar ticket {ticket_id}: {response.status_code} - {response.text}")
                 return None
 
         except Exception as e:
@@ -2276,21 +1851,13 @@ class GLPIService:
                 "id": ticket_data.get("id"),
                 "title": ticket_data.get("name", ""),
                 "description": ticket_data.get("content", ""),
-                "status": self._map_ticket_status(
-                    ticket_data.get("status", 1)
-                ),
-                "priority": self._map_ticket_priority(
-                    ticket_data.get("priority", 3)
-                ),
-                "category": ticket_data.get(
-                    "itilcategories_id_name", "Não categorizado"
-                ),
+                "status": self._map_ticket_status(ticket_data.get("status", 1)),
+                "priority": self._map_ticket_priority(ticket_data.get("priority", 3)),
+                "category": ticket_data.get("itilcategories_id_name", "Não categorizado"),
                 "type": ticket_data.get("type_name", "Incidente"),
                 "urgency": ticket_data.get("urgency_name", "Média"),
                 "impact": ticket_data.get("impact_name", "Médio"),
-                "source": ticket_data.get(
-                    "requesttypes_id_name", "Não especificado"
-                ),
+                "source": ticket_data.get("requesttypes_id_name", "Não especificado"),
                 "location": ticket_data.get("locations_id_name", ""),
                 "entity": ticket_data.get("entities_id_name", ""),
                 "created_at": ticket_data.get("date"),
@@ -2300,23 +1867,17 @@ class GLPIService:
                 "solve_date": ticket_data.get("solvedate"),
                 "requester": {
                     "id": ticket_data.get("users_id_recipient"),
-                    "name": ticket_data.get(
-                        "users_id_recipient_name", "Não especificado"
-                    ),
+                    "name": ticket_data.get("users_id_recipient_name", "Não especificado"),
                     "email": "",
                 },
                 "technician": {
                     "id": ticket_data.get("users_id_lastupdater"),
-                    "name": ticket_data.get(
-                        "users_id_lastupdater_name", "Não atribuído"
-                    ),
+                    "name": ticket_data.get("users_id_lastupdater_name", "Não atribuído"),
                     "email": "",
                 },
                 "group": {
                     "id": ticket_data.get("groups_id_assign"),
-                    "name": ticket_data.get(
-                        "groups_id_assign_name", "Não atribuído"
-                    ),
+                    "name": ticket_data.get("groups_id_assign_name", "Não atribuído"),
                 },
                 "time_tracking": {
                     "total_duration": ticket_data.get("actiontime", 0),
@@ -2340,9 +1901,7 @@ class GLPIService:
             return processed
 
         except Exception as e:
-            self.logger.error(
-                f"Erro ao processar dados do ticket: {e}", exc_info=True
-            )
+            self.logger.error(f"Erro ao processar dados do ticket: {e}", exc_info=True)
             return ticket_data
 
     def _map_ticket_priority(self, priority_id: int) -> str:
@@ -2404,27 +1963,15 @@ class GLPIService:
             criteria_index = 0
             for i, level in enumerate(levels):
                 if i == 0:
-                    search_params[
-                        f"criteria[{criteria_index}][field]"
-                    ] = "8"  # Campo hierarquia
-                    search_params[
-                        f"criteria[{criteria_index}][searchtype]"
-                    ] = "contains"
-                    search_params[
-                        f"criteria[{criteria_index}][value]"
-                    ] = level.upper()  # N1, N2, N3, N4
+                    search_params[f"criteria[{criteria_index}][field]"] = "8"  # Campo hierarquia
+                    search_params[f"criteria[{criteria_index}][searchtype]"] = "contains"
+                    search_params[f"criteria[{criteria_index}][value]"] = level.upper()  # N1, N2, N3, N4
                 else:
                     criteria_index += 1
                     search_params[f"criteria[{criteria_index}][link]"] = "OR"
-                    search_params[
-                        f"criteria[{criteria_index}][field]"
-                    ] = "8"  # Campo hierarquia
-                    search_params[
-                        f"criteria[{criteria_index}][searchtype]"
-                    ] = "contains"
-                    search_params[
-                        f"criteria[{criteria_index}][value]"
-                    ] = level.upper()  # N1, N2, N3, N4
+                    search_params[f"criteria[{criteria_index}][field]"] = "8"  # Campo hierarquia
+                    search_params[f"criteria[{criteria_index}][searchtype]"] = "contains"
+                    search_params[f"criteria[{criteria_index}][value]"] = level.upper()  # N1, N2, N3, N4
 
             # Critério para status - usar OR para múltiplos status
             criteria_index += 1
@@ -2437,9 +1984,7 @@ class GLPIService:
                 criteria_index += 1
                 search_params[f"criteria[{criteria_index}][link]"] = "OR"
                 search_params[f"criteria[{criteria_index}][field]"] = "12"
-                search_params[
-                    f"criteria[{criteria_index}][searchtype]"
-                ] = "equals"
+                search_params[f"criteria[{criteria_index}][searchtype]"] = "equals"
                 search_params[f"criteria[{criteria_index}][value]"] = status_id
 
             # Adicionar filtros de data se fornecidos usando função utilitária
@@ -2491,9 +2036,7 @@ class GLPIService:
                             )
 
                             if not response or not response.ok:
-                                raise Exception(
-                                    f"Falha na requisição: {response.status_code if response else 'No response'}"
-                                )
+                                raise Exception(f"Falha na requisição: {response.status_code if response else 'No response'}")
 
                             page_data = response.json()
                             break  # Sucesso, sair do loop de retry
@@ -2513,12 +2056,7 @@ class GLPIService:
                                 raise
 
                     # Processar dados da página
-                    if (
-                        not page_data
-                        or not isinstance(page_data, dict)
-                        or "data" not in page_data
-                        or not page_data["data"]
-                    ):
+                    if not page_data or not isinstance(page_data, dict) or "data" not in page_data or not page_data["data"]:
                         self.logger.info(
                             f"{correlation_log}Página {start_index}-{end_index} vazia ou sem dados. Finalizando paginação."
                         )
@@ -2529,12 +2067,8 @@ class GLPIService:
                     # Contar tickets por nível e status nesta página
                     for ticket in page_data["data"]:
                         try:
-                            ticket_hierarchy = str(
-                                ticket.get("8", "")
-                            ).strip()  # Campo hierarquia
-                            ticket_status_id = int(
-                                ticket.get("12", 0)
-                            )  # Campo status
+                            ticket_hierarchy = str(ticket.get("8", "")).strip()  # Campo hierarquia
+                            ticket_status_id = int(ticket.get("12", 0))  # Campo status
 
                             # Extrair nível da hierarquia textual (ex: "CC-SE-SUBADM-DTIC > N2" -> "N2")
                             ticket_level = None
@@ -2555,9 +2089,7 @@ class GLPIService:
                                         result[ticket_level][status_name] += 1
                                         break
                         except (ValueError, KeyError, TypeError) as e:
-                            self.logger.debug(
-                                f"{correlation_log}Erro ao processar ticket: {e}"
-                            )
+                            self.logger.debug(f"{correlation_log}Erro ao processar ticket: {e}")
                             continue
 
                     total_processed += page_items
@@ -2567,9 +2099,7 @@ class GLPIService:
 
                     # Verificar se chegamos ao fim
                     if page_items < page_size:
-                        self.logger.info(
-                            f"{correlation_log}Última página processada. Total de tickets: {total_processed}"
-                        )
+                        self.logger.info(f"{correlation_log}Última página processada. Total de tickets: {total_processed}")
                         break
 
                     # Avançar para próxima página
@@ -2582,29 +2112,19 @@ class GLPIService:
                         )
                         break
 
-                total_tickets = sum(
-                    sum(level_data.values()) for level_data in result.values()
-                )
-                self.logger.info(
-                    f"{correlation_log}[OTIMIZAÇÃO] Contagens agregadas obtidas: {total_tickets} tickets total"
-                )
+                total_tickets = sum(sum(level_data.values()) for level_data in result.values())
+                self.logger.info(f"{correlation_log}[OTIMIZAÇÃO] Contagens agregadas obtidas: {total_tickets} tickets total")
 
                 return result
 
             except Exception as e:
-                self.logger.error(
-                    f"{correlation_log}Erro na paginação robusta: {e}"
-                )
-                return self._get_aggregated_ticket_counts_fallback(
-                    levels, status_ids, start_date, end_date, correlation_id
-                )
+                self.logger.error(f"{correlation_log}Erro na paginação robusta: {e}")
+                return self._get_aggregated_ticket_counts_fallback(levels, status_ids, start_date, end_date, correlation_id)
 
         except Exception as e:
             correlation_log = f"[{correlation_id}] " if correlation_id else ""
             self.logger.error(f"{correlation_log}Erro na busca agregada: {e}")
-            return self._get_aggregated_ticket_counts_fallback(
-                levels, status_ids, start_date, end_date, correlation_id
-            )
+            return self._get_aggregated_ticket_counts_fallback(levels, status_ids, start_date, end_date, correlation_id)
 
     def _get_aggregated_ticket_counts_fallback(
         self,
@@ -2616,24 +2136,16 @@ class GLPIService:
     ) -> Dict[str, Dict[str, int]]:
         """Método fallback que usa requisições individuais quando a busca agregada falha"""
         correlation_log = f"[{correlation_id}] " if correlation_id else ""
-        self.logger.info(
-            f"{correlation_log}[FALLBACK] Usando método individual para contagens"
-        )
+        self.logger.info(f"{correlation_log}[FALLBACK] Usando método individual para contagens")
         result = {level: {} for level in levels}
 
         for level in levels:
             for status_name, status_id in self.status_map.items():
                 try:
-                    count = self.get_ticket_count_by_hierarchy(
-                        level, status_id, start_date, end_date, correlation_id
-                    )
-                    result[level][status_name] = (
-                        count if count is not None else 0
-                    )
+                    count = self.get_ticket_count_by_hierarchy(level, status_id, start_date, end_date, correlation_id)
+                    result[level][status_name] = count if count is not None else 0
                 except Exception as e:
-                    self.logger.error(
-                        f"{correlation_log}Erro ao obter contagem para {level}/{status_name}: {e}"
-                    )
+                    self.logger.error(f"{correlation_log}Erro ao obter contagem para {level}/{status_name}: {e}")
                     result[level][status_name] = 0
 
         return result
@@ -2681,25 +2193,19 @@ class GLPIService:
                     return {}
 
             # Verificar se as configurações necessárias estão disponíveis
-            if not hasattr(self, "status_map") or not isinstance(
-                self.status_map, dict
-            ):
+            if not hasattr(self, "status_map") or not isinstance(self.status_map, dict):
                 self.logger.error(
                     f"[{datetime.datetime.now(tz=datetime.timezone.utc).isoformat()}] status_map inválido: {getattr(self, 'status_map', None)}"
                 )
                 return {}
 
             if not self.status_map:
-                self.logger.warning(
-                    f"[{datetime.datetime.now(tz=datetime.timezone.utc).isoformat()}] status_map está vazio"
-                )
+                self.logger.warning(f"[{datetime.datetime.now(tz=datetime.timezone.utc).isoformat()}] status_map está vazio")
                 return {}
 
             # OTIMIZAÇÃO: Usar busca agregada em vez de requisições individuais
             hierarchy_levels = ["N1", "N2", "N3", "N4"]
-            status_ids = [
-                int(status_id) for status_id in self.status_map.values()
-            ]
+            status_ids = [int(status_id) for status_id in self.status_map.values()]
 
             correlation_log = f"[{correlation_id}] " if correlation_id else ""
             self.logger.info(
@@ -2715,12 +2221,8 @@ class GLPIService:
                 correlation_id,
             )
 
-            if not metrics or all(
-                not level_data for level_data in metrics.values()
-            ):
-                self.logger.warning(
-                    f"{correlation_log}Busca agregada retornou dados vazios, usando fallback"
-                )
+            if not metrics or all(not level_data for level_data in metrics.values()):
+                self.logger.warning(f"{correlation_log}Busca agregada retornou dados vazios, usando fallback")
                 return self._get_aggregated_ticket_counts_fallback(
                     hierarchy_levels,
                     status_ids,
@@ -2756,16 +2258,12 @@ class GLPIService:
                 return {}
 
             if not hasattr(self, "glpi_url") or not self.glpi_url:
-                self.logger.error(
-                    f"[{datetime.datetime.now(tz=datetime.timezone.utc).isoformat()}] GLPI URL não configurada"
-                )
+                self.logger.error(f"[{datetime.datetime.now(tz=datetime.timezone.utc).isoformat()}] GLPI URL não configurada")
                 return {}
 
             # Garantir autenticação
             if not self._ensure_authenticated():
-                self.logger.error(
-                    f"[{datetime.datetime.now(tz=datetime.timezone.utc).isoformat()}] Falha na autenticação"
-                )
+                self.logger.error(f"[{datetime.datetime.now(tz=datetime.timezone.utc).isoformat()}] Falha na autenticação")
                 return {}
 
             # Descobrir field_ids se necessário
@@ -2775,9 +2273,7 @@ class GLPIService:
                 )
                 return {}
 
-            result = self._get_general_metrics_internal(
-                start_date, end_date, correlation_id
-            )
+            result = self._get_general_metrics_internal(start_date, end_date, correlation_id)
             return result
 
         except Exception as e:
@@ -2829,26 +2325,20 @@ class GLPIService:
                     return {}
 
             # Verificar configurações necessárias
-            if not hasattr(self, "status_map") or not isinstance(
-                self.status_map, dict
-            ):
+            if not hasattr(self, "status_map") or not isinstance(self.status_map, dict):
                 self.logger.error(
                     f"[{datetime.datetime.now(tz=datetime.timezone.utc).isoformat()}] status_map inválido: {getattr(self, 'status_map', None)}"
                 )
                 return {}
 
-            if not hasattr(self, "field_ids") or not isinstance(
-                self.field_ids, dict
-            ):
+            if not hasattr(self, "field_ids") or not isinstance(self.field_ids, dict):
                 self.logger.error(
                     f"[{datetime.datetime.now(tz=datetime.timezone.utc).isoformat()}] field_ids inválido: {getattr(self, 'field_ids', None)}"
                 )
                 return {}
 
             if not self.status_map:
-                self.logger.warning(
-                    f"[{datetime.datetime.now(tz=datetime.timezone.utc).isoformat()}] status_map está vazio"
-                )
+                self.logger.warning(f"[{datetime.datetime.now(tz=datetime.timezone.utc).isoformat()}] status_map está vazio")
                 return {}
 
             if not self.field_ids.get("STATUS"):
@@ -2858,9 +2348,7 @@ class GLPIService:
                 return {}
 
             if not hasattr(self, "glpi_url") or not self.glpi_url:
-                self.logger.error(
-                    f"[{datetime.datetime.now(tz=datetime.timezone.utc).isoformat()}] GLPI URL não configurada"
-                )
+                self.logger.error(f"[{datetime.datetime.now(tz=datetime.timezone.utc).isoformat()}] GLPI URL não configurada")
                 return {}
 
             status_totals = {}
@@ -2875,9 +2363,7 @@ class GLPIService:
                         )
                         continue
 
-                    if not isinstance(status_id, (int, str)) or (
-                        isinstance(status_id, str) and not status_id.strip()
-                    ):
+                    if not isinstance(status_id, (int, str)) or (isinstance(status_id, str) and not status_id.strip()):
                         self.logger.warning(
                             f"[{datetime.datetime.now(tz=datetime.timezone.utc).isoformat()}] status_id inválido para {status_name}: {status_id}"
                         )
@@ -2903,13 +2389,11 @@ class GLPIService:
 
                     # Adicionar filtros de data se fornecidos usando função utilitária
                     if start_date or end_date:
-                        date_criteria = (
-                            DateValidator.construir_criterios_filtro_data(
-                                start_date=start_date,
-                                end_date=end_date,
-                                field_id="15",
-                                criteria_start_index=1,
-                            )
+                        date_criteria = DateValidator.construir_criterios_filtro_data(
+                            start_date=start_date,
+                            end_date=end_date,
+                            field_id="15",
+                            criteria_start_index=1,
                         )
                         search_params.update(date_criteria)
 
@@ -2937,13 +2421,8 @@ class GLPIService:
 
                         if "Content-Range" in response.headers:
                             try:
-                                content_range = response.headers[
-                                    "Content-Range"
-                                ]
-                                if (
-                                    not content_range
-                                    or "/" not in content_range
-                                ):
+                                content_range = response.headers["Content-Range"]
+                                if not content_range or "/" not in content_range:
                                     self.logger.warning(
                                         f"[{datetime.datetime.now(tz=datetime.timezone.utc).isoformat()}] Content-Range inválido para {status_name}: {content_range}"
                                     )
@@ -3056,9 +2535,7 @@ class GLPIService:
                     )
                     return ResponseFormatter.format_error_response(
                         "Formato de data inválido",
-                        [
-                            f"start_date deve estar no formato YYYY-MM-DD: {start_date}"
-                        ],
+                        [f"start_date deve estar no formato YYYY-MM-DD: {start_date}"],
                         correlation_id=correlation_id,
                     )
 
@@ -3071,17 +2548,13 @@ class GLPIService:
                     )
                     return ResponseFormatter.format_error_response(
                         "Formato de data inválido",
-                        [
-                            f"end_date deve estar no formato YYYY-MM-DD: {end_date}"
-                        ],
+                        [f"end_date deve estar no formato YYYY-MM-DD: {end_date}"],
                         correlation_id=correlation_id,
                     )
 
             # Verificar configurações básicas
             if not hasattr(self, "glpi_url") or not self.glpi_url:
-                self.logger.error(
-                    f"[{datetime.datetime.now(tz=datetime.timezone.utc).isoformat()}] GLPI URL não configurada"
-                )
+                self.logger.error(f"[{datetime.datetime.now(tz=datetime.timezone.utc).isoformat()}] GLPI URL não configurada")
                 return ResponseFormatter.format_error_response(
                     "Configuração inválida",
                     ["GLPI URL não configurada"],
@@ -3111,9 +2584,7 @@ class GLPIService:
             # Se parâmetros de data foram fornecidos, usar o método com filtro
             if start_date or end_date:
                 try:
-                    return self.get_dashboard_metrics_with_date_filter(
-                        start_date, end_date, correlation_id
-                    )
+                    return self.get_dashboard_metrics_with_date_filter(start_date, end_date, correlation_id)
                 except Exception as e:
                     self.logger.error(
                         f"[{datetime.datetime.now(tz=datetime.timezone.utc).isoformat()}] Erro no método com filtro de data: {e}"
@@ -3140,9 +2611,7 @@ class GLPIService:
 
             # Autenticar uma única vez
             if not self._ensure_authenticated():
-                self.logger.error(
-                    f"[{datetime.datetime.now(tz=datetime.timezone.utc).isoformat()}] Falha na autenticação"
-                )
+                self.logger.error(f"[{datetime.datetime.now(tz=datetime.timezone.utc).isoformat()}] Falha na autenticação")
                 return ResponseFormatter.format_error_response(
                     "Falha na autenticação com GLPI",
                     ["Erro de autenticação"],
@@ -3214,34 +2683,17 @@ class GLPIService:
             # Usar o mesmo formato da função com filtros para consistência
             # Calcular totais gerais com validação
             try:
-                general_novos = (
-                    general_totals.get("Novo", 0) if general_totals else 0
-                )
-                general_pendentes = (
-                    general_totals.get("Pendente", 0) if general_totals else 0
-                )
+                general_novos = general_totals.get("Novo", 0) if general_totals else 0
+                general_pendentes = general_totals.get("Pendente", 0) if general_totals else 0
                 general_progresso = (
-                    (
-                        general_totals.get("Processando (atribuído)", 0)
-                        + general_totals.get("Processando (planejado)", 0)
-                    )
+                    (general_totals.get("Processando (atribuído)", 0) + general_totals.get("Processando (planejado)", 0))
                     if general_totals
                     else 0
                 )
                 general_resolvidos = (
-                    (
-                        general_totals.get("Solucionado", 0)
-                        + general_totals.get("Fechado", 0)
-                    )
-                    if general_totals
-                    else 0
+                    (general_totals.get("Solucionado", 0) + general_totals.get("Fechado", 0)) if general_totals else 0
                 )
-                general_total = (
-                    general_novos
-                    + general_pendentes
-                    + general_progresso
-                    + general_resolvidos
-                )
+                general_total = general_novos + general_pendentes + general_progresso + general_resolvidos
 
                 # Validar se os valores são numéricos
                 for name, value in [
@@ -3297,9 +2749,7 @@ class GLPIService:
                 if raw_metrics and isinstance(raw_metrics, dict):
                     for level_name, level_data in raw_metrics.items():
                         try:
-                            if not level_name or not isinstance(
-                                level_name, str
-                            ):
+                            if not level_name or not isinstance(level_name, str):
                                 self.logger.warning(
                                     f"[{datetime.datetime.now(tz=datetime.timezone.utc).isoformat()}] level_name inválido: {level_name}"
                                 )
@@ -3315,12 +2765,8 @@ class GLPIService:
                             if level_key in level_metrics:
                                 # Validar e extrair valores com fallback para 0
                                 novos = level_data.get("Novo", 0)
-                                progresso_atribuido = level_data.get(
-                                    "Processando (atribuído)", 0
-                                )
-                                progresso_planejado = level_data.get(
-                                    "Processando (planejado)", 0
-                                )
+                                progresso_atribuido = level_data.get("Processando (atribuído)", 0)
+                                progresso_planejado = level_data.get("Processando (planejado)", 0)
                                 pendentes = level_data.get("Pendente", 0)
                                 solucionado = level_data.get("Solucionado", 0)
                                 fechado = level_data.get("Fechado", 0)
@@ -3347,47 +2793,21 @@ class GLPIService:
 
                                 level_metrics[level_key]["novos"] = max(
                                     0,
-                                    int(novos)
-                                    if isinstance(novos, (int, float))
-                                    else 0,
+                                    int(novos) if isinstance(novos, (int, float)) else 0,
                                 )
                                 level_metrics[level_key]["progresso"] = max(
                                     0,
-                                    (
-                                        int(progresso_atribuido)
-                                        if isinstance(
-                                            progresso_atribuido, (int, float)
-                                        )
-                                        else 0
-                                    )
-                                    + (
-                                        int(progresso_planejado)
-                                        if isinstance(
-                                            progresso_planejado, (int, float)
-                                        )
-                                        else 0
-                                    ),
+                                    (int(progresso_atribuido) if isinstance(progresso_atribuido, (int, float)) else 0)
+                                    + (int(progresso_planejado) if isinstance(progresso_planejado, (int, float)) else 0),
                                 )
                                 level_metrics[level_key]["pendentes"] = max(
                                     0,
-                                    int(pendentes)
-                                    if isinstance(pendentes, (int, float))
-                                    else 0,
+                                    int(pendentes) if isinstance(pendentes, (int, float)) else 0,
                                 )
                                 level_metrics[level_key]["resolvidos"] = max(
                                     0,
-                                    (
-                                        int(solucionado)
-                                        if isinstance(
-                                            solucionado, (int, float)
-                                        )
-                                        else 0
-                                    )
-                                    + (
-                                        int(fechado)
-                                        if isinstance(fechado, (int, float))
-                                        else 0
-                                    ),
+                                    (int(solucionado) if isinstance(solucionado, (int, float)) else 0)
+                                    + (int(fechado) if isinstance(fechado, (int, float)) else 0),
                                 )
                             else:
                                 self.logger.warning(
@@ -3434,22 +2854,14 @@ class GLPIService:
                             general_resolvidos,
                         ),
                         "filters_applied": None,
-                        "timestamp": datetime.datetime.now(
-                            tz=datetime.timezone.utc
-                        ).isoformat(),
+                        "timestamp": datetime.datetime.now(tz=datetime.timezone.utc).isoformat(),
                     },
-                    "timestamp": datetime.datetime.now().strftime(
-                        "%Y-%m-%dT%H:%M:%SZ"
-                    ),
+                    "timestamp": datetime.datetime.now().strftime("%Y-%m-%dT%H:%M:%SZ"),
                     "tempo_execucao": (time.time() - start_time) * 1000,
                 }
 
                 # Validar resultado final
-                if (
-                    not isinstance(result, dict)
-                    or "success" not in result
-                    or "data" not in result
-                ):
+                if not isinstance(result, dict) or "success" not in result or "data" not in result:
                     self.logger.error(
                         f"[{datetime.datetime.now(tz=datetime.timezone.utc).isoformat()}] Resultado final inválido: {type(result)}"
                     )
@@ -3476,9 +2888,7 @@ class GLPIService:
             # Salvar no cache
             try:
                 self._set_cache_data("dashboard_metrics", result, ttl=180)
-                self.logger.debug(
-                    f"[{datetime.datetime.now(tz=datetime.timezone.utc).isoformat()}] Resultado salvo no cache"
-                )
+                self.logger.debug(f"[{datetime.datetime.now(tz=datetime.timezone.utc).isoformat()}] Resultado salvo no cache")
             except Exception as e:
                 self.logger.warning(
                     f"[{datetime.datetime.now(tz=datetime.timezone.utc).isoformat()}] Erro ao salvar no cache: {e}"
@@ -3496,9 +2906,7 @@ class GLPIService:
                 correlation_id=correlation_id,
             )
 
-    def _get_general_totals_internal(
-        self, start_date: str = None, end_date: str = None
-    ) -> dict:
+    def _get_general_totals_internal(self, start_date: str = None, end_date: str = None) -> dict:
         """Método interno para obter totais gerais com filtro de data"""
         import datetime
 
@@ -3549,15 +2957,10 @@ class GLPIService:
                 return {}
 
             if not hasattr(self, "field_ids") or not self.field_ids:
-                self.logger.error(
-                    f"[{datetime.datetime.now(tz=datetime.timezone.utc).isoformat()}] field_ids não configurado"
-                )
+                self.logger.error(f"[{datetime.datetime.now(tz=datetime.timezone.utc).isoformat()}] field_ids não configurado")
                 return {}
 
-            if (
-                not isinstance(self.field_ids, dict)
-                or "STATUS" not in self.field_ids
-            ):
+            if not isinstance(self.field_ids, dict) or "STATUS" not in self.field_ids:
                 self.logger.error(
                     f"[{datetime.datetime.now(tz=datetime.timezone.utc).isoformat()}] field_ids inválido ou STATUS ausente"
                 )
@@ -3585,9 +2988,7 @@ class GLPIService:
                     )
                     continue
 
-                if not isinstance(status_id, (int, str)) or (
-                    isinstance(status_id, str) and not status_id.strip()
-                ):
+                if not isinstance(status_id, (int, str)) or (isinstance(status_id, str) and not status_id.strip()):
                     self.logger.warning(
                         f"[{datetime.datetime.now(tz=datetime.timezone.utc).isoformat()}] status_id inválido para {status_name}: {status_id}"
                     )
@@ -3602,9 +3003,7 @@ class GLPIService:
                 }
 
                 # Adicionar filtros de data usando a função utilitária
-                criterios_data = DateValidator.construir_criterios_filtro_data(
-                    start_date, end_date
-                )
+                criterios_data = DateValidator.construir_criterios_filtro_data(start_date, end_date)
                 search_params.update(criterios_data)
 
                 try:
@@ -3709,30 +3108,22 @@ class GLPIService:
             # Validar formato das datas se fornecidas
             if start_date:
                 if not isinstance(start_date, str):
-                    self.logger.error(
-                        f"start_date deve ser string, recebido: {type(start_date)}"
-                    )
+                    self.logger.error(f"start_date deve ser string, recebido: {type(start_date)}")
                     return None
                 try:
                     datetime.datetime.strptime(start_date, "%Y-%m-%d")
                 except ValueError as e:
-                    self.logger.error(
-                        f"Formato inválido para start_date '{start_date}': {e}"
-                    )
+                    self.logger.error(f"Formato inválido para start_date '{start_date}': {e}")
                     return None
 
             if end_date:
                 if not isinstance(end_date, str):
-                    self.logger.error(
-                        f"end_date deve ser string, recebido: {type(end_date)}"
-                    )
+                    self.logger.error(f"end_date deve ser string, recebido: {type(end_date)}")
                     return None
                 try:
                     datetime.datetime.strptime(end_date, "%Y-%m-%d")
                 except ValueError as e:
-                    self.logger.error(
-                        f"Formato inválido para end_date '{end_date}': {e}"
-                    )
+                    self.logger.error(f"Formato inválido para end_date '{end_date}': {e}")
                     return None
 
             # Validar configurações essenciais
@@ -3740,11 +3131,7 @@ class GLPIService:
                 self.logger.error("glpi_url não configurado")
                 return None
 
-            if (
-                not hasattr(self, "status_map")
-                or not isinstance(self.status_map, dict)
-                or not self.status_map
-            ):
+            if not hasattr(self, "status_map") or not isinstance(self.status_map, dict) or not self.status_map:
                 self.logger.error("status_map não configurado ou inválido")
                 return None
 
@@ -3753,16 +3140,10 @@ class GLPIService:
 
             # Verificar se existe cache válido para este filtro
             try:
-                if self._is_cache_valid(
-                    "dashboard_metrics_filtered", cache_key
-                ):
-                    cached_data = self._get_cache_data(
-                        "dashboard_metrics_filtered", cache_key
-                    )
+                if self._is_cache_valid("dashboard_metrics_filtered", cache_key):
+                    cached_data = self._get_cache_data("dashboard_metrics_filtered", cache_key)
                     if cached_data:
-                        self.logger.info(
-                            f"Retornando métricas do cache para filtro: {cache_key}"
-                        )
+                        self.logger.info(f"Retornando métricas do cache para filtro: {cache_key}")
                         return cached_data
             except Exception as e:
                 self.logger.warning(f"Erro ao verificar cache: {e}")
@@ -3786,34 +3167,22 @@ class GLPIService:
 
             # Obter totais gerais (todos os grupos) para métricas principais com filtro de data
             try:
-                general_totals = self._get_general_metrics_internal(
-                    start_date, end_date
-                )
+                general_totals = self._get_general_metrics_internal(start_date, end_date)
                 if not isinstance(general_totals, dict):
-                    self.logger.error(
-                        f"general_totals deve ser dict, recebido: {type(general_totals)}"
-                    )
+                    self.logger.error(f"general_totals deve ser dict, recebido: {type(general_totals)}")
                     return None
-                self.logger.info(
-                    f"Totais gerais obtidos com filtro de data: {general_totals}"
-                )
+                self.logger.info(f"Totais gerais obtidos com filtro de data: {general_totals}")
             except Exception as e:
                 self.logger.error(f"Erro ao obter totais gerais: {e}")
                 return None
 
             # Obter métricas por nível (grupos N1-N4) com filtro de data
             try:
-                raw_metrics = self._get_metrics_by_level_internal_hierarchy(
-                    start_date, end_date
-                )
+                raw_metrics = self._get_metrics_by_level_internal_hierarchy(start_date, end_date)
                 if not isinstance(raw_metrics, dict):
-                    self.logger.error(
-                        f"raw_metrics deve ser dict, recebido: {type(raw_metrics)}"
-                    )
+                    self.logger.error(f"raw_metrics deve ser dict, recebido: {type(raw_metrics)}")
                     return None
-                self.logger.info(
-                    f"Métricas por nível obtidas: {len(raw_metrics)} níveis"
-                )
+                self.logger.info(f"Métricas por nível obtidas: {len(raw_metrics)} níveis")
             except Exception as e:
                 self.logger.error(f"Erro ao obter métricas por nível: {e}")
                 return None
@@ -3858,35 +3227,25 @@ class GLPIService:
                 for level_name, level_data in raw_metrics.items():
                     try:
                         if not isinstance(level_data, dict):
-                            self.logger.warning(
-                                f"level_data para {level_name} não é dict: {type(level_data)}"
-                            )
+                            self.logger.warning(f"level_data para {level_name} não é dict: {type(level_data)}")
                             continue
 
                         level_key = level_name.lower()
                         if level_key not in level_metrics:
-                            self.logger.warning(
-                                f"Nível desconhecido: {level_key}"
-                            )
+                            self.logger.warning(f"Nível desconhecido: {level_key}")
                             continue
 
                         # Novo
                         novo_count = level_data.get("Novo", 0)
                         if not isinstance(novo_count, (int, float)):
-                            self.logger.warning(
-                                f"Valor inválido para 'Novo' em {level_name}: {novo_count}"
-                            )
+                            self.logger.warning(f"Valor inválido para 'Novo' em {level_name}: {novo_count}")
                             novo_count = 0
                         level_metrics[level_key]["novos"] = int(novo_count)
                         totals["novos"] += level_metrics[level_key]["novos"]
 
                         # Progresso (soma de Processando atribuído e planejado)
-                        processando_atribuido = level_data.get(
-                            "Processando (atribuído)", 0
-                        )
-                        processando_planejado = level_data.get(
-                            "Processando (planejado)", 0
-                        )
+                        processando_atribuido = level_data.get("Processando (atribuído)", 0)
+                        processando_planejado = level_data.get("Processando (planejado)", 0)
                         if not isinstance(processando_atribuido, (int, float)):
                             self.logger.warning(
                                 f"Valor inválido para 'Processando (atribuído)' em {level_name}: {processando_atribuido}"
@@ -3897,51 +3256,31 @@ class GLPIService:
                                 f"Valor inválido para 'Processando (planejado)' em {level_name}: {processando_planejado}"
                             )
                             processando_planejado = 0
-                        level_metrics[level_key]["progresso"] = int(
-                            processando_atribuido
-                        ) + int(processando_planejado)
-                        totals["progresso"] += level_metrics[level_key][
-                            "progresso"
-                        ]
+                        level_metrics[level_key]["progresso"] = int(processando_atribuido) + int(processando_planejado)
+                        totals["progresso"] += level_metrics[level_key]["progresso"]
 
                         # Pendente
                         pendente_count = level_data.get("Pendente", 0)
                         if not isinstance(pendente_count, (int, float)):
-                            self.logger.warning(
-                                f"Valor inválido para 'Pendente' em {level_name}: {pendente_count}"
-                            )
+                            self.logger.warning(f"Valor inválido para 'Pendente' em {level_name}: {pendente_count}")
                             pendente_count = 0
-                        level_metrics[level_key]["pendentes"] = int(
-                            pendente_count
-                        )
-                        totals["pendentes"] += level_metrics[level_key][
-                            "pendentes"
-                        ]
+                        level_metrics[level_key]["pendentes"] = int(pendente_count)
+                        totals["pendentes"] += level_metrics[level_key]["pendentes"]
 
                         # Resolvidos (soma de Solucionado e Fechado)
                         solucionado = level_data.get("Solucionado", 0)
                         fechado = level_data.get("Fechado", 0)
                         if not isinstance(solucionado, (int, float)):
-                            self.logger.warning(
-                                f"Valor inválido para 'Solucionado' em {level_name}: {solucionado}"
-                            )
+                            self.logger.warning(f"Valor inválido para 'Solucionado' em {level_name}: {solucionado}")
                             solucionado = 0
                         if not isinstance(fechado, (int, float)):
-                            self.logger.warning(
-                                f"Valor inválido para 'Fechado' em {level_name}: {fechado}"
-                            )
+                            self.logger.warning(f"Valor inválido para 'Fechado' em {level_name}: {fechado}")
                             fechado = 0
-                        level_metrics[level_key]["resolvidos"] = int(
-                            solucionado
-                        ) + int(fechado)
-                        totals["resolvidos"] += level_metrics[level_key][
-                            "resolvidos"
-                        ]
+                        level_metrics[level_key]["resolvidos"] = int(solucionado) + int(fechado)
+                        totals["resolvidos"] += level_metrics[level_key]["resolvidos"]
 
                     except Exception as e:
-                        self.logger.error(
-                            f"Erro ao processar métricas para nível {level_name}: {e}"
-                        )
+                        self.logger.error(f"Erro ao processar métricas para nível {level_name}: {e}")
                         continue
 
                 self.logger.info(f"Agregação concluída - totais: {totals}")
@@ -3954,12 +3293,8 @@ class GLPIService:
             try:
                 general_novos = general_totals.get("Novo", 0)
                 general_pendentes = general_totals.get("Pendente", 0)
-                general_progresso_atribuido = general_totals.get(
-                    "Processando (atribuído)", 0
-                )
-                general_progresso_planejado = general_totals.get(
-                    "Processando (planejado)", 0
-                )
+                general_progresso_atribuido = general_totals.get("Processando (atribuído)", 0)
+                general_progresso_planejado = general_totals.get("Processando (planejado)", 0)
                 general_solucionado = general_totals.get("Solucionado", 0)
                 general_fechado = general_totals.get("Fechado", 0)
 
@@ -3973,9 +3308,7 @@ class GLPIService:
                     ("Fechado", general_fechado),
                 ]:
                     if not isinstance(value, (int, float)):
-                        self.logger.warning(
-                            f"Valor inválido para '{name}': {value}, usando 0"
-                        )
+                        self.logger.warning(f"Valor inválido para '{name}': {value}, usando 0")
                         if name == "Novo":
                             general_novos = 0
                         elif name == "Pendente":
@@ -3989,18 +3322,9 @@ class GLPIService:
                         elif name == "Fechado":
                             general_fechado = 0
 
-                general_progresso = int(general_progresso_atribuido) + int(
-                    general_progresso_planejado
-                )
-                general_resolvidos = int(general_solucionado) + int(
-                    general_fechado
-                )
-                general_total = (
-                    int(general_novos)
-                    + int(general_pendentes)
-                    + general_progresso
-                    + general_resolvidos
-                )
+                general_progresso = int(general_progresso_atribuido) + int(general_progresso_planejado)
+                general_resolvidos = int(general_solucionado) + int(general_fechado)
+                general_total = int(general_novos) + int(general_pendentes) + general_progresso + general_resolvidos
 
                 self.logger.info(
                     f"Métricas gerais calculadas com filtro: novos={general_novos}, pendentes={general_pendentes}, progresso={general_progresso}, resolvidos={general_resolvidos}, total={general_total}"
@@ -4023,9 +3347,7 @@ class GLPIService:
                         end_date,
                     )
                     if not isinstance(tendencias, dict):
-                        self.logger.warning(
-                            f"Tendências inválidas: {type(tendencias)}, usando valores padrão"
-                        )
+                        self.logger.warning(f"Tendências inválidas: {type(tendencias)}, usando valores padrão")
                         tendencias = {
                             "novos": "0%",
                             "pendentes": "0%",
@@ -4075,14 +3397,10 @@ class GLPIService:
 
                 # Validar resultado final
                 if not isinstance(result.get("data"), dict):
-                    self.logger.error(
-                        "Resultado final inválido: data não é dict"
-                    )
+                    self.logger.error("Resultado final inválido: data não é dict")
                     return None
 
-                self.logger.info(
-                    f"Métricas formatadas com filtro de data: sucesso=True, tempo={result['tempo_execucao']}s"
-                )
+                self.logger.info(f"Métricas formatadas com filtro de data: sucesso=True, tempo={result['tempo_execucao']}s")
 
             except Exception as e:
                 self.logger.error(f"Erro ao construir resultado final: {e}")
@@ -4096,9 +3414,7 @@ class GLPIService:
                     ttl=180,
                     sub_key=cache_key,
                 )
-                self.logger.info(
-                    f"Resultado salvo no cache com chave: {cache_key}"
-                )
+                self.logger.info(f"Resultado salvo no cache com chave: {cache_key}")
             except Exception as e:
                 self.logger.warning(f"Erro ao salvar no cache: {e}")
 
@@ -4122,9 +3438,7 @@ class GLPIService:
         end_date: str,
     ) -> dict:
         """Função auxiliar para fazer log e chamar _calculate_trends"""
-        self.logger.info(
-            f"Chamando _calculate_trends com start_date={start_date}, end_date={end_date}"
-        )
+        self.logger.info(f"Chamando _calculate_trends com start_date={start_date}, end_date={end_date}")
         return self._calculate_trends(
             general_novos,
             general_pendentes,
@@ -4160,50 +3474,36 @@ class GLPIService:
             # Se há filtros de data aplicados, calcular período anterior baseado neles
             if current_start_date and current_end_date:
                 # Calcular a duração do período atual
-                current_start = datetime.strptime(
-                    current_start_date, "%Y-%m-%d"
-                )
+                current_start = datetime.strptime(current_start_date, "%Y-%m-%d")
                 current_end = datetime.strptime(current_end_date, "%Y-%m-%d")
                 period_duration = (current_end - current_start).days
 
                 # Calcular período anterior com a mesma duração
-                end_date_previous = (
-                    current_start - timedelta(days=1)
-                ).strftime("%Y-%m-%d")
-                start_date_previous = (
-                    current_start - timedelta(days=period_duration + 1)
-                ).strftime("%Y-%m-%d")
+                end_date_previous = (current_start - timedelta(days=1)).strftime("%Y-%m-%d")
+                start_date_previous = (current_start - timedelta(days=period_duration + 1)).strftime("%Y-%m-%d")
 
                 self.logger.info(
                     f"Calculando tendências com filtro: período atual {current_start_date} a {current_end_date}, período anterior {start_date_previous} a {end_date_previous}"
                 )
             else:
                 # Usar período padrão de 7 dias
-                end_date_previous = (
-                    datetime.now() - timedelta(days=7)
-                ).strftime("%Y-%m-%d")
-                start_date_previous = (
-                    datetime.now() - timedelta(days=14)
-                ).strftime("%Y-%m-%d")
+                end_date_previous = (datetime.now() - timedelta(days=7)).strftime("%Y-%m-%d")
+                start_date_previous = (datetime.now() - timedelta(days=14)).strftime("%Y-%m-%d")
 
                 self.logger.info(
                     f"Calculando tendências sem filtro: período anterior {start_date_previous} a {end_date_previous}"
                 )
 
             # Obter métricas do período anterior
-            previous_general = self._get_general_totals_internal(
-                start_date_previous, end_date_previous
-            )
+            previous_general = self._get_general_totals_internal(start_date_previous, end_date_previous)
 
             # Calcular totais do período anterior
             previous_novos = previous_general.get("Novo", 0)
             previous_pendentes = previous_general.get("Pendente", 0)
-            previous_progresso = previous_general.get(
-                "Processando (atribuído)", 0
-            ) + previous_general.get("Processando (planejado)", 0)
-            previous_resolvidos = previous_general.get(
-                "Solucionado", 0
-            ) + previous_general.get("Fechado", 0)
+            previous_progresso = previous_general.get("Processando (atribuído)", 0) + previous_general.get(
+                "Processando (planejado)", 0
+            )
+            previous_resolvidos = previous_general.get("Solucionado", 0) + previous_general.get("Fechado", 0)
 
             self.logger.info(
                 f"Dados período anterior: novos={previous_novos}, pendentes={previous_pendentes}, progresso={previous_progresso}, resolvidos={previous_resolvidos}"
@@ -4213,9 +3513,7 @@ class GLPIService:
             )
 
             # Calcular percentuais de variação
-            def calculate_percentage_change(
-                current: int, previous: int
-            ) -> str:
+            def calculate_percentage_change(current: int, previous: int) -> str:
                 if previous == 0:
                     return "+100%" if current > 0 else "0%"
 
@@ -4228,18 +3526,10 @@ class GLPIService:
                     return "0%"
 
             trends = {
-                "novos": calculate_percentage_change(
-                    current_novos, previous_novos
-                ),
-                "pendentes": calculate_percentage_change(
-                    current_pendentes, previous_pendentes
-                ),
-                "progresso": calculate_percentage_change(
-                    current_progresso, previous_progresso
-                ),
-                "resolvidos": calculate_percentage_change(
-                    current_resolvidos, previous_resolvidos
-                ),
+                "novos": calculate_percentage_change(current_novos, previous_novos),
+                "pendentes": calculate_percentage_change(current_pendentes, previous_pendentes),
+                "progresso": calculate_percentage_change(current_progresso, previous_progresso),
+                "resolvidos": calculate_percentage_change(current_resolvidos, previous_resolvidos),
             }
 
             self.logger.info(f"Tendências calculadas: {trends}")
@@ -4287,9 +3577,7 @@ class GLPIService:
 
             # Validar configurações essenciais
             if not hasattr(self, "glpi_url") or not self.glpi_url:
-                self.logger.error(
-                    f"[{datetime.datetime.now(tz=datetime.timezone.utc).isoformat()}] glpi_url não configurado"
-                )
+                self.logger.error(f"[{datetime.datetime.now(tz=datetime.timezone.utc).isoformat()}] glpi_url não configurado")
                 return []
 
             self.logger.info(
@@ -4322,14 +3610,10 @@ class GLPIService:
             # Verificar autenticação
             try:
                 if not self._ensure_authenticated():
-                    self.logger.error(
-                        f"[{datetime.datetime.now(tz=datetime.timezone.utc).isoformat()}] Falha na autenticação"
-                    )
+                    self.logger.error(f"[{datetime.datetime.now(tz=datetime.timezone.utc).isoformat()}] Falha na autenticação")
                     return []
             except Exception as e:
-                self.logger.error(
-                    f"[{datetime.datetime.now(tz=datetime.timezone.utc).isoformat()}] Erro na autenticação: {e}"
-                )
+                self.logger.error(f"[{datetime.datetime.now(tz=datetime.timezone.utc).isoformat()}] Erro na autenticação: {e}")
                 return []
 
             # Implementação seguindo a base de conhecimento
@@ -4398,22 +3682,16 @@ class GLPIService:
         try:
             self.logger.info("=== DEBUG FIELD ID DISCOVERY ===")
 
-            response = self._make_authenticated_request(
-                "GET", f"{self.glpi_url}/listSearchOptions/Ticket"
-            )
+            response = self._make_authenticated_request("GET", f"{self.glpi_url}/listSearchOptions/Ticket")
             if not response:
                 self.logger.error("Falha ao buscar search options do Ticket")
                 return None
 
             search_options = response.json()
-            self.logger.info(
-                f"Search options recebidos: {len(search_options)} campos"
-            )
+            self.logger.info(f"Search options recebidos: {len(search_options)} campos")
 
             # Log de todos os campos disponíveis
-            for field_id, field_data in list(search_options.items())[
-                :20
-            ]:  # Primeiros 20
+            for field_id, field_data in list(search_options.items())[:20]:  # Primeiros 20
                 if isinstance(field_data, dict) and "name" in field_data:
                     self.logger.info(f"Campo {field_id}: {field_data['name']}")
 
@@ -4426,18 +3704,12 @@ class GLPIService:
                     field_data = search_options[field_id]
                     if isinstance(field_data, dict) and "name" in field_data:
                         field_name = field_data["name"]
-                        self.logger.info(
-                            f"Testando campo {field_id}: '{field_name}' vs esperado '{expected_name}'"
-                        )
+                        self.logger.info(f"Testando campo {field_id}: '{field_name}' vs esperado '{expected_name}'")
                         if field_name == expected_name:
-                            self.logger.info(
-                                f"✅ CAMPO TÉCNICO ENCONTRADO: {field_name} (ID: {field_id})"
-                            )
+                            self.logger.info(f"✅ CAMPO TÉCNICO ENCONTRADO: {field_name} (ID: {field_id})")
                             return field_id
                         else:
-                            self.logger.warning(
-                                f"❌ Campo {field_id} não corresponde: '{field_name}' != '{expected_name}'"
-                            )
+                            self.logger.warning(f"❌ Campo {field_id} não corresponde: '{field_name}' != '{expected_name}'")
 
             # Fallback: procurar por nomes
             tech_field_names = [
@@ -4452,24 +3724,18 @@ class GLPIService:
                 if isinstance(field_data, dict) and "name" in field_data:
                     field_name = field_data["name"]
                     if field_name in tech_field_names:
-                        self.logger.info(
-                            f"✅ CAMPO TÉCNICO ENCONTRADO (fallback): {field_name} (ID: {field_id})"
-                        )
+                        self.logger.info(f"✅ CAMPO TÉCNICO ENCONTRADO (fallback): {field_name} (ID: {field_id})")
                         return field_id
 
             self.logger.error("❌ CAMPO DE TÉCNICO NÃO ENCONTRADO")
-            self.logger.error(
-                f"Campos disponíveis: {list(search_options.keys())}"
-            )
+            self.logger.error(f"Campos disponíveis: {list(search_options.keys())}")
             return None
 
         except Exception as e:
             self.logger.error(f"Erro ao descobrir field ID do técnico: {e}")
             return None
 
-    def _get_user_details_direct(
-        self, user_id: str
-    ) -> Optional[Dict[str, Any]]:
+    def _get_user_details_direct(self, user_id: str) -> Optional[Dict[str, Any]]:
         """Busca direta de usuário por ID (baseado nos scripts que funcionam)"""
         url = f"{self.glpi_url}/User/{user_id}"
 
@@ -4489,20 +3755,14 @@ class GLPIService:
             is_active = str(user_data.get("is_active", "0")).strip()
             is_deleted = str(user_data.get("is_deleted", "0")).strip()
 
-            self.logger.info(
-                f"👤 Usuário {user_id}: is_active={is_active}, is_deleted={is_deleted}"
-            )
+            self.logger.info(f"👤 Usuário {user_id}: is_active={is_active}, is_deleted={is_deleted}")
 
             if str(is_active) != "1":
-                self.logger.warning(
-                    f"⚠️ Usuário {user_id} inativo (is_active={is_active})"
-                )
+                self.logger.warning(f"⚠️ Usuário {user_id} inativo (is_active={is_active})")
                 return None
 
             if str(is_deleted) == "1":
-                self.logger.warning(
-                    f"⚠️ Usuário {user_id} deletado (is_deleted={is_deleted})"
-                )
+                self.logger.warning(f"⚠️ Usuário {user_id} deletado (is_deleted={is_deleted})")
                 return None
 
             # Construir nome completo
@@ -4591,14 +3851,10 @@ class GLPIService:
                 return "N1"
 
         except Exception as e:
-            self.logger.error(
-                f"Erro ao determinar nível por nome para usuário {user_id}: {e}"
-            )
+            self.logger.error(f"Erro ao determinar nível por nome para usuário {user_id}: {e}")
             return "N1"  # Nível padrão em caso de erro
 
-    def _get_technician_metrics_corrected(
-        self, tecnico_id: str
-    ) -> Dict[str, Any]:
+    def _get_technician_metrics_corrected(self, tecnico_id: str) -> Dict[str, Any]:
         """Coleta métricas de performance de um técnico específico (igual ao script)"""
         self.logger.info(f"=== DEBUG MÉTRICAS TÉCNICO {tecnico_id} ===")
 
@@ -4618,17 +3874,11 @@ class GLPIService:
         self.logger.info(f"🔍 Parâmetros: {params}")
 
         try:
-            response = self._make_authenticated_request(
-                "GET", url, params=params
-            )
-            self.logger.info(
-                f"🔍 Status da resposta: {response.status_code if response else 'None'}"
-            )
+            response = self._make_authenticated_request("GET", url, params=params)
+            self.logger.info(f"🔍 Status da resposta: {response.status_code if response else 'None'}")
 
             if not response or response.status_code != 200:
-                self.logger.error(
-                    f"❌ Falha na requisição: {response.status_code if response else 'None'}"
-                )
+                self.logger.error(f"❌ Falha na requisição: {response.status_code if response else 'None'}")
                 return {
                     "total_tickets": 0,
                     "resolved_tickets": 0,
@@ -4649,28 +3899,20 @@ class GLPIService:
             for i, ticket in enumerate(tickets[:5]):  # Primeiros 5 tickets
                 status_id = int(ticket.get("12", 0))
                 ticket_id = ticket.get("2", "N/A")
-                self.logger.info(
-                    f"🎫 Ticket {i + 1}: ID={ticket_id}, Status={status_id}"
-                )
+                self.logger.info(f"🎫 Ticket {i + 1}: ID={ticket_id}, Status={status_id}")
 
                 if status_id in [5, 6]:  # Solucionado ou Fechado
                     resolvidos += 1
-                    self.logger.info(
-                        f"✅ Ticket {ticket_id} marcado como RESOLVIDO"
-                    )
+                    self.logger.info(f"✅ Ticket {ticket_id} marcado como RESOLVIDO")
                 elif status_id in [
                     2,
                     3,
                     4,
                 ]:  # Em progresso, Planejado, Pendente
                     pendentes += 1
-                    self.logger.info(
-                        f"⏳ Ticket {ticket_id} marcado como PENDENTE"
-                    )
+                    self.logger.info(f"⏳ Ticket {ticket_id} marcado como PENDENTE")
                 else:
-                    self.logger.info(
-                        f"❓ Ticket {ticket_id} com status desconhecido: {status_id}"
-                    )
+                    self.logger.info(f"❓ Ticket {ticket_id} com status desconhecido: {status_id}")
 
             self.logger.info(f"📊 RESUMO TÉCNICO {tecnico_id}:")
             self.logger.info(f"   Total: {total}")
@@ -4685,9 +3927,7 @@ class GLPIService:
             }
 
         except Exception as e:
-            self.logger.error(
-                f"❌ Erro ao buscar métricas do técnico {tecnico_id}: {e}"
-            )
+            self.logger.error(f"❌ Erro ao buscar métricas do técnico {tecnico_id}: {e}")
             return {
                 "total_tickets": 0,
                 "resolved_tickets": 0,
@@ -4704,9 +3944,7 @@ class GLPIService:
         3. Validação direta de ativo/não deletado
         """
         try:
-            self.logger.info(
-                "=== DEBUG BUSCA DE TÉCNICOS (ABORDAGEM DOS SCRIPTS) ==="
-            )
+            self.logger.info("=== DEBUG BUSCA DE TÉCNICOS (ABORDAGEM DOS SCRIPTS) ===")
 
             # Validar configurações essenciais
             if not hasattr(self, "glpi_url") or not self.glpi_url:
@@ -4738,9 +3976,7 @@ class GLPIService:
                 "1471",
             ]
 
-            self.logger.info(
-                f"📋 Lista de técnicos para verificar: {len(technician_ids)} IDs"
-            )
+            self.logger.info(f"📋 Lista de técnicos para verificar: {len(technician_ids)} IDs")
 
             technician_candidates = []
 
@@ -4759,22 +3995,14 @@ class GLPIService:
                                 "firstname": user_details["firstname"],
                             }
                         )
-                        self.logger.info(
-                            f"✅ Técnico encontrado: {user_details['name']} (ID: {tech_id})"
-                        )
+                        self.logger.info(f"✅ Técnico encontrado: {user_details['name']} (ID: {tech_id})")
                     else:
-                        self.logger.warning(
-                            f"⚠️ Técnico não encontrado ou inativo: {tech_id}"
-                        )
+                        self.logger.warning(f"⚠️ Técnico não encontrado ou inativo: {tech_id}")
                 except Exception as e:
-                    self.logger.error(
-                        f"❌ Erro ao processar técnico {tech_id}: {e}"
-                    )
+                    self.logger.error(f"❌ Erro ao processar técnico {tech_id}: {e}")
                     continue
 
-            self.logger.info(
-                f"📊 Total de técnicos candidatos encontrados: {len(technician_candidates)}"
-            )
+            self.logger.info(f"📊 Total de técnicos candidatos encontrados: {len(technician_candidates)}")
 
             if not technician_candidates:
                 self.logger.warning("⚠️ Nenhum técnico candidato encontrado")
@@ -4783,14 +4011,10 @@ class GLPIService:
             # Descobrir field ID do técnico
             tech_field_id = self._discover_tech_field_id()
             if not tech_field_id:
-                self.logger.error(
-                    "❌ Não foi possível descobrir o field ID do técnico"
-                )
+                self.logger.error("❌ Não foi possível descobrir o field ID do técnico")
                 return []
 
-            self.logger.info(
-                f"🔍 Field ID do técnico descoberto: {tech_field_id}"
-            )
+            self.logger.info(f"🔍 Field ID do técnico descoberto: {tech_field_id}")
 
             # Construir ranking usando método corrigido (igual ao script)
             ranking = []
@@ -4801,9 +4025,7 @@ class GLPIService:
                 metricas = self._get_technician_metrics_corrected(tech_id)
 
                 # Determinar nível do técnico
-                tech_level = self._get_technician_level_by_name_fallback(
-                    tech_id
-                )
+                tech_level = self._get_technician_level_by_name_fallback(tech_id)
 
                 ranking.append(
                     {
@@ -4821,12 +4043,8 @@ class GLPIService:
 
                 self.logger.info(f"📊 TÉCNICO {tech['name']} (ID: {tech_id}):")
                 self.logger.info(f"   Total: {metricas['total_tickets']}")
-                self.logger.info(
-                    f"   Resolvidos: {metricas['resolved_tickets']}"
-                )
-                self.logger.info(
-                    f"   Pendentes: {metricas['pending_tickets']}"
-                )
+                self.logger.info(f"   Resolvidos: {metricas['resolved_tickets']}")
+                self.logger.info(f"   Pendentes: {metricas['pending_tickets']}")
                 self.logger.info(f"   Nível: {tech_level}")
 
             # Ordenar por total de tickets
@@ -4836,9 +4054,7 @@ class GLPIService:
             for i, tech in enumerate(ranking):
                 tech["rank"] = i + 1
 
-            self.logger.info(
-                f"🏆 Ranking final construído com {len(ranking)} técnicos"
-            )
+            self.logger.info(f"🏆 Ranking final construído com {len(ranking)} técnicos")
 
             return ranking
 
@@ -4889,16 +4105,9 @@ class GLPIService:
                     try:
                         group_data = response.json()
 
-                        if (
-                            group_data
-                            and isinstance(group_data, dict)
-                            and group_data.get("data")
-                        ):
+                        if group_data and isinstance(group_data, dict) and group_data.get("data"):
                             for group_entry in group_data["data"]:
-                                if (
-                                    isinstance(group_entry, dict)
-                                    and "3" in group_entry
-                                ):
+                                if isinstance(group_entry, dict) and "3" in group_entry:
                                     try:
                                         group_id = int(group_entry["3"])
 
@@ -4929,28 +4138,18 @@ class GLPIService:
                         f"Falha na busca de grupos para usuário {user_id}: {response.status_code if response else 'Sem resposta'}"
                     )
             except requests.exceptions.Timeout:
-                self.logger.error(
-                    f"Timeout na busca de grupos para usuário {user_id}"
-                )
+                self.logger.error(f"Timeout na busca de grupos para usuário {user_id}")
             except requests.exceptions.ConnectionError:
-                self.logger.error(
-                    f"Erro de conexão na busca de grupos para usuário {user_id}"
-                )
+                self.logger.error(f"Erro de conexão na busca de grupos para usuário {user_id}")
             except requests.exceptions.RequestException as req_error:
-                self.logger.error(
-                    f"Erro na requisição de grupos para usuário {user_id}: {req_error}"
-                )
+                self.logger.error(f"Erro na requisição de grupos para usuário {user_id}: {req_error}")
             except Exception as groups_error:
-                self.logger.error(
-                    f"Erro inesperado na busca de grupos para usuário {user_id}: {groups_error}"
-                )
+                self.logger.error(f"Erro inesperado na busca de grupos para usuário {user_id}: {groups_error}")
 
             # Se não encontrou nos grupos configurados, usar fallback baseado no nome do usuário
             # (para casos onde o técnico não está nos grupos mas está na lista fornecida)
             try:
-                user_response = self._make_authenticated_request(
-                    "GET", f"{self.glpi_url}/User/{user_id}", timeout=10
-                )
+                user_response = self._make_authenticated_request("GET", f"{self.glpi_url}/User/{user_id}", timeout=10)
 
                 if user_response and user_response.ok:
                     try:
@@ -4959,10 +4158,7 @@ class GLPIService:
                         if user_data and isinstance(user_data, dict):
                             # Construir nome completo como no método get_technician_ranking
                             display_name = ""
-                            if (
-                                "realname" in user_data
-                                and "firstname" in user_data
-                            ):
+                            if "realname" in user_data and "firstname" in user_data:
                                 display_name = f"{user_data['firstname']} {user_data['realname']}"
                             elif "realname" in user_data:
                                 display_name = user_data["realname"]
@@ -5004,68 +4200,42 @@ class GLPIService:
                                 ]
 
                                 if user_name in n4_names:
-                                    self.logger.info(
-                                        f"Técnico {user_id} ({user_name}) mapeado para N4 por nome"
-                                    )
+                                    self.logger.info(f"Técnico {user_id} ({user_name}) mapeado para N4 por nome")
                                     return "N4"
                                 elif user_name in n3_names:
-                                    self.logger.info(
-                                        f"Técnico {user_id} ({user_name}) mapeado para N3 por nome"
-                                    )
+                                    self.logger.info(f"Técnico {user_id} ({user_name}) mapeado para N3 por nome")
                                     return "N3"
                                 elif user_name in n2_names:
-                                    self.logger.info(
-                                        f"Técnico {user_id} ({user_name}) mapeado para N2 por nome"
-                                    )
+                                    self.logger.info(f"Técnico {user_id} ({user_name}) mapeado para N2 por nome")
                                     return "N2"
                                 elif user_name in n1_names:
-                                    self.logger.info(
-                                        f"Técnico {user_id} ({user_name}) mapeado para N1 por nome"
-                                    )
+                                    self.logger.info(f"Técnico {user_id} ({user_name}) mapeado para N1 por nome")
                                     return "N1"
                             else:
-                                self.logger.warning(
-                                    f"Nome de usuário vazio ou inválido para usuário {user_id}"
-                                )
+                                self.logger.warning(f"Nome de usuário vazio ou inválido para usuário {user_id}")
                         else:
-                            self.logger.warning(
-                                f"Dados de usuário inválidos para usuário {user_id}"
-                            )
+                            self.logger.warning(f"Dados de usuário inválidos para usuário {user_id}")
                     except ValueError as json_error:
-                        self.logger.error(
-                            f"Erro ao decodificar JSON dos dados do usuário {user_id}: {json_error}"
-                        )
+                        self.logger.error(f"Erro ao decodificar JSON dos dados do usuário {user_id}: {json_error}")
                 else:
                     self.logger.warning(
                         f"Falha na busca de dados do usuário {user_id}: {user_response.status_code if user_response else 'Sem resposta'}"
                     )
             except requests.exceptions.Timeout:
-                self.logger.error(
-                    f"Timeout na busca de dados do usuário {user_id}"
-                )
+                self.logger.error(f"Timeout na busca de dados do usuário {user_id}")
             except requests.exceptions.ConnectionError:
-                self.logger.error(
-                    f"Erro de conexão na busca de dados do usuário {user_id}"
-                )
+                self.logger.error(f"Erro de conexão na busca de dados do usuário {user_id}")
             except requests.exceptions.RequestException as req_error:
-                self.logger.error(
-                    f"Erro na requisição de dados do usuário {user_id}: {req_error}"
-                )
+                self.logger.error(f"Erro na requisição de dados do usuário {user_id}: {req_error}")
             except Exception as user_error:
-                self.logger.error(
-                    f"Erro inesperado na busca de dados do usuário {user_id}: {user_error}"
-                )
+                self.logger.error(f"Erro inesperado na busca de dados do usuário {user_id}: {user_error}")
 
             # Fallback final
-            self.logger.warning(
-                f"Técnico {user_id} não encontrado nos grupos ou mapeamento - usando N1 como padrão"
-            )
+            self.logger.warning(f"Técnico {user_id} não encontrado nos grupos ou mapeamento - usando N1 como padrão")
             return "N1"
 
         except Exception as e:
-            self.logger.error(
-                f"Erro ao determinar nível do técnico {user_id}: {e}"
-            )
+            self.logger.error(f"Erro ao determinar nível do técnico {user_id}: {e}")
             return "N1"  # Nível padrão em caso de erro
 
     def _get_technician_level_by_name(self, tech_name: str) -> str:
@@ -5167,79 +4337,47 @@ class GLPIService:
 
             # Verificar correspondência exata primeiro
             if clean_name in n4_names or tech_name in n4_names:
-                self.logger.info(
-                    f"Técnico {tech_name} mapeado para N4 por nome"
-                )
+                self.logger.info(f"Técnico {tech_name} mapeado para N4 por nome")
                 return "N4"
             elif clean_name in n3_names or tech_name in n3_names:
-                self.logger.info(
-                    f"Técnico {tech_name} mapeado para N3 por nome"
-                )
+                self.logger.info(f"Técnico {tech_name} mapeado para N3 por nome")
                 return "N3"
             elif clean_name in n2_names or tech_name in n2_names:
-                self.logger.info(
-                    f"Técnico {tech_name} mapeado para N2 por nome"
-                )
+                self.logger.info(f"Técnico {tech_name} mapeado para N2 por nome")
                 return "N2"
             elif clean_name in n1_names or tech_name in n1_names:
-                self.logger.info(
-                    f"Técnico {tech_name} mapeado para N1 por nome"
-                )
+                self.logger.info(f"Técnico {tech_name} mapeado para N1 por nome")
                 return "N1"
 
             # Fallback para correspondência parcial (case-insensitive)
             tech_name_lower = tech_name.lower()
 
             for name in n4_names:
-                if (
-                    name.lower() in tech_name_lower
-                    or tech_name_lower in name.lower()
-                ):
-                    self.logger.info(
-                        f"Técnico {tech_name} mapeado para N4 por correspondência parcial com {name}"
-                    )
+                if name.lower() in tech_name_lower or tech_name_lower in name.lower():
+                    self.logger.info(f"Técnico {tech_name} mapeado para N4 por correspondência parcial com {name}")
                     return "N4"
 
             for name in n3_names:
-                if (
-                    name.lower() in tech_name_lower
-                    or tech_name_lower in name.lower()
-                ):
-                    self.logger.info(
-                        f"Técnico {tech_name} mapeado para N3 por correspondência parcial com {name}"
-                    )
+                if name.lower() in tech_name_lower or tech_name_lower in name.lower():
+                    self.logger.info(f"Técnico {tech_name} mapeado para N3 por correspondência parcial com {name}")
                     return "N3"
 
             for name in n2_names:
-                if (
-                    name.lower() in tech_name_lower
-                    or tech_name_lower in name.lower()
-                ):
-                    self.logger.info(
-                        f"Técnico {tech_name} mapeado para N2 por correspondência parcial com {name}"
-                    )
+                if name.lower() in tech_name_lower or tech_name_lower in name.lower():
+                    self.logger.info(f"Técnico {tech_name} mapeado para N2 por correspondência parcial com {name}")
                     return "N2"
 
             for name in n1_names:
-                if (
-                    name.lower() in tech_name_lower
-                    or tech_name_lower in name.lower()
-                ):
-                    self.logger.info(
-                        f"Técnico {tech_name} mapeado para N1 por correspondência parcial com {name}"
-                    )
+                if name.lower() in tech_name_lower or tech_name_lower in name.lower():
+                    self.logger.info(f"Técnico {tech_name} mapeado para N1 por correspondência parcial com {name}")
                     return "N1"
 
             # Fallback final
-            self.logger.warning(
-                f"Técnico {tech_name} não encontrado no mapeamento por nome - usando N1 como padrão"
-            )
+            self.logger.warning(f"Técnico {tech_name} não encontrado no mapeamento por nome - usando N1 como padrão")
             return "N1"
 
         except Exception as e:
-            self.logger.error(
-                f"Erro ao determinar nível do técnico por nome {tech_name}: {e}"
-            )
+            self.logger.error(f"Erro ao determinar nível do técnico por nome {tech_name}: {e}")
             return "N1"  # Nível padrão em caso de erro
 
     def _get_technician_ranking_fallback(self) -> list:
@@ -5254,46 +4392,30 @@ class GLPIService:
             try:
                 active_techs = self._list_active_technicians_fallback()
                 if not active_techs:
-                    self.logger.warning(
-                        "Nenhum técnico ativo encontrado no fallback"
-                    )
+                    self.logger.warning("Nenhum técnico ativo encontrado no fallback")
                     return []
             except Exception as techs_error:
-                self.logger.error(
-                    f"Erro ao buscar técnicos ativos no fallback: {techs_error}"
-                )
+                self.logger.error(f"Erro ao buscar técnicos ativos no fallback: {techs_error}")
                 return []
 
             try:
                 tech_field_id = self._discover_tech_field_id()
                 if not tech_field_id:
-                    self.logger.error(
-                        "ID do campo de técnico não encontrado no fallback"
-                    )
+                    self.logger.error("ID do campo de técnico não encontrado no fallback")
                     return []
             except Exception as field_error:
-                self.logger.error(
-                    f"Erro ao descobrir ID do campo de técnico no fallback: {field_error}"
-                )
+                self.logger.error(f"Erro ao descobrir ID do campo de técnico no fallback: {field_error}")
                 return []
 
             ranking = []
             for tech_id, tech_name in active_techs:
                 try:
                     if not tech_name or not tech_name.strip():
-                        self.logger.warning(
-                            f"Nome de técnico inválido para ID {tech_id}"
-                        )
+                        self.logger.warning(f"Nome de técnico inválido para ID {tech_id}")
                         continue
 
-                    total_tickets = self._count_tickets_by_technician(
-                        tech_id, tech_field_id
-                    )
-                    if (
-                        total_tickets is not None
-                        and isinstance(total_tickets, int)
-                        and total_tickets >= 0
-                    ):
+                    total_tickets = self._count_tickets_by_technician(tech_id, tech_field_id)
+                    if total_tickets is not None and isinstance(total_tickets, int) and total_tickets >= 0:
                         ranking.append(
                             {
                                 "id": str(tech_id),
@@ -5310,15 +4432,11 @@ class GLPIService:
                             f"Contagem de tickets inválida para técnico {tech_name} (ID: {tech_id}): {total_tickets}"
                         )
                 except Exception as ticket_error:
-                    self.logger.error(
-                        f"Erro ao contar tickets para técnico {tech_name} (ID: {tech_id}): {ticket_error}"
-                    )
+                    self.logger.error(f"Erro ao contar tickets para técnico {tech_name} (ID: {tech_id}): {ticket_error}")
                     continue
 
             if not ranking:
-                self.logger.warning(
-                    "Nenhum técnico válido encontrado no fallback"
-                )
+                self.logger.warning("Nenhum técnico válido encontrado no fallback")
                 return []
 
             try:
@@ -5329,9 +4447,7 @@ class GLPIService:
                     # Atribuir nível usando o método existente
                     try:
                         user_id = int(item["id"])
-                        level = self._get_technician_level(
-                            user_id, item["total"], ranking
-                        )
+                        level = self._get_technician_level(user_id, item["total"], ranking)
                         item["level"] = level
                     except Exception as level_error:
                         self.logger.error(
@@ -5339,9 +4455,7 @@ class GLPIService:
                         )
                         item["level"] = "N1"
             except Exception as sort_error:
-                self.logger.error(
-                    f"Erro ao processar ranking final no fallback: {sort_error}"
-                )
+                self.logger.error(f"Erro ao processar ranking final no fallback: {sort_error}")
                 return []
 
             self.logger.info(f"Fallback concluído com {len(ranking)} técnicos")
@@ -5349,9 +4463,7 @@ class GLPIService:
 
         except Exception as e:
             self.logger.error(f"Erro crítico no método de fallback: {e}")
-            self.logger.error(
-                f"Stack trace do fallback: {traceback.format_exc()}"
-            )
+            self.logger.error(f"Stack trace do fallback: {traceback.format_exc()}")
             return []
 
     def _list_active_technicians_fallback(self) -> list:
@@ -5361,14 +4473,10 @@ class GLPIService:
         try:
             cached_data = self._get_cached_data(cache_key)
             if cached_data is not None:
-                self.logger.info(
-                    "Retornando lista de técnicos ativos do cache"
-                )
+                self.logger.info("Retornando lista de técnicos ativos do cache")
                 return cached_data
         except Exception as cache_error:
-            self.logger.warning(
-                f"Erro ao verificar cache de técnicos ativos: {cache_error}"
-            )
+            self.logger.warning(f"Erro ao verificar cache de técnicos ativos: {cache_error}")
 
         try:
             # Validar configuração
@@ -5391,9 +4499,7 @@ class GLPIService:
                 start_index = 0
                 max_retries = 3
 
-                self.logger.info(
-                    "Iniciando busca paginada de usuários com perfil de técnico"
-                )
+                self.logger.info("Iniciando busca paginada de usuários com perfil de técnico")
 
                 while True:
                     # Configurar range para esta página
@@ -5415,9 +4521,7 @@ class GLPIService:
                             )
 
                             if not response or not response.ok:
-                                raise Exception(
-                                    f"Falha na requisição: {response.status_code if response else 'No response'}"
-                                )
+                                raise Exception(f"Falha na requisição: {response.status_code if response else 'No response'}")
 
                             page_data = response.json()
                             break  # Sucesso, sair do loop de retry
@@ -5437,14 +4541,8 @@ class GLPIService:
                                 raise
 
                     # Processar dados da página
-                    if (
-                        not page_data
-                        or not isinstance(page_data, list)
-                        or not page_data
-                    ):
-                        self.logger.info(
-                            f"Página {start_index}-{end_index} vazia ou sem dados. Finalizando paginação."
-                        )
+                    if not page_data or not isinstance(page_data, list) or not page_data:
+                        self.logger.info(f"Página {start_index}-{end_index} vazia ou sem dados. Finalizando paginação.")
                         break
 
                     page_items = len(page_data)
@@ -5456,9 +4554,7 @@ class GLPIService:
 
                     # Verificar se chegamos ao fim
                     if page_items < page_size:
-                        self.logger.info(
-                            f"Última página processada. Total de Profile_User: {len(profile_users)}"
-                        )
+                        self.logger.info(f"Última página processada. Total de Profile_User: {len(profile_users)}")
                         break
 
                     # Avançar para próxima página
@@ -5472,38 +4568,25 @@ class GLPIService:
                         break
 
                 if not profile_users:
-                    self.logger.warning(
-                        "Nenhum usuário encontrado com perfil de técnico"
-                    )
+                    self.logger.warning("Nenhum usuário encontrado com perfil de técnico")
                     return []
 
             except requests.exceptions.Timeout:
-                self.logger.error(
-                    "Timeout na busca de usuários com perfil de técnico"
-                )
+                self.logger.error("Timeout na busca de usuários com perfil de técnico")
                 return []
             except requests.exceptions.ConnectionError:
-                self.logger.error(
-                    "Erro de conexão na busca de usuários com perfil de técnico"
-                )
+                self.logger.error("Erro de conexão na busca de usuários com perfil de técnico")
                 return []
             except requests.exceptions.RequestException as req_error:
-                self.logger.error(
-                    f"Erro na requisição de usuários com perfil de técnico: {req_error}"
-                )
+                self.logger.error(f"Erro na requisição de usuários com perfil de técnico: {req_error}")
                 return []
 
-            self.logger.info(
-                f"Encontrados {len(profile_users)} registros de Profile_User com perfil de técnico"
-            )
+            self.logger.info(f"Encontrados {len(profile_users)} registros de Profile_User com perfil de técnico")
 
             # Extrair IDs dos usuários com validação
             tech_user_ids = []
             for profile_user in profile_users:
-                if (
-                    isinstance(profile_user, dict)
-                    and "users_id" in profile_user
-                ):
+                if isinstance(profile_user, dict) and "users_id" in profile_user:
                     try:
                         user_id = int(profile_user["users_id"])
                         if user_id > 0:
@@ -5515,9 +4598,7 @@ class GLPIService:
                         continue
 
             if not tech_user_ids:
-                self.logger.warning(
-                    "Nenhum usuário válido encontrado com perfil de técnico"
-                )
+                self.logger.warning("Nenhum usuário válido encontrado com perfil de técnico")
                 return []
 
             # Buscar dados completos dos usuários em lotes para otimizar
@@ -5526,9 +4607,7 @@ class GLPIService:
 
             for i in range(0, len(tech_user_ids), batch_size):
                 batch_ids = tech_user_ids[i : i + batch_size]
-                self.logger.info(
-                    f"Processando lote {i // batch_size + 1}: IDs {batch_ids}"
-                )
+                self.logger.info(f"Processando lote {i // batch_size + 1}: IDs {batch_ids}")
 
                 for user_id in batch_ids:
                     try:
@@ -5542,12 +4621,8 @@ class GLPIService:
                             try:
                                 user_data = user_response.json()
 
-                                if not user_data or not isinstance(
-                                    user_data, dict
-                                ):
-                                    self.logger.warning(
-                                        f"Dados de usuário inválidos para ID {user_id}"
-                                    )
+                                if not user_data or not isinstance(user_data, dict):
+                                    self.logger.warning(f"Dados de usuário inválidos para ID {user_id}")
                                     continue
 
                                 # Verificar se o usuário está ativo e não deletado
@@ -5557,57 +4632,33 @@ class GLPIService:
 
                                     # Validar valores
                                     if isinstance(is_active, str):
-                                        is_active = (
-                                            int(is_active)
-                                            if is_active.isdigit()
-                                            else 0
-                                        )
+                                        is_active = int(is_active) if is_active.isdigit() else 0
                                     if isinstance(is_deleted, str):
-                                        is_deleted = (
-                                            int(is_deleted)
-                                            if is_deleted.isdigit()
-                                            else 1
-                                        )
+                                        is_deleted = int(is_deleted) if is_deleted.isdigit() else 1
 
                                     if is_active == 1 and is_deleted == 0:
                                         # Construir nome de exibição com validação
                                         display_name = ""
                                         try:
-                                            if user_data.get(
-                                                "realname"
-                                            ) and user_data.get("firstname"):
+                                            if user_data.get("realname") and user_data.get("firstname"):
                                                 display_name = f"{user_data['firstname']} {user_data['realname']}"
                                             elif user_data.get("realname"):
-                                                display_name = user_data[
-                                                    "realname"
-                                                ]
+                                                display_name = user_data["realname"]
                                             elif user_data.get("name"):
-                                                display_name = user_data[
-                                                    "name"
-                                                ]
+                                                display_name = user_data["name"]
                                             else:
-                                                display_name = (
-                                                    f"Usuário {user_id}"
-                                                )
+                                                display_name = f"Usuário {user_id}"
 
                                             # Validar e limpar nome
-                                            if display_name and isinstance(
-                                                display_name, str
-                                            ):
-                                                display_name = (
-                                                    display_name.strip()
-                                                )
+                                            if display_name and isinstance(display_name, str):
+                                                display_name = display_name.strip()
                                                 if display_name:
-                                                    technicians.append(
-                                                        (user_id, display_name)
-                                                    )
+                                                    technicians.append((user_id, display_name))
                                                     self.logger.info(
                                                         f"Técnico ativo encontrado: {display_name} (ID: {user_id})"
                                                     )
                                                 else:
-                                                    self.logger.warning(
-                                                        f"Nome de exibição vazio para usuário {user_id}"
-                                                    )
+                                                    self.logger.warning(f"Nome de exibição vazio para usuário {user_id}")
                                             else:
                                                 self.logger.warning(
                                                     f"Nome de exibição inválido para usuário {user_id}: {display_name}"
@@ -5627,15 +4678,11 @@ class GLPIService:
                                     ValueError,
                                     TypeError,
                                 ) as validation_error:
-                                    self.logger.error(
-                                        f"Erro ao validar status do usuário {user_id}: {validation_error}"
-                                    )
+                                    self.logger.error(f"Erro ao validar status do usuário {user_id}: {validation_error}")
                                     continue
 
                             except ValueError as json_error:
-                                self.logger.error(
-                                    f"Erro ao decodificar JSON do usuário {user_id}: {json_error}"
-                                )
+                                self.logger.error(f"Erro ao decodificar JSON do usuário {user_id}: {json_error}")
                                 continue
                         else:
                             self.logger.warning(
@@ -5643,51 +4690,33 @@ class GLPIService:
                             )
 
                     except requests.exceptions.Timeout:
-                        self.logger.error(
-                            f"Timeout na busca do usuário {user_id}"
-                        )
+                        self.logger.error(f"Timeout na busca do usuário {user_id}")
                         continue
                     except requests.exceptions.ConnectionError:
-                        self.logger.error(
-                            f"Erro de conexão na busca do usuário {user_id}"
-                        )
+                        self.logger.error(f"Erro de conexão na busca do usuário {user_id}")
                         continue
                     except requests.exceptions.RequestException as req_error:
-                        self.logger.error(
-                            f"Erro na requisição do usuário {user_id}: {req_error}"
-                        )
+                        self.logger.error(f"Erro na requisição do usuário {user_id}: {req_error}")
                         continue
                     except Exception as user_error:
-                        self.logger.error(
-                            f"Erro inesperado ao processar usuário {user_id}: {user_error}"
-                        )
+                        self.logger.error(f"Erro inesperado ao processar usuário {user_id}: {user_error}")
                         continue
 
             # Armazenar no cache com tratamento de erro
             try:
                 self._set_cached_data(cache_key, technicians)
-                self.logger.info(
-                    "Lista de técnicos armazenada no cache com sucesso"
-                )
+                self.logger.info("Lista de técnicos armazenada no cache com sucesso")
             except Exception as cache_error:
-                self.logger.warning(
-                    f"Erro ao armazenar técnicos no cache: {cache_error}"
-                )
+                self.logger.warning(f"Erro ao armazenar técnicos no cache: {cache_error}")
 
-            self.logger.info(
-                f"Total de técnicos ativos válidos encontrados: {len(technicians)}"
-            )
+            self.logger.info(f"Total de técnicos ativos válidos encontrados: {len(technicians)}")
             return technicians
 
         except Exception as e:
-            self.logger.error(
-                f"Erro geral ao listar técnicos ativos (fallback): {e}"
-            )
+            self.logger.error(f"Erro geral ao listar técnicos ativos (fallback): {e}")
             return []
 
-    def _count_tickets_by_technician_optimized(
-        self, tech_id: int, tech_field_id: str
-    ) -> Optional[int]:
+    def _count_tickets_by_technician_optimized(self, tech_id: int, tech_field_id: str) -> Optional[int]:
         """Conta tickets por técnico seguindo a base de conhecimento
 
         Usa range 0-0 para retornar apenas contagem (otimizado)
@@ -5700,9 +4729,7 @@ class GLPIService:
                 return None
 
             if not self.glpi_url:
-                self.logger.error(
-                    "URL do GLPI não configurada para contagem de tickets"
-                )
+                self.logger.error("URL do GLPI não configurada para contagem de tickets")
                 return None
 
             # Usar o tech_field_id descoberto dinamicamente
@@ -5717,9 +4744,7 @@ class GLPIService:
                 "range": "0-0",  # Retorna apenas contagem
             }
 
-            self.logger.info(
-                f"Contando tickets para técnico {tech_id} com field {tech_field}"
-            )
+            self.logger.info(f"Contando tickets para técnico {tech_id} com field {tech_field}")
 
             try:
                 response = self._make_authenticated_request(
@@ -5730,31 +4755,21 @@ class GLPIService:
                 )
 
                 if not response:
-                    self.logger.error(
-                        f"Falha na requisição para contar tickets do técnico {tech_id}"
-                    )
+                    self.logger.error(f"Falha na requisição para contar tickets do técnico {tech_id}")
                     return None
 
                 if not response.ok:
-                    self.logger.error(
-                        f"Erro HTTP na contagem de tickets do técnico {tech_id}: {response.status_code}"
-                    )
+                    self.logger.error(f"Erro HTTP na contagem de tickets do técnico {tech_id}: {response.status_code}")
                     return None
 
             except requests.exceptions.Timeout:
-                self.logger.error(
-                    f"Timeout na contagem de tickets do técnico {tech_id}"
-                )
+                self.logger.error(f"Timeout na contagem de tickets do técnico {tech_id}")
                 return None
             except requests.exceptions.ConnectionError:
-                self.logger.error(
-                    f"Erro de conexão na contagem de tickets do técnico {tech_id}"
-                )
+                self.logger.error(f"Erro de conexão na contagem de tickets do técnico {tech_id}")
                 return None
             except requests.exceptions.RequestException as req_error:
-                self.logger.error(
-                    f"Erro na requisição de contagem de tickets do técnico {tech_id}: {req_error}"
-                )
+                self.logger.error(f"Erro na requisição de contagem de tickets do técnico {tech_id}: {req_error}")
                 return None
 
             # Extrair total do cabeçalho Content-Range com validação
@@ -5763,9 +4778,7 @@ class GLPIService:
                     content_range = response.headers["Content-Range"]
 
                     if not content_range or not isinstance(content_range, str):
-                        self.logger.warning(
-                            f"Content-Range inválido para técnico {tech_id}: {content_range}"
-                        )
+                        self.logger.warning(f"Content-Range inválido para técnico {tech_id}: {content_range}")
                         return 0
 
                     # Formato esperado: "items 0-0/total" ou "items */total"
@@ -5774,73 +4787,47 @@ class GLPIService:
                         if total_str.isdigit():
                             total = int(total_str)
                             if total >= 0:
-                                self.logger.info(
-                                    f"Técnico {tech_id}: {total} tickets encontrados"
-                                )
+                                self.logger.info(f"Técnico {tech_id}: {total} tickets encontrados")
                                 return total
                             else:
-                                self.logger.warning(
-                                    f"Total de tickets negativo para técnico {tech_id}: {total}"
-                                )
+                                self.logger.warning(f"Total de tickets negativo para técnico {tech_id}: {total}")
                                 return 0
                         else:
-                            self.logger.warning(
-                                f"Total de tickets não numérico para técnico {tech_id}: {total_str}"
-                            )
+                            self.logger.warning(f"Total de tickets não numérico para técnico {tech_id}: {total_str}")
                             return 0
                     else:
-                        self.logger.warning(
-                            f"Formato de Content-Range inválido para técnico {tech_id}: {content_range}"
-                        )
+                        self.logger.warning(f"Formato de Content-Range inválido para técnico {tech_id}: {content_range}")
                         return 0
                 else:
-                    self.logger.warning(
-                        f"Content-Range não encontrado para técnico {tech_id}"
-                    )
+                    self.logger.warning(f"Content-Range não encontrado para técnico {tech_id}")
                     # Fallback: tentar extrair do JSON
                     try:
                         result = response.json()
                         if isinstance(result, dict) and "totalcount" in result:
                             total = result["totalcount"]
-                            self.logger.info(
-                                f"Técnico {tech_id}: {total} tickets encontrados (JSON fallback)"
-                            )
+                            self.logger.info(f"Técnico {tech_id}: {total} tickets encontrados (JSON fallback)")
                             return total
                         elif isinstance(result, dict) and "data" in result:
                             total = len(result["data"])
-                            self.logger.info(
-                                f"Técnico {tech_id}: {total} tickets encontrados (data length)"
-                            )
+                            self.logger.info(f"Técnico {tech_id}: {total} tickets encontrados (data length)")
                             return total
                     except Exception as json_error:
-                        self.logger.warning(
-                            f"Erro ao processar resposta JSON: {json_error}"
-                        )
+                        self.logger.warning(f"Erro ao processar resposta JSON: {json_error}")
                     return 0
 
             except (ValueError, IndexError, AttributeError) as parse_error:
-                self.logger.error(
-                    f"Erro ao processar Content-Range para técnico {tech_id}: {parse_error}"
-                )
+                self.logger.error(f"Erro ao processar Content-Range para técnico {tech_id}: {parse_error}")
                 return 0
 
         except Exception as e:
-            self.logger.error(
-                f"Erro geral ao contar tickets do técnico {tech_id}: {e}"
-            )
+            self.logger.error(f"Erro geral ao contar tickets do técnico {tech_id}: {e}")
             return None
 
-    def _count_tickets_by_technician(
-        self, tech_id: int, tech_field_id: str
-    ) -> Optional[int]:
+    def _count_tickets_by_technician(self, tech_id: int, tech_field_id: str) -> Optional[int]:
         """Método mantido para compatibilidade - redireciona para versão otimizada"""
-        return self._count_tickets_by_technician_optimized(
-            tech_id, tech_field_id
-        )
+        return self._count_tickets_by_technician_optimized(tech_id, tech_field_id)
 
-    def _get_technician_ticket_details(
-        self, tech_id: int, tech_field_id: str
-    ) -> Optional[dict]:
+    def _get_technician_ticket_details(self, tech_id: int, tech_field_id: str) -> Optional[dict]:
         """Obtém dados detalhados dos tickets de um técnico (versão legacy - usa função otimizada)
 
         Retorna:
@@ -5853,9 +4840,7 @@ class GLPIService:
         """
         try:
             # Usar a versão otimizada para um único técnico
-            result = self._get_technician_ticket_details_optimized(
-                [tech_id], tech_field_id
-            )
+            result = self._get_technician_ticket_details_optimized([tech_id], tech_field_id)
             return result.get(
                 str(tech_id),
                 {
@@ -5866,14 +4851,10 @@ class GLPIService:
                 },
             )
         except Exception as e:
-            self.logger.error(
-                f"Erro ao obter dados detalhados dos tickets do técnico {tech_id}: {e}"
-            )
+            self.logger.error(f"Erro ao obter dados detalhados dos tickets do técnico {tech_id}: {e}")
             return None
 
-    def _get_technician_ticket_details_optimized(
-        self, technician_ids: list, tech_field_id: str
-    ) -> dict:
+    def _get_technician_ticket_details_optimized(self, technician_ids: list, tech_field_id: str) -> dict:
         """Obtém dados detalhados dos tickets de múltiplos técnicos com cache otimizado
 
         Args:
@@ -5912,9 +4893,7 @@ class GLPIService:
 
             # Verificar se o field ID é válido
             if not tech_field_id or tech_field_id == "None":
-                self.logger.error(
-                    f"❌ Field ID do técnico é inválido: '{tech_field_id}'"
-                )
+                self.logger.error(f"❌ Field ID do técnico é inválido: '{tech_field_id}'")
                 return result
 
             # Testar consulta simples primeiro
@@ -5925,9 +4904,7 @@ class GLPIService:
                 "forcedisplay[1]": "12",  # Status
             }
 
-            self.logger.info(
-                f"🔍 Testando consulta simples com params: {test_params}"
-            )
+            self.logger.info(f"🔍 Testando consulta simples com params: {test_params}")
             test_response = self._make_authenticated_request(
                 "GET",
                 f"{self.glpi_url}/search/Ticket",
@@ -5937,26 +4914,18 @@ class GLPIService:
 
             if test_response and test_response.status_code == 200:
                 test_data = test_response.json()
-                self.logger.info(
-                    f"✅ Consulta de teste bem-sucedida: {len(test_data.get('data', []))} tickets encontrados"
-                )
+                self.logger.info(f"✅ Consulta de teste bem-sucedida: {len(test_data.get('data', []))} tickets encontrados")
                 if test_data.get("data"):
                     sample_ticket = test_data["data"][0]
                     self.logger.info(f"📋 Ticket de exemplo: {sample_ticket}")
                     self.logger.info(
                         f"🔍 Campo {tech_field_id} no ticket: {sample_ticket.get(tech_field_id, 'NÃO ENCONTRADO')}"
                     )
-                    self.logger.info(
-                        f"🔍 Status do ticket: {sample_ticket.get('12', 'NÃO ENCONTRADO')}"
-                    )
+                    self.logger.info(f"🔍 Status do ticket: {sample_ticket.get('12', 'NÃO ENCONTRADO')}")
                 else:
-                    self.logger.warning(
-                        "⚠️ Nenhum ticket encontrado na consulta de teste"
-                    )
+                    self.logger.warning("⚠️ Nenhum ticket encontrado na consulta de teste")
             else:
-                self.logger.error(
-                    f"❌ Consulta de teste falhou: {test_response.status_code if test_response else 'None'}"
-                )
+                self.logger.error(f"❌ Consulta de teste falhou: {test_response.status_code if test_response else 'None'}")
                 if test_response:
                     self.logger.error(f"Resposta: {test_response.text[:500]}")
 
@@ -5976,20 +4945,13 @@ class GLPIService:
 
             # Processar técnicos em lotes menores
             batch_size = 10
-            batches = [
-                technician_ids[i : i + batch_size]
-                for i in range(0, len(technician_ids), batch_size)
-            ]
+            batches = [technician_ids[i : i + batch_size] for i in range(0, len(technician_ids), batch_size)]
 
-            self.logger.info(
-                f"📦 Processando {len(technician_ids)} técnicos em {len(batches)} lotes de até {batch_size}"
-            )
+            self.logger.info(f"📦 Processando {len(technician_ids)} técnicos em {len(batches)} lotes de até {batch_size}")
 
             for batch_idx, batch in enumerate(batches):
                 try:
-                    self.logger.info(
-                        f"🔄 Processando lote {batch_idx + 1}/{len(batches)} com {len(batch)} técnicos: {batch}"
-                    )
+                    self.logger.info(f"🔄 Processando lote {batch_idx + 1}/{len(batches)} com {len(batch)} técnicos: {batch}")
 
                     # Buscar tickets para este lote
                     params = {
@@ -6019,16 +4981,12 @@ class GLPIService:
 
                     if response and response.status_code == 200:
                         tickets_json = response.json()
-                        self.logger.info(
-                            f"✅ Resposta recebida: {len(tickets_json.get('data', []))} tickets"
-                        )
+                        self.logger.info(f"✅ Resposta recebida: {len(tickets_json.get('data', []))} tickets")
 
                         if "data" in tickets_json:
                             # Processar os tickets e agrupar por técnico
                             for ticket in tickets_json["data"]:
-                                tech_id_str = str(
-                                    ticket.get(str(tech_field_id), "")
-                                )
+                                tech_id_str = str(ticket.get(str(tech_field_id), ""))
                                 self.logger.info(
                                     f"🎫 Processando ticket: técnico={tech_id_str}, status={ticket.get('12', 'N/A')}"
                                 )
@@ -6039,45 +4997,27 @@ class GLPIService:
 
                                     # Contar tickets resolvidos (status 5 e 6)
                                     if status in [5, 6]:
-                                        result[tech_id_str][
-                                            "resolved_tickets"
-                                        ] += 1
-                                        self.logger.info(
-                                            f"✅ Ticket resolvido para técnico {tech_id_str}"
-                                        )
+                                        result[tech_id_str]["resolved_tickets"] += 1
+                                        self.logger.info(f"✅ Ticket resolvido para técnico {tech_id_str}")
                                     # Contar tickets pendentes (status 1, 2, 3, 4)
                                     elif status in [1, 2, 3, 4]:
-                                        result[tech_id_str][
-                                            "pending_tickets"
-                                        ] += 1
-                                        self.logger.info(
-                                            f"⏳ Ticket pendente para técnico {tech_id_str}"
-                                        )
+                                        result[tech_id_str]["pending_tickets"] += 1
+                                        self.logger.info(f"⏳ Ticket pendente para técnico {tech_id_str}")
                                     else:
-                                        self.logger.info(
-                                            f"❓ Status desconhecido {status} para técnico {tech_id_str}"
-                                        )
+                                        self.logger.info(f"❓ Status desconhecido {status} para técnico {tech_id_str}")
                                 else:
-                                    self.logger.warning(
-                                        f"⚠️ Técnico {tech_id_str} não encontrado na lista de resultados"
-                                    )
+                                    self.logger.warning(f"⚠️ Técnico {tech_id_str} não encontrado na lista de resultados")
                         else:
-                            self.logger.warning(
-                                "⚠️ Nenhum dado encontrado na resposta"
-                            )
+                            self.logger.warning("⚠️ Nenhum dado encontrado na resposta")
                     else:
                         self.logger.error(
                             f"❌ Falha na requisição do lote {batch_idx + 1}: {response.status_code if response else 'None'}"
                         )
                         if response:
-                            self.logger.error(
-                                f"Resposta: {response.text[:500]}"
-                            )
+                            self.logger.error(f"Resposta: {response.text[:500]}")
 
                 except Exception as batch_error:
-                    self.logger.error(
-                        f"❌ Erro no lote {batch_idx + 1}: {batch_error}"
-                    )
+                    self.logger.error(f"❌ Erro no lote {batch_idx + 1}: {batch_error}")
                     continue
 
             # Log do resultado final
@@ -6089,16 +5029,10 @@ class GLPIService:
 
             # Salvar no cache
             try:
-                self._set_cache_data(
-                    cache_key, result, ttl=180
-                )  # Cache por 3 minutos
-                self.logger.info(
-                    f"💾 Dados de tickets salvos no cache com chave: {cache_key}"
-                )
+                self._set_cache_data(cache_key, result, ttl=180)  # Cache por 3 minutos
+                self.logger.info(f"💾 Dados de tickets salvos no cache com chave: {cache_key}")
             except Exception as cache_error:
-                self.logger.warning(
-                    f"⚠️ Erro ao salvar no cache: {cache_error}"
-                )
+                self.logger.warning(f"⚠️ Erro ao salvar no cache: {cache_error}")
 
             return result
 
@@ -6110,15 +5044,11 @@ class GLPIService:
         """Encerra a sessão com a API do GLPI"""
         if self.session_token:
             try:
-                response = self._make_authenticated_request(
-                    "GET", f"{self.glpi_url}/killSession"
-                )
+                response = self._make_authenticated_request("GET", f"{self.glpi_url}/killSession")
                 if response:
                     self.logger.info("Sessão encerrada com sucesso")
                 else:
-                    self.logger.warning(
-                        "Falha ao encerrar sessão, mas continuando"
-                    )
+                    self.logger.warning("Falha ao encerrar sessão, mas continuando")
             except Exception as e:
                 self.logger.error(f"Erro ao encerrar sessão: {e}")
             finally:
@@ -6173,9 +5103,7 @@ class GLPIService:
                 return cached_name
 
             # Buscar usuário por ID
-            response = self._make_authenticated_request(
-                "GET", f"{self.glpi_url}/User/{user_id}"
-            )
+            response = self._make_authenticated_request("GET", f"{self.glpi_url}/User/{user_id}")
 
             if not response or not response.ok:
                 self.logger.warning(f"Falha ao buscar usuário {user_id}")
@@ -6187,9 +5115,7 @@ class GLPIService:
             display_name = "Usuário desconhecido"
             if isinstance(user_data, dict):
                 if user_data.get("realname") and user_data.get("firstname"):
-                    display_name = (
-                        f"{user_data['firstname']} {user_data['realname']}"
-                    )
+                    display_name = f"{user_data['firstname']} {user_data['realname']}"
                 elif user_data.get("realname"):
                     display_name = user_data["realname"]
                 elif user_data.get("name"):
@@ -6232,16 +5158,12 @@ class GLPIService:
             priority_name = priority_map.get(str(priority_id), "Média")
 
             # Armazenar no cache por 1 hora
-            self._set_cache_data(
-                "priority_names", priority_name, 3600, cache_key
-            )
+            self._set_cache_data("priority_names", priority_name, 3600, cache_key)
 
             return priority_name
 
         except Exception as e:
-            self.logger.error(
-                f"Erro ao converter prioridade {priority_id}: {e}"
-            )
+            self.logger.error(f"Erro ao converter prioridade {priority_id}: {e}")
             return "Média"
 
     def _get_category_name_by_id(self, category_id: str) -> str:
@@ -6261,18 +5183,14 @@ class GLPIService:
             if not self._ensure_authenticated():
                 return "Não categorizado"
 
-            response = self._make_authenticated_request(
-                "GET", f"{self.glpi_url}/ITILCategory/{category_id}"
-            )
+            response = self._make_authenticated_request("GET", f"{self.glpi_url}/ITILCategory/{category_id}")
 
             if response and response.ok:
                 category_data = response.json()
                 category_name = category_data.get("name", "Não categorizado")
 
                 # Armazenar no cache por 1 hora
-                self._set_cache_data(
-                    "category_names", category_name, 3600, cache_key
-                )
+                self._set_cache_data("category_names", category_name, 3600, cache_key)
 
                 return category_name
             else:
@@ -6280,9 +5198,7 @@ class GLPIService:
                 return "Não categorizado"
 
         except Exception as e:
-            self.logger.error(
-                f"Erro ao converter categoria {category_id}: {e}"
-            )
+            self.logger.error(f"Erro ao converter categoria {category_id}: {e}")
             return "Não categorizado"
 
     def get_new_tickets(self, limit: int = 10) -> List[Dict[str, any]]:
@@ -6316,9 +5232,7 @@ class GLPIService:
                 "forcedisplay[7]": "12",  # Status
             }
 
-            response = self._make_authenticated_request(
-                "GET", f"{self.glpi_url}/search/Ticket", params=search_params
-            )
+            response = self._make_authenticated_request("GET", f"{self.glpi_url}/search/Ticket", params=search_params)
 
             if not response or not response.ok:
                 self.logger.error("Falha ao buscar tickets novos")
@@ -6331,29 +5245,15 @@ class GLPIService:
                 for ticket_data in data["data"]:
                     # Extrair ID do requerente e buscar o nome
                     requester_id = ticket_data.get("4", "")
-                    requester_name = (
-                        self._get_user_name_by_id(str(requester_id))
-                        if requester_id
-                        else "Não informado"
-                    )
+                    requester_name = self._get_user_name_by_id(str(requester_id)) if requester_id else "Não informado"
 
                     # Extrair ID da prioridade e converter para nome
-                    priority_id = ticket_data.get(
-                        "3", "3"
-                    )  # Default para prioridade média (ID 3)
-                    priority_name = self._get_priority_name_by_id(
-                        str(priority_id)
-                    )
+                    priority_id = ticket_data.get("3", "3")  # Default para prioridade média (ID 3)
+                    priority_name = self._get_priority_name_by_id(str(priority_id))
 
                     # Extrair ID da categoria e converter para nome
-                    category_id = ticket_data.get(
-                        "5", ""
-                    )  # Campo 5 = categoria
-                    category_name = (
-                        self._get_category_name_by_id(str(category_id))
-                        if category_id
-                        else "Não categorizado"
-                    )
+                    category_id = ticket_data.get("5", "")  # Campo 5 = categoria
+                    category_name = self._get_category_name_by_id(str(category_id)) if category_id else "Não categorizado"
 
                     # Extrair informações do ticket
                     ticket_info = {
@@ -6500,12 +5400,8 @@ class GLPIService:
                 )
 
             # Combinar métricas por nível e gerais com filtros
-            level_metrics = self._get_metrics_by_level_internal_hierarchy(
-                start_date, end_date, correlation_id
-            )
-            general_metrics = self._get_general_metrics_internal(
-                start_date, end_date, correlation_id
-            )
+            level_metrics = self._get_metrics_by_level_internal_hierarchy(start_date, end_date, correlation_id)
+            general_metrics = self._get_general_metrics_internal(start_date, end_date, correlation_id)
 
             # Aplicar filtros adicionais se especificados
             if status or priority or level or technician or category:
@@ -6529,9 +5425,7 @@ class GLPIService:
                 "technician": technician,
                 "category": category,
             }
-            result = ResponseFormatter.format_dashboard_response(
-                raw_data, filters=filters_data, start_time=start_time
-            )
+            result = ResponseFormatter.format_dashboard_response(raw_data, filters=filters_data, start_time=start_time)
 
             return result
 
@@ -6543,9 +5437,7 @@ class GLPIService:
                 correlation_id=correlation_id,
             )
 
-    def _get_all_technician_ids_and_names(
-        self, entity_id: int = None
-    ) -> tuple[list, dict]:
+    def _get_all_technician_ids_and_names(self, entity_id: int = None) -> tuple[list, dict]:
         """Obtém todos os IDs de técnicos ativos do GLPI e seus nomes
 
         IMPLEMENTAÇÃO CORRIGIDA: Busca direta de usuários ativos com perfil de técnico
@@ -6560,12 +5452,8 @@ class GLPIService:
         import datetime
 
         try:
-            timestamp = datetime.datetime.now(
-                tz=datetime.timezone.utc
-            ).isoformat()
-            self.logger.info(
-                f"[{timestamp}] Iniciando busca de técnicos com método alternativo"
-            )
+            timestamp = datetime.datetime.now(tz=datetime.timezone.utc).isoformat()
+            self.logger.info(f"[{timestamp}] Iniciando busca de técnicos com método alternativo")
 
             # Criar instância dos helpers
             helpers = GLPIServiceHelpers(self)
@@ -6574,24 +5462,17 @@ class GLPIService:
             tech_ids_set = helpers.get_technician_ids_from_tickets(entity_id)
 
             if not tech_ids_set:
-                self.logger.warning(
-                    f"[{timestamp}] Nenhum técnico encontrado nos tickets"
-                )
+                self.logger.warning(f"[{timestamp}] Nenhum técnico encontrado nos tickets")
                 return [], {}
 
             # Buscar detalhes dos técnicos em lotes
-            tech_ids, tech_names = helpers.get_technician_details_in_batches(
-                tech_ids_set
-            )
+            tech_ids, tech_names = helpers.get_technician_details_in_batches(tech_ids_set)
             if len(tech_ids) == 0:
-                self.logger.warning(
-                    f"[{timestamp}] Nenhum técnico ativo encontrado"
-                )
+                self.logger.warning(f"[{timestamp}] Nenhum técnico ativo encontrado")
                 return [], {}
 
             self.logger.info(
-                f"[{timestamp}] Busca concluída: {len(tech_ids)} técnicos ativos "
-                f"identificados via atribuições de tickets"
+                f"[{timestamp}] Busca concluída: {len(tech_ids)} técnicos ativos " f"identificados via atribuições de tickets"
             )
             return tech_ids, tech_names
 
@@ -6641,57 +5522,32 @@ class GLPIService:
             # Descobrir o campo correto para técnico responsável dinamicamente
             tech_field_id = self._discover_tech_field_id()
             if not tech_field_id:
-                self.logger.error(
-                    "Não foi possível descobrir o campo do técnico"
-                )
+                self.logger.error("Não foi possível descobrir o campo do técnico")
                 return {}
 
             # Inicializar contadores para todos os técnicos
             ticket_counts = {tech_id: 0 for tech_id in technician_ids}
 
             # OTIMIZAÇÃO: Buscar todos os tickets de uma vez usando uma única query
-            self.logger.info(
-                f"[OTIMIZAÇÃO] Iniciando busca otimizada em lote para "
-                f"{len(technician_ids)} técnicos"
-            )
+            self.logger.info(f"[OTIMIZAÇÃO] Iniciando busca otimizada em lote para " f"{len(technician_ids)} técnicos")
             if start_date and end_date:
                 # Com filtros de data - usar query otimizada em lote
-                self.logger.info(
-                    f"[OTIMIZAÇÃO] Usando busca em lote COM filtro de data: "
-                    f"{start_date} a {end_date}"
-                )
-                ticket_counts = self._get_tickets_batch_with_date_filter(
-                    technician_ids, start_date, end_date, tech_field_id
-                )
+                self.logger.info(f"[OTIMIZAÇÃO] Usando busca em lote COM filtro de data: " f"{start_date} a {end_date}")
+                ticket_counts = self._get_tickets_batch_with_date_filter(technician_ids, start_date, end_date, tech_field_id)
             else:
                 # Sem filtros de data - usar query otimizada em lote
-                self.logger.info(
-                    "[OTIMIZAÇÃO] Usando busca em lote SEM filtro de data"
-                )
-                ticket_counts = self._get_tickets_batch_without_date_filter(
-                    technician_ids, tech_field_id
-                )
+                self.logger.info("[OTIMIZAÇÃO] Usando busca em lote SEM filtro de data")
+                ticket_counts = self._get_tickets_batch_without_date_filter(technician_ids, tech_field_id)
 
-            self.logger.info(
-                f"[OTIMIZAÇÃO] Busca otimizada concluída: "
-                f"{sum(ticket_counts.values())} tickets total"
-            )
+            self.logger.info(f"[OTIMIZAÇÃO] Busca otimizada concluída: " f"{sum(ticket_counts.values())} tickets total")
             return ticket_counts
 
         except Exception as e:
-            self.logger.error(
-                f"[FALLBACK] Erro ao buscar tickets agrupados por técnico: {e}"
-            )
-            self.logger.error(
-                f"[FALLBACK] Traceback completo: {traceback.format_exc()}"
-            )
+            self.logger.error(f"[FALLBACK] Erro ao buscar tickets agrupados por técnico: {e}")
+            self.logger.error(f"[FALLBACK] Traceback completo: {traceback.format_exc()}")
             # Fallback para método individual em caso de erro
-            self.logger.info(
-                "[FALLBACK] Usando fallback para método individual"
-            )
-            return self._get_all_tickets_grouped_by_technician_fallback(
-                technician_ids, start_date, end_date
-            )
+            self.logger.info("[FALLBACK] Usando fallback para método individual")
+            return self._get_all_tickets_grouped_by_technician_fallback(technician_ids, start_date, end_date)
 
     def _get_tickets_batch_with_date_filter(
         self,
@@ -6714,15 +5570,11 @@ class GLPIService:
             # Debug: Método _get_tickets_batch_with_date_filter iniciado
 
             if not technician_ids:
-                print(
-                    "[DEBUG] _get_tickets_batch_with_date_filter: technician_ids vazio"
-                )
+                print("[DEBUG] _get_tickets_batch_with_date_filter: technician_ids vazio")
                 # Debug: Problema de technician_ids vazio registrado
                 return {}
 
-            self.logger.info(
-                f"_get_tickets_batch_with_date_filter: processando {len(technician_ids)} técnicos"
-            )
+            self.logger.info(f"_get_tickets_batch_with_date_filter: processando {len(technician_ids)} técnicos")
             self.logger.info(f"Período: {start_date} a {end_date}")
             self.logger.info(f"tech_field_id: {tech_field_id}")
 
@@ -6748,10 +5600,7 @@ class GLPIService:
             batch_size = 25  # Reduzido para evitar erro 414
             all_ticket_counts = {tech_id: 0 for tech_id in technician_ids}
 
-            print(
-                f"[DEBUG] Processando {len(technician_ids)} técnicos em lotes "
-                f"otimizados de {batch_size}"
-            )
+            print(f"[DEBUG] Processando {len(technician_ids)} técnicos em lotes " f"otimizados de {batch_size}")
 
             for i in range(0, len(technician_ids), batch_size):
                 batch_tech_ids = technician_ids[i : i + batch_size]
@@ -6759,9 +5608,7 @@ class GLPIService:
 
                 # Adicionar critérios para cada técnico no batch
                 # Calcular próximo índice disponível após critérios de data
-                date_criteria_count = (
-                    len(date_criteria) // 3 if date_criteria else 0
-                )
+                date_criteria_count = len(date_criteria) // 3 if date_criteria else 0
                 criteria_index = date_criteria_count
 
                 for j, tech_id in enumerate(batch_tech_ids):
@@ -6779,9 +5626,7 @@ class GLPIService:
                     criteria_index += 1
 
                 # Usar paginação robusta para este batch
-                batch_counts = self._fetch_all_pages_robust(
-                    batch_params, batch_tech_ids, tech_field_id
-                )
+                batch_counts = self._fetch_all_pages_robust(batch_params, batch_tech_ids, tech_field_id)
 
                 # Combinar resultados
                 for tech_id, count in batch_counts.items():
@@ -6794,9 +5639,7 @@ class GLPIService:
             # Retornar contadores zerados em caso de erro
             return {tech_id: 0 for tech_id in technician_ids}
 
-    def _fetch_all_pages_robust(
-        self, search_params: dict, tech_ids: List[str], tech_field_id: str
-    ) -> Dict[str, int]:
+    def _fetch_all_pages_robust(self, search_params: dict, tech_ids: List[str], tech_field_id: str) -> Dict[str, int]:
         """Implementa paginação robusta para buscar todos os dados incrementalmente
 
         Args:
@@ -6808,13 +5651,9 @@ class GLPIService:
             Dict com contagem de tickets por técnico
         """
         helpers = GLPIServiceHelpers(self)
-        return helpers.fetch_all_pages_robust(
-            search_params, tech_ids, tech_field_id
-        )
+        return helpers.fetch_all_pages_robust(search_params, tech_ids, tech_field_id)
 
-    def _process_ticket_batch(
-        self, search_params: dict, tech_ids: List[str], tech_field_id: str
-    ) -> Dict[str, int]:
+    def _process_ticket_batch(self, search_params: dict, tech_ids: List[str], tech_field_id: str) -> Dict[str, int]:
         """Processa um batch de técnicos e retorna contagem de tickets"""
         import time
 
@@ -6824,19 +5663,12 @@ class GLPIService:
 
             url = f"{self.glpi_url}/search/Ticket"
 
-            print(
-                f"[DEBUG] Processando batch de {len(tech_ids)} técnicos - URL: {url}"
-            )
+            print(f"[DEBUG] Processando batch de {len(tech_ids)} técnicos - URL: {url}")
             self.logger.info(f"Processando batch de {len(tech_ids)} técnicos")
 
-            response = self._make_authenticated_request(
-                "GET", url, params=search_params
-            )
+            response = self._make_authenticated_request("GET", url, params=search_params)
             if not response or not response.ok:
-                self.logger.error(
-                    f"Falha na requisição do batch: "
-                    f"{response.status_code if response else 'No response'}"
-                )
+                self.logger.error(f"Falha na requisição do batch: " f"{response.status_code if response else 'No response'}")
                 return ticket_counts
 
             data = response.json()
@@ -6844,20 +5676,13 @@ class GLPIService:
             if "data" in data and data["data"]:
                 # Contar tickets por técnico
                 for ticket in data["data"]:
-                    tech_id = str(
-                        ticket.get(tech_field_id, "")
-                    )  # Campo do técnico descoberto dinamicamente
+                    tech_id = str(ticket.get(tech_field_id, ""))  # Campo do técnico descoberto dinamicamente
                     if tech_id in ticket_counts:
                         ticket_counts[tech_id] += 1
 
             elapsed_time = time.time() - start_time
-            print(
-                f"[DEBUG] Batch processado em {elapsed_time:.2f}s: "
-                f"{sum(ticket_counts.values())} tickets encontrados"
-            )
-            self.logger.info(
-                f"Batch processado: {sum(ticket_counts.values())} tickets encontrados"
-            )
+            print(f"[DEBUG] Batch processado em {elapsed_time:.2f}s: " f"{sum(ticket_counts.values())} tickets encontrados")
+            self.logger.info(f"Batch processado: {sum(ticket_counts.values())} tickets encontrados")
             return ticket_counts
 
         except Exception as e:
@@ -6866,9 +5691,7 @@ class GLPIService:
             self.logger.error(f"Erro no processamento do batch: {e}")
             return {tech_id: 0 for tech_id in tech_ids}
 
-    def _get_tickets_batch_without_date_filter(
-        self, technician_ids: List[str], tech_field_id: str
-    ) -> Dict[str, int]:
+    def _get_tickets_batch_without_date_filter(self, technician_ids: List[str], tech_field_id: str) -> Dict[str, int]:
         """Busca todos os tickets sem filtros de data em uma única query otimizada
 
         Args:
@@ -6919,17 +5742,11 @@ class GLPIService:
                 criteria_index += 1
 
             # Usar paginação robusta para buscar todos os dados
-            self.logger.info(
-                f"Buscando tickets em lote para {len(technician_ids)} técnicos sem filtro de data"
-            )
+            self.logger.info(f"Buscando tickets em lote para {len(technician_ids)} técnicos sem filtro de data")
 
-            ticket_counts = self._fetch_all_pages_robust(
-                search_params, technician_ids, tech_field_id
-            )
+            ticket_counts = self._fetch_all_pages_robust(search_params, technician_ids, tech_field_id)
 
-            self.logger.info(
-                f"Busca em lote concluída: {sum(ticket_counts.values())} tickets encontrados"
-            )
+            self.logger.info(f"Busca em lote concluída: {sum(ticket_counts.values())} tickets encontrados")
             return ticket_counts
 
         except Exception as e:
@@ -6955,9 +5772,7 @@ class GLPIService:
             # Descobrir o campo correto para técnico responsável dinamicamente
             tech_field_id = self._discover_tech_field_id()
             if not tech_field_id:
-                self.logger.error(
-                    "Não foi possível descobrir o campo do técnico"
-                )
+                self.logger.error("Não foi possível descobrir o campo do técnico")
                 return {}
 
             # Inicializar contadores para todos os técnicos
@@ -6968,20 +5783,14 @@ class GLPIService:
                 try:
                     if start_date and end_date:
                         # Usar método com filtro de data
-                        count = self._count_tickets_with_date_filter(
-                            tech_id, start_date, end_date
-                        )
+                        count = self._count_tickets_with_date_filter(tech_id, start_date, end_date)
                     else:
                         # Usar método otimizado sem filtro de data
-                        count = self._count_tickets_by_technician_optimized(
-                            int(tech_id), tech_field_id
-                        )
+                        count = self._count_tickets_by_technician_optimized(int(tech_id), tech_field_id)
 
                     ticket_counts[tech_id] = count if count is not None else 0
                 except Exception as e:
-                    self.logger.error(
-                        f"Erro ao contar tickets para técnico {tech_id}: {e}"
-                    )
+                    self.logger.error(f"Erro ao contar tickets para técnico {tech_id}: {e}")
                     ticket_counts[tech_id] = 0
 
             return ticket_counts
@@ -7010,9 +5819,7 @@ class GLPIService:
             entity_id: ID da entidade para filtrar técnicos
         """
         # Log simples para confirmar que o método está sendo chamado
-        print(
-            f"[DEBUG] get_technician_ranking_with_filters CHAMADO - start_date: {start_date}, end_date: {end_date}"
-        )
+        print(f"[DEBUG] get_technician_ranking_with_filters CHAMADO - start_date: {start_date}, end_date: {end_date}")
 
         if not correlation_id:
             obs_logger = glpi_logger
@@ -7056,19 +5863,13 @@ class GLPIService:
             print(f"[DEBUG] tech_field_id descoberto: {tech_field_id}")
 
             # Obter todos os técnicos ativos dinamicamente com nomes otimizados
-            print(
-                f"[DEBUG] [{correlation_id}] Buscando técnicos ativos com entity_id: {entity_id}"
-            )
+            print(f"[DEBUG] [{correlation_id}] Buscando técnicos ativos com entity_id: {entity_id}")
             (
                 technician_ids,
                 technician_names,
             ) = self._get_all_technician_ids_and_names(entity_id=entity_id)
-            print(
-                f"[DEBUG] [{correlation_id}] Encontrados {len(technician_ids) if technician_ids else 0} técnicos"
-            )
-            print(
-                f"[DEBUG] [{correlation_id}] Técnicos encontrados: {technician_ids[:5] if technician_ids else 'Nenhum'}"
-            )
+            print(f"[DEBUG] [{correlation_id}] Encontrados {len(technician_ids) if technician_ids else 0} técnicos")
+            print(f"[DEBUG] [{correlation_id}] Técnicos encontrados: {technician_ids[:5] if technician_ids else 'Nenhum'}")
 
             if not technician_ids:
                 obs_logger.log_pipeline_step(
@@ -7076,9 +5877,7 @@ class GLPIService:
                     "technician_extraction_failed",
                     {"message": "Nenhum técnico ativo encontrado"},
                 )
-                self.logger.warning(
-                    f"[{correlation_id}] Nenhum técnico ativo encontrado"
-                )
+                self.logger.warning(f"[{correlation_id}] Nenhum técnico ativo encontrado")
                 return []
 
             obs_logger.log_pipeline_step(
@@ -7086,9 +5885,7 @@ class GLPIService:
                 "technician_ids_extracted",
                 {
                     "technician_count": len(technician_ids),
-                    "sample_ids": technician_ids[
-                        :5
-                    ],  # Primeiros 5 IDs como amostra
+                    "sample_ids": technician_ids[:5],  # Primeiros 5 IDs como amostra
                 },
             )
             self.logger.info(
@@ -7099,34 +5896,20 @@ class GLPIService:
 
             # Buscar todos os tickets de uma vez e agrupar por técnico (otimizado)
             if start_date and end_date:
-                self.logger.info(
-                    f"[{correlation_id}] Usando método otimizado com filtros de data: {start_date} a {end_date}"
-                )
-                self.logger.info(
-                    f"Chamando _get_tickets_batch_with_date_filter para {len(technician_ids)} técnicos"
-                )
-                ticket_counts = self._get_tickets_batch_with_date_filter(
-                    technician_ids, start_date, end_date, tech_field_id
-                )
-                self.logger.info(
-                    f"_get_tickets_batch_with_date_filter retornou {len(ticket_counts)} resultados"
-                )
+                self.logger.info(f"[{correlation_id}] Usando método otimizado com filtros de data: {start_date} a {end_date}")
+                self.logger.info(f"Chamando _get_tickets_batch_with_date_filter para {len(technician_ids)} técnicos")
+                ticket_counts = self._get_tickets_batch_with_date_filter(technician_ids, start_date, end_date, tech_field_id)
+                self.logger.info(f"_get_tickets_batch_with_date_filter retornou {len(ticket_counts)} resultados")
                 self.logger.info(f"Conteúdo de ticket_counts: {ticket_counts}")
             else:
-                self.logger.info(
-                    f"[{correlation_id}] Usando método sem filtros de data"
-                )
-                ticket_counts = self._get_tickets_batch_without_date_filter(
-                    technician_ids, tech_field_id
-                )
+                self.logger.info(f"[{correlation_id}] Usando método sem filtros de data")
+                ticket_counts = self._get_tickets_batch_without_date_filter(technician_ids, tech_field_id)
 
             # Para cada técnico, usar os dados já obtidos
             for tech_id in technician_ids:
                 try:
                     # Obter nome do técnico do cache otimizado
-                    tech_name = technician_names.get(
-                        tech_id, f"Técnico {tech_id}"
-                    )
+                    tech_name = technician_names.get(tech_id, f"Técnico {tech_id}")
 
                     # Obter contagem de tickets do cache otimizado
                     ticket_count = ticket_counts.get(tech_id, 0)
@@ -7135,23 +5918,13 @@ class GLPIService:
                     # Tentar converter tech_id para int, se falhar usar o método alternativo
                     try:
                         tech_id_int = int(tech_id)
-                        tech_level = self._get_technician_level(
-                            tech_id_int, ticket_count
-                        )
+                        tech_level = self._get_technician_level(tech_id_int, ticket_count)
                     except (ValueError, TypeError):
                         # Se tech_id não for numérico, usar nome para determinar nível
-                        self.logger.debug(
-                            f"tech_id não numérico: {tech_id}, usando nome para determinar nível"
-                        )
-                        self.logger.debug(
-                            f"Nome do técnico obtido: {tech_name}"
-                        )
-                        tech_level = self._get_technician_level_by_name(
-                            tech_name
-                        )
-                        self.logger.debug(
-                            f"Nível determinado para {tech_name}: {tech_level}"
-                        )
+                        self.logger.debug(f"tech_id não numérico: {tech_id}, usando nome para determinar nível")
+                        self.logger.debug(f"Nome do técnico obtido: {tech_name}")
+                        tech_level = self._get_technician_level_by_name(tech_name)
+                        self.logger.debug(f"Nível determinado para {tech_name}: {tech_level}")
 
                     # Se um filtro de nível foi especificado, verificar se o técnico corresponde
                     if level and tech_level != level:
@@ -7174,12 +5947,8 @@ class GLPIService:
                     )
 
                 except Exception as e:
-                    self.logger.error(
-                        f"Erro ao processar técnico {tech_id}: {e}"
-                    )
-                    self.logger.error(
-                        f"Traceback completo: {traceback.format_exc()}"
-                    )
+                    self.logger.error(f"Erro ao processar técnico {tech_id}: {e}")
+                    self.logger.error(f"Traceback completo: {traceback.format_exc()}")
                     continue
 
             # Log antes da ordenação
@@ -7188,14 +5957,8 @@ class GLPIService:
                 "pre_sorting",
                 {
                     "total_technicians_processed": len(ranking),
-                    "zero_totals": sum(
-                        1 for tech in ranking if tech.get("total", 0) == 0
-                    ),
-                    "max_total": max(
-                        [tech.get("total", 0) for tech in ranking]
-                    )
-                    if ranking
-                    else 0,
+                    "zero_totals": sum(1 for tech in ranking if tech.get("total", 0) == 0),
+                    "max_total": max([tech.get("total", 0) for tech in ranking]) if ranking else 0,
                 },
             )
 
@@ -7215,15 +5978,11 @@ class GLPIService:
                 {
                     "final_count": len(result),
                     "limit_applied": limit,
-                    "top_3_totals": [
-                        tech.get("total", 0) for tech in result[:3]
-                    ],
+                    "top_3_totals": [tech.get("total", 0) for tech in result[:3]],
                 },
             )
 
-            self.logger.info(
-                f"[{correlation_id}] Ranking com filtros concluído: {len(result)} técnicos"
-            )
+            self.logger.info(f"[{correlation_id}] Ranking com filtros concluído: {len(result)} técnicos")
 
             return result
 
@@ -7253,18 +6012,14 @@ class GLPIService:
                 try:
                     datetime.strptime(start_date, "%Y-%m-%d")
                 except ValueError:
-                    self.logger.warning(
-                        f"Formato de data de início inválido: {start_date}"
-                    )
+                    self.logger.warning(f"Formato de data de início inválido: {start_date}")
                     start_date = None
 
             if end_date:
                 try:
                     datetime.strptime(end_date, "%Y-%m-%d")
                 except ValueError:
-                    self.logger.warning(
-                        f"Formato de data de fim inválido: {end_date}"
-                    )
+                    self.logger.warning(f"Formato de data de fim inválido: {end_date}")
                     end_date = None
 
             # Validar se data de início não é posterior à data de fim
@@ -7272,9 +6027,7 @@ class GLPIService:
                 start_dt = datetime.strptime(start_date, "%Y-%m-%d")
                 end_dt = datetime.strptime(end_date, "%Y-%m-%d")
                 if start_dt > end_dt:
-                    self.logger.warning(
-                        "Data de início posterior à data de fim"
-                    )
+                    self.logger.warning("Data de início posterior à data de fim")
                     start_date, end_date = None, None
 
         except Exception as e:
@@ -7282,15 +6035,11 @@ class GLPIService:
             return []
 
         if not self._ensure_authenticated():
-            self.logger.warning(
-                "Falha na autenticação para buscar tickets novos"
-            )
+            self.logger.warning("Falha na autenticação para buscar tickets novos")
             return []
 
         if not self.discover_field_ids():
-            self.logger.warning(
-                "Falha ao descobrir field_ids para buscar tickets novos"
-            )
+            self.logger.warning("Falha ao descobrir field_ids para buscar tickets novos")
             return []
 
         try:
@@ -7335,20 +6084,12 @@ class GLPIService:
                 criteria_index += 1
 
             # Usar função utilitária para filtros de data
-            date_criteria_dict = DateValidator.construir_criterios_filtro_data(
-                start_date, end_date, criteria_index
-            )
+            date_criteria_dict = DateValidator.construir_criterios_filtro_data(start_date, end_date, criteria_index)
 
             # Atualizar o índice de critérios com base nos critérios de data adicionados
             if date_criteria_dict:
                 # Contar quantos critérios de data foram adicionados
-                date_criteria_count = len(
-                    [
-                        k
-                        for k in date_criteria_dict.keys()
-                        if "criteria[" in k and "][field]" in k
-                    ]
-                )
+                date_criteria_count = len([k for k in date_criteria_dict.keys() if "criteria[" in k and "][field]" in k])
                 criteria_index += date_criteria_count
 
             # Adicionar critérios de data se existirem
@@ -7371,17 +6112,13 @@ class GLPIService:
                 return []
 
             if not response.ok:
-                self.logger.warning(
-                    f"Erro na requisição GLPI: {response.status_code} - {response.text[:200]}"
-                )
+                self.logger.warning(f"Erro na requisição GLPI: {response.status_code} - {response.text[:200]}")
                 return []
 
             try:
                 data = response.json()
                 if not isinstance(data, dict):
-                    self.logger.warning(
-                        "Resposta da API não é um objeto JSON válido"
-                    )
+                    self.logger.warning("Resposta da API não é um objeto JSON válido")
                     return []
             except Exception as e:
                 self.logger.error(f"Erro ao processar JSON da resposta: {e}")
@@ -7406,17 +6143,13 @@ class GLPIService:
                         requester_name = "Não informado"
                         if requester_id:
                             try:
-                                requester_name = self._get_user_name_by_id(
-                                    str(requester_id)
-                                )
+                                requester_name = self._get_user_name_by_id(str(requester_id))
                             except Exception:
                                 pass  # Manter fallback
 
                         # Obter prioridade
                         priority_id = ticket_data.get("3", "3")
-                        priority_name = self._get_priority_name_by_id(
-                            str(priority_id)
-                        )
+                        priority_name = self._get_priority_name_by_id(str(priority_id))
 
                         ticket_info = {
                             "id": ticket_id,
@@ -7437,30 +6170,20 @@ class GLPIService:
                         tickets.append(ticket_info)
 
                     except Exception as e:
-                        self.logger.warning(
-                            f"Erro ao processar ticket individual: {e}"
-                        )
+                        self.logger.warning(f"Erro ao processar ticket individual: {e}")
                         continue
 
-            self.logger.info(
-                f"Encontrados {len(tickets)} tickets novos com filtros aplicados"
-            )
-            return (
-                tickets  # Manter compatibilidade retornando apenas os tickets
-            )
+            self.logger.info(f"Encontrados {len(tickets)} tickets novos com filtros aplicados")
+            return tickets  # Manter compatibilidade retornando apenas os tickets
 
         except requests.exceptions.Timeout:
-            self.logger.error(
-                "Timeout na requisição para buscar tickets novos"
-            )
+            self.logger.error("Timeout na requisição para buscar tickets novos")
             return []
         except requests.exceptions.ConnectionError:
             self.logger.error("Erro de conexão ao buscar tickets novos")
             return []
         except Exception as e:
-            self.logger.error(
-                f"Erro inesperado ao buscar tickets novos com filtros: {e}"
-            )
+            self.logger.error(f"Erro inesperado ao buscar tickets novos com filtros: {e}")
             return []
 
     def _apply_additional_filters(
@@ -7477,9 +6200,7 @@ class GLPIService:
         # Implementação completa requereria consultas adicionais à API
         return metrics
 
-    def _count_tickets_with_date_filter(
-        self, tech_id, start_date: str = None, end_date: str = None
-    ) -> Optional[int]:
+    def _count_tickets_with_date_filter(self, tech_id, start_date: str = None, end_date: str = None) -> Optional[int]:
         """Conta tickets de um técnico com filtro de data de forma robusta"""
         try:
             # Validar e converter tech_id
@@ -7496,22 +6217,16 @@ class GLPIService:
             # Descobrir field_ids se não existirem
             if not self.field_ids:
                 if not self.discover_field_ids():
-                    self.logger.warning(
-                        "Falha ao descobrir field_ids, usando fallbacks"
-                    )
+                    self.logger.warning("Falha ao descobrir field_ids, usando fallbacks")
                     return 0
 
             # Descobrir o campo correto para técnico responsável dinamicamente
             tech_field = self._discover_tech_field_id()
             if not tech_field:
-                self.logger.error(
-                    "Não foi possível descobrir o campo do técnico"
-                )
+                self.logger.error("Não foi possível descobrir o campo do técnico")
                 return 0
 
-            self.logger.debug(
-                f"Usando campo {tech_field} para buscar tickets do técnico {tech_id_str}"
-            )
+            self.logger.debug(f"Usando campo {tech_field} para buscar tickets do técnico {tech_id_str}")
 
             # Verificar configuração da URL do GLPI
             if not self.glpi_url:
@@ -7534,57 +6249,37 @@ class GLPIService:
             end_date_full = None
 
             if start_date:
-                start_date_full = (
-                    f"{start_date} 00:00:00"
-                    if len(start_date) == 10
-                    else start_date
-                )
+                start_date_full = f"{start_date} 00:00:00" if len(start_date) == 10 else start_date
 
             if end_date:
-                end_date_full = (
-                    f"{end_date} 23:59:59" if len(end_date) == 10 else end_date
-                )
+                end_date_full = f"{end_date} 23:59:59" if len(end_date) == 10 else end_date
 
             # Usar função utilitária para filtros de data
-            date_criteria_dict = DateValidator.construir_criterios_filtro_data(
-                start_date_full, end_date_full, criteria_index
-            )
+            date_criteria_dict = DateValidator.construir_criterios_filtro_data(start_date_full, end_date_full, criteria_index)
 
             # Adicionar critérios de data se existirem
             if date_criteria_dict:
                 search_params.update(date_criteria_dict)
 
-            self.logger.debug(
-                f"Contando tickets para técnico {tech_id_str} com filtros: start={start_date}, end={end_date}"
-            )
+            self.logger.debug(f"Contando tickets para técnico {tech_id_str} com filtros: start={start_date}, end={end_date}")
 
-            response = self._make_authenticated_request(
-                "GET", f"{self.glpi_url}/search/Ticket", params=search_params
-            )
+            response = self._make_authenticated_request("GET", f"{self.glpi_url}/search/Ticket", params=search_params)
 
             if not response or not response.ok:
-                self.logger.warning(
-                    f"Falha na requisição para contar tickets do técnico {tech_id_str}"
-                )
+                self.logger.warning(f"Falha na requisição para contar tickets do técnico {tech_id_str}")
                 return 0
 
             # Extrair total do header Content-Range
             if "Content-Range" in response.headers:
                 try:
                     content_range = response.headers["Content-Range"]
-                    self.logger.debug(
-                        f"Content-Range recebido: {content_range}"
-                    )
+                    self.logger.debug(f"Content-Range recebido: {content_range}")
                     # Formato esperado: "0-0/total" ou "0-N/total"
                     total = int(content_range.split("/")[-1])
-                    self.logger.debug(
-                        f"Técnico {tech_id_str}: {total} tickets encontrados (Content-Range)"
-                    )
+                    self.logger.debug(f"Técnico {tech_id_str}: {total} tickets encontrados (Content-Range)")
                     return total
                 except (ValueError, IndexError) as e:
-                    self.logger.error(
-                        f"Erro ao parsear Content-Range '{content_range}': {e}"
-                    )
+                    self.logger.error(f"Erro ao parsear Content-Range '{content_range}': {e}")
                     # Tentar fallback para JSON
                     pass
 
@@ -7601,19 +6296,13 @@ class GLPIService:
             return 0
 
         except requests.exceptions.Timeout:
-            self.logger.error(
-                f"Timeout ao contar tickets do técnico {tech_id_str}"
-            )
+            self.logger.error(f"Timeout ao contar tickets do técnico {tech_id_str}")
             return 0
         except requests.exceptions.ConnectionError:
-            self.logger.error(
-                f"Erro de conexão ao contar tickets do técnico {tech_id_str}"
-            )
+            self.logger.error(f"Erro de conexão ao contar tickets do técnico {tech_id_str}")
             return 0
         except Exception as e:
-            self.logger.error(
-                f"Erro ao contar tickets do técnico {tech_id_str}: {e}"
-            )
+            self.logger.error(f"Erro ao contar tickets do técnico {tech_id_str}: {e}")
             return 0
 
     def _get_priority_id_by_name(self, priority_name: str) -> Optional[str]:
@@ -7650,20 +6339,14 @@ class GLPIService:
             return self.get_dashboard_metrics(correlation_id=correlation_id)
 
         # Criar chave de cache específica
-        cache_key = (
-            f"dashboard_metrics_modification_filter_{start_date}_{end_date}"
-        )
+        cache_key = f"dashboard_metrics_modification_filter_{start_date}_{end_date}"
 
         # Verificar cache
         if self._is_cache_valid(cache_key):
             cached_data = self._get_cache_data(cache_key)
             if cached_data:
-                timestamp = datetime.datetime.now(
-                    tz=datetime.timezone.utc
-                ).isoformat()
-                self.logger.info(
-                    f"[{timestamp}] Cache hit para métricas com filtro de modificação: {start_date} a {end_date}"
-                )
+                timestamp = datetime.datetime.now(tz=datetime.timezone.utc).isoformat()
+                self.logger.info(f"[{timestamp}] Cache hit para métricas com filtro de modificação: {start_date} a {end_date}")
                 return cached_data
 
         try:
@@ -7675,36 +6358,21 @@ class GLPIService:
             if not self.discover_field_ids():
                 raise Exception("Falha ao descobrir field_ids")
 
-            timestamp = datetime.datetime.now(
-                tz=datetime.timezone.utc
-            ).isoformat()
-            self.logger.info(
-                f"[{timestamp}] Obtendo métricas com filtro de modificação: "
-                f"{start_date} a {end_date}"
-            )
+            timestamp = datetime.datetime.now(tz=datetime.timezone.utc).isoformat()
+            self.logger.info(f"[{timestamp}] Obtendo métricas com filtro de modificação: " f"{start_date} a {end_date}")
 
             # Obter métricas por data de modificação
-            metrics_by_level = self._get_metrics_by_level_by_modification_date(
-                start_date, end_date
-            )
+            metrics_by_level = self._get_metrics_by_level_by_modification_date(start_date, end_date)
 
             # Agregar totais por status
-            total_novos = sum(
-                level_data.get("Novo", 0)
-                for level_data in metrics_by_level.values()
-            )
-            total_pendentes = sum(
-                level_data.get("Pendente", 0)
-                for level_data in metrics_by_level.values()
-            )
+            total_novos = sum(level_data.get("Novo", 0) for level_data in metrics_by_level.values())
+            total_pendentes = sum(level_data.get("Pendente", 0) for level_data in metrics_by_level.values())
             total_progresso = sum(
-                level_data.get("Processando (atribuído)", 0)
-                + level_data.get("Processando (planejado)", 0)
+                level_data.get("Processando (atribuído)", 0) + level_data.get("Processando (planejado)", 0)
                 for level_data in metrics_by_level.values()
             )
             total_resolvidos = sum(
-                level_data.get("Solucionado", 0) + level_data.get("Fechado", 0)
-                for level_data in metrics_by_level.values()
+                level_data.get("Solucionado", 0) + level_data.get("Fechado", 0) for level_data in metrics_by_level.values()
             )
 
             # Calcular tendências (simplificado para filtros)
@@ -7727,81 +6395,49 @@ class GLPIService:
                 "levels": {
                     "N1": {
                         "novos": metrics_by_level.get("N1", {}).get("Novo", 0),
-                        "pendentes": metrics_by_level.get("N1", {}).get(
-                            "Pendente", 0
-                        ),
+                        "pendentes": metrics_by_level.get("N1", {}).get("Pendente", 0),
                         "progresso": (
-                            metrics_by_level.get("N1", {}).get(
-                                "Processando (atribuído)", 0
-                            )
-                            + metrics_by_level.get("N1", {}).get(
-                                "Processando (planejado)", 0
-                            )
+                            metrics_by_level.get("N1", {}).get("Processando (atribuído)", 0)
+                            + metrics_by_level.get("N1", {}).get("Processando (planejado)", 0)
                         ),
                         "resolvidos": (
-                            metrics_by_level.get("N1", {}).get(
-                                "Solucionado", 0
-                            )
+                            metrics_by_level.get("N1", {}).get("Solucionado", 0)
                             + metrics_by_level.get("N1", {}).get("Fechado", 0)
                         ),
                     },
                     "N2": {
                         "novos": metrics_by_level.get("N2", {}).get("Novo", 0),
-                        "pendentes": metrics_by_level.get("N2", {}).get(
-                            "Pendente", 0
-                        ),
+                        "pendentes": metrics_by_level.get("N2", {}).get("Pendente", 0),
                         "progresso": (
-                            metrics_by_level.get("N2", {}).get(
-                                "Processando (atribuído)", 0
-                            )
-                            + metrics_by_level.get("N2", {}).get(
-                                "Processando (planejado)", 0
-                            )
+                            metrics_by_level.get("N2", {}).get("Processando (atribuído)", 0)
+                            + metrics_by_level.get("N2", {}).get("Processando (planejado)", 0)
                         ),
                         "resolvidos": (
-                            metrics_by_level.get("N2", {}).get(
-                                "Solucionado", 0
-                            )
+                            metrics_by_level.get("N2", {}).get("Solucionado", 0)
                             + metrics_by_level.get("N2", {}).get("Fechado", 0)
                         ),
                     },
                     "N3": {
                         "novos": metrics_by_level.get("N3", {}).get("Novo", 0),
-                        "pendentes": metrics_by_level.get("N3", {}).get(
-                            "Pendente", 0
-                        ),
+                        "pendentes": metrics_by_level.get("N3", {}).get("Pendente", 0),
                         "progresso": (
-                            metrics_by_level.get("N3", {}).get(
-                                "Processando (atribuído)", 0
-                            )
-                            + metrics_by_level.get("N3", {}).get(
-                                "Processando (planejado)", 0
-                            )
+                            metrics_by_level.get("N3", {}).get("Processando (atribuído)", 0)
+                            + metrics_by_level.get("N3", {}).get("Processando (planejado)", 0)
                         ),
                         "resolvidos": (
-                            metrics_by_level.get("N3", {}).get(
-                                "Solucionado", 0
-                            )
+                            metrics_by_level.get("N3", {}).get("Solucionado", 0)
                             + metrics_by_level.get("N3", {}).get("Fechado", 0)
                         ),
                     },
                     "N4": {
                         "novos": metrics_by_level.get("N4", {}).get("Novo", 0),
-                        "pendentes": metrics_by_level.get("N4", {}).get(
-                            "Pendente", 0
-                        ),
+                        "pendentes": metrics_by_level.get("N4", {}).get("Pendente", 0),
                         "progresso": (
-                            metrics_by_level.get("N4", {}).get(
-                                "Processando (atribuído)", 0
-                            )
-                            + metrics_by_level.get("N4", {}).get(
-                                "Processando (planejado)", 0
-                            )
+                            metrics_by_level.get("N4", {}).get("Processando (atribuído)", 0)
+                            + metrics_by_level.get("N4", {}).get("Processando (planejado)", 0)
                         ),
                         "resolvidos": (
-                            metrics_by_level.get("N4", {}).get(
-                                "Solucionado", 0
-                            )
+                            metrics_by_level.get("N4", {}).get("Solucionado", 0)
                             + metrics_by_level.get("N4", {}).get("Fechado", 0)
                         ),
                     },
@@ -7810,38 +6446,27 @@ class GLPIService:
                     "type": "modification",
                     "start_date": start_date,
                     "end_date": end_date,
-                    "description": (
-                        "Tickets modificados no período (inclui mudanças de status)"
-                    ),
+                    "description": ("Tickets modificados no período (inclui mudanças de status)"),
                 },
             }
 
             # Salvar no cache
             self._set_cache_data(cache_key, result, ttl_minutes=3)
 
-            timestamp = datetime.datetime.now(
-                tz=datetime.timezone.utc
-            ).isoformat()
+            timestamp = datetime.datetime.now(tz=datetime.timezone.utc).isoformat()
             self.logger.info(
-                f"[{timestamp}] Métricas obtidas com sucesso - Filtro modificação, "
-                f"Total: {sum(result['totals'].values())}"
+                f"[{timestamp}] Métricas obtidas com sucesso - Filtro modificação, " f"Total: {sum(result['totals'].values())}"
             )
 
             return result
 
         except Exception as e:
-            timestamp = datetime.datetime.now(
-                tz=datetime.timezone.utc
-            ).isoformat()
-            self.logger.error(
-                f"[{timestamp}] Erro ao obter métricas com filtro de modificação: {e}"
-            )
+            timestamp = datetime.datetime.now(tz=datetime.timezone.utc).isoformat()
+            self.logger.error(f"[{timestamp}] Erro ao obter métricas com filtro de modificação: {e}")
             # Retornar métricas sem filtro em caso de erro
             return self.get_dashboard_metrics(correlation_id=correlation_id)
 
-    def _get_general_metrics_by_modification_date(
-        self, start_date: str, end_date: str
-    ) -> dict:
+    def _get_general_metrics_by_modification_date(self, start_date: str, end_date: str) -> dict:
         """Obtém métricas gerais filtradas por data de modificação."""
         totals = {}
 
@@ -7862,15 +6487,11 @@ class GLPIService:
                 "criteria[2][value]": end_date,
             }
 
-            response = self._make_authenticated_request(
-                "GET", f"{self.glpi_url}/search/Ticket", params=search_params
-            )
+            response = self._make_authenticated_request("GET", f"{self.glpi_url}/search/Ticket", params=search_params)
 
             if response and response.status_code in [200, 206]:
                 if "Content-Range" in response.headers:
-                    count = int(
-                        response.headers["Content-Range"].split("/")[-1]
-                    )
+                    count = int(response.headers["Content-Range"].split("/")[-1])
                     totals[status_name] = count
                 else:
                     totals[status_name] = 0
@@ -7883,9 +6504,7 @@ class GLPIService:
         """Debug para verificar valores únicos nos campos do GLPI"""
         try:
             correlation_log = f"[{correlation_id}] " if correlation_id else ""
-            self.logger.info(
-                f"{correlation_log}Iniciando debug de valores dos campos"
-            )
+            self.logger.info(f"{correlation_log}Iniciando debug de valores dos campos")
 
             if not self._ensure_authenticated():
                 raise Exception("Falha na autenticação")
@@ -7902,15 +6521,10 @@ class GLPIService:
                 "forcedisplay[6]": "6",  # Campo solicitante
             }
 
-            response = self._make_authenticated_request(
-                "GET", f"{self.glpi_url}/search/Ticket", params=search_params
-            )
+            response = self._make_authenticated_request("GET", f"{self.glpi_url}/search/Ticket", params=search_params)
 
             if not response or not response.ok:
-                raise Exception(
-                    f"Erro na busca: "
-                    f"{response.status_code if response else 'Sem resposta'}"
-                )
+                raise Exception(f"Erro na busca: " f"{response.status_code if response else 'Sem resposta'}")
 
             data = response.json()
             tickets = data.get("data", [])
@@ -7986,9 +6600,7 @@ class GLPIService:
             self.logger.error(f"{correlation_log}Erro no debug de campos: {e}")
             raise
 
-    def _get_metrics_by_level_by_modification_date(
-        self, start_date: str, end_date: str
-    ) -> dict:
+    def _get_metrics_by_level_by_modification_date(self, start_date: str, end_date: str) -> dict:
         """Obtém métricas por nível filtradas por data de modificação."""
         metrics = {}
 
@@ -8024,9 +6636,7 @@ class GLPIService:
 
                 if response and response.status_code in [200, 206]:
                     if "Content-Range" in response.headers:
-                        count = int(
-                            response.headers["Content-Range"].split("/")[-1]
-                        )
+                        count = int(response.headers["Content-Range"].split("/")[-1])
                         level_metrics[status_name] = count
                     else:
                         level_metrics[status_name] = 0

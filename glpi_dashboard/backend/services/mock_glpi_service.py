@@ -30,8 +30,7 @@ class MockGLPIService:
         return {
             "id": int(ticket_id),
             "name": f"Ticket Mock {ticket_id}",
-            "content": f"Descrição detalhada do ticket {ticket_id} - "
-            f"Problema simulado para demonstração",
+            "content": f"Descrição detalhada do ticket {ticket_id} - " f"Problema simulado para demonstração",
             "status": random.choice([1, 2, 3, 4, 5]),
             "priority": random.choice([1, 2, 3, 4]),
             "date": (datetime.now() - timedelta(days=random.randint(0, 30))).isoformat(),
@@ -73,9 +72,7 @@ class MockGLPIService:
             data=mock_data, message="Métricas obtidas com sucesso", correlation_id=correlation_id
         )
 
-    def get_dashboard_metrics_with_date_filter(
-        self, start_date=None, end_date=None, correlation_id=None
-    ) -> Dict[str, Any]:
+    def get_dashboard_metrics_with_date_filter(self, start_date=None, end_date=None, correlation_id=None) -> Dict[str, Any]:
         """Mock das métricas do dashboard com filtro de data"""
         return self.get_dashboard_metrics(correlation_id=correlation_id)
 
@@ -125,8 +122,7 @@ class MockGLPIService:
         return {
             "id": ticket_id,
             "name": f"Ticket Detalhado #{ticket_id}",
-            "content": f"Descrição completa do ticket {ticket_id} com mais "
-            f"detalhes para visualização",
+            "content": f"Descrição completa do ticket {ticket_id} com mais " f"detalhes para visualização",
             "date": (datetime.now() - timedelta(hours=random.randint(1, 48))).isoformat(),
             "users_id": random.randint(100, 200),
             "priority": random.randint(1, 4),

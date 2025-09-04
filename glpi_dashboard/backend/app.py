@@ -19,6 +19,7 @@ parent_dir = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 sys.path.insert(0, parent_dir)
 
 from api.routes import api_bp
+
 from config.settings import active_config
 from utils.observability_middleware import setup_observability
 from utils.structured_logging import system_logger
@@ -198,9 +199,7 @@ def run_server() -> None:
     logger.info(f"Iniciando servidor Flask em {host}:{port} (Debug: {debug})")
 
     try:
-        app.run(
-            host=server_config["host"], port=server_config["port"], debug=server_config["debug"]
-        )
+        app.run(host=server_config["host"], port=server_config["port"], debug=server_config["debug"])
     except KeyboardInterrupt:
         logger.info("Servidor interrompido pelo usuário")
     except Exception as e:

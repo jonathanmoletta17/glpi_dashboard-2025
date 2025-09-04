@@ -201,9 +201,7 @@ class PrometheusMetrics:
         )
 
         # Informações do sistema
-        self.system_info = Info(
-            "glpi_system_info", "Informações do sistema", registry=self.registry
-        )
+        self.system_info = Info("glpi_system_info", "Informações do sistema", registry=self.registry)
 
         # Definir informações do sistema
         self.system_info.info(
@@ -255,16 +253,12 @@ class PrometheusMetrics:
         self.alerts_total = mock_metric  # type: ignore
         self.system_info = mock_metric  # type: ignore
 
-    def record_api_request(
-        self, method: str, endpoint: str, status_code: int, duration: float
-    ) -> None:
+    def record_api_request(self, method: str, endpoint: str, status_code: int, duration: float) -> None:
         """Registra uma requisição à API."""
         if not self.enabled:
             return
 
-        self.api_requests_total.labels(
-            method=method, endpoint=endpoint, status_code=str(status_code)
-        ).inc()
+        self.api_requests_total.labels(method=method, endpoint=endpoint, status_code=str(status_code)).inc()
 
         self.api_request_duration.labels(method=method, endpoint=endpoint).observe(duration)
 
@@ -434,9 +428,7 @@ def monitor_glpi_request(endpoint_name: str) -> Any:
                 raise
             finally:
                 duration = time.time() - start_time
-                prometheus_metrics.record_glpi_request(
-                    endpoint=endpoint_name, status_code=status_code, duration=duration
-                )
+                prometheus_metrics.record_glpi_request(endpoint=endpoint_name, status_code=status_code, duration=duration)
 
         return wrapper
 

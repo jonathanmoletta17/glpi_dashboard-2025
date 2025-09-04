@@ -206,11 +206,7 @@ class ObservabilityMiddleware:
             }
 
             # Verificar se há alertas críticos
-            critical_alerts = [
-                alert
-                for alert in alert_manager.get_active_alerts()
-                if alert.severity.value == "critical"
-            ]
+            critical_alerts = [alert for alert in alert_manager.get_active_alerts() if alert.severity.value == "critical"]
 
             if critical_alerts:
                 health_data["status"] = "degraded"
@@ -221,9 +217,7 @@ class ObservabilityMiddleware:
             return jsonify(health_data), status_code
 
         except Exception as e:
-            self.logger.log_error_with_context(
-                "health_endpoint_error", f"Erro no health check: {str(e)}", exception=e
-            )
+            self.logger.log_error_with_context("health_endpoint_error", f"Erro no health check: {str(e)}", exception=e)
             return (
                 jsonify({"status": "unhealthy", "error": str(e), "timestamp": time.time()}),
                 500,
@@ -318,9 +312,7 @@ def with_observability_instrumentation(operation_name: str, component: str = "ap
                 duration = time.time() - start_time
 
                 # Log erro
-                logger.log_operation_end(
-                    operation_name, success=False, duration=duration, error=str(e)
-                )
+                logger.log_operation_end(operation_name, success=False, duration=duration, error=str(e))
 
                 logger.log_error_with_context(
                     f"{operation_name}_error",
@@ -341,9 +333,7 @@ def with_observability_instrumentation(operation_name: str, component: str = "ap
 
 
 # Função para configurar observabilidade em uma aplicação Flask
-def setup_observability(
-    app: Flask, config: Optional[Dict[str, Any]] = None
-) -> ObservabilityMiddleware:
+def setup_observability(app: Flask, config: Optional[Dict[str, Any]] = None) -> ObservabilityMiddleware:
     """Configura observabilidade completa em uma aplicação Flask."""
     config = config or {}
 

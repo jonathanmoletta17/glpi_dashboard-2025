@@ -61,9 +61,7 @@ class JSONFormatter(logging.Formatter):
                     }
                     log_entry["exception"] = json.dumps(exception_info)
                 except Exception:
-                    log_entry["exception"] = json.dumps(
-                        {"error": "Failed to format exception info"}
-                    )
+                    log_entry["exception"] = json.dumps({"error": "Failed to format exception info"})
 
             # Adicionar campos extras personalizados
             if self.include_extra_fields:
@@ -117,9 +115,7 @@ class JSONFormatter(logging.Formatter):
                 "level": "ERROR",
                 "logger_name": "JSONFormatter",
                 "message": f"Failed to format log record: {str(e)}",
-                "original_message": getattr(record, "msg", "Unknown")
-                if hasattr(record, "msg")
-                else "Unknown",
+                "original_message": getattr(record, "msg", "Unknown") if hasattr(record, "msg") else "Unknown",
             }
             return json.dumps(fallback_entry, ensure_ascii=False, default=str)
 
@@ -187,9 +183,7 @@ class StructuredLogger:
                 except Exception:
                     # Fallback para handler básico
                     basic_handler = logging.StreamHandler()
-                    basic_handler.setFormatter(
-                        logging.Formatter("%(asctime)s - %(name)s - %(levelname)s - %(message)s")
-                    )
+                    basic_handler.setFormatter(logging.Formatter("%(asctime)s - %(name)s - %(levelname)s - %(message)s"))
                     self.logger.addHandler(basic_handler)
 
             # Evitar propagação para o logger raiz
@@ -201,9 +195,7 @@ class StructuredLogger:
             self.logger.setLevel(logging.INFO)
             if not self.logger.handlers:
                 emergency_handler = logging.StreamHandler()
-                emergency_handler.setFormatter(
-                    logging.Formatter("%(asctime)s - EMERGENCY - %(message)s")
-                )
+                emergency_handler.setFormatter(logging.Formatter("%(asctime)s - EMERGENCY - %(message)s"))
                 self.logger.addHandler(emergency_handler)
             self.logger.propagate = False
 
@@ -372,9 +364,7 @@ def log_api_call(logger: StructuredLogger) -> Callable:
             except Exception as outer_e:
                 # Fallback para execução sem logging em caso de erro crítico
                 try:
-                    print(
-                        f"Critical error in log_api_call decorator for {function_name}: {str(outer_e)}"
-                    )
+                    print(f"Critical error in log_api_call decorator for {function_name}: {str(outer_e)}")
                     return func(*args, **kwargs)
                 except Exception:
                     raise outer_e
@@ -429,9 +419,7 @@ def log_performance(logger: StructuredLogger, threshold_seconds: float = 1.0) ->
                     except Exception:
                         # Fallback para log básico
                         if execution_time > threshold_seconds_safe:
-                            print(
-                                f"Slow function detected: {function_name} took {execution_time:.4f}s"
-                            )
+                            print(f"Slow function detected: {function_name} took {execution_time:.4f}s")
 
                     return result
 
@@ -456,9 +444,7 @@ def log_performance(logger: StructuredLogger, threshold_seconds: float = 1.0) ->
             except Exception as outer_e:
                 # Fallback para execução sem logging em caso de erro crítico
                 try:
-                    print(
-                        f"Critical error in log_performance decorator for {function_name}: {str(outer_e)}"
-                    )
+                    print(f"Critical error in log_performance decorator for {function_name}: {str(outer_e)}")
                     return func(*args, **kwargs)
                 except Exception:
                     raise outer_e
@@ -494,9 +480,7 @@ def log_api_response(
                     safe_response = response_str
             else:
                 safe_response_str = str(response_data) if response_data is not None else "None"
-                safe_response = safe_response_str[:1000] + (
-                    "..." if len(safe_response_str) > 1000 else ""
-                )
+                safe_response = safe_response_str[:1000] + ("..." if len(safe_response_str) > 1000 else "")
         except Exception:
             safe_response = "<failed_to_serialize_response>"
 

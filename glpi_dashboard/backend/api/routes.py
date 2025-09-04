@@ -8,10 +8,11 @@ import logging
 import time
 from datetime import datetime
 
-from config.settings import active_config
 from flask import Blueprint, jsonify, request
 from pydantic import ValidationError
 from schemas.dashboard import DashboardMetrics
+
+from config.settings import active_config
 from services.api_service import APIService
 from services.glpi_service import GLPIService
 from services.mock_glpi_service import MockGLPIService
@@ -200,9 +201,7 @@ def get_metrics(validated_start_date=None, validated_end_date=None, validated_fi
             method="GET",
         )
 
-        logger.info(
-            f"[{correlation_id}] Buscando métricas do GLPI com filtros: data={start_date} até {end_date}"
-        )
+        logger.info(f"[{correlation_id}] Buscando métricas do GLPI com filtros: data={start_date} até {end_date}")
 
         # Usar método apropriado baseado nos filtros
         if start_date or end_date:
@@ -261,9 +260,7 @@ def get_metrics(validated_start_date=None, validated_end_date=None, validated_fi
         except Exception:
             target_p95 = 300
         if response_time > target_p95:
-            logger.warning(
-                f"[{correlation_id}] Resposta lenta detectada: {response_time:.2f}ms > {target_p95}ms"
-            )
+            logger.warning(f"[{correlation_id}] Resposta lenta detectada: {response_time:.2f}ms > {target_p95}ms")
 
         # Validar dados com Pydantic
         try:
@@ -278,9 +275,7 @@ def get_metrics(validated_start_date=None, validated_end_date=None, validated_fi
             metrics_data["cached"] = False
 
         # Salvar no cache
-        _metrics_cache["data"] = (
-            metrics_data.copy() if isinstance(metrics_data, dict) else metrics_data
-        )
+        _metrics_cache["data"] = metrics_data.copy() if isinstance(metrics_data, dict) else metrics_data
         _metrics_cache["timestamp"] = current_time
         _metrics_cache["filters_hash"] = filters_hash
 
@@ -301,9 +296,7 @@ def get_metrics(validated_start_date=None, validated_end_date=None, validated_fi
 @monitor_performance
 @cache_with_filters(timeout=300)
 @standard_date_validation(support_predefined=True, log_usage=True)
-def get_filtered_metrics(
-    validated_start_date=None, validated_end_date=None, validated_filters=None
-):
+def get_filtered_metrics(validated_start_date=None, validated_end_date=None, validated_filters=None):
     """Endpoint para obter métricas filtradas do dashboard do GLPI"""
     correlation_id = api_logger.generate_correlation_id()
     start_time = time.time()
@@ -363,9 +356,7 @@ def get_filtered_metrics(
             duration_ms=response_time,
         )
 
-        logger.info(
-            f"[{correlation_id}] Métricas filtradas obtidas com sucesso em {response_time:.2f}ms"
-        )
+        logger.info(f"[{correlation_id}] Métricas filtradas obtidas com sucesso em {response_time:.2f}ms")
 
         # Verificar performance
         try:
@@ -374,9 +365,7 @@ def get_filtered_metrics(
         except Exception:
             target_p95 = 300
         if response_time > target_p95:
-            logger.warning(
-                f"[{correlation_id}] Resposta lenta detectada: {response_time:.2f}ms > {target_p95}ms"
-            )
+            logger.warning(f"[{correlation_id}] Resposta lenta detectada: {response_time:.2f}ms > {target_p95}ms")
 
         # Validar dados com Pydantic
         try:
@@ -392,9 +381,7 @@ def get_filtered_metrics(
         return jsonify(metrics_data)
 
     except Exception as e:
-        logger.error(
-            f"[{correlation_id}] Erro inesperado ao buscar métricas filtradas: {e}", exc_info=True
-        )
+        logger.error(f"[{correlation_id}] Erro inesperado ao buscar métricas filtradas: {e}", exc_info=True)
         error_response = ResponseFormatter.format_error_response(
             f"Erro interno no servidor: {str(e)}",
             [str(e)],
@@ -437,9 +424,7 @@ def get_technicians():
                 entity_id = None
 
         # Buscar técnicos
-        technician_ids, technician_names = glpi_service._get_all_technician_ids_and_names(
-            entity_id=entity_id
-        )
+        technician_ids, technician_names = glpi_service._get_all_technician_ids_and_names(entity_id=entity_id)
 
         # Converter para formato de lista
         technicians = []
@@ -466,9 +451,7 @@ def get_technicians():
 
     except Exception as e:
         logger.error(f"Erro ao buscar técnicos: {e}", exc_info=True)
-        error_response = ResponseFormatter.format_error_response(
-            f"Erro interno do servidor: {str(e)}", [str(e)]
-        )
+        error_response = ResponseFormatter.format_error_response(f"Erro interno do servidor: {str(e)}", [str(e)])
         return jsonify(error_response), 500
 
 
@@ -477,9 +460,7 @@ def get_technicians():
 @monitor_performance
 # @cache_with_filters(timeout=300)  # DESABILITADO TEMPORARIAMENTE - CORREÇÃO CACHE CORROMPIDO
 @standard_date_validation(support_predefined=True, log_usage=True)
-def get_technician_ranking(
-    validated_start_date=None, validated_end_date=None, validated_filters=None
-):
+def get_technician_ranking(validated_start_date=None, validated_end_date=None, validated_filters=None):
     """Endpoint para obter ranking de técnicos por nível"""
     start_time = time.time()
     correlation_id = api_logger.generate_correlation_id()
@@ -509,13 +490,7 @@ def get_technician_ranking(
 
         # Verificar cache
         current_time = time.time()
-        filters_hash = hash(
-            str(sorted(filters.items()))
-            + str(start_date)
-            + str(end_date)
-            + str(limit)
-            + str(entity_id)
-        )
+        filters_hash = hash(str(sorted(filters.items())) + str(start_date) + str(end_date) + str(limit) + str(entity_id))
 
         # ADICIONAR LOGS DE DEBUG DO CACHE
         logger.debug(f"[{correlation_id}] TESTE DEBUG - Verificando cache do ranking:")
@@ -557,9 +532,7 @@ def get_technician_ranking(
             entity_id=entity_id,
         )
 
-        logger.debug(
-            f"[{correlation_id}] Buscando ranking de técnicos: dates={start_date}-{end_date}, level={level}"
-        )
+        logger.debug(f"[{correlation_id}] Buscando ranking de técnicos: dates={start_date}-{end_date}, level={level}")
 
         # Buscar ranking com ou sem filtros
         if any([start_date, end_date, level, entity_id]):
@@ -577,9 +550,7 @@ def get_technician_ranking(
         # Verificar resultado
         if ranking_data is None:
             logger.error("Falha na comunicação com o GLPI")
-            error_response = ResponseFormatter.format_error_response(
-                "Não foi possível conectar ao GLPI", ["Erro de conexão"]
-            )
+            error_response = ResponseFormatter.format_error_response("Não foi possível conectar ao GLPI", ["Erro de conexão"])
             return jsonify(error_response), 503
 
         if not ranking_data:
@@ -608,9 +579,7 @@ def get_technician_ranking(
             result_count=len(ranking_data),
             duration_ms=response_time,
         )
-        logger.info(
-            f"[{correlation_id}] Ranking obtido: {len(ranking_data)} técnicos em {response_time:.2f}ms"
-        )
+        logger.info(f"[{correlation_id}] Ranking obtido: {len(ranking_data)} técnicos em {response_time:.2f}ms")
 
         # Verificar performance
         try:
@@ -646,9 +615,7 @@ def get_technician_ranking(
 
     except Exception as e:
         logger.error(f"Erro inesperado ao buscar ranking de técnicos: {e}", exc_info=True)
-        error_response = ResponseFormatter.format_error_response(
-            f"Erro interno do servidor: {str(e)}", [str(e)]
-        )
+        error_response = ResponseFormatter.format_error_response(f"Erro interno do servidor: {str(e)}", [str(e)])
         return jsonify(error_response), 500
 
 
@@ -702,9 +669,7 @@ def get_new_tickets(validated_start_date=None, validated_end_date=None, validate
         # Verificar resultado
         if new_tickets is None:
             logger.error("Falha na comunicação com o GLPI")
-            error_response = ResponseFormatter.format_error_response(
-                "Não foi possível conectar ao GLPI", ["Erro de conexão"]
-            )
+            error_response = ResponseFormatter.format_error_response("Não foi possível conectar ao GLPI", ["Erro de conexão"])
             return jsonify(error_response), 503
 
         if not new_tickets:
@@ -757,9 +722,7 @@ def get_new_tickets(validated_start_date=None, validated_end_date=None, validate
 
     except Exception as e:
         logger.error(f"Erro inesperado ao buscar tickets novos: {e}", exc_info=True)
-        error_response = ResponseFormatter.format_error_response(
-            f"Erro interno do servidor: {str(e)}", [str(e)]
-        )
+        error_response = ResponseFormatter.format_error_response(f"Erro interno do servidor: {str(e)}", [str(e)])
         return jsonify(error_response), 500
 
 
@@ -827,12 +790,8 @@ def get_ticket_details(ticket_id):
         )
 
     except Exception as e:
-        logger.error(
-            f"Erro inesperado ao buscar detalhes do ticket {ticket_id}: {e}", exc_info=True
-        )
-        error_response = ResponseFormatter.format_error_response(
-            f"Erro interno do servidor: {str(e)}", [str(e)]
-        )
+        logger.error(f"Erro inesperado ao buscar detalhes do ticket {ticket_id}: {e}", exc_info=True)
+        error_response = ResponseFormatter.format_error_response(f"Erro interno do servidor: {str(e)}", [str(e)])
         return jsonify(error_response), 500
 
 
@@ -870,11 +829,7 @@ def get_alerts():
                     }
                 )
             else:
-                message = (
-                    glpi_status.get("message", "Conexão indisponível")
-                    if glpi_status
-                    else "Falha na verificação"
-                )
+                message = glpi_status.get("message", "Conexão indisponível") if glpi_status else "Falha na verificação"
                 alerts_data.append(
                     {
                         "id": "glpi_connection",
@@ -941,9 +896,7 @@ def get_alerts():
 
     except Exception as e:
         logger.error(f"Erro inesperado ao buscar alertas: {e}", exc_info=True)
-        error_response = ResponseFormatter.format_error_response(
-            f"Erro interno do servidor: {str(e)}", [str(e)]
-        )
+        error_response = ResponseFormatter.format_error_response(f"Erro interno do servidor: {str(e)}", [str(e)])
         return jsonify(error_response), 500
 
 
@@ -1011,9 +964,7 @@ def get_filter_types():
 
     except Exception as e:
         logger.error(f"Erro inesperado ao buscar tipos de filtro: {e}", exc_info=True)
-        error_response = ResponseFormatter.format_error_response(
-            f"Erro interno do servidor: {str(e)}", [str(e)]
-        )
+        error_response = ResponseFormatter.format_error_response(f"Erro interno do servidor: {str(e)}", [str(e)])
         return jsonify(error_response), 500
 
 
@@ -1027,8 +978,7 @@ def get_status():
 
         # Verificar cache completo da resposta primeiro
         response_cache_valid = (
-            _status_cache["data"] is not None
-            and (current_time_unix - _status_cache["timestamp"]) < _status_cache["ttl"]
+            _status_cache["data"] is not None and (current_time_unix - _status_cache["timestamp"]) < _status_cache["ttl"]
         )
 
         if response_cache_valid:
@@ -1098,9 +1048,7 @@ def get_status():
 
     except Exception as e:
         logger.error(f"Erro inesperado ao verificar status: {e}", exc_info=True)
-        error_response = ResponseFormatter.format_error_response(
-            f"Erro interno do servidor: {str(e)}", [str(e)]
-        )
+        error_response = ResponseFormatter.format_error_response(f"Erro interno do servidor: {str(e)}", [str(e)])
         return jsonify(error_response), 500
 
 
@@ -1146,14 +1094,10 @@ def debug_technician_tickets():
 
         if technician_id:
             # Debug específico de um técnico
-            debug_data = glpi_service.debug_technician_tickets(
-                technician_id, correlation_id=correlation_id
-            )
+            debug_data = glpi_service.debug_technician_tickets(technician_id, correlation_id=correlation_id)
         else:
             # Debug geral dos primeiros técnicos
-            debug_data = glpi_service.debug_technician_tickets_general(
-                limit=limit, correlation_id=correlation_id
-            )
+            debug_data = glpi_service.debug_technician_tickets_general(limit=limit, correlation_id=correlation_id)
 
         return jsonify(
             {

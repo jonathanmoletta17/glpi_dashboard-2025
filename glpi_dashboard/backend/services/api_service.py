@@ -3,6 +3,7 @@ from datetime import datetime
 from typing import Any, Dict, List, Optional
 
 import requests
+
 from config.settings import active_config
 from services.glpi_service import GLPIService
 from utils.response_formatter import ResponseFormatter
@@ -126,19 +127,11 @@ class APIService:
         """Get dashboard metrics from GLPI service"""
         try:
             if start_date and end_date:
-                level_metrics = self.glpi_service.get_metrics_by_level(
-                    start_date, end_date, correlation_id=correlation_id
-                )
-                general_metrics = self.glpi_service.get_general_metrics(
-                    start_date, end_date, correlation_id=correlation_id
-                )
+                level_metrics = self.glpi_service.get_metrics_by_level(start_date, end_date, correlation_id=correlation_id)
+                general_metrics = self.glpi_service.get_general_metrics(start_date, end_date, correlation_id=correlation_id)
             else:
-                level_metrics = self.glpi_service.get_metrics_by_level(
-                    correlation_id=correlation_id
-                )
-                general_metrics = self.glpi_service.get_general_metrics(
-                    correlation_id=correlation_id
-                )
+                level_metrics = self.glpi_service.get_metrics_by_level(correlation_id=correlation_id)
+                general_metrics = self.glpi_service.get_general_metrics(correlation_id=correlation_id)
 
             return {"level_metrics": level_metrics, "general_metrics": general_metrics}
         except Exception as e:

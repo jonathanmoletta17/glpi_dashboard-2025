@@ -123,9 +123,7 @@ class MetricCollector:
             return None
 
         cutoff_time = time.time() - duration_seconds
-        recent_values = [
-            metric["value"] for metric in self.metrics[name] if metric["timestamp"] >= cutoff_time
-        ]
+        recent_values = [metric["value"] for metric in self.metrics[name] if metric["timestamp"] >= cutoff_time]
 
         if not recent_values:
             return None
@@ -333,9 +331,7 @@ class AlertManager:
             if alert_key in self.active_alerts:
                 self._resolve_alert(alert_key, current_time)
 
-    def _evaluate_condition(
-        self, value: Union[float, int], threshold: Union[float, int], operator: str
-    ) -> bool:
+    def _evaluate_condition(self, value: Union[float, int], threshold: Union[float, int], operator: str) -> bool:
         """Avalia se uma condição de alerta é atendida."""
         if operator == ">":
             return value > threshold

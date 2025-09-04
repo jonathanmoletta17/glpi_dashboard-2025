@@ -23,9 +23,7 @@ class GLPIServiceHelpers:
         self.glpi_service = glpi_service
         self.logger = glpi_service.logger
 
-    def get_technician_ids_from_tickets(
-        self, entity_id: Optional[int] = None, days_back: int = 90
-    ) -> Set[str]:
+    def get_technician_ids_from_tickets(self, entity_id: Optional[int] = None, days_back: int = 90) -> Set[str]:
         """Extract technician IDs from tickets assigned in recent days.
 
         Args:
@@ -47,9 +45,7 @@ class GLPIServiceHelpers:
         )
 
         if not response or not response.ok:
-            self.logger.error(
-                f"Failed to fetch tickets - Status: {response.status_code if response else 'None'}"
-            )
+            self.logger.error(f"Failed to fetch tickets - Status: {response.status_code if response else 'None'}")
             return set()
 
         ticket_result = response.json()
@@ -57,9 +53,7 @@ class GLPIServiceHelpers:
 
         return self._extract_technician_ids_from_response(ticket_data)
 
-    def _build_ticket_search_params(
-        self, start_date: datetime, entity_id: Optional[int]
-    ) -> Dict[str, str]:
+    def _build_ticket_search_params(self, start_date: datetime, entity_id: Optional[int]) -> Dict[str, str]:
         """Build search parameters for ticket query.
 
         Args:
@@ -91,9 +85,7 @@ class GLPIServiceHelpers:
 
         return params
 
-    def _extract_technician_ids_from_response(
-        self, ticket_data: List[Dict]
-    ) -> Set[str]:
+    def _extract_technician_ids_from_response(self, ticket_data: List[Dict]) -> Set[str]:
         """Extract unique technician IDs from ticket response data.
 
         Args:
@@ -167,21 +159,16 @@ class GLPIServiceHelpers:
 
         return None
 
-    def _parse_numeric_technician_id(
-        self, tech_number: Union[int, float]
-    ) -> Optional[str]:
+    def _parse_numeric_technician_id(self, tech_number: Union[int, float]) -> Optional[str]:
         """Parse technician ID from numeric format."""
         if tech_number and tech_number != 0:
             return str(int(tech_number))
         return None
 
-    def get_technicians_by_assignments(
-        self, days_back: int = 30, min_tickets: int = 3
-    ) -> Dict[str, Dict]:
+    def get_technicians_by_assignments(self, days_back: int = 30, min_tickets: int = 3) -> Dict[str, Dict]:
         """Identifica técnicos baseado em atribuições de tickets recentes"""
         self.glpi_service.logger.info(
-            f"Identificando técnicos por atribuições (últimos {days_back} dias, "
-            f"mín. {min_tickets} tickets)"
+            f"Identificando técnicos por atribuições (últimos {days_back} dias, " f"mín. {min_tickets} tickets)"
         )
 
         end_date = datetime.now()
@@ -197,24 +184,16 @@ class GLPIServiceHelpers:
             tech_counts = self._count_assignments_by_technician(tickets_data)
 
             # Filtrar e obter dados dos técnicos
-            technicians = self._build_technicians_data(
-                tech_counts, min_tickets
-            )
+            technicians = self._build_technicians_data(tech_counts, min_tickets)
 
-            self.glpi_service.logger.info(
-                f"Identificados {len(technicians)} técnicos por atribuições"
-            )
+            self.glpi_service.logger.info(f"Identificados {len(technicians)} técnicos por atribuições")
             return technicians
 
         except Exception as e:
-            self.glpi_service.logger.error(
-                f"Erro ao identificar técnicos por atribuições: {e}"
-            )
+            self.glpi_service.logger.error(f"Erro ao identificar técnicos por atribuições: {e}")
             return {}
 
-    def _fetch_tickets_with_assignments(
-        self, start_date: datetime
-    ) -> Optional[Dict]:
+    def _fetch_tickets_with_assignments(self, start_date: datetime) -> Optional[Dict]:
         """Busca tickets com atribuições no período especificado"""
         response = self.glpi_service._make_authenticated_request(
             "GET",
@@ -231,23 +210,17 @@ class GLPIServiceHelpers:
         )
 
         if not response or not response.ok:
-            self.glpi_service.logger.error(
-                "Falha ao buscar tickets com atribuições"
-            )
+            self.glpi_service.logger.error("Falha ao buscar tickets com atribuições")
             return None
 
         data = response.json()
         if not data or not data.get("data"):
-            self.glpi_service.logger.warning(
-                "Nenhum ticket encontrado no período"
-            )
+            self.glpi_service.logger.warning("Nenhum ticket encontrado no período")
             return None
 
         return data
 
-    def _count_assignments_by_technician(
-        self, tickets_data: Dict
-    ) -> Dict[str, int]:
+    def _count_assignments_by_technician(self, tickets_data: Dict) -> Dict[str, int]:
         """Conta atribuições por técnico usando parsing corrigido"""
         tech_counts = {}
         parsing_stats = {"total": 0, "parsed": 0, "errors": 0}
@@ -265,26 +238,21 @@ class GLPIServiceHelpers:
                 parsing_stats["errors"] += 1
 
         self.glpi_service.logger.info(
-            f"Estatísticas de parsing: {parsing_stats['parsed']}/{parsing_stats['total']} "
-            "tickets parseados com sucesso"
+            f"Estatísticas de parsing: {parsing_stats['parsed']}/{parsing_stats['total']} " "tickets parseados com sucesso"
         )
 
         return tech_counts
 
-    def _build_technicians_data(
-        self, tech_counts: Dict[str, int], min_tickets: int
-    ) -> Dict[str, Dict]:
+    def _build_technicians_data(self, tech_counts: Dict[str, int], min_tickets: int) -> Dict[str, Dict]:
         """Constrói dados dos técnicos com base na contagem de tickets"""
         technicians = {}
 
         for tech_id, count in tech_counts.items():
             if count >= min_tickets:
                 try:
-                    user_response = (
-                        self.glpi_service._make_authenticated_request(
-                            "GET",
-                            f"{self.glpi_service.glpi_url}/User/{tech_id}",
-                        )
+                    user_response = self.glpi_service._make_authenticated_request(
+                        "GET",
+                        f"{self.glpi_service.glpi_url}/User/{tech_id}",
                     )
 
                     if user_response and user_response.ok:
@@ -294,18 +262,14 @@ class GLPIServiceHelpers:
                         level = self._determine_technician_level(count)
 
                         technicians[tech_id] = {
-                            "name": user_data.get(
-                                "name", f"Técnico {tech_id}"
-                            ),
+                            "name": user_data.get("name", f"Técnico {tech_id}"),
                             "username": user_data.get("name", ""),
                             "level": level,
                             "ticket_count": count,
                         }
 
                 except Exception as e:
-                    self.glpi_service.logger.warning(
-                        f"Erro ao obter dados do técnico {tech_id}: {e}"
-                    )
+                    self.glpi_service.logger.warning(f"Erro ao obter dados do técnico {tech_id}: {e}")
 
         return technicians
 
@@ -343,23 +307,17 @@ class GLPIServiceHelpers:
             max_retries = 3
             total_processed = 0
 
-            self.glpi_service.logger.info(
-                f"Iniciando paginação robusta para {len(tech_ids)} técnicos"
-            )
+            self.glpi_service.logger.info(f"Iniciando paginação robusta para {len(tech_ids)} técnicos")
 
             while True:
                 # Buscar página atual
-                page_data, page_items = self._fetch_page_with_retry(
-                    search_params, start_index, page_size, max_retries
-                )
+                page_data, page_items = self._fetch_page_with_retry(search_params, start_index, page_size, max_retries)
 
                 if not page_data:
                     break
 
                 # Processar dados da página
-                page_counts = self._process_page_data(
-                    page_data, tech_ids, tech_field_id
-                )
+                page_counts = self._process_page_data(page_data, tech_ids, tech_field_id)
 
                 # Atualizar contadores
                 for tech_id, count in page_counts.items():
@@ -373,9 +331,7 @@ class GLPIServiceHelpers:
 
                 # Verificar se chegamos ao fim
                 if page_items < page_size:
-                    self.glpi_service.logger.info(
-                        f"Última página processada. Total de tickets: {total_processed}"
-                    )
+                    self.glpi_service.logger.info(f"Última página processada. Total de tickets: {total_processed}")
                     break
 
                 # Avançar para próxima página
@@ -384,8 +340,7 @@ class GLPIServiceHelpers:
                 # Limite de segurança
                 if start_index > 100000:
                     self.glpi_service.logger.warning(
-                        f"Limite de segurança atingido em {start_index} tickets. "
-                        "Finalizando paginação."
+                        f"Limite de segurança atingido em {start_index} tickets. " "Finalizando paginação."
                     )
                     break
 
@@ -418,15 +373,10 @@ class GLPIServiceHelpers:
         while retry_count < max_retries:
             try:
                 url = f"{self.glpi_service.glpi_url}/search/Ticket"
-                response = self.glpi_service._make_authenticated_request(
-                    "GET", url, params=current_params
-                )
+                response = self.glpi_service._make_authenticated_request("GET", url, params=current_params)
 
                 if not response or not response.ok:
-                    raise Exception(
-                        f"Falha na requisição: "
-                        f"{response.status_code if response else 'No response'}"
-                    )
+                    raise Exception(f"Falha na requisição: " f"{response.status_code if response else 'No response'}")
 
                 page_data = response.json()
 
@@ -434,14 +384,9 @@ class GLPIServiceHelpers:
                 self._log_pagination_info(response, start_index, end_index)
 
                 # Verificar se há dados
-                if (
-                    not page_data
-                    or "data" not in page_data
-                    or not page_data["data"]
-                ):
+                if not page_data or "data" not in page_data or not page_data["data"]:
                     self.glpi_service.logger.info(
-                        f"Página {start_index}-{end_index} vazia ou sem dados. "
-                        "Finalizando paginação."
+                        f"Página {start_index}-{end_index} vazia ou sem dados. " "Finalizando paginação."
                     )
                     return None, 0
 
@@ -458,16 +403,13 @@ class GLPIServiceHelpers:
                     time.sleep(wait_time)
                 else:
                     self.glpi_service.logger.error(
-                        f"Falha após {max_retries} tentativas na página "
-                        f"{start_index}-{end_index}: {e}"
+                        f"Falha após {max_retries} tentativas na página " f"{start_index}-{end_index}: {e}"
                     )
                     raise
 
         return None, 0
 
-    def _log_pagination_info(
-        self, response: Any, start_index: int, end_index: int
-    ) -> None:
+    def _log_pagination_info(self, response: Any, start_index: int, end_index: int) -> None:
         """Log informações de paginação do cabeçalho Content-Range"""
         content_range = response.headers.get("Content-Range", "")
         if content_range:
@@ -477,13 +419,10 @@ class GLPIServiceHelpers:
                 start_range, end_range = map(int, range_part.split("-"))
 
                 self.glpi_service.logger.debug(
-                    f"Página {start_index}-{end_index}: "
-                    f"{end_range - start_range + 1} itens de {total_items} total"
+                    f"Página {start_index}-{end_index}: " f"{end_range - start_range + 1} itens de {total_items} total"
                 )
             except (ValueError, IndexError) as e:
-                self.glpi_service.logger.warning(
-                    f"Erro ao parsear Content-Range '{content_range}': {e}"
-                )
+                self.glpi_service.logger.warning(f"Erro ao parsear Content-Range '{content_range}': {e}")
 
     def _process_page_data(
         self,
@@ -501,9 +440,7 @@ class GLPIServiceHelpers:
 
         return page_counts
 
-    def get_technician_details_in_batches(
-        self, tech_ids: Set[str], batch_size: int = 50
-    ) -> Tuple[List[str], Dict[str, str]]:
+    def get_technician_details_in_batches(self, tech_ids: Set[str], batch_size: int = 50) -> Tuple[List[str], Dict[str, str]]:
         """Fetch technician details in batches to avoid API limits.
 
         Args:
@@ -526,9 +463,7 @@ class GLPIServiceHelpers:
 
         return final_tech_ids, final_tech_names
 
-    def _process_technician_batch(
-        self, batch_ids: List[str]
-    ) -> Tuple[List[str], Dict[str, str]]:
+    def _process_technician_batch(self, batch_ids: List[str]) -> Tuple[List[str], Dict[str, str]]:
         """Process a single batch of technician IDs.
 
         Args:
@@ -546,9 +481,7 @@ class GLPIServiceHelpers:
         )
 
         if not response or not response.ok:
-            self.logger.error(
-                f"Failed to fetch user batch - Status: {response.status_code if response else 'None'}"
-            )
+            self.logger.error(f"Failed to fetch user batch - Status: {response.status_code if response else 'None'}")
             return [], {}
 
         user_result = response.json()
@@ -556,9 +489,7 @@ class GLPIServiceHelpers:
 
         return self._process_user_response(user_data)
 
-    def _build_user_search_params(
-        self, batch_ids: List[str]
-    ) -> Dict[str, str]:
+    def _build_user_search_params(self, batch_ids: List[str]) -> Dict[str, str]:
         """Build search parameters for user batch query.
 
         Args:
@@ -587,9 +518,7 @@ class GLPIServiceHelpers:
 
         return params
 
-    def _process_user_response(
-        self, user_data: List[Dict[str, Any]]
-    ) -> Tuple[List[str], Dict[str, str]]:
+    def _process_user_response(self, user_data: List[Dict[str, Any]]) -> Tuple[List[str], Dict[str, str]]:
         """Process user response data to extract active technicians.
 
         Args:
@@ -617,9 +546,7 @@ class GLPIServiceHelpers:
 
         return batch_ids, batch_names
 
-    def _extract_user_info(
-        self, user: Dict[str, Any]
-    ) -> Optional[Tuple[str, str, str]]:
+    def _extract_user_info(self, user: Dict[str, Any]) -> Optional[Tuple[str, str, str]]:
         """Extract user information from user data.
 
         Args:
@@ -642,9 +569,7 @@ class GLPIServiceHelpers:
 
         return str(user_id), full_name, str(is_active)
 
-    def _is_active_user(
-        self, is_active: str, is_deleted: Optional[str]
-    ) -> bool:
+    def _is_active_user(self, is_active: str, is_deleted: Optional[str]) -> bool:
         """Check if user is active and not deleted.
 
         Args:
