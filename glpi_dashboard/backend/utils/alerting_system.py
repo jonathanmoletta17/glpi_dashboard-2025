@@ -117,18 +117,14 @@ class MetricCollector:
             return self.metrics[name][-1]
         return None
 
-    def get_metric_average(
-        self, name: str, duration_seconds: int = 300
-    ) -> Optional[float]:
+    def get_metric_average(self, name: str, duration_seconds: int = 300) -> Optional[float]:
         """Calcula a média de uma métrica nos últimos N segundos."""
         if name not in self.metrics:
             return None
 
         cutoff_time = time.time() - duration_seconds
         recent_values = [
-            metric["value"]
-            for metric in self.metrics[name]
-            if metric["timestamp"] >= cutoff_time
+            metric["value"] for metric in self.metrics[name] if metric["timestamp"] >= cutoff_time
         ]
 
         if not recent_values:
@@ -142,9 +138,7 @@ class MetricCollector:
             return 0
 
         cutoff_time = time.time() - duration_seconds
-        return sum(
-            1 for metric in self.metrics[name] if metric["timestamp"] >= cutoff_time
-        )
+        return sum(1 for metric in self.metrics[name] if metric["timestamp"] >= cutoff_time)
 
 
 class AlertManager:
@@ -312,9 +306,7 @@ class AlertManager:
             return
 
         metric_value = metric_data["value"]
-        condition_met = self._evaluate_condition(
-            metric_value, rule.threshold, rule.operator
-        )
+        condition_met = self._evaluate_condition(metric_value, rule.threshold, rule.operator)
 
         alert_key = f"{rule.name}_{rule.metric_name}"
 
@@ -360,9 +352,7 @@ class AlertManager:
         else:
             raise ValueError(f"Operador não suportado: {operator}")
 
-    def _fire_alert(
-        self, rule: AlertRule, metric_value: Union[float, int], current_time: float
-    ):
+    def _fire_alert(self, rule: AlertRule, metric_value: Union[float, int], current_time: float):
         """Dispara um alerta."""
         alert_key = f"{rule.name}_{rule.metric_name}"
 

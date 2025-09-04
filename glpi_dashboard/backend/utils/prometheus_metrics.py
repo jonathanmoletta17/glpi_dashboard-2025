@@ -80,9 +80,7 @@ except ImportError:
         def info(self, data: Dict[str, Any]) -> None:
             pass
 
-    logging.warning(
-        "prometheus_client não disponível. Métricas Prometheus desabilitadas."
-    )
+    logging.warning("prometheus_client não disponível. Métricas Prometheus desabilitadas.")
 
 from config.settings import active_config
 
@@ -98,9 +96,7 @@ class PrometheusMetrics:
         self.config = active_config()
 
         if not self.enabled:
-            logger.warning(
-                "Métricas Prometheus desabilitadas - prometheus_client não disponível"
-            )
+            logger.warning("Métricas Prometheus desabilitadas - prometheus_client não disponível")
             self._init_mock_metrics()
         else:
             self._init_metrics()
@@ -270,20 +266,14 @@ class PrometheusMetrics:
             method=method, endpoint=endpoint, status_code=str(status_code)
         ).inc()
 
-        self.api_request_duration.labels(method=method, endpoint=endpoint).observe(
-            duration
-        )
+        self.api_request_duration.labels(method=method, endpoint=endpoint).observe(duration)
 
-    def record_glpi_request(
-        self, endpoint: str, status_code: int, duration: float
-    ) -> None:
+    def record_glpi_request(self, endpoint: str, status_code: int, duration: float) -> None:
         """Registra uma requisição ao GLPI externo."""
         if not self.enabled:
             return
 
-        self.glpi_requests_total.labels(
-            endpoint=endpoint, status_code=str(status_code)
-        ).inc()
+        self.glpi_requests_total.labels(endpoint=endpoint, status_code=str(status_code)).inc()
 
         self.glpi_request_duration.labels(endpoint=endpoint).observe(duration)
 
@@ -308,9 +298,7 @@ class PrometheusMetrics:
 
         self.metrics_cache_misses.labels(query_type=query_type).inc()
 
-    def update_tickets_metrics(
-        self, tickets_by_status: Dict[str, Dict[str, int]]
-    ) -> None:
+    def update_tickets_metrics(self, tickets_by_status: Dict[str, Dict[str, int]]) -> None:
         """Atualiza métricas de tickets."""
         if not self.enabled:
             return
@@ -349,9 +337,7 @@ class PrometheusMetrics:
         self.active_connections.set(count)
 
     @contextmanager
-    def time_operation(
-        self, operation_name: str, labels: Optional[Dict[str, str]] = None
-    ) -> Any:
+    def time_operation(self, operation_name: str, labels: Optional[Dict[str, str]] = None) -> Any:
         """Context manager para medir duração de operações."""
         start_time = time.time()
         try:
@@ -372,9 +358,7 @@ class PrometheusMetrics:
 
         return generate_latest(self.registry).decode("utf-8")
 
-    def push_to_gateway(
-        self, gateway_url: str, job_name: str = "glpi_dashboard"
-    ) -> None:
+    def push_to_gateway(self, gateway_url: str, job_name: str = "glpi_dashboard") -> None:
         """Envia métricas para Prometheus Gateway."""
         if not self.enabled:
             logger.warning("Tentativa de push para gateway com Prometheus desabilitado")

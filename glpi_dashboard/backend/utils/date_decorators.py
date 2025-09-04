@@ -9,10 +9,9 @@ from functools import wraps
 from typing import Any, Callable
 
 from flask import jsonify, request
-
+from utils.date_validator import DateValidator
 from utils.performance import extract_filter_params
 from utils.response_formatter import ResponseFormatter
-from utils.date_validator import DateValidator
 
 logger = logging.getLogger(__name__)
 
@@ -42,9 +41,7 @@ def validate_date_params(support_predefined: bool = True):
                         errors,
                     ) = DateValidator.normalize_filters_with_predefined(filters)
                 else:
-                    start_date, end_date, errors = DateValidator.normalize_date_filters(
-                        filters
-                    )
+                    start_date, end_date, errors = DateValidator.normalize_date_filters(filters)
 
                 # Se há erros de validação, retornar erro 400
                 if errors:
@@ -94,9 +91,7 @@ def validate_date_params(support_predefined: bool = True):
                 return func(*args, **kwargs)
 
             except Exception as e:
-                logger.error(
-                    f"Erro na validação de datas para {func.__name__}: {str(e)}"
-                )
+                logger.error(f"Erro na validação de datas para {func.__name__}: {str(e)}")
                 error_response = ResponseFormatter.format_error_response(
                     "Erro interno na validação de parâmetros de data", [str(e)]
                 )

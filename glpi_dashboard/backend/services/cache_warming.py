@@ -5,6 +5,7 @@ from typing import Optional
 
 logger = logging.getLogger(__name__)
 
+
 class CacheWarming:
     """Serviço para aquecimento de cache."""
 
@@ -57,12 +58,15 @@ class CacheWarming:
                 if self._stop_event.wait(60):
                     break
 
+
 # Instância global
 _cache_warming = CacheWarming()
+
 
 def start_cache_warming():
     """Inicia o aquecimento de cache."""
     _cache_warming.start()
+
 
 def stop_cache_warming():
     """Para o aquecimento de cache."""

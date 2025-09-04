@@ -15,20 +15,23 @@ Data: 2025-01-22
 Versão: 1.0
 """
 
-import requests
 import json
 import os
-from datetime import datetime
-from typing import Dict, List, Optional, Any
 from dataclasses import dataclass
-from colorama import init, Fore, Style
+from datetime import datetime
+from typing import Any, Dict, List, Optional
+
+import requests
+from colorama import Fore, Style, init
 
 # Inicializar colorama para cores no terminal
 init(autoreset=True)
 
+
 @dataclass
 class GLPIConfig:
     """Configuração para conexão com GLPI"""
+
     base_url: str
     app_token: str
     user_token: str
@@ -36,15 +39,16 @@ class GLPIConfig:
     password: str
 
     @classmethod
-    def from_env(cls) -> 'GLPIConfig':
+    def from_env(cls) -> "GLPIConfig":
         """Carrega configuração das variáveis de ambiente"""
         return cls(
-            base_url=os.getenv('GLPI_BASE_URL', 'http://localhost/glpi'),
-            app_token=os.getenv('GLPI_APP_TOKEN', ''),
-            user_token=os.getenv('GLPI_USER_TOKEN', ''),
-            username=os.getenv('GLPI_USERNAME', ''),
-            password=os.getenv('GLPI_PASSWORD', '')
+            base_url=os.getenv("GLPI_BASE_URL", "http://localhost/glpi"),
+            app_token=os.getenv("GLPI_APP_TOKEN", ""),
+            user_token=os.getenv("GLPI_USER_TOKEN", ""),
+            username=os.getenv("GLPI_USERNAME", ""),
+            password=os.getenv("GLPI_PASSWORD", ""),
         )
+
 
 class GLPIMetricsCollector:
     """
@@ -64,27 +68,26 @@ class GLPIMetricsCollector:
         self.session = requests.Session()
 
         # Headers padrão para todas as requisições
-        self.session.headers.update({
-            'Content-Type': 'application/json',
-            'App-Token': self.config.app_token
-        })
+        self.session.headers.update(
+            {"Content-Type": "application/json", "App-Token": self.config.app_token}
+        )
 
         # Mapeamento de cores por nível de técnico
         self.level_colors = {
-            'N1': Fore.GREEN,    # Verde para N1 (Júnior)
-            'N2': Fore.YELLOW,   # Amarelo para N2 (Pleno)
-            'N3': Fore.BLUE,     # Azul para N3 (Sênior)
-            'N4': Fore.RED       # Vermelho para N4 (Especialista)
+            "N1": Fore.GREEN,  # Verde para N1 (Júnior)
+            "N2": Fore.YELLOW,  # Amarelo para N2 (Pleno)
+            "N3": Fore.BLUE,  # Azul para N3 (Sênior)
+            "N4": Fore.RED,  # Vermelho para N4 (Especialista)
         }
 
         # Status de tickets mapeados
         self.ticket_status = {
-            1: 'novo',           # Novo
-            2: 'em_progresso',   # Processando (atribuído)
-            3: 'planejado',      # Processando (planejado)
-            4: 'pendente',       # Pendente
-            5: 'solucionado',    # Solucionado
-            6: 'fechado'         # Fechado
+            1: "novo",  # Novo
+            2: "em_progresso",  # Processando (atribuído)
+            3: "planejado",  # Processando (planejado)
+            4: "pendente",  # Pendente
+            5: "solucionado",  # Solucionado
+            6: "fechado",  # Fechado
         }
 
     def login(self) -> bool:
@@ -106,14 +109,11 @@ class GLPIMetricsCollector:
 
         # Tentar autenticação com user token primeiro
         if self.config.user_token:
-            headers = {'Authorization': f'user_token {self.config.user_token}'}
+            headers = {"Authorization": f"user_token {self.config.user_token}"}
             print(f"{Fore.YELLOW}   Usando User Token para autenticação{Style.RESET_ALL}")
         else:
             # Fallback para username/password
-            auth_data = {
-                'login': self.config.username,
-                'password': self.config.password
-            }
+            auth_data = {"login": self.config.username, "password": self.config.password}
             headers = {}
             print(f"{Fore.YELLOW}   Usando Username/Password para autenticação{Style.RESET_ALL}")
 
@@ -126,18 +126,18 @@ class GLPIMetricsCollector:
             response.raise_for_status()
 
             auth_response = response.json()
-            self.session_token = auth_response.get('session_token')
+            self.session_token = auth_response.get("session_token")
 
             if self.session_token:
                 # Adicionar session token aos headers padrão
-                self.session.headers.update({
-                    'Session-Token': self.session_token
-                })
+                self.session.headers.update({"Session-Token": self.session_token})
                 print(f"{Fore.GREEN}Autenticacao realizada com sucesso!{Style.RESET_ALL}")
                 print(f"{Fore.CYAN}   Session Token: {self.session_token[:20]}...{Style.RESET_ALL}")
                 return True
             else:
-                print(f"{Fore.RED}❌ Falha na autenticação: Session token não recebido{Style.RESET_ALL}")
+                print(
+                    f"{Fore.RED}❌ Falha na autenticação: Session token não recebido{Style.RESET_ALL}"
+                )
                 return False
 
         except requests.exceptions.RequestException as e:
@@ -168,11 +168,11 @@ class GLPIMetricsCollector:
         url = f"{self.config.base_url}/apirest.php/search/Ticket"
 
         params = {
-            'forcedisplay[0]': 2,    # ID
-            'forcedisplay[1]': 12,   # Status
-            'forcedisplay[2]': 3,    # Prioridade
-            'forcedisplay[3]': 15,   # Data de criação
-            'range': '0-9999'       # Todos os tickets
+            "forcedisplay[0]": 2,  # ID
+            "forcedisplay[1]": 12,  # Status
+            "forcedisplay[2]": 3,  # Prioridade
+            "forcedisplay[3]": 15,  # Data de criação
+            "range": "0-9999",  # Todos os tickets
         }
 
         try:
@@ -180,33 +180,35 @@ class GLPIMetricsCollector:
             response.raise_for_status()
 
             data = response.json()
-            tickets = data.get('data', [])
+            tickets = data.get("data", [])
 
             # Contar tickets por status
             status_count = {
-                'novo': 0,
-                'em_progresso': 0,
-                'planejado': 0,
-                'pendente': 0,
-                'solucionado': 0,
-                'fechado': 0
+                "novo": 0,
+                "em_progresso": 0,
+                "planejado": 0,
+                "pendente": 0,
+                "solucionado": 0,
+                "fechado": 0,
             }
             total_tickets = len(tickets)
 
             for ticket in tickets:
-                status_id = ticket.get('12')  # Campo de status
+                status_id = ticket.get("12")  # Campo de status
                 if status_id and int(status_id) in self.ticket_status:
                     status_name = self.ticket_status[int(status_id)]
                     status_count[status_name] += 1
 
             metrics = {
-                'total_tickets': total_tickets,
-                'status_breakdown': status_count,
-                'timestamp': datetime.now().isoformat(),
-                'endpoint_used': url
+                "total_tickets": total_tickets,
+                "status_breakdown": status_count,
+                "timestamp": datetime.now().isoformat(),
+                "endpoint_used": url,
             }
 
-            print(f"{Fore.GREEN}✅ Métricas gerais coletadas: {total_tickets} tickets total{Style.RESET_ALL}")
+            print(
+                f"{Fore.GREEN}✅ Métricas gerais coletadas: {total_tickets} tickets total{Style.RESET_ALL}"
+            )
 
             # Exibir resumo
             for status, count in status_count.items():
@@ -248,18 +250,18 @@ class GLPIMetricsCollector:
         url = f"{self.config.base_url}/apirest.php/search/Ticket"
 
         params = {
-            'criteria[0][field]': 12,      # Campo de status
-            'criteria[0][searchtype]': 'equals',
-            'criteria[0][value]': 1,       # Status "Novo"
-            'forcedisplay[0]': 2,          # ID
-            'forcedisplay[1]': 1,          # Nome/Título
-            'forcedisplay[2]': 12,         # Status
-            'forcedisplay[3]': 3,          # Prioridade
-            'forcedisplay[4]': 15,         # Data de criação
-            'forcedisplay[5]': 5,          # Técnico atribuído
-            'order': 'DESC',               # Mais recentes primeiro
-            'sort': 15,                    # Ordenar por data de criação
-            'range': '0-100'               # Limitar a 100 tickets
+            "criteria[0][field]": 12,  # Campo de status
+            "criteria[0][searchtype]": "equals",
+            "criteria[0][value]": 1,  # Status "Novo"
+            "forcedisplay[0]": 2,  # ID
+            "forcedisplay[1]": 1,  # Nome/Título
+            "forcedisplay[2]": 12,  # Status
+            "forcedisplay[3]": 3,  # Prioridade
+            "forcedisplay[4]": 15,  # Data de criação
+            "forcedisplay[5]": 5,  # Técnico atribuído
+            "order": "DESC",  # Mais recentes primeiro
+            "sort": 15,  # Ordenar por data de criação
+            "range": "0-100",  # Limitar a 100 tickets
         }
 
         try:
@@ -267,17 +269,17 @@ class GLPIMetricsCollector:
             response.raise_for_status()
 
             data = response.json()
-            tickets = data.get('data', [])
+            tickets = data.get("data", [])
 
             tickets_novos = []
             for ticket in tickets:
                 ticket_info = {
-                    'id': ticket.get('2'),
-                    'titulo': ticket.get('1'),
-                    'status': 'novo',
-                    'prioridade': ticket.get('3'),
-                    'data_criacao': ticket.get('15'),
-                    'tecnico_atribuido': ticket.get('5')
+                    "id": ticket.get("2"),
+                    "titulo": ticket.get("1"),
+                    "status": "novo",
+                    "prioridade": ticket.get("3"),
+                    "data_criacao": ticket.get("15"),
+                    "tecnico_atribuido": ticket.get("5"),
                 }
                 tickets_novos.append(ticket_info)
 
@@ -312,22 +314,19 @@ class GLPIMetricsCollector:
         Returns:
             Dict com ranking por nível: {'N1': [...], 'N2': [...], etc}
         """
-        print(f"{Fore.CYAN}🏆 Coletando ranking de técnicos (implementação real do backend)...{Style.RESET_ALL}")
+        print(
+            f"{Fore.CYAN}🏆 Coletando ranking de técnicos (implementação real do backend)...{Style.RESET_ALL}"
+        )
 
         # Mapeamento de níveis para IDs de grupos GLPI (conforme backend)
         service_levels = {
-            'N1': 89,  # CC-SE-SUBADM-DTIC > N1
-            'N2': 90,  # CC-SE-SUBADM-DTIC > N2
-            'N3': 91,  # CC-SE-SUBADM-DTIC > N3
-            'N4': 92,  # CC-SE-SUBADM-DTIC > N4
+            "N1": 89,  # CC-SE-SUBADM-DTIC > N1
+            "N2": 90,  # CC-SE-SUBADM-DTIC > N2
+            "N3": 91,  # CC-SE-SUBADM-DTIC > N3
+            "N4": 92,  # CC-SE-SUBADM-DTIC > N4
         }
 
-        ranking_por_nivel = {
-            'N1': [],
-            'N2': [],
-            'N3': [],
-            'N4': []
-        }
+        ranking_por_nivel = {"N1": [], "N2": [], "N3": [], "N4": []}
 
         try:
             print(f"{Fore.BLUE}   Buscando técnicos ativos com perfil técnico...{Style.RESET_ALL}")
@@ -339,52 +338,55 @@ class GLPIMetricsCollector:
                 print(f"{Fore.YELLOW}   ⚠️  Nenhum técnico ativo encontrado{Style.RESET_ALL}")
                 return ranking_por_nivel
 
-            print(f"{Fore.GREEN}   ✅ Encontrados {len(tecnicos_ativos)} técnicos ativos{Style.RESET_ALL}")
+            print(
+                f"{Fore.GREEN}   ✅ Encontrados {len(tecnicos_ativos)} técnicos ativos{Style.RESET_ALL}"
+            )
 
             # 2. Para cada técnico, determinar nível e calcular métricas
             for tecnico in tecnicos_ativos:
                 try:
-                    tecnico_id = tecnico['id']
-                    tecnico_nome = tecnico['nome']
+                    tecnico_id = tecnico["id"]
+                    tecnico_nome = tecnico["nome"]
 
                     # Determinar nível do técnico baseado nos grupos GLPI
                     nivel = self._get_technician_level_from_groups(tecnico_id)
 
                     if not nivel or nivel not in service_levels:
-                        print(f"{Fore.YELLOW}      ⚠️  Técnico {tecnico_nome} não está em grupo de nível válido{Style.RESET_ALL}")
+                        print(
+                            f"{Fore.YELLOW}      ⚠️  Técnico {tecnico_nome} não está em grupo de nível válido{Style.RESET_ALL}"
+                        )
                         continue
 
                     # Calcular métricas do técnico
                     metricas = self._get_technician_metrics_corrected(tecnico_id)
 
                     tecnico_data = {
-                        'id': tecnico_id,
-                        'nome': tecnico_nome,
-                        'nivel': nivel,
-                        'grupo_id': service_levels[nivel],
-                        'posicao': 0,  # Será calculado após ordenação
-                        'tickets_total': metricas.get('total', 0),
-                        'tickets_resolvidos': metricas.get('resolvidos', 0),
-                        'tickets_pendentes': metricas.get('pendentes', 0),
-                        'taxa_resolucao': metricas.get('taxa_resolucao', 0.0)
+                        "id": tecnico_id,
+                        "nome": tecnico_nome,
+                        "nivel": nivel,
+                        "grupo_id": service_levels[nivel],
+                        "posicao": 0,  # Será calculado após ordenação
+                        "tickets_total": metricas.get("total", 0),
+                        "tickets_resolvidos": metricas.get("resolvidos", 0),
+                        "tickets_pendentes": metricas.get("pendentes", 0),
+                        "taxa_resolucao": metricas.get("taxa_resolucao", 0.0),
                     }
 
                     ranking_por_nivel[nivel].append(tecnico_data)
 
                 except Exception as e:
-                    print(f"{Fore.RED}      ❌ Erro ao processar técnico {tecnico.get('nome', 'Desconhecido')}: {e}{Style.RESET_ALL}")
+                    print(
+                        f"{Fore.RED}      ❌ Erro ao processar técnico {tecnico.get('nome', 'Desconhecido')}: {e}{Style.RESET_ALL}"
+                    )
                     continue
 
             # 3. Ordenar técnicos por nível (por tickets resolvidos)
             for nivel in ranking_por_nivel:
-                ranking_por_nivel[nivel].sort(
-                    key=lambda x: x['tickets_resolvidos'],
-                    reverse=True
-                )
+                ranking_por_nivel[nivel].sort(key=lambda x: x["tickets_resolvidos"], reverse=True)
 
                 # Atualizar posições
                 for i, tecnico in enumerate(ranking_por_nivel[nivel]):
-                    tecnico['posicao'] = i + 1
+                    tecnico["posicao"] = i + 1
 
             # 4. Exibir resumo colorido
             print(f"{Fore.GREEN}✅ Ranking de técnicos coletado:{Style.RESET_ALL}")
@@ -395,7 +397,9 @@ class GLPIMetricsCollector:
 
                     # Mostrar top 3 técnicos de cada nível
                     for tecnico in tecnicos_nivel[:3]:
-                        print(f"{color}      {tecnico['posicao']}º {tecnico['nome']} - {tecnico['tickets_resolvidos']} resolvidos ({tecnico['tickets_total']} total){Style.RESET_ALL}")
+                        print(
+                            f"{color}      {tecnico['posicao']}º {tecnico['nome']} - {tecnico['tickets_resolvidos']} resolvidos ({tecnico['tickets_total']} total){Style.RESET_ALL}"
+                        )
 
             return ranking_por_nivel
 
@@ -415,47 +419,79 @@ class GLPIMetricsCollector:
         Returns:
             Dict aninhado: {nivel: {status: count}}
         """
-        print(f"{Fore.CYAN}📈 Coletando status de tickets por nível (implementação real do backend)...{Style.RESET_ALL}")
+        print(
+            f"{Fore.CYAN}📈 Coletando status de tickets por nível (implementação real do backend)...{Style.RESET_ALL}"
+        )
 
         # Mapeamento de status conforme backend
         status_map = {
-            1: 'novo',
-            2: 'em_progresso',
-            3: 'planejado',
-            4: 'pendente',
-            5: 'solucionado',
-            6: 'fechado'
+            1: "novo",
+            2: "em_progresso",
+            3: "planejado",
+            4: "pendente",
+            5: "solucionado",
+            6: "fechado",
         }
 
         status_por_nivel = {
-            'N1': {'novo': 0, 'em_progresso': 0, 'planejado': 0, 'pendente': 0, 'solucionado': 0, 'fechado': 0},
-            'N2': {'novo': 0, 'em_progresso': 0, 'planejado': 0, 'pendente': 0, 'solucionado': 0, 'fechado': 0},
-            'N3': {'novo': 0, 'em_progresso': 0, 'planejado': 0, 'pendente': 0, 'solucionado': 0, 'fechado': 0},
-            'N4': {'novo': 0, 'em_progresso': 0, 'planejado': 0, 'pendente': 0, 'solucionado': 0, 'fechado': 0}
+            "N1": {
+                "novo": 0,
+                "em_progresso": 0,
+                "planejado": 0,
+                "pendente": 0,
+                "solucionado": 0,
+                "fechado": 0,
+            },
+            "N2": {
+                "novo": 0,
+                "em_progresso": 0,
+                "planejado": 0,
+                "pendente": 0,
+                "solucionado": 0,
+                "fechado": 0,
+            },
+            "N3": {
+                "novo": 0,
+                "em_progresso": 0,
+                "planejado": 0,
+                "pendente": 0,
+                "solucionado": 0,
+                "fechado": 0,
+            },
+            "N4": {
+                "novo": 0,
+                "em_progresso": 0,
+                "planejado": 0,
+                "pendente": 0,
+                "solucionado": 0,
+                "fechado": 0,
+            },
         }
 
         # Mapeamento de níveis para IDs de grupos GLPI
         service_levels = {
-            'N1': 89,  # CC-SE-SUBADM-DTIC > N1
-            'N2': 90,  # CC-SE-SUBADM-DTIC > N2
-            'N3': 91,  # CC-SE-SUBADM-DTIC > N3
-            'N4': 92,  # CC-SE-SUBADM-DTIC > N4
+            "N1": 89,  # CC-SE-SUBADM-DTIC > N1
+            "N2": 90,  # CC-SE-SUBADM-DTIC > N2
+            "N3": 91,  # CC-SE-SUBADM-DTIC > N3
+            "N4": 92,  # CC-SE-SUBADM-DTIC > N4
         }
 
         # Para cada nível, buscar tickets do grupo correspondente
         for nivel, group_id in service_levels.items():
-            print(f"{Fore.YELLOW}   Processando nível {nivel} (Grupo ID: {group_id})...{Style.RESET_ALL}")
+            print(
+                f"{Fore.YELLOW}   Processando nível {nivel} (Grupo ID: {group_id})...{Style.RESET_ALL}"
+            )
 
             # Buscar tickets do grupo
             url = f"{self.config.base_url}/apirest.php/search/Ticket"
 
             params = {
-                'criteria[0][field]': 8,       # Campo do grupo atribuído (Groups_id)
-                'criteria[0][searchtype]': 'equals',
-                'criteria[0][value]': group_id,
-                'forcedisplay[0]': 12,         # Status
-                'forcedisplay[1]': 2,          # ID do ticket
-                'range': '0-9999'              # Aumentar limite
+                "criteria[0][field]": 8,  # Campo do grupo atribuído (Groups_id)
+                "criteria[0][searchtype]": "equals",
+                "criteria[0][value]": group_id,
+                "forcedisplay[0]": 12,  # Status
+                "forcedisplay[1]": 2,  # ID do ticket
+                "range": "0-9999",  # Aumentar limite
             }
 
             try:
@@ -463,14 +499,14 @@ class GLPIMetricsCollector:
                 response.raise_for_status()
 
                 data = response.json()
-                tickets = data.get('data', [])
+                tickets = data.get("data", [])
 
                 print(f"      Grupo {group_id}: {len(tickets)} tickets encontrados")
 
                 # Contar por status
                 for ticket in tickets:
-                    status_id = int(ticket.get('12', 0))
-                    status_name = status_map.get(status_id, 'novo')
+                    status_id = int(ticket.get("12", 0))
+                    status_name = status_map.get(status_id, "novo")
 
                     if status_name in status_por_nivel[nivel]:
                         status_por_nivel[nivel][status_name] += 1
@@ -506,8 +542,25 @@ class GLPIMetricsCollector:
 
         # IDs dos técnicos válidos da entidade CAU (conforme fornecido pelo usuário)
         technician_ids = [
-            "696", "32", "141", "60", "69", "1032", "252", "721", "926", "1291",
-            "185", "1331", "1404", "1088", "1263", "10", "53", "250", "1471"
+            "696",
+            "32",
+            "141",
+            "60",
+            "69",
+            "1032",
+            "252",
+            "721",
+            "926",
+            "1291",
+            "185",
+            "1331",
+            "1404",
+            "1088",
+            "1263",
+            "10",
+            "53",
+            "250",
+            "1471",
         ]
 
         tecnicos_ativos = []
@@ -517,10 +570,7 @@ class GLPIMetricsCollector:
                 # Buscar detalhes do usuário e verificar se está ativo e não deletado
                 user_details = self._get_user_details(tech_id)
                 if user_details:
-                    tecnicos_ativos.append({
-                        'id': tech_id,
-                        'nome': user_details['nome']
-                    })
+                    tecnicos_ativos.append({"id": tech_id, "nome": user_details["nome"]})
             except Exception as e:
                 print(f"      Erro ao processar técnico {tech_id}: {e}")
                 continue
@@ -548,6 +598,7 @@ class GLPIMetricsCollector:
             # Tentar fazer parse como JSON
             try:
                 import json
+
                 parsed = json.loads(tech_field)
                 if isinstance(parsed, list) and parsed:
                     for item in parsed:
@@ -582,24 +633,24 @@ class GLPIMetricsCollector:
             url = f"{self.config.base_url}/apirest.php/search/User"
 
             params = {
-                'criteria[0][field]': 1,  # Campo nome
-                'criteria[0][searchtype]': 'equals',
-                'criteria[0][value]': user_name,
-                'forcedisplay[0]': 2,  # ID
-                'forcedisplay[1]': 1,  # Nome
-                'range': '0-10'
+                "criteria[0][field]": 1,  # Campo nome
+                "criteria[0][searchtype]": "equals",
+                "criteria[0][value]": user_name,
+                "forcedisplay[0]": 2,  # ID
+                "forcedisplay[1]": 1,  # Nome
+                "range": "0-10",
             }
 
             response = self.session.get(url, params=params)
             response.raise_for_status()
 
             data = response.json()
-            users = data.get('data', [])
+            users = data.get("data", [])
 
             if users and isinstance(users, list) and len(users) > 0:
                 user = users[0]
                 if isinstance(user, dict):
-                    return user.get('2')  # ID do usuário
+                    return user.get("2")  # ID do usuário
 
             return None
 
@@ -619,10 +670,10 @@ class GLPIMetricsCollector:
         """
         # Mapeamento de níveis para IDs de grupos GLPI
         service_levels = {
-            'N1': 89,  # CC-SE-SUBADM-DTIC > N1
-            'N2': 90,  # CC-SE-SUBADM-DTIC > N2
-            'N3': 91,  # CC-SE-SUBADM-DTIC > N3
-            'N4': 92,  # CC-SE-SUBADM-DTIC > N4
+            "N1": 89,  # CC-SE-SUBADM-DTIC > N1
+            "N2": 90,  # CC-SE-SUBADM-DTIC > N2
+            "N3": 91,  # CC-SE-SUBADM-DTIC > N3
+            "N4": 92,  # CC-SE-SUBADM-DTIC > N4
         }
 
         try:
@@ -630,23 +681,23 @@ class GLPIMetricsCollector:
             url = f"{self.config.base_url}/apirest.php/search/Group_User"
 
             params = {
-                'range': '0-99',
-                'criteria[0][field]': '4',  # Campo users_id
-                'criteria[0][searchtype]': 'equals',
-                'criteria[0][value]': str(user_id),
-                'forcedisplay[0]': '3',     # groups_id
-                'forcedisplay[1]': '4',     # users_id
+                "range": "0-99",
+                "criteria[0][field]": "4",  # Campo users_id
+                "criteria[0][searchtype]": "equals",
+                "criteria[0][value]": str(user_id),
+                "forcedisplay[0]": "3",  # groups_id
+                "forcedisplay[1]": "4",  # users_id
             }
 
             response = self.session.get(url, params=params)
             response.raise_for_status()
 
             data = response.json()
-            if data and isinstance(data, dict) and data.get('data'):
-                for group_entry in data['data']:
-                    if isinstance(group_entry, dict) and '3' in group_entry:
+            if data and isinstance(data, dict) and data.get("data"):
+                for group_entry in data["data"]:
+                    if isinstance(group_entry, dict) and "3" in group_entry:
                         try:
-                            group_id = int(group_entry['3'])
+                            group_id = int(group_entry["3"])
 
                             # Verificar se o grupo corresponde aos service_levels
                             for level, level_group_id in service_levels.items():
@@ -675,9 +726,9 @@ class GLPIMetricsCollector:
                 return "N1"  # Nível padrão
 
             user_data = response.json()
-            name = user_data.get('name', '').lower()
-            firstname = user_data.get('firstname', '').lower()
-            realname = user_data.get('realname', '').lower()
+            name = user_data.get("name", "").lower()
+            firstname = user_data.get("firstname", "").lower()
+            realname = user_data.get("realname", "").lower()
 
             # Mapeamento correto dos técnicos por nível (conforme backend real)
             n1_names = [
@@ -729,8 +780,6 @@ class GLPIMetricsCollector:
             print(f"      Erro ao determinar nível por nome para usuário {user_id}: {e}")
             return "N1"  # Nível padrão em caso de erro
 
-
-
     def _get_technician_metrics_corrected(self, tecnico_id: str) -> Dict[str, Any]:
         """
         Coleta métricas de performance de um técnico específico (implementação corrigida)
@@ -745,12 +794,12 @@ class GLPIMetricsCollector:
 
         # Buscar todos os tickets atribuídos ao técnico
         params = {
-            'criteria[0][field]': 5,       # Campo técnico atribuído
-            'criteria[0][searchtype]': 'equals',
-            'criteria[0][value]': tecnico_id,
-            'forcedisplay[0]': 2,          # ID
-            'forcedisplay[1]': 12,         # Status
-            'range': '0-1000'
+            "criteria[0][field]": 5,  # Campo técnico atribuído
+            "criteria[0][searchtype]": "equals",
+            "criteria[0][value]": tecnico_id,
+            "forcedisplay[0]": 2,  # ID
+            "forcedisplay[1]": 12,  # Status
+            "range": "0-1000",
         }
 
         try:
@@ -758,14 +807,14 @@ class GLPIMetricsCollector:
             response.raise_for_status()
 
             data = response.json()
-            tickets = data.get('data', [])
+            tickets = data.get("data", [])
 
             total = len(tickets)
             resolvidos = 0
             pendentes = 0
 
             for ticket in tickets:
-                status_id = int(ticket.get('12', 0))
+                status_id = int(ticket.get("12", 0))
 
                 if status_id in [5, 6]:  # Solucionado ou Fechado
                     resolvidos += 1
@@ -775,24 +824,15 @@ class GLPIMetricsCollector:
             taxa_resolucao = (resolvidos / total * 100) if total > 0 else 0
 
             return {
-                'total': total,
-                'resolvidos': resolvidos,
-                'pendentes': pendentes,
-                'taxa_resolucao': round(taxa_resolucao, 1)
+                "total": total,
+                "resolvidos": resolvidos,
+                "pendentes": pendentes,
+                "taxa_resolucao": round(taxa_resolucao, 1),
             }
 
         except requests.exceptions.RequestException as e:
             print(f"        Erro ao buscar métricas do técnico {tecnico_id}: {e}")
-            return {
-                'total': 0,
-                'resolvidos': 0,
-                'pendentes': 0,
-                'taxa_resolucao': 0.0
-            }
-
-
-
-
+            return {"total": 0, "resolvidos": 0, "pendentes": 0, "taxa_resolucao": 0.0}
 
     def _get_user_details(self, user_id: str) -> Optional[Dict[str, Any]]:
         """
@@ -813,51 +853,43 @@ class GLPIMetricsCollector:
             user_data = response.json()
 
             # Aplicar filtros conforme glpi_service.py
-            is_active = str(user_data.get('is_active', '0')).strip()
-            is_deleted = str(user_data.get('is_deleted', '0')).strip()
+            is_active = str(user_data.get("is_active", "0")).strip()
+            is_deleted = str(user_data.get("is_deleted", "0")).strip()
 
             # Verificar se o usuário está ativo e não deletado
-            if str(is_active) != '1':
+            if str(is_active) != "1":
                 print(f"      Usuário {user_id} inativo (is_active={is_active})")
                 return None
 
-            if str(is_deleted) == '1':
+            if str(is_deleted) == "1":
                 print(f"      Usuário {user_id} deletado (is_deleted={is_deleted})")
                 return None
 
             # Não verificar perfil técnico pois já estamos buscando apenas técnicos ativos
 
             # Construir nome completo conforme glpi_service.py
-            firstname = str(user_data.get('firstname', '')).strip()
-            realname = str(user_data.get('realname', '')).strip()
-            username = str(user_data.get('name', '')).strip()
+            firstname = str(user_data.get("firstname", "")).strip()
+            realname = str(user_data.get("realname", "")).strip()
+            username = str(user_data.get("name", "")).strip()
 
             full_name = f"{firstname} {realname}".strip()
             if not full_name:
                 full_name = username
             if not full_name:
-                full_name = f'Usuário {user_id}'
+                full_name = f"Usuário {user_id}"
 
             return {
-                'id': user_id,
-                'nome': full_name,
-                'login': username,
-                'ativo': int(is_active),
-                'is_active': is_active,
-                'is_deleted': is_deleted
+                "id": user_id,
+                "nome": full_name,
+                "login": username,
+                "ativo": int(is_active),
+                "is_active": is_active,
+                "is_deleted": is_deleted,
             }
 
         except requests.exceptions.RequestException as e:
             print(f"      Erro ao buscar usuário {user_id}: {e}")
             return None
-
-
-
-
-
-
-
-
 
     def logout(self) -> bool:
         """
@@ -887,8 +919,8 @@ class GLPIMetricsCollector:
 
             # Limpar session token
             self.session_token = None
-            if 'Session-Token' in self.session.headers:
-                del self.session.headers['Session-Token']
+            if "Session-Token" in self.session.headers:
+                del self.session.headers["Session-Token"]
 
             print(f"{Fore.GREEN}✅ Sessão finalizada com sucesso!{Style.RESET_ALL}")
             return True
@@ -920,39 +952,39 @@ class GLPIMetricsCollector:
 
         # Estrutura de resultado
         result = {
-            'timestamp': start_time.isoformat(),
-            'success': False,
-            'metrics': {},
-            'errors': []
+            "timestamp": start_time.isoformat(),
+            "success": False,
+            "metrics": {},
+            "errors": [],
         }
 
         try:
             # 1. Autenticação
             if not self.login():
-                result['errors'].append('Falha na autenticação')
+                result["errors"].append("Falha na autenticação")
                 return result
 
             # 2. Métricas gerais
             print(f"\n{Fore.MAGENTA}📊 FASE 1: Métricas Gerais{Style.RESET_ALL}")
-            result['metrics']['status_geral'] = self.get_status_geral()
+            result["metrics"]["status_geral"] = self.get_status_geral()
 
             # 3. Tickets novos
             print(f"\n{Fore.MAGENTA}🎫 FASE 2: Tickets Novos{Style.RESET_ALL}")
-            result['metrics']['tickets_novos'] = self.get_tickets_novos()
+            result["metrics"]["tickets_novos"] = self.get_tickets_novos()
 
             # 4. Ranking de técnicos
             print(f"\n{Fore.MAGENTA}🏆 FASE 3: Ranking de Técnicos{Style.RESET_ALL}")
-            result['metrics']['ranking_tecnicos'] = self.get_ranking_tecnicos()
+            result["metrics"]["ranking_tecnicos"] = self.get_ranking_tecnicos()
 
             # 5. Status por nível
             print(f"\n{Fore.MAGENTA}📈 FASE 4: Status por Nível{Style.RESET_ALL}")
-            result['metrics']['status_por_nivel'] = self.get_status_por_nivel()
+            result["metrics"]["status_por_nivel"] = self.get_status_por_nivel()
 
-            result['success'] = True
+            result["success"] = True
 
         except Exception as e:
             error_msg = f"Erro durante coleta: {str(e)}"
-            result['errors'].append(error_msg)
+            result["errors"].append(error_msg)
             print(f"{Fore.RED}❌ {error_msg}{Style.RESET_ALL}")
 
         finally:
@@ -963,11 +995,11 @@ class GLPIMetricsCollector:
         # Calcular tempo total
         end_time = datetime.now()
         duration = (end_time - start_time).total_seconds()
-        result['duration_seconds'] = duration
+        result["duration_seconds"] = duration
 
         # Resumo final
         print(f"\n{Fore.MAGENTA}{'='*60}{Style.RESET_ALL}")
-        if result['success']:
+        if result["success"]:
             print(f"{Fore.GREEN}✅ COLETA CONCLUÍDA COM SUCESSO!{Style.RESET_ALL}")
         else:
             print(f"{Fore.RED}❌ COLETA FINALIZADA COM ERROS{Style.RESET_ALL}")
@@ -976,6 +1008,7 @@ class GLPIMetricsCollector:
         print(f"{Fore.MAGENTA}{'='*60}{Style.RESET_ALL}")
 
         return result
+
 
 def save_metrics_to_file(metrics: Dict[str, Any], filename: Optional[str] = None) -> str:
     """
@@ -989,14 +1022,15 @@ def save_metrics_to_file(metrics: Dict[str, Any], filename: Optional[str] = None
         Caminho do arquivo salvo
     """
     if not filename:
-        timestamp = datetime.now().strftime('%Y%m%d_%H%M%S')
-        filename = f'glpi_metrics_{timestamp}.json'
+        timestamp = datetime.now().strftime("%Y%m%d_%H%M%S")
+        filename = f"glpi_metrics_{timestamp}.json"
 
-    with open(filename, 'w', encoding='utf-8') as f:
+    with open(filename, "w", encoding="utf-8") as f:
         json.dump(metrics, f, indent=2, ensure_ascii=False)
 
     print(f"{Fore.GREEN}💾 Métricas salvas em: {filename}{Style.RESET_ALL}")
     return filename
+
 
 def main():
     """
@@ -1025,7 +1059,9 @@ def main():
             return
 
         if not config.user_token and not (config.username and config.password):
-            print(f"{Fore.RED}❌ Credenciais não configuradas (USER_TOKEN ou USERNAME/PASSWORD){Style.RESET_ALL}")
+            print(
+                f"{Fore.RED}❌ Credenciais não configuradas (USER_TOKEN ou USERNAME/PASSWORD){Style.RESET_ALL}"
+            )
             return
 
     except Exception as e:
@@ -1039,17 +1075,22 @@ def main():
     metrics = collector.collect_all_metrics()
 
     # Salvar resultados
-    if metrics['success']:
+    if metrics["success"]:
         filename = save_metrics_to_file(metrics)
-        print(f"\n{Fore.GREEN}🎉 Processo concluído! Verifique o arquivo: {filename}{Style.RESET_ALL}")
+        print(
+            f"\n{Fore.GREEN}🎉 Processo concluído! Verifique o arquivo: {filename}{Style.RESET_ALL}"
+        )
     else:
-        print(f"\n{Fore.RED}⚠️  Processo finalizado com erros. Verifique os logs acima.{Style.RESET_ALL}")
-        if metrics['errors']:
+        print(
+            f"\n{Fore.RED}⚠️  Processo finalizado com erros. Verifique os logs acima.{Style.RESET_ALL}"
+        )
+        if metrics["errors"]:
             print(f"{Fore.RED}Erros encontrados:{Style.RESET_ALL}")
-            for error in metrics['errors']:
+            for error in metrics["errors"]:
                 print(f"{Fore.RED}  - {error}{Style.RESET_ALL}")
 
-if __name__ == '__main__':
+
+if __name__ == "__main__":
     """
     Execução direta do script
 

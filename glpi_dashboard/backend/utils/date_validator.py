@@ -42,9 +42,7 @@ class DateValidator:
             return False
 
     @classmethod
-    def validate_date_range(
-        cls, start_date: Optional[str], end_date: Optional[str]
-    ) -> bool:
+    def validate_date_range(cls, start_date: Optional[str], end_date: Optional[str]) -> bool:
         """Valida se o range de datas é válido (start_date <= end_date).
 
         Args:
@@ -57,9 +55,7 @@ class DateValidator:
         if not start_date or not end_date:
             return True  # Range parcial é válido
 
-        if not cls.validate_date_format(start_date) or not cls.validate_date_format(
-            end_date
-        ):
+        if not cls.validate_date_format(start_date) or not cls.validate_date_format(end_date):
             return False
 
         try:
@@ -147,16 +143,12 @@ class DateValidator:
                 "start_date": (today.replace(day=1) - timedelta(days=1))
                 .replace(day=1)
                 .strftime(cls.DATE_FORMAT),
-                "end_date": (today.replace(day=1) - timedelta(days=1)).strftime(
-                    cls.DATE_FORMAT
-                ),
+                "end_date": (today.replace(day=1) - timedelta(days=1)).strftime(cls.DATE_FORMAT),
             },
         }
 
     @classmethod
-    def expand_predefined_range(
-        cls, range_name: str
-    ) -> Tuple[Optional[str], Optional[str]]:
+    def expand_predefined_range(cls, range_name: str) -> Tuple[Optional[str], Optional[str]]:
         """Expande um nome de range predefinido para start_date e end_date.
 
         Args:
@@ -225,18 +217,10 @@ class DateValidator:
             )
 
         if end_date and not cls.validate_date_format(end_date):
-            raise DateValidationError(
-                f"Formato de end_date inválido: {end_date}. Use YYYY-MM-DD"
-            )
+            raise DateValidationError(f"Formato de end_date inválido: {end_date}. Use YYYY-MM-DD")
 
-        if (
-            start_date
-            and end_date
-            and not cls.validate_date_range(start_date, end_date)
-        ):
-            raise DateValidationError(
-                f"Range de datas inválido: {start_date} > {end_date}"
-            )
+        if start_date and end_date and not cls.validate_date_range(start_date, end_date):
+            raise DateValidationError(f"Range de datas inválido: {start_date} > {end_date}")
 
         current_index = criteria_start_index
 
@@ -296,9 +280,7 @@ class DateValidator:
         if date_range:
             start_date, end_date = cls.expand_predefined_range(date_range)
             if start_date is None:
-                logger.warning(
-                    f"[OBSERVABILITY] Range predefinido inválido: '{date_range}'"
-                )
+                logger.warning(f"[OBSERVABILITY] Range predefinido inválido: '{date_range}'")
                 return (
                     None,
                     None,
@@ -320,9 +302,7 @@ class DateValidator:
                 start_dt = datetime.strptime(start_date, cls.DATE_FORMAT)
                 end_dt = datetime.strptime(end_date, cls.DATE_FORMAT)
                 days_diff = (end_dt - start_dt).days + 1
-                logger.info(
-                    f"[OBSERVABILITY] Janela temporal: {days_diff} dia(s) de dados"
-                )
+                logger.info(f"[OBSERVABILITY] Janela temporal: {days_diff} dia(s) de dados")
 
         # Usar normalização padrão
         return cls.normalize_date_filters(filters)

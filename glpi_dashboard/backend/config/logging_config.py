@@ -11,9 +11,7 @@ from typing import Any, Dict, Optional
 from utils.structured_logger import JSONFormatter
 
 
-def get_logging_config(
-    log_level: str = "INFO", log_file: Optional[str] = None
-) -> Dict[str, Any]:
+def get_logging_config(log_level: str = "INFO", log_file: Optional[str] = None) -> Dict[str, Any]:
     """
     Retorna configuração de logging estruturado.
 
@@ -30,9 +28,7 @@ def get_logging_config(
     # Validar log_level
     valid_levels = ["DEBUG", "INFO", "WARNING", "ERROR", "CRITICAL"]
     if log_level.upper() not in valid_levels:
-        raise ValueError(
-            f"log_level deve ser um dos: {valid_levels}. Recebido: {log_level}"
-        )
+        raise ValueError(f"log_level deve ser um dos: {valid_levels}. Recebido: {log_level}")
 
     log_level = log_level.upper()
 
@@ -61,7 +57,7 @@ def get_logging_config(
                 "maxBytes": 10485760,  # 10MB
                 "backupCount": 5,
                 "encoding": "utf-8",
-            }
+            },
         },
         "loggers": {
             "glpi_service": {
@@ -74,7 +70,6 @@ def get_logging_config(
                 "handlers": ["console"],
                 "propagate": False,
             },
-
             "glpi.api": {
                 "level": "DEBUG",
                 "handlers": ["console", "debug_ranking_file"],
@@ -125,9 +120,7 @@ def get_logging_config(
     return config
 
 
-def configure_structured_logging(
-    log_level: str = "INFO", log_file: Optional[str] = None
-) -> None:
+def configure_structured_logging(log_level: str = "INFO", log_file: Optional[str] = None) -> None:
     """
     Configura o sistema de logging estruturado.
 

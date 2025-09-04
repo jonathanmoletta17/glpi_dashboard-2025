@@ -39,6 +39,7 @@ logs/
 
 # Generated metrics files
 glpi_metrics_*.json
+base_conhecimento_copilot*/
 
 # Debug files
 debug_*.py
@@ -59,3 +60,15 @@ Thumbs.db
 *.temp
 *.bak
 *.backup
+
+extract_*.py
+demo_*.py
+GUIA_*.md
+PLANO_*.md
+PROMPT_*.md
+RESPOSTA_*.md
+RELATORIO_*.md
+optimize_*.py
+test_*.py
+validate_*.py
+validation_*.json

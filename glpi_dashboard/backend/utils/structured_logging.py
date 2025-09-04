@@ -16,9 +16,7 @@ from typing import Any, Dict, List, Optional, Union
 from .prometheus_metrics import prometheus_metrics
 
 # Context variables para correlação
-correlation_id_var: ContextVar[Optional[str]] = ContextVar(
-    "correlation_id", default=None
-)
+correlation_id_var: ContextVar[Optional[str]] = ContextVar("correlation_id", default=None)
 operation_context_var: ContextVar[Optional[Dict[str, Any]]] = ContextVar(
     "operation_context", default=None
 )
@@ -27,9 +25,7 @@ operation_context_var: ContextVar[Optional[Dict[str, Any]]] = ContextVar(
 class JSONFormatter(logging.Formatter):
     """Formatter para logs estruturados em JSON."""
 
-    def __init__(
-        self, include_extra: bool = True, exclude_fields: Optional[List[str]] = None
-    ):
+    def __init__(self, include_extra: bool = True, exclude_fields: Optional[List[str]] = None):
         super().__init__()
         self.include_extra = include_extra
         self.exclude_fields = exclude_fields or []
@@ -124,9 +120,7 @@ class JSONFormatter(logging.Formatter):
         }
 
         def sanitize_value(key: str, value: Any) -> Any:
-            if isinstance(key, str) and any(
-                field in key.lower() for field in sensitive_fields
-            ):
+            if isinstance(key, str) and any(field in key.lower() for field in sensitive_fields):
                 if isinstance(value, str) and len(value) > 8:
                     return f"{value[:4]}***{value[-4:]}"
                 return "***"
@@ -134,9 +128,7 @@ class JSONFormatter(logging.Formatter):
             if isinstance(value, dict):
                 return {k: sanitize_value(k, v) for k, v in value.items()}
             elif isinstance(value, list):
-                return [
-                    sanitize_value(f"item_{i}", item) for i, item in enumerate(value)
-                ]
+                return [sanitize_value(f"item_{i}", item) for i, item in enumerate(value)]
 
             return value
 
@@ -237,9 +229,7 @@ class StructuredLogger:
 
     def log_warning_with_context(self, warning_type: str, message: str, **kwargs):
         """Registra um warning com contexto específico."""
-        self.logger.warning(
-            message, extra={"warning_type": warning_type, "warning_data": kwargs}
-        )
+        self.logger.warning(message, extra={"warning_type": warning_type, "warning_data": kwargs})
 
         # Registrar alerta no Prometheus
         prometheus_metrics.record_alert(warning_type, "warning")
@@ -317,8 +307,7 @@ def with_structured_logging(operation_name: str, logger_name: Optional[str] = No
                 k: v
                 for k, v in kwargs.items()
                 if not any(
-                    sensitive in k.lower()
-                    for sensitive in ["password", "token", "secret", "key"]
+                    sensitive in k.lower() for sensitive in ["password", "token", "secret", "key"]
                 )
             }
 
@@ -336,9 +325,7 @@ def with_structured_logging(operation_name: str, logger_name: Optional[str] = No
                     result_type=type(result).__name__,
                 )
 
-                logger.log_performance_metric(
-                    f"{operation_name}_duration", duration, "seconds"
-                )
+                logger.log_performance_metric(f"{operation_name}_duration", duration, "seconds")
 
                 return result
 
@@ -372,9 +359,7 @@ audit_logger = StructuredLogger("glpi.audit")
 
 
 # Funções de conveniência
-def log_api_request(
-    method: str, endpoint: str, status_code: int, duration: float, **kwargs
-):
+def log_api_request(method: str, endpoint: str, status_code: int, duration: float, **kwargs):
     """Log estruturado para requisições da API."""
     api_logger.log_performance_metric(
         "api_request_duration",
@@ -409,9 +394,7 @@ def log_glpi_request(endpoint: str, status_code: int, duration: float, **kwargs)
     )
 
 
-def log_metrics_processing(
-    query_type: str, duration: float, result_count: int = 0, **kwargs
-):
+def log_metrics_processing(query_type: str, duration: float, result_count: int = 0, **kwargs):
     """Log estruturado para processamento de métricas."""
     metrics_logger.log_performance_metric(
         "metrics_processing_duration",

@@ -14,12 +14,7 @@ from werkzeug.exceptions import HTTPException
 
 from .alerting_system import alert_manager, record_api_response_time
 from .prometheus_metrics import monitor_api_endpoint, prometheus_metrics
-from .structured_logging import (
-    StructuredLogger,
-    api_logger,
-    correlation_id_var,
-    log_api_request,
-)
+from .structured_logging import StructuredLogger, api_logger, correlation_id_var, log_api_request
 
 
 class ObservabilityMiddleware:
@@ -99,9 +94,7 @@ class ObservabilityMiddleware:
         )
 
         # Registrar no sistema de alertas
-        record_api_response_time(
-            duration, endpoint=request_data.get("endpoint", "unknown")
-        )
+        record_api_response_time(duration, endpoint=request_data.get("endpoint", "unknown"))
 
         # Log estruturado
         log_api_request(
@@ -148,9 +141,7 @@ class ObservabilityMiddleware:
             error_type = "internal_error"
 
         # Registrar erro nas métricas
-        prometheus_metrics.record_error(
-            error_type, request_data.get("endpoint", "unknown")
-        )
+        prometheus_metrics.record_error(error_type, request_data.get("endpoint", "unknown"))
 
         # Log estruturado do erro
         api_logger.log_error_with_context(
@@ -234,9 +225,7 @@ class ObservabilityMiddleware:
                 "health_endpoint_error", f"Erro no health check: {str(e)}", exception=e
             )
             return (
-                jsonify(
-                    {"status": "unhealthy", "error": str(e), "timestamp": time.time()}
-                ),
+                jsonify({"status": "unhealthy", "error": str(e), "timestamp": time.time()}),
                 500,
             )
 
@@ -287,9 +276,7 @@ def with_observability_instrumentation(operation_name: str, component: str = "ap
         @wraps(func)
         def wrapper(*args, **kwargs):
             logger = StructuredLogger(f"observability.{component}")
-            correlation_id = (
-                correlation_id_var.get() or logger.generate_correlation_id()
-            )
+            correlation_id = correlation_id_var.get() or logger.generate_correlation_id()
 
             # Configurar contexto
             correlation_id_var.set(correlation_id)

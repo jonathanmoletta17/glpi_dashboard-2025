@@ -10,9 +10,11 @@ import shutil
 import sys
 from pathlib import Path
 
+
 def get_project_root():
     """Retorna o diretório raiz do projeto"""
     return Path(__file__).parent.parent
+
 
 def get_files_to_remove():
     """Lista de arquivos e pastas para remoção"""
@@ -22,18 +24,15 @@ def get_files_to_remove():
         "CORRECOES_FINAIS_APLICADAS.md",
         "RELATORIO_LIMPEZA_FINAL.md",
         "RELATORIO_EVIDENCIAS_TECNICOS_GLPI.txt",
-        
         # Backend - Documentação de Desenvolvimento
         "backend/docs/",
         "backend/Makefile",
         "backend/pyproject.toml",
         "backend/pytest.ini",
         "backend/logs/",
-        
         # Config - Scripts de Setup Obsoletos
         "config/setup/",
         "config/README.md",
-        
         # Docs - Documentação de Desenvolvimento
         "docs/analysis/",
         "docs/archive/",
@@ -47,7 +46,6 @@ def get_files_to_remove():
         "docs/SISTEMA_TRATAMENTO_ERROS.md",
         "docs/TESTING_GUIDE.md",
         "docs/validacao_dados_corrigidos.txt",
-        
         # Frontend - Testes Excessivos
         "frontend/src/__tests__/",
         "frontend/src/test/",
@@ -62,10 +60,10 @@ def get_files_to_remove():
         "frontend/vitest.config.integration.ts",
         "frontend/vitest.config.unit.ts",
         "frontend/test-api.html",
-        
         # Scripts - Validação de Acessibilidade
         "scripts/validate-accessibility.js",
     ]
+
 
 def get_files_to_keep():
     """Lista de arquivos essenciais que devem ser mantidos"""
@@ -77,18 +75,15 @@ def get_files_to_keep():
         "docker-compose.yml",
         "backend/Dockerfile",
         "frontend/Dockerfile",
-        
         # Documentação Técnica da API
         "docs/api/openapi.yaml",
         "docs/api/README.md",
         "docs/GLPI_KNOWLEDGE_BASE.md",
-        
         # Scripts de Validação Essenciais
         "validar_filtros_data.py",
         "scripts/cleanup_project.py",
         "scripts/cleanup_root.py",
         "scripts/validate_cleanup.py",
-        
         # Estrutura do Projeto
         "backend/",
         "frontend/",
@@ -97,6 +92,7 @@ def get_files_to_keep():
         "docs/",
         "scripts/",
     ]
+
 
 def remove_file_or_dir(path):
     """Remove arquivo ou diretório de forma segura"""
@@ -112,6 +108,7 @@ def remove_file_or_dir(path):
         print(f"❌ Erro ao remover {path}: {e}")
         return False
 
+
 def validate_essential_files():
     """Valida se arquivos essenciais ainda existem"""
     root = get_project_root()
@@ -122,54 +119,56 @@ def validate_essential_files():
         "requirements.txt",
         "docker-compose.yml",
         "docs/api/openapi.yaml",
-        "docs/GLPI_KNOWLEDGE_BASE.md"
+        "docs/GLPI_KNOWLEDGE_BASE.md",
     ]
-    
+
     missing_files = []
     for file_path in essential_files:
         if not (root / file_path).exists():
             missing_files.append(file_path)
-    
+
     if missing_files:
         print("❌ ATENÇÃO: Arquivos essenciais não encontrados:")
         for file_path in missing_files:
             print(f"   - {file_path}")
         return False
-    
+
     print("✅ Todos os arquivos essenciais estão presentes")
     return True
+
 
 def count_files_in_directory(directory):
     """Conta arquivos em um diretório recursivamente"""
     count = 0
     if directory.exists():
-        for item in directory.rglob('*'):
+        for item in directory.rglob("*"):
             if item.is_file():
                 count += 1
     return count
+
 
 def main():
     """Função principal de limpeza interna profunda"""
     print("🔍 INICIANDO LIMPEZA INTERNA PROFUNDA DO PROJETO GLPI DASHBOARD")
     print("=" * 70)
-    
+
     root = get_project_root()
     files_to_remove = get_files_to_remove()
-    
+
     # Contagem de arquivos antes da limpeza
     print("\n📊 CONTAGEM DE ARQUIVOS ANTES DA LIMPEZA:")
     total_files_before = 0
-    for item in root.rglob('*'):
+    for item in root.rglob("*"):
         if item.is_file():
             total_files_before += 1
     print(f"   📁 Total de arquivos: {total_files_before}")
-    
+
     # Validação prévia
     print("\n📋 VALIDAÇÃO PRÉVIA:")
     if not validate_essential_files():
         print("❌ Abortando limpeza - arquivos essenciais não encontrados")
         sys.exit(1)
-    
+
     # Confirmação
     print(f"\n🎯 ARQUIVOS/PASTAS PARA REMOÇÃO: {len(files_to_remove)}")
     for file_path in files_to_remove:
@@ -182,48 +181,48 @@ def main():
                 print(f"   📄 {file_path}")
         else:
             print(f"   ⚠️  {file_path} (não encontrado)")
-    
+
     response = input("\n❓ Continuar com a limpeza interna profunda? (s/N): ").strip().lower()
-    if response not in ['s', 'sim', 'y', 'yes']:
+    if response not in ["s", "sim", "y", "yes"]:
         print("❌ Limpeza cancelada pelo usuário")
         sys.exit(0)
-    
+
     # Execução da limpeza
     print("\n🧹 EXECUTANDO LIMPEZA INTERNA PROFUNDA:")
     removed_count = 0
     failed_count = 0
     files_removed = 0
-    
+
     for file_path in files_to_remove:
         full_path = root / file_path
         if full_path.exists():
             if full_path.is_dir():
                 file_count = count_files_in_directory(full_path)
                 files_removed += file_count
-            
+
             if remove_file_or_dir(full_path):
                 removed_count += 1
             else:
                 failed_count += 1
         else:
             print(f"⚠️  Arquivo não encontrado: {file_path}")
-    
+
     # Contagem de arquivos após a limpeza
     print("\n📊 CONTAGEM DE ARQUIVOS APÓS A LIMPEZA:")
     total_files_after = 0
-    for item in root.rglob('*'):
+    for item in root.rglob("*"):
         if item.is_file():
             total_files_after += 1
     print(f"   📁 Total de arquivos: {total_files_after}")
     print(f"   📉 Arquivos removidos: {total_files_before - total_files_after}")
-    
+
     # Validação pós-limpeza
     print("\n📋 VALIDAÇÃO PÓS-LIMPEZA:")
     if not validate_essential_files():
         print("❌ ERRO: Arquivos essenciais foram removidos!")
         print("   Execute 'git checkout' para restaurar se necessário")
         sys.exit(1)
-    
+
     # Relatório final
     print("\n🎉 LIMPEZA INTERNA PROFUNDA CONCLUÍDA:")
     print(f"   ✅ Diretórios/arquivos removidos: {removed_count}")
@@ -231,11 +230,11 @@ def main():
     print(f"   📁 Total processado: {len(files_to_remove)}")
     print(f"   📄 Arquivos individuais removidos: {files_removed}")
     print(f"   📊 Redução total: {total_files_before - total_files_after} arquivos")
-    
+
     print("\n📋 ESTRUTURA FINAL ULTRA-LIMPA:")
     essential_structure = [
         "backend/ - Código do backend (sem docs de desenvolvimento)",
-        "frontend/ - Código do frontend (sem testes excessivos)", 
+        "frontend/ - Código do frontend (sem testes excessivos)",
         "config/ - Configurações essenciais (sem setup scripts)",
         "docs/ - Documentação técnica da API apenas",
         "scripts/ - Scripts de manutenção essenciais",
@@ -243,11 +242,12 @@ def main():
         "docker-compose.yml - Orquestração",
         "requirements.txt - Dependências",
     ]
-    
+
     for item in essential_structure:
         print(f"   ✅ {item}")
-    
+
     print("\n🚀 PROJETO ULTRA-LIMPO E FUNCIONAL!")
+
 
 if __name__ == "__main__":
     main()

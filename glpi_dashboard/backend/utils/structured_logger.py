@@ -35,9 +35,7 @@ class JSONFormatter(logging.Formatter):
         try:
             # Campos básicos obrigatórios
             log_entry = {
-                "timestamp": datetime.fromtimestamp(
-                    record.created, tz=timezone.utc
-                ).isoformat(),
+                "timestamp": datetime.fromtimestamp(record.created, tz=timezone.utc).isoformat(),
                 "level": record.levelname or "UNKNOWN",
                 "logger_name": record.name or "unknown",
                 "message": self._safe_get_message(record),
@@ -57,12 +55,8 @@ class JSONFormatter(logging.Formatter):
             if record.exc_info:
                 try:
                     exception_info = {
-                        "type": record.exc_info[0].__name__
-                        if record.exc_info[0]
-                        else "Unknown",
-                        "message": str(record.exc_info[1])
-                        if record.exc_info[1]
-                        else "No message",
+                        "type": record.exc_info[0].__name__ if record.exc_info[0] else "Unknown",
+                        "message": str(record.exc_info[1]) if record.exc_info[1] else "No message",
                         "traceback": traceback.format_exception(*record.exc_info),
                     }
                     log_entry["exception"] = json.dumps(exception_info)
@@ -194,9 +188,7 @@ class StructuredLogger:
                     # Fallback para handler básico
                     basic_handler = logging.StreamHandler()
                     basic_handler.setFormatter(
-                        logging.Formatter(
-                            "%(asctime)s - %(name)s - %(levelname)s - %(message)s"
-                        )
+                        logging.Formatter("%(asctime)s - %(name)s - %(levelname)s - %(message)s")
                     )
                     self.logger.addHandler(basic_handler)
 
@@ -248,9 +240,7 @@ class StructuredLogger:
         except Exception as e:
             # Fallback para log básico
             try:
-                self.logger.error(
-                    f"Failed to log message: {str(e)}. Original message: {message}"
-                )
+                self.logger.error(f"Failed to log message: {str(e)}. Original message: {message}")
             except Exception:
                 # Último recurso
                 print(f"CRITICAL: Failed to log message: {message}")
@@ -303,9 +293,7 @@ def log_api_call(logger: StructuredLogger) -> Callable:
                                 json.dumps(arg, default=str)
                                 safe_args.append(arg)
                             except Exception:
-                                safe_args.append(
-                                    str(arg)[:100] if str(arg) else "<empty>"
-                                )
+                                safe_args.append(str(arg)[:100] if str(arg) else "<empty>")
                 except Exception:
                     safe_args = ["<failed_to_process_args>"]
 
@@ -321,10 +309,7 @@ def log_api_call(logger: StructuredLogger) -> Callable:
                     }
                     for key, value in kwargs.items():
                         try:
-                            if any(
-                                sensitive in str(key).lower()
-                                for sensitive in sensitive_keys
-                            ):
+                            if any(sensitive in str(key).lower() for sensitive in sensitive_keys):
                                 safe_kwargs[key] = "***REDACTED***"
                             elif isinstance(value, str) and len(value) > 100:
                                 safe_kwargs[key] = f"{value[:100]}..."
@@ -333,9 +318,7 @@ def log_api_call(logger: StructuredLogger) -> Callable:
                                 json.dumps(value, default=str)
                                 safe_kwargs[key] = value
                         except Exception:
-                            safe_kwargs[key] = (
-                                str(value)[:100] if str(value) else "<empty>"
-                            )
+                            safe_kwargs[key] = str(value)[:100] if str(value) else "<empty>"
                 except Exception:
                     safe_kwargs = {"error": "failed_to_process_kwargs"}
 
@@ -363,9 +346,7 @@ def log_api_call(logger: StructuredLogger) -> Callable:
                             event_type="api_call_success",
                         )
                     except Exception:
-                        print(
-                            f"API call completed: {function_name} in {execution_time:.4f}s"
-                        )
+                        print(f"API call completed: {function_name} in {execution_time:.4f}s")
 
                     return result
 
@@ -403,9 +384,7 @@ def log_api_call(logger: StructuredLogger) -> Callable:
     return decorator
 
 
-def log_performance(
-    logger: StructuredLogger, threshold_seconds: float = 1.0
-) -> Callable:
+def log_performance(logger: StructuredLogger, threshold_seconds: float = 1.0) -> Callable:
     """
     Decorador para logar performance de funções.
 
@@ -419,10 +398,7 @@ def log_performance(
         def wrapper(*args: Any, **kwargs: Any) -> Any:
             try:
                 # Validar threshold_seconds
-                if (
-                    not isinstance(threshold_seconds, (int, float))
-                    or threshold_seconds <= 0
-                ):
+                if not isinstance(threshold_seconds, (int, float)) or threshold_seconds <= 0:
                     threshold_seconds_safe = 1.0
                 else:
                     threshold_seconds_safe = float(threshold_seconds)
@@ -517,9 +493,7 @@ def log_api_response(
                 else:
                     safe_response = response_str
             else:
-                safe_response_str = (
-                    str(response_data) if response_data is not None else "None"
-                )
+                safe_response_str = str(response_data) if response_data is not None else "None"
                 safe_response = safe_response_str[:1000] + (
                     "..." if len(safe_response_str) > 1000 else ""
                 )
@@ -542,9 +516,7 @@ def log_api_response(
         if response_time is not None:
             try:
                 if isinstance(response_time, (int, float)) and response_time >= 0:
-                    log_data["response_time_seconds"] = str(
-                        round(float(response_time), 4)
-                    )
+                    log_data["response_time_seconds"] = str(round(float(response_time), 4))
                 else:
                     log_data["response_time_seconds"] = "invalid"
             except Exception:

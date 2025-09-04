@@ -5,9 +5,8 @@ import time
 from functools import wraps
 from typing import Any, Dict, List, Optional
 
-from flask import g, request
-
 from config.settings import active_config
+from flask import g, request
 
 logger = logging.getLogger("performance")
 
@@ -54,11 +53,7 @@ class PerformanceMonitor:
 
             sorted_times = sorted(self.request_times)
             p95_index = int(len(sorted_times) * 0.95)
-            return (
-                sorted_times[p95_index]
-                if p95_index < len(sorted_times)
-                else sorted_times[-1]
-            )
+            return sorted_times[p95_index] if p95_index < len(sorted_times) else sorted_times[-1]
 
         except Exception as e:
             logger.error(f"Erro ao calcular P95: {e}")
@@ -91,9 +86,7 @@ class PerformanceMonitor:
         """Retorna estatísticas completas"""
         return {
             "total_requests": self.total_requests,
-            "avg_response_time": round(
-                self.get_average_response_time() * 1000, 2
-            ),  # em ms
+            "avg_response_time": round(self.get_average_response_time() * 1000, 2),  # em ms
             "p95_response_time": round(self.get_p95_response_time() * 1000, 2),  # em ms
             "cache_hits": self.cache_hits,
             "cache_misses": self.cache_misses,
@@ -163,6 +156,7 @@ def monitor_performance(func):
 
 def extract_filter_params() -> Dict[str, Any]:
     """Extrai parâmetros de filtro da requisição atual"""
+
     # Função auxiliar para converter para int se possível
     def safe_int(value):
         if value is None:
@@ -171,7 +165,7 @@ def extract_filter_params() -> Dict[str, Any]:
             return int(value)
         except (ValueError, TypeError):
             return None
-    
+
     return {
         "start_date": request.args.get("start_date"),
         "end_date": request.args.get("end_date"),
@@ -201,16 +195,11 @@ def cache_with_filters(timeout: int = 300):
             from flask import current_app
 
             # Verifica se o cache está disponível
-            if (
-                not hasattr(current_app, "extensions")
-                or "cache" not in current_app.extensions
-            ):
+            if not hasattr(current_app, "extensions") or "cache" not in current_app.extensions:
                 logger.warning("Cache não disponível, executando função diretamente")
                 return func(*args, **kwargs)
 
-            cache = current_app.extensions["cache"][
-                list(current_app.extensions["cache"].keys())[0]
-            ]
+            cache = current_app.extensions["cache"][list(current_app.extensions["cache"].keys())[0]]
 
             # Gera chave de cache baseada na função e filtros
             cache_key = make_filtered_cache_key(func.__name__)

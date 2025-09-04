@@ -37,9 +37,7 @@ class ResponseFormatter:
             ):
                 for level_name, level_data in raw_metrics["by_level"].items():
                     if not isinstance(level_data, dict):
-                        logger.warning(
-                            f"Dados do nível {level_name} inválidos: {type(level_data)}"
-                        )
+                        logger.warning(f"Dados do nível {level_name} inválidos: {type(level_data)}")
                         continue
 
                     level_key = str(level_name).lower()
@@ -64,15 +62,11 @@ class ResponseFormatter:
 
             # Se há estrutura niveis (sem filtros)
             elif (
-                raw_metrics
-                and "niveis" in raw_metrics
-                and isinstance(raw_metrics["niveis"], dict)
+                raw_metrics and "niveis" in raw_metrics and isinstance(raw_metrics["niveis"], dict)
             ):
                 for level_name, level_data in raw_metrics["niveis"].items():
                     if not isinstance(level_data, dict):
-                        logger.warning(
-                            f"Dados do nível {level_name} inválidos: {type(level_data)}"
-                        )
+                        logger.warning(f"Dados do nível {level_name} inválidos: {type(level_data)}")
                         continue
 
                     # Validar e sanitizar dados do nível
@@ -128,10 +122,7 @@ class ResponseFormatter:
                 )
                 resolvidos = max(
                     0,
-                    (
-                        int(general.get("Solucionado", 0) or 0)
-                        + int(general.get("Fechado", 0) or 0)
-                    ),
+                    (int(general.get("Solucionado", 0) or 0) + int(general.get("Fechado", 0) or 0)),
                 )
             else:
                 # Sem filtros - calcular dos níveis
@@ -276,9 +267,7 @@ class ResponseFormatter:
             return fallback_response
 
     @staticmethod
-    def success(
-        data: Any, message: str = "Operação realizada com sucesso"
-    ) -> Dict[str, Any]:
+    def success(data: Any, message: str = "Operação realizada com sucesso") -> Dict[str, Any]:
         """Método de conveniência para resposta de sucesso"""
         return ResponseFormatter.format_success_response(data, message)
 

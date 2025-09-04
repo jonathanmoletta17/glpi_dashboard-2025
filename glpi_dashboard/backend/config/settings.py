@@ -2,8 +2,8 @@
 import logging
 import os
 import warnings
-from typing import Any, Dict, Optional
 from pathlib import Path
+from typing import Any, Dict, Optional
 
 from dotenv import load_dotenv
 
@@ -13,6 +13,7 @@ load_dotenv()
 # Importação opcional do YAML
 try:
     import yaml
+
     YAML_AVAILABLE = True
 except ImportError:
     YAML_AVAILABLE = False
@@ -47,7 +48,7 @@ class Config:
             config_path = Path(__file__).parent.parent.parent / "config" / "system.yaml"
 
             if config_path.exists():
-                with open(config_path, 'r', encoding='utf-8') as file:
+                with open(config_path, "r", encoding="utf-8") as file:
                     self.yaml_config = yaml.safe_load(file)
             else:
                 # Fallback para configurações padrão se arquivo não existir
@@ -63,7 +64,7 @@ class Config:
             return os.environ.get(env_var)
 
         # Depois tenta YAML
-        keys = path.split('.')
+        keys = path.split(".")
         value = self.yaml_config
         for key in keys:
             if isinstance(value, dict) and key in value:
@@ -81,11 +82,16 @@ class Config:
     # Flask
     @property
     def SECRET_KEY(self) -> str:
-        return self._get_config_value("flask.secret_key", "dev-secret-key-change-in-production", "SECRET_KEY")
+        return self._get_config_value(
+            "flask.secret_key", "dev-secret-key-change-in-production", "SECRET_KEY"
+        )
 
     @property
     def DEBUG(self) -> bool:
-        return self._get_config_value("flask.debug", False) or os.environ.get("FLASK_DEBUG", "False").lower() == "true"
+        return (
+            self._get_config_value("flask.debug", False)
+            or os.environ.get("FLASK_DEBUG", "False").lower() == "true"
+        )
 
     @property
     def PORT(self) -> int:
@@ -106,7 +112,9 @@ class Config:
     # GLPI API
     @property
     def GLPI_URL(self) -> str:
-        return self._get_config_value("glpi.base_url", "http://10.73.0.79/glpi/apirest.php", "GLPI_URL")
+        return self._get_config_value(
+            "glpi.base_url", "http://10.73.0.79/glpi/apirest.php", "GLPI_URL"
+        )
 
     @property
     def GLPI_USER_TOKEN(self) -> str:
@@ -140,15 +148,24 @@ class Config:
     # Observabilidade
     @property
     def PROMETHEUS_GATEWAY_URL(self) -> str:
-        return self._get_config_value("observability.prometheus.gateway_url", "http://localhost:9091", "PROMETHEUS_GATEWAY_URL")
+        return self._get_config_value(
+            "observability.prometheus.gateway_url",
+            "http://localhost:9091",
+            "PROMETHEUS_GATEWAY_URL",
+        )
 
     @property
     def PROMETHEUS_JOB_NAME(self) -> str:
-        return self._get_config_value("observability.prometheus.job_name", "glpi_dashboard", "PROMETHEUS_JOB_NAME")
+        return self._get_config_value(
+            "observability.prometheus.job_name", "glpi_dashboard", "PROMETHEUS_JOB_NAME"
+        )
 
     @property
     def STRUCTURED_LOGGING(self) -> bool:
-        return self._get_config_value("logging.structured", True) or os.environ.get("STRUCTURED_LOGGING", "True").lower() == "true"
+        return (
+            self._get_config_value("logging.structured", True)
+            or os.environ.get("STRUCTURED_LOGGING", "True").lower() == "true"
+        )
 
     @property
     def LOG_FILE_PATH(self) -> str:
@@ -165,15 +182,21 @@ class Config:
     # Alertas
     @property
     def ALERT_RESPONSE_TIME_THRESHOLD(self) -> float:
-        return self._get_config_value("alerts.response_time_threshold", 300, "ALERT_RESPONSE_TIME_THRESHOLD")
+        return self._get_config_value(
+            "alerts.response_time_threshold", 300, "ALERT_RESPONSE_TIME_THRESHOLD"
+        )
 
     @property
     def ALERT_ERROR_RATE_THRESHOLD(self) -> float:
-        return self._get_config_value("alerts.error_rate_threshold", 0.05, "ALERT_ERROR_RATE_THRESHOLD")
+        return self._get_config_value(
+            "alerts.error_rate_threshold", 0.05, "ALERT_ERROR_RATE_THRESHOLD"
+        )
 
     @property
     def ALERT_ZERO_TICKETS_THRESHOLD(self) -> int:
-        return self._get_config_value("alerts.zero_tickets_threshold", 60, "ALERT_ZERO_TICKETS_THRESHOLD")
+        return self._get_config_value(
+            "alerts.zero_tickets_threshold", 60, "ALERT_ZERO_TICKETS_THRESHOLD"
+        )
 
     # Logging
     @property
@@ -182,7 +205,9 @@ class Config:
 
     @property
     def LOG_FORMAT(self) -> str:
-        return self._get_config_value("logging.format", "%(asctime)s - %(name)s - %(levelname)s - %(message)s")
+        return self._get_config_value(
+            "logging.format", "%(asctime)s - %(name)s - %(levelname)s - %(message)s"
+        )
 
     # CORS
     @property
@@ -223,7 +248,9 @@ class Config:
     def PERFORMANCE_TARGET_P95(self) -> int:
         """Target de performance P95 com validação"""
         try:
-            target = self._get_config_value("performance.target_p95", 1000, "PERFORMANCE_TARGET_P95")
+            target = self._get_config_value(
+                "performance.target_p95", 1000, "PERFORMANCE_TARGET_P95"
+            )
             target = int(target)  # Garantir que é inteiro
             if not (50 <= target <= 10000):
                 raise ValueError(f"Performance target deve estar entre 50 e 10000ms: {target}")
@@ -235,12 +262,18 @@ class Config:
     @property
     def MAX_CONTENT_LENGTH(self) -> int:
         """Tamanho máximo de conteúdo"""
-        return int(self._get_config_value("flask.max_content_length", 16777216, "MAX_CONTENT_LENGTH"))
+        return int(
+            self._get_config_value("flask.max_content_length", 16777216, "MAX_CONTENT_LENGTH")
+        )
 
     @property
     def RATE_LIMIT_PER_MINUTE(self) -> int:
         """Limite de requisições por minuto"""
-        return int(self._get_config_value("performance.rate_limit_per_minute", 100, "RATE_LIMIT_PER_MINUTE"))
+        return int(
+            self._get_config_value(
+                "performance.rate_limit_per_minute", 100, "RATE_LIMIT_PER_MINUTE"
+            )
+        )
 
     def _validate_required_configs(self) -> None:
         """Valida configurações obrigatórias"""
@@ -273,9 +306,7 @@ class Config:
 
         # Validar chave secreta em produção
         if not self.DEBUG and self.SECRET_KEY == "dev-secret-key-change-in-production":
-            raise ConfigValidationError(
-                "SECRET_KEY deve ser alterada em ambiente de produção"
-            )
+            raise ConfigValidationError("SECRET_KEY deve ser alterada em ambiente de produção")
 
     @classmethod
     def configure_logging(cls) -> logging.Logger:

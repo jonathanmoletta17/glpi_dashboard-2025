@@ -3,7 +3,6 @@ from datetime import datetime
 from typing import Any, Dict, List, Optional
 
 import requests
-
 from config.settings import active_config
 from services.glpi_service import GLPIService
 from utils.response_formatter import ResponseFormatter
@@ -31,9 +30,7 @@ class APIService:
         if self.api_key:
             self.headers["Authorization"] = f"Bearer {self.api_key}"
 
-    def _make_request(
-        self, endpoint: str, method: str = "GET", data: Dict = None
-    ) -> Dict:
+    def _make_request(self, endpoint: str, method: str = "GET", data: Dict = None) -> Dict:
         """Make HTTP request to external API"""
         url = f"{self.base_url}{endpoint}"
 
@@ -41,9 +38,7 @@ class APIService:
             if method == "GET":
                 response = requests.get(url, headers=self.headers, timeout=self.timeout)
             elif method == "POST":
-                response = requests.post(
-                    url, json=data, headers=self.headers, timeout=self.timeout
-                )
+                response = requests.post(url, json=data, headers=self.headers, timeout=self.timeout)
 
             response.raise_for_status()
             return response.json()
@@ -169,9 +164,7 @@ class APIService:
     def validate_date_range(self, start_date: str, end_date: str) -> bool:
         """Validate date range (start_date <= end_date)"""
         try:
-            if not self.validate_date_format(
-                start_date
-            ) or not self.validate_date_format(end_date):
+            if not self.validate_date_format(start_date) or not self.validate_date_format(end_date):
                 return False
 
             start = datetime.strptime(start_date, "%Y-%m-%d")
