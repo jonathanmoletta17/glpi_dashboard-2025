@@ -13,71 +13,71 @@ from datetime import datetime
 
 def preparar_upload_copilot():
     """Prepara a base de conhecimento para upload no Copilot"""
-    
+
     print("🤖 PREPARANDO UPLOAD PARA COPILOT")
     print("=" * 50)
-    
+
     # Diretórios
     base_original = Path("base_conhecimento_copilot_completa_final")
     base_upload = Path("base_conhecimento_copilot_upload_final")
-    
+
     if not base_original.exists():
         print("❌ Base de conhecimento original não encontrada!")
         return
-    
+
     # Limpar diretório de upload se existir
     if base_upload.exists():
         shutil.rmtree(base_upload)
-    
+
     # Criar estrutura de upload
     base_upload.mkdir(exist_ok=True)
-    
+
     print("📁 Copiando arquivos...")
-    
+
     # Copiar tickets resolvidos
     tickets_orig = base_original / "tickets_resolvidos"
     tickets_dest = base_upload / "tickets_resolvidos"
-    
+
     if tickets_orig.exists():
         shutil.copytree(tickets_orig, tickets_dest)
         print(f"   ✅ Tickets copiados: {tickets_dest}")
-    
+
     # Copiar soluções padrão
     solucoes_orig = base_original / "solucoes_padrao"
     solucoes_dest = base_upload / "solucoes_padrao"
-    
+
     if solucoes_orig.exists():
         shutil.copytree(solucoes_orig, solucoes_dest)
         print(f"   ✅ Soluções padrão copiadas: {solucoes_dest}")
-    
+
     # Copiar metadados
     metadados_orig = base_original / "metadados"
     metadados_dest = base_upload / "metadados"
-    
+
     if metadados_orig.exists():
         shutil.copytree(metadados_orig, metadados_dest)
         print(f"   ✅ Metadados copiados: {metadados_dest}")
-    
+
     # Criar arquivo de índice para o Copilot
     criar_indice_copilot(base_upload)
-    
+
     # Criar arquivo de instruções
     criar_instrucoes_copilot(base_upload)
-    
+
     # Criar resumo da base
     criar_resumo_base(base_upload)
-    
+
     print(f"\n✅ PREPARAÇÃO CONCLUÍDA!")
     print(f"📁 Base pronta para upload: {base_upload}")
     print(f"📊 Total de arquivos: {contar_arquivos(base_upload)}")
-    
+
     # Mostrar estrutura
     print(f"\n📋 ESTRUTURA CRIADA:")
     mostrar_estrutura(base_upload)
 
 def criar_indice_copilot(base_path: Path):
     """Cria arquivo de índice para o Copilot"""
-    
+
     indice = {
         "nome": "Base de Conhecimento GLPI - Casa Civil",
         "versao": "1.0",
@@ -108,16 +108,16 @@ def criar_indice_copilot(base_path: Path):
             "Se não encontrar solução específica, sugira contato técnico"
         ]
     }
-    
+
     indice_file = base_path / "indice_copilot.json"
     with open(indice_file, 'w', encoding='utf-8') as f:
         json.dump(indice, f, indent=2, ensure_ascii=False)
-    
+
     print(f"   ✅ Índice criado: {indice_file}")
 
 def criar_instrucoes_copilot(base_path: Path):
     """Cria arquivo de instruções para o Copilot"""
-    
+
     instrucoes = """# INSTRUÇÕES PARA O COPILOT
 
 ## FUNÇÃO PRINCIPAL
@@ -126,7 +126,7 @@ Você é um assistente especializado em suporte técnico de TI para servidores d
 ## BASE DE CONHECIMENTO
 Esta base contém 1.412 tickets resolvidos do GLPI, organizados por categoria:
 - Rede/WiFi: 424 tickets
-- Sistemas/Configurações: 380 tickets  
+- Sistemas/Configurações: 380 tickets
 - Hardware/Computador: 200 tickets
 - Software/Aplicativos: 173 tickets
 - Hardware/Impressora: 82 tickets
@@ -163,16 +163,16 @@ Esta base contém 1.412 tickets resolvidos do GLPI, organizados por categoria:
 - Não invente soluções não validadas
 - Priorize soluções testadas e aprovadas
 """
-    
+
     instrucoes_file = base_path / "INSTRUCOES_COPILOT.md"
     with open(instrucoes_file, 'w', encoding='utf-8') as f:
         f.write(instrucoes)
-    
+
     print(f"   ✅ Instruções criadas: {instrucoes_file}")
 
 def criar_resumo_base(base_path: Path):
     """Cria resumo da base de conhecimento"""
-    
+
     resumo = """# RESUMO DA BASE DE CONHECIMENTO GLPI
 
 ## ESTATÍSTICAS GERAIS
@@ -225,28 +225,28 @@ Cada arquivo Markdown contém:
 4. Use a solução como base para resposta
 5. Adapte conforme necessário
 """
-    
+
     resumo_file = base_path / "RESUMO_BASE.md"
     with open(resumo_file, 'w', encoding='utf-8') as f:
         f.write(resumo)
-    
+
     print(f"   ✅ Resumo criado: {resumo_file}")
 
 def contar_arquivos(diretorio: Path) -> int:
     """Conta total de arquivos em um diretório"""
-    
+
     total = 0
     for item in diretorio.rglob('*'):
         if item.is_file():
             total += 1
-    
+
     return total
 
 def mostrar_estrutura(diretorio: Path, nivel: int = 0):
     """Mostra estrutura de diretórios"""
-    
+
     indent = "  " * nivel
-    
+
     for item in sorted(diretorio.iterdir()):
         if item.is_dir():
             print(f"{indent}📁 {item.name}/")
