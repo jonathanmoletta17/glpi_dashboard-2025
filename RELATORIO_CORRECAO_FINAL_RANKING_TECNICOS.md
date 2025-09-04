@@ -104,9 +104,9 @@ Jorge: N3 (correto)
 ```python
 def _get_technician_metrics_corrected(self, tecnico_id: str) -> Dict[str, Any]:
     """Coleta métricas de performance de um técnico específico"""
-    
+
     url = f"{self.glpi_url}/search/Ticket"
-    
+
     params = {
         'criteria[0][field]': 5,       # Campo técnico atribuído (FIXO)
         'criteria[0][searchtype]': 'equals',
@@ -115,7 +115,7 @@ def _get_technician_metrics_corrected(self, tecnico_id: str) -> Dict[str, Any]:
         'forcedisplay[1]': 12,         # Status
         'range': '0-5000'              # ✅ LIMITE AUMENTADO
     }
-    
+
     # ... resto do processamento ...
 ```
 
@@ -123,7 +123,7 @@ def _get_technician_metrics_corrected(self, tecnico_id: str) -> Dict[str, Any]:
 ```python
 def _get_technician_level_by_name_fallback(self, user_id: str) -> str:
     """Determina o nível do técnico baseado no nome"""
-    
+
     # Mapeamento correto dos técnicos por nível
     n1_names = [
         "gabriel andrade da conceicao",
@@ -155,7 +155,7 @@ def _get_technician_level_by_name_fallback(self, user_id: str) -> str:
         "paulo cesar pedo nunes",
         "alexandre rovinski almoarqueg",
     ]
-    
+
     # ... lógica de mapeamento ...
 ```
 

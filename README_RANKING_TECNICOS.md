@@ -8,8 +8,8 @@ O sistema de ranking de técnicos do GLPI Dashboard foi desenvolvido para fornec
 
 ## ✅ **STATUS ATUAL**
 
-**Versão:** v2.1.0  
-**Status:** ✅ **FUNCIONANDO CORRETAMENTE**  
+**Versão:** v2.1.0
+**Status:** ✅ **FUNCIONANDO CORRETAMENTE**
 **Última atualização:** 2025-01-03
 
 ### **Problemas Resolvidos:**
@@ -84,27 +84,27 @@ graph TD
 ```python
 def _get_technician_ranking_knowledge_base(self) -> list:
     """Implementação baseada nos scripts que funcionam"""
-    
+
     # 1. Lista de técnicos válidos
     technician_ids = [
         "696", "32", "141", "60", "69", "1032", "252", "721", "926", "1291",
         "185", "1331", "1404", "1088", "1263", "10", "53", "250", "1471"
     ]
-    
+
     # 2. Processar cada técnico
     for tech_id in technician_ids:
         # Buscar dados do usuário
         user_details = self._get_user_details_direct(tech_id)
-        
+
         # Buscar métricas (método corrigido)
         metricas = self._get_technician_metrics_corrected(tech_id)
-        
+
         # Determinar nível
         nivel = self._get_technician_level_by_name_fallback(tech_id)
-        
+
         # Adicionar ao ranking
         ranking.append({...})
-    
+
     # 3. Ordenar e retornar
     return sorted_ranking
 ```

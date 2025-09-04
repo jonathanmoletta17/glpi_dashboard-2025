@@ -142,7 +142,7 @@ tail -f glpi_dashboard/backend/logs/app.log | grep "TÉCNICO"
    ```python
    # ANTES
    'range': '0-1000'
-   
+
    # DEPOIS
    'range': '0-5000'
    ```

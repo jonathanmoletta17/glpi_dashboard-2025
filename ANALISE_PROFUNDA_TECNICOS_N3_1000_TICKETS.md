@@ -27,7 +27,7 @@ def _get_technician_metrics_corrected(self, tecnico_id: str) -> Dict[str, Any]:
     }
 ```
 
-**🎯 PROBLEMA:** 
+**🎯 PROBLEMA:**
 - Técnicos N3 com mais de 1000 tickets **não são processados completamente**
 - A API GLPI retorna apenas os primeiros 1000 tickets
 - O processamento para no limite, resultando em dados incompletos
@@ -111,11 +111,11 @@ def _get_technician_metrics_corrected(self, tecnico_id: str) -> Dict[str, Any]:
 ```python
 def _get_technician_metrics_corrected_paginated(self, tecnico_id: str) -> Dict[str, Any]:
     """Processa técnicos com muitos tickets em páginas"""
-    
+
     all_tickets = []
     page_size = 1000
     start = 0
-    
+
     while True:
         params = {
             'criteria[0][field]': 5,
@@ -125,26 +125,26 @@ def _get_technician_metrics_corrected_paginated(self, tecnico_id: str) -> Dict[s
             'forcedisplay[1]': 12,
             'range': f'{start}-{start + page_size - 1}'
         }
-        
+
         response = self._make_authenticated_request("GET", url, params=params)
         data = response.json()
         tickets = data.get('data', [])
-        
+
         if not tickets:
             break
-            
+
         all_tickets.extend(tickets)
         start += page_size
-        
+
         # Limite de segurança
         if len(all_tickets) > 10000:
             break
-    
+
     # Processar todos os tickets
     total = len(all_tickets)
     resolvidos = sum(1 for t in all_tickets if int(t.get('12', 0)) in [5, 6])
     pendentes = sum(1 for t in all_tickets if int(t.get('12', 0)) in [2, 3, 4])
-    
+
     return {
         'total_tickets': total,
         'resolved_tickets': resolvidos,
@@ -159,10 +159,10 @@ def _get_technician_metrics_corrected_paginated(self, tecnico_id: str) -> Dict[s
 def _get_technician_metrics_corrected(self, tecnico_id: str) -> Dict[str, Any]:
     # Timeout baseado no volume esperado
     timeout = 60 if tecnico_id in ['696', '32', '141', '60', '69'] else 30
-    
+
     response = self._make_authenticated_request(
-        "GET", f"{self.glpi_url}/search/Ticket", 
-        params=params, 
+        "GET", f"{self.glpi_url}/search/Ticket",
+        params=params,
         timeout=timeout
     )
 ```
@@ -173,14 +173,14 @@ def _get_technician_metrics_corrected(self, tecnico_id: str) -> Dict[str, Any]:
 def _get_technician_metrics_corrected(self, tecnico_id: str) -> Dict[str, Any]:
     # Cache específico para técnicos N3 com muitos tickets
     cache_key = f"tech_metrics_{tecnico_id}_full"
-    
+
     cached_data = self._get_cache_data(cache_key)
     if cached_data:
         return cached_data
-    
+
     # Processar com limite aumentado
     # ... código de processamento ...
-    
+
     # Cache por 1 hora para técnicos N3
     cache_timeout = 3600 if tecnico_id in ['696', '32', '141', '60', '69'] else 300
     self._set_cache_data(cache_key, result, cache_timeout)
@@ -195,10 +195,10 @@ def _get_technician_metrics_corrected(self, tecnico_id: str) -> Dict[str, Any]:
 ```python
 def _get_technician_metrics_corrected(self, tecnico_id: str) -> Dict[str, Any]:
     """Coleta métricas com processamento otimizado para técnicos N3"""
-    
+
     # Técnicos N3 conhecidos com muitos tickets
     n3_high_volume = ['696', '32', '141', '60', '69']
-    
+
     if tecnico_id in n3_high_volume:
         # Processamento especial para técnicos N3
         return self._get_technician_metrics_n3_optimized(tecnico_id)
@@ -208,7 +208,7 @@ def _get_technician_metrics_corrected(self, tecnico_id: str) -> Dict[str, Any]:
 
 def _get_technician_metrics_n3_optimized(self, tecnico_id: str) -> Dict[str, Any]:
     """Processamento otimizado para técnicos N3 com muitos tickets"""
-    
+
     # Usar range maior e timeout maior
     params = {
         'criteria[0][field]': 5,
@@ -218,13 +218,13 @@ def _get_technician_metrics_n3_optimized(self, tecnico_id: str) -> Dict[str, Any
         'forcedisplay[1]': 12,
         'range': '0-5000'  # Limite aumentado
     }
-    
+
     response = self._make_authenticated_request(
-        "GET", f"{self.glpi_url}/search/Ticket", 
-        params=params, 
+        "GET", f"{self.glpi_url}/search/Ticket",
+        params=params,
         timeout=60  # Timeout aumentado
     )
-    
+
     # ... resto do processamento ...
 ```
 
@@ -233,12 +233,12 @@ def _get_technician_metrics_n3_optimized(self, tecnico_id: str) -> Dict[str, Any
 ```python
 def _get_technician_metrics_corrected(self, tecnico_id: str) -> Dict[str, Any]:
     self.logger.info(f"=== PROCESSANDO TÉCNICO N3 {tecnico_id} ===")
-    
+
     # Verificar se é técnico N3 com muitos tickets
     if tecnico_id in ['696', '32', '141', '60', '69']:
         self.logger.info(f"🔍 Técnico N3 detectado - usando processamento otimizado")
         self.logger.info(f"🔍 Range: 0-5000, Timeout: 60s")
-    
+
     # ... resto do código ...
 ```
 
