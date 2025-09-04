@@ -61,7 +61,7 @@ function App() {
   // Ticket modal handlers
   const handleTicketClick = async (ticket: Ticket) => {
     setIsLoadingTicketDetails(true);
-    
+
     try {
       // Import the API function dynamically to avoid circular dependencies
       const { getTicketById } = await import('./services/api');
@@ -144,11 +144,11 @@ function App() {
   // Show loading state on initial load
   if (isLoading && !levelMetrics) {
     return (
-      <UnifiedLoading 
+      <UnifiedLoading
         isLoading={true}
-        type="skeleton" 
-        text="Carregando dashboard..." 
-        fullScreen 
+        type="skeleton"
+        text="Carregando dashboard..."
+        fullScreen
       />
     );
   }
@@ -157,12 +157,12 @@ function App() {
   if (error && !levelMetrics) {
     return (
       <div className='min-h-screen bg-gradient-to-br from-red-50 via-white to-orange-50 flex items-center justify-center'>
-        <UnifiedLoading 
+        <UnifiedLoading
           isLoading={true}
-          type="spinner" 
-          text={error} 
+          type="spinner"
+          text={error}
           title="Erro ao Carregar Dashboard"
-          fullScreen 
+          fullScreen
         />
       </div>
     );

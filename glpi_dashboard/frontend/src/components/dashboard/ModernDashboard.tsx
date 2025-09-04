@@ -186,8 +186,8 @@ export const ModernDashboard = React.memo<ModernDashboardProps>(function ModernD
     >
       {/* Cards de métricas gerais no topo */}
       <motion.div variants={itemVariants} className='w-full mt-8 mb-6'>
-        <MetricsGrid 
-          metrics={metrics} 
+        <MetricsGrid
+          metrics={metrics}
           onFilterByStatus={onFilterByStatus}
           isLoading={isLoading}
         />

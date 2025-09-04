@@ -4,7 +4,7 @@
 
 /*
  * Este arquivo demonstra como aplicar a refatoração CSS no componente RankingTable.
- * 
+ *
  * PRINCIPAIS MUDANÇAS:
  * 1. Substituição de classes utilitárias por classes semânticas BEM
  * 2. Importação do CSS refatorado
@@ -162,7 +162,7 @@ const TechnicianCard = React.memo<{
           <div className='text-xs text-gray-600 dark:text-gray-400 mb-2'>
             tickets resolvidos
           </div>
-          
+
           {/* Indicadores de performance */}
           <div className='flex justify-center gap-1'>
             {performanceIndicators.map((_, i) => (

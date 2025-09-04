@@ -10,19 +10,19 @@ import { type LucideIcon } from 'lucide-react';
 
 /**
  * StatusCard Refatorado - Melhorias Implementadas:
- * 
+ *
  * 1. CSS Refatorado:
  *    - Substituição de classes utilitárias por classes semânticas BEM
  *    - Variáveis CSS para cores, espaçamentos e animações
  *    - Suporte aprimorado a tema escuro
  *    - Media queries para responsividade
  *    - Melhor acessibilidade (prefers-reduced-motion, prefers-contrast)
- * 
+ *
  * 2. Estrutura HTML Simplificada:
  *    - Classes BEM descritivas e semânticas
  *    - Redução significativa de classes Tailwind inline
  *    - Melhor separação de responsabilidades
- * 
+ *
  * 3. Performance:
  *    - CSS otimizado com variáveis reutilizáveis
  *    - Animações mais eficientes
@@ -166,8 +166,8 @@ export const StatusCard = memo<StatusCardProps>(function StatusCard({
         <CardContent className='status-card__content'>
           <div className='status-card__content-wrapper'>
             <div className='status-card__value-section'>
-              <motion.div 
-                variants={numberVariants} 
+              <motion.div
+                variants={numberVariants}
                 className='status-card__value status-card__value--animated'
               >
                 {formattedValue}

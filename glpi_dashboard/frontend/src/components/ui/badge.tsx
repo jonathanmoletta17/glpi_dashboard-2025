@@ -14,19 +14,19 @@ const badgeVariants = cva(
         secondary: 'border-transparent bg-secondary text-secondary-foreground hover:bg-secondary/80',
         destructive: 'border-transparent bg-destructive text-destructive-foreground shadow hover:bg-destructive/80',
         outline: 'text-foreground',
-        
+
         // Design system expandido - Status
         success: 'border-transparent bg-success-500 text-white hover:bg-success-600',
         warning: 'border-transparent bg-warning-500 text-white hover:bg-warning-600',
         danger: 'border-transparent bg-danger-500 text-white hover:bg-danger-600',
         info: 'border-transparent bg-blue-500 text-white hover:bg-blue-600',
-        
+
         // Design system expandido - Prioridades
         'priority-urgent': 'border-transparent bg-red-600 text-white animate-pulse',
         'priority-high': 'border-transparent bg-orange-500 text-white',
         'priority-medium': 'border-transparent bg-yellow-500 text-black',
         'priority-low': 'border-transparent bg-green-500 text-white',
-        
+
         // Design system expandido - Status de tickets
         'status-new': 'border-transparent bg-blue-100 text-blue-800 dark:bg-blue-900 dark:text-blue-200',
         'status-assigned': 'border-transparent bg-purple-100 text-purple-800 dark:bg-purple-900 dark:text-purple-200',
@@ -63,17 +63,17 @@ export interface BadgeProps
 }
 
 const Badge = React.forwardRef<HTMLDivElement, BadgeProps>(
-  ({ 
-    className, 
-    variant, 
-    size, 
+  ({
+    className,
+    variant,
+    size,
     interactive,
     leftIcon,
     rightIcon,
     removable = false,
     onRemove,
     children,
-    ...props 
+    ...props
   }, ref) => {
     return (
       <div

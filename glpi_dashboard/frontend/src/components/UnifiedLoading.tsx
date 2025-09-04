@@ -445,8 +445,8 @@ export const ErrorState: React.FC<ErrorStateProps> = ({
       </div>
 
       {onRetry && (
-        <button 
-          onClick={onRetry} 
+        <button
+          onClick={onRetry}
           className={cn(
             createFlexClasses('row', 'center', 'start', 'small'),
             "font-semibold rounded-xl bg-gradient-to-r from-blue-500 to-blue-700 hover:from-blue-600 hover:to-blue-800 text-white shadow-lg hover:shadow-xl transform hover:-translate-y-0.5 transition-all duration-300",

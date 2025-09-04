@@ -10,11 +10,11 @@ import { createFlexClasses, TAILWIND_CLASSES } from '@/design-system/utils';
 import { apiService } from '@/services/api';
 import { useThrottledCallback } from '@/hooks/useDebounce';
 import { useSmartRefresh } from '@/hooks/useSmartRefresh';
-import { 
-  createCardClasses, 
-  createListItemClasses, 
+import {
+  createCardClasses,
+  createListItemClasses,
   createBadgeClasses,
-  createButtonClasses 
+  createButtonClasses
 } from '@/design-system/component-patterns';
 import { componentSpacing } from '@/design-system/spacing';
 
@@ -50,15 +50,15 @@ const containerVariants = {
 } as const;
 
 // Componente TicketItem refatorado
-const TicketItem = React.memo<{ 
-  ticket: NewTicket; 
-  onTicketClick?: (ticket: Ticket) => void 
+const TicketItem = React.memo<{
+  ticket: NewTicket;
+  onTicketClick?: (ticket: Ticket) => void
 }>(({ ticket, onTicketClick }) => {
-  const priorityConf = useMemo(() => 
-    priorityConfig[ticket.priority as keyof typeof priorityConfig] || priorityConfig['Normal'], 
+  const priorityConf = useMemo(() =>
+    priorityConfig[ticket.priority as keyof typeof priorityConfig] || priorityConfig['Normal'],
     [ticket.priority]
   );
-  
+
   const formattedDate = useMemo(() => formatDate(ticket.date), [ticket.date]);
 
   const handleTicketClick = () => {
@@ -103,7 +103,7 @@ const TicketItem = React.memo<{
       <div className={createFlexClasses('row', 'start', 'between', 'normal')}>
         {/* Badge de prioridade */}
         <div className="flex-shrink-0">
-          <Badge 
+          <Badge
             variant={priorityConf.variant}
             className="flex items-center gap-1"
           >
@@ -191,10 +191,10 @@ const EmptyState = ({ error }: { error?: string }) => (
   </div>
 );
 
-export const NewTicketsList = React.memo<NewTicketsListProps>(({ 
-  className, 
-  limit = 8, 
-  onTicketClick 
+export const NewTicketsList = React.memo<NewTicketsListProps>(({
+  className,
+  limit = 8,
+  onTicketClick
 }) => {
   const [tickets, setTickets] = useState<NewTicket[]>([]);
   const [isLoading, setIsLoading] = useState(true);
@@ -206,7 +206,7 @@ export const NewTicketsList = React.memo<NewTicketsListProps>(({
     try {
       setError(null);
       const response = await apiService.getNewTickets(limit);
-      
+
       startTransition(() => {
         setTickets(response || []);
         setLastUpdate(new Date());

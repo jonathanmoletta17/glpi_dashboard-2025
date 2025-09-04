@@ -5,21 +5,21 @@ Criador de Base de Conhecimento de Exemplo
 Cria uma base de conhecimento de exemplo para demonstração
 """
 
-import os
 import json
-from pathlib import Path
+import os
 from datetime import datetime
+from pathlib import Path
 
 
 def create_sample_knowledge_base():
     """Cria uma base de conhecimento de exemplo"""
-    
+
     print("🎯 Criando base de conhecimento de exemplo...")
-    
+
     # Criar estrutura de diretórios
     base_path = Path("base_conhecimento_copilot")
     base_path.mkdir(exist_ok=True)
-    
+
     subdirs = [
         "tickets_resolvidos/hardware/impressora",
         "tickets_resolvidos/hardware/computador",
@@ -30,12 +30,12 @@ def create_sample_knowledge_base():
         "tickets_resolvidos/sistemas/configuracoes",
         "tickets_resolvidos/geral",
         "solucoes_padrao",
-        "metadados"
+        "metadados",
     ]
-    
+
     for subdir in subdirs:
         (base_path / subdir).mkdir(parents=True, exist_ok=True)
-    
+
     # Criar tickets de exemplo
     sample_tickets = [
         {
@@ -52,7 +52,7 @@ def create_sample_knowledge_base():
 **Ticket ID:** 001
 
 ### Descrição:
-Usuário relatou que a impressora HP LaserJet não está imprimindo documentos. 
+Usuário relatou que a impressora HP LaserJet não está imprimindo documentos.
 A impressora está ligada e conectada, mas os documentos ficam na fila de impressão.
 
 ## 🔧 **SOLUÇÃO**
@@ -91,11 +91,11 @@ net start spooler
 - **Tempo de Resolução:** 15 minutos
 
 ## 🤖 **INSTRUÇÕES PARA COPILOT**
-Este ticket contém uma solução para um problema comum de impressão. 
-Use as informações da seção "Solução Implementada" para orientar 
-usuários com problemas similares. As tags ajudam a identificar 
+Este ticket contém uma solução para um problema comum de impressão.
+Use as informações da seção "Solução Implementada" para orientar
+usuários com problemas similares. As tags ajudam a identificar
 o tipo de problema e a complexidade da solução.
-"""
+""",
         },
         {
             "id": "002",
@@ -111,7 +111,7 @@ o tipo de problema e a complexidade da solução.
 **Ticket ID:** 002
 
 ### Descrição:
-Usuária esqueceu a senha do Active Directory e não consegue fazer login 
+Usuária esqueceu a senha do Active Directory e não consegue fazer login
 no computador nem acessar o email corporativo.
 
 ## 🔧 **SOLUÇÃO**
@@ -154,11 +154,11 @@ Set-ADAccountPassword -Identity "ana.costa" -Reset
 - **Tempo de Resolução:** 30 minutos
 
 ## 🤖 **INSTRUÇÕES PARA COPILOT**
-Este ticket contém uma solução para reset de senha no Active Directory. 
-Use as informações da seção "Solução Implementada" para orientar 
-usuários com problemas similares. As tags ajudam a identificar 
+Este ticket contém uma solução para reset de senha no Active Directory.
+Use as informações da seção "Solução Implementada" para orientar
+usuários com problemas similares. As tags ajudam a identificar
 o tipo de problema e a complexidade da solução.
-"""
+""",
         },
         {
             "id": "003",
@@ -174,7 +174,7 @@ o tipo de problema e a complexidade da solução.
 **Ticket ID:** 003
 
 ### Descrição:
-Usuário precisa configurar o Outlook para acessar o email corporativo 
+Usuário precisa configurar o Outlook para acessar o email corporativo
 em um novo computador. Não sabe quais configurações usar.
 
 ## 🔧 **SOLUÇÃO**
@@ -222,21 +222,26 @@ Autenticação: Nome de usuário e senha
 - **Tempo de Resolução:** 20 minutos
 
 ## 🤖 **INSTRUÇÕES PARA COPILOT**
-Este ticket contém uma solução para configuração de email no Outlook. 
-Use as informações da seção "Solução Implementada" para orientar 
-usuários com problemas similares. As tags ajudam a identificar 
+Este ticket contém uma solução para configuração de email no Outlook.
+Use as informações da seção "Solução Implementada" para orientar
+usuários com problemas similares. As tags ajudam a identificar
 o tipo de problema e a complexidade da solução.
-"""
-        }
+""",
+        },
     ]
-    
+
     # Salvar tickets de exemplo
     for ticket in sample_tickets:
-        file_path = base_path / "tickets_resolvidos" / ticket["category"] / f"ticket_{ticket['id']}_exemplo.md"
-        with open(file_path, 'w', encoding='utf-8') as f:
+        file_path = (
+            base_path
+            / "tickets_resolvidos"
+            / ticket["category"]
+            / f"ticket_{ticket['id']}_exemplo.md"
+        )
+        with open(file_path, "w", encoding="utf-8") as f:
             f.write(ticket["content"])
         print(f"✅ Criado: {file_path}")
-    
+
     # Criar soluções padrão
     solucoes_padrao = [
         {
@@ -282,7 +287,7 @@ Usuários esquecem a senha do Active Directory e não conseguem fazer login.
 - acesso
 - padrao
 - copilot_knowledge
-"""
+""",
         },
         {
             "filename": "problemas_impressora.md",
@@ -337,66 +342,58 @@ net start spooler
 - driver
 - padrao
 - copilot_knowledge
-"""
-        }
+""",
+        },
     ]
-    
+
     for solucao in solucoes_padrao:
         file_path = base_path / "solucoes_padrao" / solucao["filename"]
-        with open(file_path, 'w', encoding='utf-8') as f:
+        with open(file_path, "w", encoding="utf-8") as f:
             f.write(solucao["content"])
         print(f"✅ Criado: {file_path}")
-    
+
     # Criar arquivos de metadados
     stats = {
-        'total_tickets': len(sample_tickets),
-        'processed_tickets': len(sample_tickets),
-        'filtered_tickets': len(sample_tickets),
-        'categories': {
-            'hardware/impressora': 1,
-            'sistemas/acesso': 1,
-            'sistemas/email': 1
-        },
-        'technicians': {
-            'Maria Santos': 1,
-            'Carlos Oliveira': 1,
-            'Fernanda Rocha': 1
-        },
-        'errors': []
+        "total_tickets": len(sample_tickets),
+        "processed_tickets": len(sample_tickets),
+        "filtered_tickets": len(sample_tickets),
+        "categories": {"hardware/impressora": 1, "sistemas/acesso": 1, "sistemas/email": 1},
+        "technicians": {"Maria Santos": 1, "Carlos Oliveira": 1, "Fernanda Rocha": 1},
+        "errors": [],
     }
-    
+
     # Salvar estatísticas
     stats_file = base_path / "metadados" / "estatisticas.json"
-    with open(stats_file, 'w', encoding='utf-8') as f:
+    with open(stats_file, "w", encoding="utf-8") as f:
         json.dump(stats, f, indent=2, ensure_ascii=False)
-    
+
     # Configuração do Copilot
     copilot_config = {
         "copilot_config": {
             "knowledge_base_name": "GLPI Knowledge Base - Exemplo",
             "version": "1.0.0",
-            "last_updated": datetime.now().strftime('%Y-%m-%d %H:%M:%S'),
+            "last_updated": datetime.now().strftime("%Y-%m-%d %H:%M:%S"),
             "total_documents": len(sample_tickets),
-            "categories": list(stats['categories'].keys()),
+            "categories": list(stats["categories"].keys()),
             "filters": {
                 "complexity": ["baixa", "media"],
                 "status": ["resolvido"],
-                "priority": ["baixa", "media"]
+                "priority": ["baixa", "media"],
             },
             "metadata_fields": [
                 "ticket_id",
                 "category",
                 "complexity",
                 "technician",
-                "resolution_time"
-            ]
+                "resolution_time",
+            ],
         }
     }
-    
+
     config_file = base_path / "copilot_config.json"
-    with open(config_file, 'w', encoding='utf-8') as f:
+    with open(config_file, "w", encoding="utf-8") as f:
         json.dump(copilot_config, f, indent=2, ensure_ascii=False)
-    
+
     # README
     readme_content = f"""# 🤖 Base de Conhecimento GLPI para Copilot - EXEMPLO
 
@@ -422,8 +419,8 @@ net start spooler
 - Fernanda Rocha: 1 tickets
 
 ## 🎯 **OBJETIVO**
-Esta é uma base de conhecimento de exemplo criada para demonstrar 
-a estrutura e funcionamento do sistema de extração de dados do GLPI 
+Esta é uma base de conhecimento de exemplo criada para demonstrar
+a estrutura e funcionamento do sistema de extração de dados do GLPI
 para o Copilot do SharePoint.
 
 ## 📝 **COMO USAR**
@@ -433,18 +430,18 @@ para o Copilot do SharePoint.
 4. Monitore e ajuste conforme necessário
 
 ## 🔄 **ATUALIZAÇÃO**
-Execute o script `EXTRATOR_BASE_CONHECIMENTO_GLPI.py` para extrair 
+Execute o script `EXTRATOR_BASE_CONHECIMENTO_GLPI.py` para extrair
 dados reais do GLPI e substituir este exemplo.
 
 ## ⚠️ **NOTA**
-Esta é uma base de conhecimento de exemplo. Para uso em produção, 
+Esta é uma base de conhecimento de exemplo. Para uso em produção,
 execute o extrator com dados reais do GLPI.
 """
-    
+
     readme_file = base_path / "README.md"
-    with open(readme_file, 'w', encoding='utf-8') as f:
+    with open(readme_file, "w", encoding="utf-8") as f:
         f.write(readme_content)
-    
+
     print(f"\n✅ Base de conhecimento de exemplo criada com sucesso!")
     print(f"📁 Localização: {base_path}")
     print(f"📊 Total de arquivos: {len(sample_tickets) + len(solucoes_padrao) + 3}")

@@ -73,7 +73,7 @@ export const useDashboard = (initialFilters: FilterParams = {}): UseDashboardRet
   console.log('🔍 useDashboard - levelMetrics derivado:', levelMetrics);
   const systemStatus = data?.systemStatus || initialSystemStatus;
   const technicianRanking = data?.technicianRanking || [];
-  
+
   // Debug logs para investigar o problema do ranking
   console.log('🔍 useDashboard - data?.technicianRanking:', data?.technicianRanking);
   console.log('🔍 useDashboard - technicianRanking final:', technicianRanking);
@@ -104,7 +104,7 @@ export const useDashboard = (initialFilters: FilterParams = {}): UseDashboardRet
       try {
         // Fazer chamadas paralelas para todos os endpoints
         console.log('🚀 useDashboard - Iniciando chamadas paralelas...');
-        
+
         const [metricsResult, systemStatusResult, technicianRankingResult] = await Promise.all([
           fetchDashboardMetrics(filtersToUse),
           (async () => {
@@ -124,7 +124,7 @@ export const useDashboard = (initialFilters: FilterParams = {}): UseDashboardRet
             }
 
             console.log('🔍 useDashboard - Filtros para ranking:', rankingFilters);
-            
+
             try {
               const result = await apiService.getTechnicianRanking(
                 Object.keys(rankingFilters).length > 0 ? rankingFilters : undefined
@@ -137,7 +137,7 @@ export const useDashboard = (initialFilters: FilterParams = {}): UseDashboardRet
             }
           })()
         ]);
-        
+
         console.log('✅ useDashboard - Todas as chamadas paralelas concluídas');
 
         // Performance metrics tracking removed for now
@@ -150,14 +150,14 @@ export const useDashboard = (initialFilters: FilterParams = {}): UseDashboardRet
           console.log('🔍 useDashboard - technicianRankingResult da API:', technicianRankingResult);
           console.log('🔍 useDashboard - technicianRankingResult length:', technicianRankingResult?.length);
           console.log('🔍 useDashboard - technicianRankingResult é array?', Array.isArray(technicianRankingResult));
-          
+
           // Combinar todos os dados em um objeto DashboardMetrics
           const combinedData: DashboardMetrics = {
             ...metricsResult,
             systemStatus: systemStatusResult || initialSystemStatus,
             technicianRanking: technicianRankingResult || [],
           };
-          
+
           console.log('🔍 useDashboard - combinedData.technicianRanking:', combinedData.technicianRanking);
 
           console.log('✅ useDashboard - Definindo dados combinados no estado:', combinedData);

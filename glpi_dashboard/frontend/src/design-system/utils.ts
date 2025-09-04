@@ -21,7 +21,7 @@ export const TAILWIND_CLASSES = {
     badge: 'px-2 py-1', // 8px/4px - badges e tags
     normal: 'p-4',      // 16px - padding normal
   },
-  
+
   // Gaps padronizados
   gap: {
     xs: 'gap-1',        // 4px - gaps muito pequenos
@@ -32,7 +32,7 @@ export const TAILWIND_CLASSES = {
     large: 'gap-8',     // 32px - espaçamentos grandes
     normal: 'gap-4',    // 16px - gap normal
   },
-  
+
   // Margins padronizados
   margin: {
     xs: 'mb-1',         // 4px - margens muito pequenas
@@ -43,7 +43,7 @@ export const TAILWIND_CLASSES = {
     md: 'mb-3',         // 12px - margem média
     normal: 'mb-4',     // 16px - margem normal
   },
-  
+
   // Space-y padronizado
   spaceY: {
     xs: 'space-y-1',    // 4px - espaçamentos muito pequenos
@@ -61,13 +61,13 @@ export const TAILWIND_CLASSES = {
  */
 export function createCardClasses(variant: 'default' | 'elevated' | 'outlined' = 'default') {
   const baseClasses = 'rounded-lg border transition-all duration-200';
-  
+
   const variants = {
     default: 'bg-white dark:bg-gray-800 border-gray-200 dark:border-gray-700 shadow-sm hover:shadow-md',
     elevated: 'bg-white dark:bg-gray-800 border-gray-200 dark:border-gray-700 shadow-lg hover:shadow-xl',
     outlined: 'bg-transparent border-2 border-gray-300 dark:border-gray-600 hover:border-gray-400',
   };
-  
+
   return cn(baseClasses, variants[variant], TAILWIND_CLASSES.padding.card);
 }
 
@@ -80,7 +80,7 @@ export function createSectionClasses(spacing: 'normal' | 'compact' | 'spacious' 
     normal: TAILWIND_CLASSES.spaceY.section,
     spacious: 'space-y-8',
   };
-  
+
   return cn(spacingMap[spacing], TAILWIND_CLASSES.margin.section);
 }
 
@@ -89,11 +89,11 @@ export function createSectionClasses(spacing: 'normal' | 'compact' | 'spacious' 
  */
 export function createGridClasses(columns: number = 1, responsive = true) {
   const baseClasses = TAILWIND_CLASSES.gap.grid;
-  
+
   if (!responsive) {
     return cn(`grid grid-cols-${columns}`, baseClasses);
   }
-  
+
   // Grid responsivo baseado no número de colunas
   const responsiveClasses = {
     1: 'grid grid-cols-1',
@@ -101,7 +101,7 @@ export function createGridClasses(columns: number = 1, responsive = true) {
     3: 'grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3',
     4: 'grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4',
   };
-  
+
   return cn(
     responsiveClasses[columns as keyof typeof responsiveClasses] || `grid grid-cols-${columns}`,
     baseClasses
@@ -122,7 +122,7 @@ export function createFlexClasses(
     normal: TAILWIND_CLASSES.gap.card,
     large: TAILWIND_CLASSES.gap.large,
   };
-  
+
   return cn(
     'flex',
     direction === 'col' ? 'flex-col' : 'flex-row',
@@ -143,19 +143,19 @@ export function normalizeSpacingClasses(className: string): string {
     'p-4': TAILWIND_CLASSES.padding.small,
     'p-6': TAILWIND_CLASSES.padding.card,
     'p-8': TAILWIND_CLASSES.padding.section,
-    
+
     // Gaps
     'gap-2': TAILWIND_CLASSES.gap.items,
     'gap-3': TAILWIND_CLASSES.gap.card,
     'gap-4': TAILWIND_CLASSES.gap.card,
     'gap-6': TAILWIND_CLASSES.gap.section,
-    
+
     // Space-y
     'space-y-2': TAILWIND_CLASSES.spaceY.list,
     'space-y-3': TAILWIND_CLASSES.spaceY.card,
     'space-y-4': TAILWIND_CLASSES.spaceY.card,
     'space-y-6': TAILWIND_CLASSES.spaceY.section,
-    
+
     // Margins
     'mb-2': TAILWIND_CLASSES.margin.small,
     'mb-3': TAILWIND_CLASSES.margin.element,
@@ -163,13 +163,13 @@ export function normalizeSpacingClasses(className: string): string {
     'mb-6': TAILWIND_CLASSES.margin.card,
     'mb-8': TAILWIND_CLASSES.margin.section,
   };
-  
+
   let normalizedClassName = className;
-  
+
   Object.entries(replacements).forEach(([old, replacement]) => {
     normalizedClassName = normalizedClassName.replace(new RegExp(`\\b${old}\\b`, 'g'), replacement);
   });
-  
+
   return normalizedClassName;
 }
 
@@ -183,7 +183,7 @@ export function validateDesignSystemClasses(className: string): {
 } {
   const issues: string[] = [];
   const suggestions: string[] = [];
-  
+
   // Verifica classes hardcoded comuns
   const hardcodedPatterns = [
     /\bp-[0-9]+\b/g,
@@ -191,7 +191,7 @@ export function validateDesignSystemClasses(className: string): {
     /\bgap-[0-9]+\b/g,
     /\bspace-[xy]-[0-9]+\b/g,
   ];
-  
+
   hardcodedPatterns.forEach(pattern => {
     const matches = className.match(pattern);
     if (matches) {
@@ -199,14 +199,14 @@ export function validateDesignSystemClasses(className: string): {
       suggestions.push('Use utilitários do design system como createCardClasses() ou TAILWIND_CLASSES');
     }
   });
-  
+
   // Verifica classes obsoletas
   const obsoletePatterns = [
     /\bfigma-\w+\b/g,
     /\btext-h[0-9]\b/g,
     /\bcard-base\b/g,
   ];
-  
+
   obsoletePatterns.forEach(pattern => {
     const matches = className.match(pattern);
     if (matches) {
@@ -214,7 +214,7 @@ export function validateDesignSystemClasses(className: string): {
       suggestions.push('Substitua por classes Tailwind equivalentes ou componentes Shadcn UI');
     }
   });
-  
+
   return {
     isValid: issues.length === 0,
     issues,

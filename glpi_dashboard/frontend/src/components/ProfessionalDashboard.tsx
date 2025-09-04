@@ -68,7 +68,7 @@ const StatusCard = React.memo<StatusCardProps>(
     };
 
     return (
-      <div 
+      <div
         className={`bg-white rounded-xl shadow-sm border border-gray-200 p-6 transition-all duration-200 ${
           isClickable ? 'hover:shadow-md hover:scale-105 cursor-pointer' : 'hover:shadow-md'
         }`}

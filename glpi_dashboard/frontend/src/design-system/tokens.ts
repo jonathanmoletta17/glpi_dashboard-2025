@@ -58,7 +58,7 @@ export const COLORS = {
     900: '#0c4a6e',
     DEFAULT: '#0ea5e9',
   },
-  
+
   // Status colors
   success: {
     50: '#f0fdf4',
@@ -73,7 +73,7 @@ export const COLORS = {
     900: '#14532d',
     DEFAULT: '#22c55e',
   },
-  
+
   warning: {
     50: '#fffbeb',
     100: '#fef3c7',
@@ -87,7 +87,7 @@ export const COLORS = {
     900: '#78350f',
     DEFAULT: '#f59e0b',
   },
-  
+
   danger: {
     50: '#fef2f2',
     100: '#fee2e2',
@@ -101,7 +101,7 @@ export const COLORS = {
     900: '#7f1d1d',
     DEFAULT: '#ef4444',
   },
-  
+
   // Neutral colors
   gray: {
     50: '#f9fafb',
@@ -124,7 +124,7 @@ export const TYPOGRAPHY = {
     sans: ['Inter', 'system-ui', 'sans-serif'],
     mono: ['JetBrains Mono', 'Roboto Mono', 'monospace'],
   },
-  
+
   fontSize: {
     xs: ['0.75rem', { lineHeight: '1rem' }],      // 12px
     sm: ['0.875rem', { lineHeight: '1.25rem' }],  // 14px
@@ -135,7 +135,7 @@ export const TYPOGRAPHY = {
     '3xl': ['1.875rem', { lineHeight: '2.25rem' }], // 30px
     '4xl': ['2.25rem', { lineHeight: '2.5rem' }],   // 36px
   },
-  
+
   fontWeight: {
     light: '300',
     normal: '400',
@@ -143,7 +143,7 @@ export const TYPOGRAPHY = {
     semibold: '600',
     bold: '700',
   },
-  
+
   letterSpacing: {
     tight: '-0.025em',
     normal: '0em',
@@ -160,16 +160,16 @@ export const SHADOWS = {
   lg: '0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05)',
   xl: '0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04)',
   '2xl': '0 25px 50px -12px rgba(0, 0, 0, 0.25)',
-  
+
   // Specialized shadows
   card: '0 4px 16px rgba(0, 0, 0, 0.1)',
   cardHover: '0 8px 24px rgba(0, 0, 0, 0.15)',
   cardDark: '0 8px 32px rgba(0, 0, 0, 0.2), inset 0 1px 0 rgba(255, 255, 255, 0.08)',
-  
+
   // Focus shadows
   focusRing: '0 0 0 2px rgba(59, 130, 246, 0.5)',
   focusRingDanger: '0 0 0 2px rgba(239, 68, 68, 0.5)',
-  
+
   // Inner shadows
   inner: 'inset 0 2px 4px 0 rgba(0, 0, 0, 0.06)',
   innerLg: 'inset 0 4px 8px 0 rgba(0, 0, 0, 0.1)',
@@ -186,7 +186,7 @@ export const BORDER_RADIUS = {
   '2xl': '1rem',    // 16px
   '3xl': '1.5rem',  // 24px
   full: '9999px',
-  
+
   // Component specific
   card: '0.75rem',     // 12px
   button: '0.5rem',    // 8px
@@ -202,7 +202,7 @@ export const ANIMATIONS = {
     normal: '300ms',
     slow: '500ms',
   },
-  
+
   // Timing functions
   easing: {
     linear: 'linear',
@@ -210,7 +210,7 @@ export const ANIMATIONS = {
     easeOut: 'cubic-bezier(0, 0, 0.2, 1)',
     easeInOut: 'cubic-bezier(0.4, 0, 0.2, 1)',
   },
-  
+
   // Keyframes
   keyframes: {
     fadeIn: {
@@ -282,7 +282,7 @@ export const COMPONENT_VARIANTS = {
       shadow: 'shadow-sm hover:shadow-md',
     },
   },
-  
+
   // Card variants
   card: {
     default: {
@@ -298,7 +298,7 @@ export const COMPONENT_VARIANTS = {
       radius: 'rounded-xl',
     },
   },
-  
+
   // Badge variants
   badge: {
     default: {

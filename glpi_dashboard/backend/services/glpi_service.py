@@ -2,7 +2,7 @@
 import logging
 import time
 import traceback
-from datetime import datetime, timedelta
+from datetime import datetime, timedelta, timezone
 from typing import Any, Dict, List, Optional
 
 import requests
@@ -1065,11 +1065,11 @@ class GLPIService:
         try:
             # Validações de entrada
             if not isinstance(level, str) or not level.strip():
-                self.logger.error(f"[{datetime.now(tz=datetime.timezone.utc).isoformat()}] level inválido: {level}")
+                self.logger.error(f"[{datetime.now(tz=timezone.utc).isoformat()}] level inválido: {level}")
                 return 0
 
             if not isinstance(status_id, (int, str)) or (isinstance(status_id, str) and not status_id.strip()):
-                self.logger.error(f"[{datetime.now(tz=datetime.timezone.utc).isoformat()}] status_id inválido: {status_id}")
+                self.logger.error(f"[{datetime.now(tz=timezone.utc).isoformat()}] status_id inválido: {status_id}")
                 return 0
 
             # Converter status_id para int se necessário
@@ -1077,36 +1077,36 @@ class GLPIService:
                 status_id = int(status_id)
             except (ValueError, TypeError) as e:
                 self.logger.error(
-                    f"[{datetime.now(tz=datetime.timezone.utc).isoformat()}] Erro ao converter status_id para int: {e}"
+                    f"[{datetime.now(tz=timezone.utc).isoformat()}] Erro ao converter status_id para int: {e}"
                 )
                 return 0
 
             # Validar datas se fornecidas
             if start_date and not isinstance(start_date, str):
                 self.logger.error(
-                    f"[{datetime.now(tz=datetime.timezone.utc).isoformat()}] start_date deve ser string: {type(start_date)}"
+                    f"[{datetime.now(tz=timezone.utc).isoformat()}] start_date deve ser string: {type(start_date)}"
                 )
                 return 0
 
             if end_date and not isinstance(end_date, str):
                 self.logger.error(
-                    f"[{datetime.now(tz=datetime.timezone.utc).isoformat()}] end_date deve ser string: {type(end_date)}"
+                    f"[{datetime.now(tz=timezone.utc).isoformat()}] end_date deve ser string: {type(end_date)}"
                 )
                 return 0
 
             # Verificar configuração básica
             if not hasattr(self, "glpi_url") or not self.glpi_url:
-                self.logger.error(f"[{datetime.now(tz=datetime.timezone.utc).isoformat()}] GLPI URL não configurada")
+                self.logger.error(f"[{datetime.now(tz=timezone.utc).isoformat()}] GLPI URL não configurada")
                 return 0
 
             # Garantir autenticação
             if not self._ensure_authenticated():
-                self.logger.error(f"[{datetime.now(tz=datetime.timezone.utc).isoformat()}] Falha na autenticação")
+                self.logger.error(f"[{datetime.now(tz=timezone.utc).isoformat()}] Falha na autenticação")
                 return 0
 
             if not self.field_ids:
                 if not self.discover_field_ids():
-                    timestamp = datetime.now(tz=datetime.timezone.utc).isoformat()
+                    timestamp = datetime.now(tz=timezone.utc).isoformat()
                     self.logger.error(
                         f"[{timestamp}] Falha ao descobrir field_ids - "
                         f"level: {level}, status_id: {status_id}, "
@@ -1117,7 +1117,7 @@ class GLPIService:
             # Verificar se field_ids necessários estão disponíveis
             if not self.field_ids.get("STATUS"):
                 self.logger.error(
-                    f"[{datetime.now(tz=datetime.timezone.utc).isoformat()}] Field ID STATUS não encontrado: {self.field_ids.get('STATUS')}"
+                    f"[{datetime.now(tz=timezone.utc).isoformat()}] Field ID STATUS não encontrado: {self.field_ids.get('STATUS')}"
                 )
                 return 0
 
@@ -1145,7 +1145,7 @@ class GLPIService:
                 search_params.update(date_criteria)
 
             self.logger.info(
-                f"[{datetime.now(tz=datetime.timezone.utc).isoformat()}] Buscando tickets por hierarquia - level: {level}, status: {status_id}"
+                f"[{datetime.now(tz=timezone.utc).isoformat()}] Buscando tickets por hierarquia - level: {level}, status: {status_id}"
             )
 
             response = self._make_authenticated_request(
@@ -1162,12 +1162,12 @@ class GLPIService:
                     try:
                         total_count = int(content_range.split("/")[-1])
                         self.logger.info(
-                            f"[{datetime.datetime.now(tz=datetime.timezone.utc).isoformat()}] Contagem extraída do Content-Range: {total_count}"
+                            f"[{datetime.now(tz=timezone.utc).isoformat()}] Contagem extraída do Content-Range: {total_count}"
                         )
                         return total_count
                     except (ValueError, IndexError) as e:
                         self.logger.warning(
-                            f"[{datetime.datetime.now(tz=datetime.timezone.utc).isoformat()}] Erro ao extrair contagem do Content-Range: {e}"
+                            f"[{datetime.now(tz=timezone.utc).isoformat()}] Erro ao extrair contagem do Content-Range: {e}"
                         )
 
                 # Tentar extrair do corpo da resposta
@@ -1179,19 +1179,19 @@ class GLPIService:
                             try:
                                 total_count = int(data["content-range"].split("/")[-1])
                                 self.logger.info(
-                                    f"[{datetime.datetime.now(tz=datetime.timezone.utc).isoformat()}] Contagem extraída do content-range no JSON: {total_count}"
+                                    f"[{datetime.now(tz=timezone.utc).isoformat()}] Contagem extraída do content-range no JSON: {total_count}"
                                 )
                                 return total_count
                             except (ValueError, IndexError) as e:
                                 self.logger.warning(
-                                    f"[{datetime.datetime.now(tz=datetime.timezone.utc).isoformat()}] Erro ao extrair contagem do content-range JSON: {e}"
+                                    f"[{datetime.now(tz=timezone.utc).isoformat()}] Erro ao extrair contagem do content-range JSON: {e}"
                                 )
 
                         # Verificar campo 'totalcount'
                         if "totalcount" in data:
                             total_count = int(data["totalcount"])
                             self.logger.info(
-                                f"[{datetime.datetime.now(tz=datetime.timezone.utc).isoformat()}] Contagem extraída do totalcount: {total_count}"
+                                f"[{datetime.now(tz=timezone.utc).isoformat()}] Contagem extraída do totalcount: {total_count}"
                             )
                             return total_count
 
@@ -1199,7 +1199,7 @@ class GLPIService:
                         if "data" in data and isinstance(data["data"], list):
                             count = len(data["data"])
                             self.logger.info(
-                                f"[{datetime.datetime.now(tz=datetime.timezone.utc).isoformat()}] Contagem baseada no tamanho da lista de dados: {count}"
+                                f"[{datetime.now(tz=timezone.utc).isoformat()}] Contagem baseada no tamanho da lista de dados: {count}"
                             )
                             return count
 
@@ -1207,30 +1207,30 @@ class GLPIService:
                     elif isinstance(data, list):
                         count = len(data)
                         self.logger.info(
-                            f"[{datetime.datetime.now(tz=datetime.timezone.utc).isoformat()}] Contagem baseada no tamanho da lista: {count}"
+                            f"[{datetime.now(tz=timezone.utc).isoformat()}] Contagem baseada no tamanho da lista: {count}"
                         )
                         return count
 
                 except ValueError as e:
                     self.logger.error(
-                        f"[{datetime.datetime.now(tz=datetime.timezone.utc).isoformat()}] Erro ao decodificar JSON: {e}"
+                        f"[{datetime.now(tz=timezone.utc).isoformat()}] Erro ao decodificar JSON: {e}"
                     )
 
                 self.logger.warning(
-                    f"[{datetime.datetime.now(tz=datetime.timezone.utc).isoformat()}] Resposta sem Content-Range ou totalcount válidos"
+                    f"[{datetime.now(tz=timezone.utc).isoformat()}] Resposta sem Content-Range ou totalcount válidos"
                 )
                 return 0
             else:
                 self.logger.error(
-                    f"[{datetime.datetime.now(tz=datetime.timezone.utc).isoformat()}] Erro na requisição: {response.status_code} - {response.text}"
+                    f"[{datetime.now(tz=timezone.utc).isoformat()}] Erro na requisição: {response.status_code} - {response.text}"
                 )
                 return 0
 
         except requests.exceptions.RequestException as e:
-            self.logger.error(f"[{datetime.datetime.now(tz=datetime.timezone.utc).isoformat()}] Erro de requisição: {e}")
+            self.logger.error(f"[{datetime.now(tz=timezone.utc).isoformat()}] Erro de requisição: {e}")
             return 0
         except Exception as e:
-            self.logger.error(f"[{datetime.datetime.now(tz=datetime.timezone.utc).isoformat()}] Erro inesperado: {e}")
+            self.logger.error(f"[{datetime.now(tz=timezone.utc).isoformat()}] Erro inesperado: {e}")
             return 0
 
     def get_ticket_count(
@@ -1246,13 +1246,13 @@ class GLPIService:
             # Validações de entrada
             if not isinstance(group_id, (int, str)) or (isinstance(group_id, str) and not group_id.strip()):
                 self.logger.error(
-                    f"[{datetime.datetime.now(tz=datetime.timezone.utc).isoformat()}] group_id inválido: {group_id}"
+                    f"[{datetime.now(tz=timezone.utc).isoformat()}] group_id inválido: {group_id}"
                 )
                 return 0
 
             if not isinstance(status_id, (int, str)) or (isinstance(status_id, str) and not status_id.strip()):
                 self.logger.error(
-                    f"[{datetime.datetime.now(tz=datetime.timezone.utc).isoformat()}] status_id inválido: {status_id}"
+                    f"[{datetime.now(tz=timezone.utc).isoformat()}] status_id inválido: {status_id}"
                 )
                 return 0
 
@@ -1262,36 +1262,36 @@ class GLPIService:
                 status_id = int(status_id)
             except (ValueError, TypeError) as e:
                 self.logger.error(
-                    f"[{datetime.datetime.now(tz=datetime.timezone.utc).isoformat()}] Erro ao converter IDs para int: {e}"
+                    f"[{datetime.now(tz=timezone.utc).isoformat()}] Erro ao converter IDs para int: {e}"
                 )
                 return 0
 
             # Validar datas se fornecidas
             if start_date and not isinstance(start_date, str):
                 self.logger.error(
-                    f"[{datetime.datetime.now(tz=datetime.timezone.utc).isoformat()}] start_date deve ser string: {type(start_date)}"
+                    f"[{datetime.now(tz=timezone.utc).isoformat()}] start_date deve ser string: {type(start_date)}"
                 )
                 return 0
 
             if end_date and not isinstance(end_date, str):
                 self.logger.error(
-                    f"[{datetime.datetime.now(tz=datetime.timezone.utc).isoformat()}] end_date deve ser string: {type(end_date)}"
+                    f"[{datetime.now(tz=timezone.utc).isoformat()}] end_date deve ser string: {type(end_date)}"
                 )
                 return 0
 
             # Verificar configuração básica
             if not hasattr(self, "glpi_url") or not self.glpi_url:
-                self.logger.error(f"[{datetime.datetime.now(tz=datetime.timezone.utc).isoformat()}] GLPI URL não configurada")
+                self.logger.error(f"[{datetime.now(tz=timezone.utc).isoformat()}] GLPI URL não configurada")
                 return 0
 
             # Garantir autenticação
             if not self._ensure_authenticated():
-                self.logger.error(f"[{datetime.datetime.now(tz=datetime.timezone.utc).isoformat()}] Falha na autenticação")
+                self.logger.error(f"[{datetime.now(tz=timezone.utc).isoformat()}] Falha na autenticação")
                 return 0
 
             if not self.field_ids:
                 if not self.discover_field_ids():
-                    timestamp = datetime.datetime.now(tz=datetime.timezone.utc).isoformat()
+                    timestamp = datetime.now(tz=timezone.utc).isoformat()
                     self.logger.error(
                         f"[{timestamp}] Falha ao descobrir field_ids - "
                         f"group_id: {group_id}, status_id: {status_id}, "
@@ -1302,7 +1302,7 @@ class GLPIService:
             # Verificar se field_ids necessários estão disponíveis
             if not self.field_ids.get("GROUP") or not self.field_ids.get("STATUS"):
                 self.logger.error(
-                    f"[{datetime.datetime.now(tz=datetime.timezone.utc).isoformat()}] Field IDs críticos não encontrados: GROUP={self.field_ids.get('GROUP')}, STATUS={self.field_ids.get('STATUS')}"
+                    f"[{datetime.now(tz=timezone.utc).isoformat()}] Field IDs críticos não encontrados: GROUP={self.field_ids.get('GROUP')}, STATUS={self.field_ids.get('STATUS')}"
                 )
                 return 0
 
@@ -1319,7 +1319,7 @@ class GLPIService:
             }
 
             # Log de observabilidade: parâmetros GLPI
-            timestamp = datetime.datetime.now(tz=datetime.timezone.utc).isoformat()
+            timestamp = datetime.now(tz=timezone.utc).isoformat()
             self.logger.info(
                 f"[{timestamp}] GLPI Query Parameters - "
                 f"group_id: {group_id}, status_id: {status_id}, "
@@ -1339,7 +1339,7 @@ class GLPIService:
                     search_params.update(date_criteria)
                 except ValueError as e:
                     self.logger.warning(
-                        f"[{datetime.datetime.now(tz=datetime.timezone.utc).isoformat()}] Erro ao processar filtros de data: {e}"
+                        f"[{datetime.now(tz=timezone.utc).isoformat()}] Erro ao processar filtros de data: {e}"
                     )
 
             try:
@@ -1351,7 +1351,7 @@ class GLPIService:
                 )
 
                 if not response:
-                    timestamp = datetime.datetime.now(tz=datetime.timezone.utc).isoformat()
+                    timestamp = datetime.now(tz=timezone.utc).isoformat()
                     self.logger.error(
                         f"[{timestamp}] Resposta vazia da API GLPI - "
                         f"group_id: {group_id}, status_id: {status_id}, "
@@ -1361,7 +1361,7 @@ class GLPIService:
 
                 # Verificar se o status code é válido (200 OK ou 206 Partial Content)
                 if response.status_code not in [200, 206]:
-                    timestamp = datetime.datetime.now(tz=datetime.timezone.utc).isoformat()
+                    timestamp = datetime.now(tz=timezone.utc).isoformat()
                     self.logger.error(
                         f"[{timestamp}] API GLPI retornou status {response.status_code} - "
                         f"group_id: {group_id}, status_id: {status_id}, "
@@ -1375,19 +1375,19 @@ class GLPIService:
                         content_range = response.headers["Content-Range"]
                         if not content_range or "/" not in content_range:
                             self.logger.warning(
-                                f"[{datetime.datetime.now(tz=datetime.timezone.utc).isoformat()}] Content-Range inválido: {content_range}"
+                                f"[{datetime.now(tz=timezone.utc).isoformat()}] Content-Range inválido: {content_range}"
                             )
                             return 0
 
                         total_str = content_range.split("/")[-1]
                         if not total_str.isdigit():
                             self.logger.warning(
-                                f"[{datetime.datetime.now(tz=datetime.timezone.utc).isoformat()}] Total não numérico no Content-Range: {total_str}"
+                                f"[{datetime.now(tz=timezone.utc).isoformat()}] Total não numérico no Content-Range: {total_str}"
                             )
                             return 0
 
                         total = int(total_str)
-                        timestamp = datetime.datetime.now(tz=datetime.timezone.utc).isoformat()
+                        timestamp = datetime.now(tz=timezone.utc).isoformat()
                         self.logger.info(
                             f"[{timestamp}] GLPI Query Result - "
                             f"group_id: {group_id}, status_id: {status_id}, "
@@ -1396,7 +1396,7 @@ class GLPIService:
                         return total
                     except (ValueError, IndexError) as e:
                         self.logger.error(
-                            f"[{datetime.datetime.now(tz=datetime.timezone.utc).isoformat()}] Erro ao processar Content-Range '{response.headers.get('Content-Range', '')}': {e}"
+                            f"[{datetime.now(tz=timezone.utc).isoformat()}] Erro ao processar Content-Range '{response.headers.get('Content-Range', '')}': {e}"
                         )
                         return 0
 
@@ -1409,7 +1409,7 @@ class GLPIService:
                             total_str = content_range.split("/")[-1]
                             if total_str.isdigit():
                                 total = int(total_str)
-                                timestamp = datetime.datetime.now(tz=datetime.timezone.utc).isoformat()
+                                timestamp = datetime.now(tz=timezone.utc).isoformat()
                                 self.logger.info(
                                     f"[{timestamp}] GLPI Query Result - "
                                     f"group_id: {group_id}, status_id: {status_id}, "
@@ -1418,18 +1418,18 @@ class GLPIService:
                                 return total
                             else:
                                 self.logger.warning(
-                                    f"[{datetime.datetime.now(tz=datetime.timezone.utc).isoformat()}] Total não numérico no content-range JSON: {total_str}"
+                                    f"[{datetime.now(tz=timezone.utc).isoformat()}] Total não numérico no content-range JSON: {total_str}"
                                 )
                         else:
                             self.logger.warning(
-                                f"[{datetime.datetime.now(tz=datetime.timezone.utc).isoformat()}] content-range JSON inválido: {content_range}"
+                                f"[{datetime.now(tz=timezone.utc).isoformat()}] content-range JSON inválido: {content_range}"
                             )
 
                     # Verificar se há totalcount no JSON (alternativa)
                     if isinstance(response_data, dict) and "totalcount" in response_data:
                         total = response_data["totalcount"]
                         if isinstance(total, int):
-                            timestamp = datetime.datetime.now(tz=datetime.timezone.utc).isoformat()
+                            timestamp = datetime.now(tz=timezone.utc).isoformat()
                             self.logger.info(
                                 f"[{timestamp}] GLPI Query Result - "
                                 f"group_id: {group_id}, status_id: {status_id}, "
@@ -1439,32 +1439,32 @@ class GLPIService:
 
                 except (ValueError, KeyError) as e:
                     self.logger.warning(
-                        f"[{datetime.datetime.now(tz=datetime.timezone.utc).isoformat()}] Erro ao processar JSON da resposta: {e}"
+                        f"[{datetime.now(tz=timezone.utc).isoformat()}] Erro ao processar JSON da resposta: {e}"
                     )
 
                 # Se chegou até aqui com status 200 mas sem Content-Range, retornar 0
                 self.logger.warning(
-                    f"[{datetime.datetime.now(tz=datetime.timezone.utc).isoformat()}] Resposta sem Content-Range válido - assumindo 0 tickets"
+                    f"[{datetime.now(tz=timezone.utc).isoformat()}] Resposta sem Content-Range válido - assumindo 0 tickets"
                 )
                 return 0
 
             except requests.exceptions.Timeout as e:
                 self.logger.error(
-                    f"[{datetime.datetime.now(tz=datetime.timezone.utc).isoformat()}] Timeout ao buscar contagem de tickets: {e}"
+                    f"[{datetime.now(tz=timezone.utc).isoformat()}] Timeout ao buscar contagem de tickets: {e}"
                 )
                 return 0
             except requests.exceptions.ConnectionError as e:
                 self.logger.error(
-                    f"[{datetime.datetime.now(tz=datetime.timezone.utc).isoformat()}] Erro de conexão ao buscar contagem de tickets: {e}"
+                    f"[{datetime.now(tz=timezone.utc).isoformat()}] Erro de conexão ao buscar contagem de tickets: {e}"
                 )
                 return 0
             except requests.exceptions.RequestException as e:
                 self.logger.error(
-                    f"[{datetime.datetime.now(tz=datetime.timezone.utc).isoformat()}] Erro de requisição ao buscar contagem de tickets: {e}"
+                    f"[{datetime.now(tz=timezone.utc).isoformat()}] Erro de requisição ao buscar contagem de tickets: {e}"
                 )
                 return 0
             except Exception as e:
-                timestamp = datetime.datetime.now(tz=datetime.timezone.utc).isoformat()
+                timestamp = datetime.now(tz=timezone.utc).isoformat()
                 self.logger.error(
                     f"[{timestamp}] Exceção inesperada ao buscar contagem de tickets: {str(e)} - "
                     f"group_id: {group_id}, status_id: {status_id}, "
@@ -1474,7 +1474,7 @@ class GLPIService:
 
         except Exception as e:
             self.logger.error(
-                f"[{datetime.datetime.now(tz=datetime.timezone.utc).isoformat()}] Erro geral no get_ticket_count: {e}"
+                f"[{datetime.now(tz=timezone.utc).isoformat()}] Erro geral no get_ticket_count: {e}"
             )
             return 0
 
@@ -1485,35 +1485,33 @@ class GLPIService:
         correlation_id: Optional[str] = None,
     ) -> Dict[str, Dict[str, int]]:
         """Retorna métricas de tickets agrupadas por nível de atendimento"""
-        import datetime
-
         try:
             # Verificar configuração básica
             if not hasattr(self, "service_levels") or not self.service_levels:
                 self.logger.error(
-                    f"[{datetime.datetime.now(tz=datetime.timezone.utc).isoformat()}] service_levels não configurado"
+                    f"[{datetime.now(tz=timezone.utc).isoformat()}] service_levels não configurado"
                 )
                 return {}
 
             if not hasattr(self, "status_map") or not self.status_map:
                 self.logger.error(
-                    f"[{datetime.datetime.now(tz=datetime.timezone.utc).isoformat()}] status_map não configurado"
+                    f"[{datetime.now(tz=timezone.utc).isoformat()}] status_map não configurado"
                 )
                 return {}
 
             if not hasattr(self, "glpi_url") or not self.glpi_url:
-                self.logger.error(f"[{datetime.datetime.now(tz=datetime.timezone.utc).isoformat()}] GLPI URL não configurada")
+                self.logger.error(f"[{datetime.now(tz=timezone.utc).isoformat()}] GLPI URL não configurada")
                 return {}
 
             # Garantir autenticação
             if not self._ensure_authenticated():
-                self.logger.error(f"[{datetime.datetime.now(tz=datetime.timezone.utc).isoformat()}] Falha na autenticação")
+                self.logger.error(f"[{datetime.now(tz=timezone.utc).isoformat()}] Falha na autenticação")
                 return {}
 
             # Descobrir field_ids se necessário
             if not self.discover_field_ids():
                 self.logger.error(
-                    f"[{datetime.datetime.now(tz=datetime.timezone.utc).isoformat()}] Falha ao descobrir field_ids"
+                    f"[{datetime.now(tz=timezone.utc).isoformat()}] Falha ao descobrir field_ids"
                 )
                 return {}
 
@@ -1521,7 +1519,7 @@ class GLPIService:
 
         except Exception as e:
             self.logger.error(
-                f"[{datetime.datetime.now(tz=datetime.timezone.utc).isoformat()}] Erro geral no get_metrics_by_level: {e}"
+                f"[{datetime.now(tz=timezone.utc).isoformat()}] Erro geral no get_metrics_by_level: {e}"
             )
             return {}
 
@@ -1532,19 +1530,17 @@ class GLPIService:
         correlation_id: Optional[str] = None,
     ) -> Dict[str, Dict[str, int]]:
         """Método interno para obter métricas por nível (sem autenticação/fechamento)"""
-        import datetime
-
         try:
             # Validações de entrada
             if start_date and not isinstance(start_date, str):
                 self.logger.error(
-                    f"[{datetime.datetime.now(tz=datetime.timezone.utc).isoformat()}] start_date deve ser string: {type(start_date)}"
+                    f"[{datetime.now(tz=timezone.utc).isoformat()}] start_date deve ser string: {type(start_date)}"
                 )
                 return {}
 
             if end_date and not isinstance(end_date, str):
                 self.logger.error(
-                    f"[{datetime.datetime.now(tz=datetime.timezone.utc).isoformat()}] end_date deve ser string: {type(end_date)}"
+                    f"[{datetime.now(tz=timezone.utc).isoformat()}] end_date deve ser string: {type(end_date)}"
                 )
                 return {}
 
@@ -1554,7 +1550,7 @@ class GLPIService:
                     datetime.datetime.strptime(start_date.strip(), "%Y-%m-%d")
                 except ValueError as e:
                     self.logger.error(
-                        f"[{datetime.datetime.now(tz=datetime.timezone.utc).isoformat()}] Formato de start_date inválido '{start_date}': {e}"
+                        f"[{datetime.now(tz=timezone.utc).isoformat()}] Formato de start_date inválido '{start_date}': {e}"
                     )
                     return {}
 
@@ -1563,31 +1559,31 @@ class GLPIService:
                     datetime.datetime.strptime(end_date.strip(), "%Y-%m-%d")
                 except ValueError as e:
                     self.logger.error(
-                        f"[{datetime.datetime.now(tz=datetime.timezone.utc).isoformat()}] Formato de end_date inválido '{end_date}': {e}"
+                        f"[{datetime.now(tz=timezone.utc).isoformat()}] Formato de end_date inválido '{end_date}': {e}"
                     )
                     return {}
 
             # Verificar se as configurações necessárias estão disponíveis
             if not hasattr(self, "service_levels") or not isinstance(self.service_levels, dict):
                 self.logger.error(
-                    f"[{datetime.datetime.now(tz=datetime.timezone.utc).isoformat()}] service_levels inválido: {getattr(self, 'service_levels', None)}"
+                    f"[{datetime.now(tz=timezone.utc).isoformat()}] service_levels inválido: {getattr(self, 'service_levels', None)}"
                 )
                 return {}
 
             if not hasattr(self, "status_map") or not isinstance(self.status_map, dict):
                 self.logger.error(
-                    f"[{datetime.datetime.now(tz=datetime.timezone.utc).isoformat()}] status_map inválido: {getattr(self, 'status_map', None)}"
+                    f"[{datetime.now(tz=timezone.utc).isoformat()}] status_map inválido: {getattr(self, 'status_map', None)}"
                 )
                 return {}
 
             if not self.service_levels:
                 self.logger.warning(
-                    f"[{datetime.datetime.now(tz=datetime.timezone.utc).isoformat()}] service_levels está vazio"
+                    f"[{datetime.now(tz=timezone.utc).isoformat()}] service_levels está vazio"
                 )
                 return {}
 
             if not self.status_map:
-                self.logger.warning(f"[{datetime.datetime.now(tz=datetime.timezone.utc).isoformat()}] status_map está vazio")
+                self.logger.warning(f"[{datetime.now(tz=timezone.utc).isoformat()}] status_map está vazio")
                 return {}
 
             metrics = {}
@@ -1597,13 +1593,13 @@ class GLPIService:
                     # Validar level_name e group_id
                     if not level_name or not isinstance(level_name, str):
                         self.logger.warning(
-                            f"[{datetime.datetime.now(tz=datetime.timezone.utc).isoformat()}] level_name inválido: {level_name}"
+                            f"[{datetime.now(tz=timezone.utc).isoformat()}] level_name inválido: {level_name}"
                         )
                         continue
 
                     if not isinstance(group_id, (int, str)) or (isinstance(group_id, str) and not group_id.strip()):
                         self.logger.warning(
-                            f"[{datetime.datetime.now(tz=datetime.timezone.utc).isoformat()}] group_id inválido para {level_name}: {group_id}"
+                            f"[{datetime.now(tz=timezone.utc).isoformat()}] group_id inválido para {level_name}: {group_id}"
                         )
                         continue
 
@@ -1614,13 +1610,13 @@ class GLPIService:
                             # Validar status_name e status_id
                             if not status_name or not isinstance(status_name, str):
                                 self.logger.warning(
-                                    f"[{datetime.datetime.now(tz=datetime.timezone.utc).isoformat()}] status_name inválido: {status_name}"
+                                    f"[{datetime.now(tz=timezone.utc).isoformat()}] status_name inválido: {status_name}"
                                 )
                                 continue
 
                             if not isinstance(status_id, (int, str)) or (isinstance(status_id, str) and not status_id.strip()):
                                 self.logger.warning(
-                                    f"[{datetime.datetime.now(tz=datetime.timezone.utc).isoformat()}] status_id inválido para {status_name}: {status_id}"
+                                    f"[{datetime.now(tz=timezone.utc).isoformat()}] status_id inválido para {status_name}: {status_id}"
                                 )
                                 continue
 
@@ -1635,7 +1631,7 @@ class GLPIService:
 
                         except Exception as e:
                             self.logger.error(
-                                f"[{datetime.datetime.now(tz=datetime.timezone.utc).isoformat()}] Erro ao obter contagem para {level_name}/{status_name}: {e}"
+                                f"[{datetime.now(tz=timezone.utc).isoformat()}] Erro ao obter contagem para {level_name}/{status_name}: {e}"
                             )
                             level_metrics[status_name] = 0
 
@@ -1643,7 +1639,7 @@ class GLPIService:
 
                 except Exception as e:
                     self.logger.error(
-                        f"[{datetime.datetime.now(tz=datetime.timezone.utc).isoformat()}] Erro ao processar nível {level_name}: {e}"
+                        f"[{datetime.now(tz=timezone.utc).isoformat()}] Erro ao processar nível {level_name}: {e}"
                     )
                     metrics[level_name] = {}
 
@@ -1651,7 +1647,7 @@ class GLPIService:
 
         except Exception as e:
             self.logger.error(
-                f"[{datetime.datetime.now(tz=datetime.timezone.utc).isoformat()}] Erro no _get_metrics_by_level_internal: {e}"
+                f"[{datetime.now(tz=timezone.utc).isoformat()}] Erro no _get_metrics_by_level_internal: {e}"
             )
             return {}
 
@@ -2157,19 +2153,17 @@ class GLPIService:
         correlation_id: Optional[str] = None,
     ) -> Dict[str, Dict[str, int]]:
         """Método interno otimizado para obter métricas por nível usando estrutura hierárquica (campo 8)"""
-        import datetime
-
         try:
             # Validações de entrada
             if start_date and not isinstance(start_date, str):
                 self.logger.error(
-                    f"[{datetime.datetime.now(tz=datetime.timezone.utc).isoformat()}] start_date deve ser string: {type(start_date)}"
+                    f"[{datetime.now(tz=timezone.utc).isoformat()}] start_date deve ser string: {type(start_date)}"
                 )
                 return {}
 
             if end_date and not isinstance(end_date, str):
                 self.logger.error(
-                    f"[{datetime.datetime.now(tz=datetime.timezone.utc).isoformat()}] end_date deve ser string: {type(end_date)}"
+                    f"[{datetime.now(tz=timezone.utc).isoformat()}] end_date deve ser string: {type(end_date)}"
                 )
                 return {}
 
@@ -2179,7 +2173,7 @@ class GLPIService:
                     datetime.datetime.strptime(start_date.strip(), "%Y-%m-%d")
                 except ValueError as e:
                     self.logger.error(
-                        f"[{datetime.datetime.now(tz=datetime.timezone.utc).isoformat()}] Formato de start_date inválido '{start_date}': {e}"
+                        f"[{datetime.now(tz=timezone.utc).isoformat()}] Formato de start_date inválido '{start_date}': {e}"
                     )
                     return {}
 
@@ -2188,19 +2182,19 @@ class GLPIService:
                     datetime.datetime.strptime(end_date.strip(), "%Y-%m-%d")
                 except ValueError as e:
                     self.logger.error(
-                        f"[{datetime.datetime.now(tz=datetime.timezone.utc).isoformat()}] Formato de end_date inválido '{end_date}': {e}"
+                        f"[{datetime.now(tz=timezone.utc).isoformat()}] Formato de end_date inválido '{end_date}': {e}"
                     )
                     return {}
 
             # Verificar se as configurações necessárias estão disponíveis
             if not hasattr(self, "status_map") or not isinstance(self.status_map, dict):
                 self.logger.error(
-                    f"[{datetime.datetime.now(tz=datetime.timezone.utc).isoformat()}] status_map inválido: {getattr(self, 'status_map', None)}"
+                    f"[{datetime.now(tz=timezone.utc).isoformat()}] status_map inválido: {getattr(self, 'status_map', None)}"
                 )
                 return {}
 
             if not self.status_map:
-                self.logger.warning(f"[{datetime.datetime.now(tz=datetime.timezone.utc).isoformat()}] status_map está vazio")
+                self.logger.warning(f"[{datetime.now(tz=timezone.utc).isoformat()}] status_map está vazio")
                 return {}
 
             # OTIMIZAÇÃO: Usar busca agregada em vez de requisições individuais
@@ -2236,7 +2230,7 @@ class GLPIService:
         except Exception as e:
             correlation_log = f"[{correlation_id}] " if correlation_id else ""
             self.logger.error(
-                f"[{datetime.datetime.now(tz=datetime.timezone.utc).isoformat()}] {correlation_log}Erro geral no _get_metrics_by_level_internal_hierarchy: {e}"
+                f"[{datetime.now(tz=timezone.utc).isoformat()}] {correlation_log}Erro geral no _get_metrics_by_level_internal_hierarchy: {e}"
             )
             return {}
 
@@ -2247,29 +2241,27 @@ class GLPIService:
         correlation_id: Optional[str] = None,
     ) -> Dict[str, int]:
         """Retorna métricas gerais de todos os tickets (não apenas grupos N1-N4)"""
-        import datetime
-
         try:
             # Verificar configuração básica
             if not hasattr(self, "status_map") or not self.status_map:
                 self.logger.error(
-                    f"[{datetime.datetime.now(tz=datetime.timezone.utc).isoformat()}] status_map não configurado"
+                    f"[{datetime.now(tz=timezone.utc).isoformat()}] status_map não configurado"
                 )
                 return {}
 
             if not hasattr(self, "glpi_url") or not self.glpi_url:
-                self.logger.error(f"[{datetime.datetime.now(tz=datetime.timezone.utc).isoformat()}] GLPI URL não configurada")
+                self.logger.error(f"[{datetime.now(tz=timezone.utc).isoformat()}] GLPI URL não configurada")
                 return {}
 
             # Garantir autenticação
             if not self._ensure_authenticated():
-                self.logger.error(f"[{datetime.datetime.now(tz=datetime.timezone.utc).isoformat()}] Falha na autenticação")
+                self.logger.error(f"[{datetime.now(tz=timezone.utc).isoformat()}] Falha na autenticação")
                 return {}
 
             # Descobrir field_ids se necessário
             if not self.discover_field_ids():
                 self.logger.error(
-                    f"[{datetime.datetime.now(tz=datetime.timezone.utc).isoformat()}] Falha ao descobrir field_ids"
+                    f"[{datetime.now(tz=timezone.utc).isoformat()}] Falha ao descobrir field_ids"
                 )
                 return {}
 
@@ -2278,7 +2270,7 @@ class GLPIService:
 
         except Exception as e:
             self.logger.error(
-                f"[{datetime.datetime.now(tz=datetime.timezone.utc).isoformat()}] Erro geral no get_general_metrics: {e}"
+                f"[{datetime.now(tz=timezone.utc).isoformat()}] Erro geral no get_general_metrics: {e}"
             )
             return {}
 
@@ -2289,19 +2281,17 @@ class GLPIService:
         correlation_id: Optional[str] = None,
     ) -> Dict[str, int]:
         """Método interno para obter métricas gerais (sem autenticação/fechamento)"""
-        import datetime
-
         try:
             # Validações de entrada
             if start_date and not isinstance(start_date, str):
                 self.logger.error(
-                    f"[{datetime.datetime.now(tz=datetime.timezone.utc).isoformat()}] start_date deve ser string: {type(start_date)}"
+                    f"[{datetime.now(tz=timezone.utc).isoformat()}] start_date deve ser string: {type(start_date)}"
                 )
                 return {}
 
             if end_date and not isinstance(end_date, str):
                 self.logger.error(
-                    f"[{datetime.datetime.now(tz=datetime.timezone.utc).isoformat()}] end_date deve ser string: {type(end_date)}"
+                    f"[{datetime.now(tz=timezone.utc).isoformat()}] end_date deve ser string: {type(end_date)}"
                 )
                 return {}
 
@@ -2311,7 +2301,7 @@ class GLPIService:
                     datetime.datetime.strptime(start_date.strip(), "%Y-%m-%d")
                 except ValueError as e:
                     self.logger.error(
-                        f"[{datetime.datetime.now(tz=datetime.timezone.utc).isoformat()}] Formato de start_date inválido '{start_date}': {e}"
+                        f"[{datetime.now(tz=timezone.utc).isoformat()}] Formato de start_date inválido '{start_date}': {e}"
                     )
                     return {}
 
@@ -2320,35 +2310,35 @@ class GLPIService:
                     datetime.datetime.strptime(end_date.strip(), "%Y-%m-%d")
                 except ValueError as e:
                     self.logger.error(
-                        f"[{datetime.datetime.now(tz=datetime.timezone.utc).isoformat()}] Formato de end_date inválido '{end_date}': {e}"
+                        f"[{datetime.now(tz=timezone.utc).isoformat()}] Formato de end_date inválido '{end_date}': {e}"
                     )
                     return {}
 
             # Verificar configurações necessárias
             if not hasattr(self, "status_map") or not isinstance(self.status_map, dict):
                 self.logger.error(
-                    f"[{datetime.datetime.now(tz=datetime.timezone.utc).isoformat()}] status_map inválido: {getattr(self, 'status_map', None)}"
+                    f"[{datetime.now(tz=timezone.utc).isoformat()}] status_map inválido: {getattr(self, 'status_map', None)}"
                 )
                 return {}
 
             if not hasattr(self, "field_ids") or not isinstance(self.field_ids, dict):
                 self.logger.error(
-                    f"[{datetime.datetime.now(tz=datetime.timezone.utc).isoformat()}] field_ids inválido: {getattr(self, 'field_ids', None)}"
+                    f"[{datetime.now(tz=timezone.utc).isoformat()}] field_ids inválido: {getattr(self, 'field_ids', None)}"
                 )
                 return {}
 
             if not self.status_map:
-                self.logger.warning(f"[{datetime.datetime.now(tz=datetime.timezone.utc).isoformat()}] status_map está vazio")
+                self.logger.warning(f"[{datetime.now(tz=timezone.utc).isoformat()}] status_map está vazio")
                 return {}
 
             if not self.field_ids.get("STATUS"):
                 self.logger.error(
-                    f"[{datetime.datetime.now(tz=datetime.timezone.utc).isoformat()}] Field ID STATUS não encontrado: {self.field_ids}"
+                    f"[{datetime.now(tz=timezone.utc).isoformat()}] Field ID STATUS não encontrado: {self.field_ids}"
                 )
                 return {}
 
             if not hasattr(self, "glpi_url") or not self.glpi_url:
-                self.logger.error(f"[{datetime.datetime.now(tz=datetime.timezone.utc).isoformat()}] GLPI URL não configurada")
+                self.logger.error(f"[{datetime.now(tz=timezone.utc).isoformat()}] GLPI URL não configurada")
                 return {}
 
             status_totals = {}
@@ -2359,13 +2349,13 @@ class GLPIService:
                     # Validar status_name e status_id
                     if not status_name or not isinstance(status_name, str):
                         self.logger.warning(
-                            f"[{datetime.datetime.now(tz=datetime.timezone.utc).isoformat()}] status_name inválido: {status_name}"
+                            f"[{datetime.now(tz=timezone.utc).isoformat()}] status_name inválido: {status_name}"
                         )
                         continue
 
                     if not isinstance(status_id, (int, str)) or (isinstance(status_id, str) and not status_id.strip()):
                         self.logger.warning(
-                            f"[{datetime.datetime.now(tz=datetime.timezone.utc).isoformat()}] status_id inválido para {status_name}: {status_id}"
+                            f"[{datetime.now(tz=timezone.utc).isoformat()}] status_id inválido para {status_name}: {status_id}"
                         )
                         continue
 
@@ -2374,7 +2364,7 @@ class GLPIService:
                         status_id_int = int(status_id)
                     except (ValueError, TypeError) as e:
                         self.logger.error(
-                            f"[{datetime.datetime.now(tz=datetime.timezone.utc).isoformat()}] Erro ao converter status_id para int '{status_id}': {e}"
+                            f"[{datetime.now(tz=timezone.utc).isoformat()}] Erro ao converter status_id para int '{status_id}': {e}"
                         )
                         status_totals[status_name] = 0
                         continue
@@ -2407,14 +2397,14 @@ class GLPIService:
 
                         if not response:
                             self.logger.warning(
-                                f"[{datetime.datetime.now(tz=datetime.timezone.utc).isoformat()}] Resposta vazia para status {status_name}"
+                                f"[{datetime.now(tz=timezone.utc).isoformat()}] Resposta vazia para status {status_name}"
                             )
                             status_totals[status_name] = 0
                             continue
 
                         if response.status_code not in [200, 206]:
                             self.logger.warning(
-                                f"[{datetime.datetime.now(tz=datetime.timezone.utc).isoformat()}] Status code inválido {response.status_code} para status {status_name}"
+                                f"[{datetime.now(tz=timezone.utc).isoformat()}] Status code inválido {response.status_code} para status {status_name}"
                             )
                             status_totals[status_name] = 0
                             continue
@@ -2424,7 +2414,7 @@ class GLPIService:
                                 content_range = response.headers["Content-Range"]
                                 if not content_range or "/" not in content_range:
                                     self.logger.warning(
-                                        f"[{datetime.datetime.now(tz=datetime.timezone.utc).isoformat()}] Content-Range inválido para {status_name}: {content_range}"
+                                        f"[{datetime.now(tz=timezone.utc).isoformat()}] Content-Range inválido para {status_name}: {content_range}"
                                     )
                                     status_totals[status_name] = 0
                                     continue
@@ -2432,7 +2422,7 @@ class GLPIService:
                                 total_str = content_range.split("/")[-1]
                                 if not total_str.isdigit():
                                     self.logger.warning(
-                                        f"[{datetime.datetime.now(tz=datetime.timezone.utc).isoformat()}] Total não numérico para {status_name}: {total_str}"
+                                        f"[{datetime.now(tz=timezone.utc).isoformat()}] Total não numérico para {status_name}: {total_str}"
                                     )
                                     status_totals[status_name] = 0
                                     continue
@@ -2440,43 +2430,43 @@ class GLPIService:
                                 count = int(total_str)
                                 status_totals[status_name] = count
                                 self.logger.debug(
-                                    f"[{datetime.datetime.now(tz=datetime.timezone.utc).isoformat()}] Contagem para {status_name}: {count}"
+                                    f"[{datetime.now(tz=timezone.utc).isoformat()}] Contagem para {status_name}: {count}"
                                 )
                             except (ValueError, IndexError) as e:
                                 self.logger.error(
-                                    f"[{datetime.datetime.now(tz=datetime.timezone.utc).isoformat()}] Erro ao processar Content-Range para {status_name}: {e}"
+                                    f"[{datetime.now(tz=timezone.utc).isoformat()}] Erro ao processar Content-Range para {status_name}: {e}"
                                 )
                                 status_totals[status_name] = 0
                         else:
                             self.logger.warning(
-                                f"[{datetime.datetime.now(tz=datetime.timezone.utc).isoformat()}] Sem Content-Range para {status_name}"
+                                f"[{datetime.now(tz=timezone.utc).isoformat()}] Sem Content-Range para {status_name}"
                             )
                             status_totals[status_name] = 0
 
                     except requests.exceptions.Timeout as e:
                         self.logger.error(
-                            f"[{datetime.datetime.now(tz=datetime.timezone.utc).isoformat()}] Timeout ao buscar {status_name}: {e}"
+                            f"[{datetime.now(tz=timezone.utc).isoformat()}] Timeout ao buscar {status_name}: {e}"
                         )
                         status_totals[status_name] = 0
                     except requests.exceptions.ConnectionError as e:
                         self.logger.error(
-                            f"[{datetime.datetime.now(tz=datetime.timezone.utc).isoformat()}] Erro de conexão ao buscar {status_name}: {e}"
+                            f"[{datetime.now(tz=timezone.utc).isoformat()}] Erro de conexão ao buscar {status_name}: {e}"
                         )
                         status_totals[status_name] = 0
                     except requests.exceptions.RequestException as e:
                         self.logger.error(
-                            f"[{datetime.datetime.now(tz=datetime.timezone.utc).isoformat()}] Erro de requisição ao buscar {status_name}: {e}"
+                            f"[{datetime.now(tz=timezone.utc).isoformat()}] Erro de requisição ao buscar {status_name}: {e}"
                         )
                         status_totals[status_name] = 0
                     except Exception as e:
                         self.logger.error(
-                            f"[{datetime.datetime.now(tz=datetime.timezone.utc).isoformat()}] Erro inesperado ao buscar contagem geral para {status_name}: {e}"
+                            f"[{datetime.now(tz=timezone.utc).isoformat()}] Erro inesperado ao buscar contagem geral para {status_name}: {e}"
                         )
                         status_totals[status_name] = 0
 
                 except Exception as e:
                     self.logger.error(
-                        f"[{datetime.datetime.now(tz=datetime.timezone.utc).isoformat()}] Erro ao processar status {status_name}: {e}"
+                        f"[{datetime.now(tz=timezone.utc).isoformat()}] Erro ao processar status {status_name}: {e}"
                     )
                     status_totals[status_name] = 0
 
@@ -2484,7 +2474,7 @@ class GLPIService:
 
         except Exception as e:
             self.logger.error(
-                f"[{datetime.datetime.now(tz=datetime.timezone.utc).isoformat()}] Erro geral no _get_general_metrics_internal: {e}"
+                f"[{datetime.now(tz=timezone.utc).isoformat()}] Erro geral no _get_general_metrics_internal: {e}"
             )
             return {}
 
@@ -2507,7 +2497,7 @@ class GLPIService:
             # Validações de entrada
             if start_date and not isinstance(start_date, str):
                 self.logger.error(
-                    f"[{datetime.datetime.now(tz=datetime.timezone.utc).isoformat()}] start_date deve ser string: {type(start_date)}"
+                    f"[{datetime.now(tz=timezone.utc).isoformat()}] start_date deve ser string: {type(start_date)}"
                 )
                 return ResponseFormatter.format_error_response(
                     "Parâmetro start_date inválido",
@@ -2517,7 +2507,7 @@ class GLPIService:
 
             if end_date and not isinstance(end_date, str):
                 self.logger.error(
-                    f"[{datetime.datetime.now(tz=datetime.timezone.utc).isoformat()}] end_date deve ser string: {type(end_date)}"
+                    f"[{datetime.now(tz=timezone.utc).isoformat()}] end_date deve ser string: {type(end_date)}"
                 )
                 return ResponseFormatter.format_error_response(
                     "Parâmetro end_date inválido",
@@ -2531,7 +2521,7 @@ class GLPIService:
                     datetime.datetime.strptime(start_date.strip(), "%Y-%m-%d")
                 except ValueError as e:
                     self.logger.error(
-                        f"[{datetime.datetime.now(tz=datetime.timezone.utc).isoformat()}] Formato de start_date inválido '{start_date}': {e}"
+                        f"[{datetime.now(tz=timezone.utc).isoformat()}] Formato de start_date inválido '{start_date}': {e}"
                     )
                     return ResponseFormatter.format_error_response(
                         "Formato de data inválido",
@@ -2544,7 +2534,7 @@ class GLPIService:
                     datetime.datetime.strptime(end_date.strip(), "%Y-%m-%d")
                 except ValueError as e:
                     self.logger.error(
-                        f"[{datetime.datetime.now(tz=datetime.timezone.utc).isoformat()}] Formato de end_date inválido '{end_date}': {e}"
+                        f"[{datetime.now(tz=timezone.utc).isoformat()}] Formato de end_date inválido '{end_date}': {e}"
                     )
                     return ResponseFormatter.format_error_response(
                         "Formato de data inválido",
@@ -2554,7 +2544,7 @@ class GLPIService:
 
             # Verificar configurações básicas
             if not hasattr(self, "glpi_url") or not self.glpi_url:
-                self.logger.error(f"[{datetime.datetime.now(tz=datetime.timezone.utc).isoformat()}] GLPI URL não configurada")
+                self.logger.error(f"[{datetime.now(tz=timezone.utc).isoformat()}] GLPI URL não configurada")
                 return ResponseFormatter.format_error_response(
                     "Configuração inválida",
                     ["GLPI URL não configurada"],
@@ -2563,7 +2553,7 @@ class GLPIService:
 
             if not hasattr(self, "status_map") or not self.status_map:
                 self.logger.error(
-                    f"[{datetime.datetime.now(tz=datetime.timezone.utc).isoformat()}] status_map não configurado"
+                    f"[{datetime.now(tz=timezone.utc).isoformat()}] status_map não configurado"
                 )
                 return ResponseFormatter.format_error_response(
                     "Configuração inválida",
@@ -2573,7 +2563,7 @@ class GLPIService:
 
             if not hasattr(self, "service_levels") or not self.service_levels:
                 self.logger.error(
-                    f"[{datetime.datetime.now(tz=datetime.timezone.utc).isoformat()}] service_levels não configurado"
+                    f"[{datetime.now(tz=timezone.utc).isoformat()}] service_levels não configurado"
                 )
                 return ResponseFormatter.format_error_response(
                     "Configuração inválida",
@@ -2587,7 +2577,7 @@ class GLPIService:
                     return self.get_dashboard_metrics_with_date_filter(start_date, end_date, correlation_id)
                 except Exception as e:
                     self.logger.error(
-                        f"[{datetime.datetime.now(tz=datetime.timezone.utc).isoformat()}] Erro no método com filtro de data: {e}"
+                        f"[{datetime.now(tz=timezone.utc).isoformat()}] Erro no método com filtro de data: {e}"
                     )
                     return ResponseFormatter.format_error_response(
                         "Erro ao obter métricas com filtro",
@@ -2601,17 +2591,17 @@ class GLPIService:
                     cached_data = self._get_cache_data("dashboard_metrics")
                     if cached_data:
                         self.logger.info(
-                            f"[{datetime.datetime.now(tz=datetime.timezone.utc).isoformat()}] Retornando métricas do cache"
+                            f"[{datetime.now(tz=timezone.utc).isoformat()}] Retornando métricas do cache"
                         )
                         return cached_data
             except Exception as e:
                 self.logger.warning(
-                    f"[{datetime.datetime.now(tz=datetime.timezone.utc).isoformat()}] Erro ao verificar cache: {e}"
+                    f"[{datetime.now(tz=timezone.utc).isoformat()}] Erro ao verificar cache: {e}"
                 )
 
             # Autenticar uma única vez
             if not self._ensure_authenticated():
-                self.logger.error(f"[{datetime.datetime.now(tz=datetime.timezone.utc).isoformat()}] Falha na autenticação")
+                self.logger.error(f"[{datetime.now(tz=timezone.utc).isoformat()}] Falha na autenticação")
                 return ResponseFormatter.format_error_response(
                     "Falha na autenticação com GLPI",
                     ["Erro de autenticação"],
@@ -2620,7 +2610,7 @@ class GLPIService:
 
             if not self.discover_field_ids():
                 self.logger.error(
-                    f"[{datetime.datetime.now(tz=datetime.timezone.utc).isoformat()}] Falha ao descobrir field_ids"
+                    f"[{datetime.now(tz=timezone.utc).isoformat()}] Falha ao descobrir field_ids"
                 )
                 return ResponseFormatter.format_error_response(
                     "Falha ao descobrir IDs dos campos",
@@ -2633,7 +2623,7 @@ class GLPIService:
                 general_totals = self._get_general_metrics_internal()
                 if not isinstance(general_totals, dict):
                     self.logger.error(
-                        f"[{datetime.datetime.now(tz=datetime.timezone.utc).isoformat()}] general_totals inválido: {type(general_totals)}"
+                        f"[{datetime.now(tz=timezone.utc).isoformat()}] general_totals inválido: {type(general_totals)}"
                     )
                     return ResponseFormatter.format_error_response(
                         "Erro ao obter métricas gerais",
@@ -2642,11 +2632,11 @@ class GLPIService:
                     )
 
                 self.logger.info(
-                    f"[{datetime.datetime.now(tz=datetime.timezone.utc).isoformat()}] Totais gerais obtidos: {general_totals}"
+                    f"[{datetime.now(tz=timezone.utc).isoformat()}] Totais gerais obtidos: {general_totals}"
                 )
             except Exception as e:
                 self.logger.error(
-                    f"[{datetime.datetime.now(tz=datetime.timezone.utc).isoformat()}] Erro ao obter totais gerais: {e}"
+                    f"[{datetime.now(tz=timezone.utc).isoformat()}] Erro ao obter totais gerais: {e}"
                 )
                 return ResponseFormatter.format_error_response(
                     "Erro ao obter métricas gerais",
@@ -2659,7 +2649,7 @@ class GLPIService:
                 raw_metrics = self._get_metrics_by_level_internal_hierarchy()
                 if not isinstance(raw_metrics, dict):
                     self.logger.error(
-                        f"[{datetime.datetime.now(tz=datetime.timezone.utc).isoformat()}] raw_metrics inválido: {type(raw_metrics)}"
+                        f"[{datetime.now(tz=timezone.utc).isoformat()}] raw_metrics inválido: {type(raw_metrics)}"
                     )
                     return ResponseFormatter.format_error_response(
                         "Erro ao obter métricas por nível",
@@ -2668,11 +2658,11 @@ class GLPIService:
                     )
 
                 self.logger.debug(
-                    f"[{datetime.datetime.now(tz=datetime.timezone.utc).isoformat()}] Métricas por nível obtidas: {raw_metrics}"
+                    f"[{datetime.now(tz=timezone.utc).isoformat()}] Métricas por nível obtidas: {raw_metrics}"
                 )
             except Exception as e:
                 self.logger.error(
-                    f"[{datetime.datetime.now(tz=datetime.timezone.utc).isoformat()}] Erro ao obter métricas por nível: {e}"
+                    f"[{datetime.now(tz=timezone.utc).isoformat()}] Erro ao obter métricas por nível: {e}"
                 )
                 return ResponseFormatter.format_error_response(
                     "Erro ao obter métricas por nível",
@@ -2704,12 +2694,12 @@ class GLPIService:
                 ]:
                     if not isinstance(value, (int, float)) or value < 0:
                         self.logger.warning(
-                            f"[{datetime.datetime.now(tz=datetime.timezone.utc).isoformat()}] Valor inválido para {name}: {value}"
+                            f"[{datetime.now(tz=timezone.utc).isoformat()}] Valor inválido para {name}: {value}"
                         )
 
             except Exception as e:
                 self.logger.error(
-                    f"[{datetime.datetime.now(tz=datetime.timezone.utc).isoformat()}] Erro ao calcular totais gerais: {e}"
+                    f"[{datetime.now(tz=timezone.utc).isoformat()}] Erro ao calcular totais gerais: {e}"
                 )
                 return ResponseFormatter.format_error_response(
                     "Erro ao calcular totais",
@@ -2751,13 +2741,13 @@ class GLPIService:
                         try:
                             if not level_name or not isinstance(level_name, str):
                                 self.logger.warning(
-                                    f"[{datetime.datetime.now(tz=datetime.timezone.utc).isoformat()}] level_name inválido: {level_name}"
+                                    f"[{datetime.now(tz=timezone.utc).isoformat()}] level_name inválido: {level_name}"
                                 )
                                 continue
 
                             if not isinstance(level_data, dict):
                                 self.logger.warning(
-                                    f"[{datetime.datetime.now(tz=datetime.timezone.utc).isoformat()}] level_data inválido para {level_name}: {type(level_data)}"
+                                    f"[{datetime.now(tz=timezone.utc).isoformat()}] level_data inválido para {level_name}: {type(level_data)}"
                                 )
                                 continue
 
@@ -2788,7 +2778,7 @@ class GLPIService:
                                 ]:
                                     if not isinstance(value, (int, float)):
                                         self.logger.warning(
-                                            f"[{datetime.datetime.now(tz=datetime.timezone.utc).isoformat()}] Valor não numérico para {level_key}.{name}: {value}"
+                                            f"[{datetime.now(tz=timezone.utc).isoformat()}] Valor não numérico para {level_key}.{name}: {value}"
                                         )
 
                                 level_metrics[level_key]["novos"] = max(
@@ -2811,17 +2801,17 @@ class GLPIService:
                                 )
                             else:
                                 self.logger.warning(
-                                    f"[{datetime.datetime.now(tz=datetime.timezone.utc).isoformat()}] Nível desconhecido: {level_key}"
+                                    f"[{datetime.now(tz=timezone.utc).isoformat()}] Nível desconhecido: {level_key}"
                                 )
                         except Exception as e:
                             self.logger.error(
-                                f"[{datetime.datetime.now(tz=datetime.timezone.utc).isoformat()}] Erro ao processar nível {level_name}: {e}"
+                                f"[{datetime.now(tz=timezone.utc).isoformat()}] Erro ao processar nível {level_name}: {e}"
                             )
                             continue
 
             except Exception as e:
                 self.logger.error(
-                    f"[{datetime.datetime.now(tz=datetime.timezone.utc).isoformat()}] Erro ao processar métricas por nível: {e}"
+                    f"[{datetime.now(tz=timezone.utc).isoformat()}] Erro ao processar métricas por nível: {e}"
                 )
                 return ResponseFormatter.format_error_response(
                     "Erro ao processar métricas por nível",
@@ -2854,16 +2844,16 @@ class GLPIService:
                             general_resolvidos,
                         ),
                         "filters_applied": None,
-                        "timestamp": datetime.datetime.now(tz=datetime.timezone.utc).isoformat(),
+                        "timestamp": datetime.now(tz=timezone.utc).isoformat(),
                     },
-                    "timestamp": datetime.datetime.now().strftime("%Y-%m-%dT%H:%M:%SZ"),
+                    "timestamp": datetime.now().strftime("%Y-%m-%dT%H:%M:%SZ"),
                     "tempo_execucao": (time.time() - start_time) * 1000,
                 }
 
                 # Validar resultado final
                 if not isinstance(result, dict) or "success" not in result or "data" not in result:
                     self.logger.error(
-                        f"[{datetime.datetime.now(tz=datetime.timezone.utc).isoformat()}] Resultado final inválido: {type(result)}"
+                        f"[{datetime.now(tz=timezone.utc).isoformat()}] Resultado final inválido: {type(result)}"
                     )
                     return ResponseFormatter.format_error_response(
                         "Erro na construção do resultado",
@@ -2872,12 +2862,12 @@ class GLPIService:
                     )
 
                 self.logger.info(
-                    f"[{datetime.datetime.now(tz=datetime.timezone.utc).isoformat()}] Métricas do dashboard construídas com sucesso"
+                    f"[{datetime.now(tz=timezone.utc).isoformat()}] Métricas do dashboard construídas com sucesso"
                 )
 
             except Exception as e:
                 self.logger.error(
-                    f"[{datetime.datetime.now(tz=datetime.timezone.utc).isoformat()}] Erro ao construir resultado final: {e}"
+                    f"[{datetime.now(tz=timezone.utc).isoformat()}] Erro ao construir resultado final: {e}"
                 )
                 return ResponseFormatter.format_error_response(
                     "Erro ao construir resultado",
@@ -2888,17 +2878,17 @@ class GLPIService:
             # Salvar no cache
             try:
                 self._set_cache_data("dashboard_metrics", result, ttl=180)
-                self.logger.debug(f"[{datetime.datetime.now(tz=datetime.timezone.utc).isoformat()}] Resultado salvo no cache")
+                self.logger.debug(f"[{datetime.now(tz=timezone.utc).isoformat()}] Resultado salvo no cache")
             except Exception as e:
                 self.logger.warning(
-                    f"[{datetime.datetime.now(tz=datetime.timezone.utc).isoformat()}] Erro ao salvar no cache: {e}"
+                    f"[{datetime.now(tz=timezone.utc).isoformat()}] Erro ao salvar no cache: {e}"
                 )
 
             return result
 
         except Exception as e:
             self.logger.error(
-                f"[{datetime.datetime.now(tz=datetime.timezone.utc).isoformat()}] Erro geral ao obter métricas do dashboard: {e}"
+                f"[{datetime.now(tz=timezone.utc).isoformat()}] Erro geral ao obter métricas do dashboard: {e}"
             )
             return ResponseFormatter.format_error_response(
                 f"Erro interno: {str(e)}",
@@ -2908,19 +2898,17 @@ class GLPIService:
 
     def _get_general_totals_internal(self, start_date: str = None, end_date: str = None) -> dict:
         """Método interno para obter totais gerais com filtro de data"""
-        import datetime
-
         # Validações de entrada
         try:
             if start_date and not isinstance(start_date, str):
                 self.logger.error(
-                    f"[{datetime.datetime.now(tz=datetime.timezone.utc).isoformat()}] start_date deve ser string: {type(start_date)}"
+                    f"[{datetime.now(tz=timezone.utc).isoformat()}] start_date deve ser string: {type(start_date)}"
                 )
                 return {}
 
             if end_date and not isinstance(end_date, str):
                 self.logger.error(
-                    f"[{datetime.datetime.now(tz=datetime.timezone.utc).isoformat()}] end_date deve ser string: {type(end_date)}"
+                    f"[{datetime.now(tz=timezone.utc).isoformat()}] end_date deve ser string: {type(end_date)}"
                 )
                 return {}
 
@@ -2930,7 +2918,7 @@ class GLPIService:
                     datetime.datetime.strptime(start_date.strip(), "%Y-%m-%d")
                 except ValueError as e:
                     self.logger.error(
-                        f"[{datetime.datetime.now(tz=datetime.timezone.utc).isoformat()}] Formato de start_date inválido '{start_date}': {e}"
+                        f"[{datetime.now(tz=timezone.utc).isoformat()}] Formato de start_date inválido '{start_date}': {e}"
                     )
                     return {}
 
@@ -2939,40 +2927,40 @@ class GLPIService:
                     datetime.datetime.strptime(end_date.strip(), "%Y-%m-%d")
                 except ValueError as e:
                     self.logger.error(
-                        f"[{datetime.datetime.now(tz=datetime.timezone.utc).isoformat()}] Formato de end_date inválido '{end_date}': {e}"
+                        f"[{datetime.now(tz=timezone.utc).isoformat()}] Formato de end_date inválido '{end_date}': {e}"
                     )
                     return {}
 
             # Verificar configurações necessárias
             if not hasattr(self, "status_map") or not self.status_map:
                 self.logger.error(
-                    f"[{datetime.datetime.now(tz=datetime.timezone.utc).isoformat()}] status_map não configurado"
+                    f"[{datetime.now(tz=timezone.utc).isoformat()}] status_map não configurado"
                 )
                 return {}
 
             if not isinstance(self.status_map, dict):
                 self.logger.error(
-                    f"[{datetime.datetime.now(tz=datetime.timezone.utc).isoformat()}] status_map deve ser dict: {type(self.status_map)}"
+                    f"[{datetime.now(tz=timezone.utc).isoformat()}] status_map deve ser dict: {type(self.status_map)}"
                 )
                 return {}
 
             if not hasattr(self, "field_ids") or not self.field_ids:
-                self.logger.error(f"[{datetime.datetime.now(tz=datetime.timezone.utc).isoformat()}] field_ids não configurado")
+                self.logger.error(f"[{datetime.now(tz=timezone.utc).isoformat()}] field_ids não configurado")
                 return {}
 
             if not isinstance(self.field_ids, dict) or "STATUS" not in self.field_ids:
                 self.logger.error(
-                    f"[{datetime.datetime.now(tz=datetime.timezone.utc).isoformat()}] field_ids inválido ou STATUS ausente"
+                    f"[{datetime.now(tz=timezone.utc).isoformat()}] field_ids inválido ou STATUS ausente"
                 )
                 return {}
 
             self.logger.debug(
-                f"[{datetime.datetime.now(tz=datetime.timezone.utc).isoformat()}] Iniciando busca de totais gerais com filtro de data"
+                f"[{datetime.now(tz=timezone.utc).isoformat()}] Iniciando busca de totais gerais com filtro de data"
             )
 
         except Exception as e:
             self.logger.error(
-                f"[{datetime.datetime.now(tz=datetime.timezone.utc).isoformat()}] Erro na validação de entrada: {e}"
+                f"[{datetime.now(tz=timezone.utc).isoformat()}] Erro na validação de entrada: {e}"
             )
             return {}
 
@@ -2984,13 +2972,13 @@ class GLPIService:
                 # Validar status_name e status_id
                 if not status_name or not isinstance(status_name, str):
                     self.logger.warning(
-                        f"[{datetime.datetime.now(tz=datetime.timezone.utc).isoformat()}] status_name inválido: {status_name}"
+                        f"[{datetime.now(tz=timezone.utc).isoformat()}] status_name inválido: {status_name}"
                     )
                     continue
 
                 if not isinstance(status_id, (int, str)) or (isinstance(status_id, str) and not status_id.strip()):
                     self.logger.warning(
-                        f"[{datetime.datetime.now(tz=datetime.timezone.utc).isoformat()}] status_id inválido para {status_name}: {status_id}"
+                        f"[{datetime.now(tz=timezone.utc).isoformat()}] status_id inválido para {status_name}: {status_id}"
                     )
                     continue
 
@@ -3015,14 +3003,14 @@ class GLPIService:
 
                     if not response:
                         self.logger.warning(
-                            f"[{datetime.datetime.now(tz=datetime.timezone.utc).isoformat()}] Resposta vazia para {status_name}"
+                            f"[{datetime.now(tz=timezone.utc).isoformat()}] Resposta vazia para {status_name}"
                         )
                         status_totals[status_name] = 0
                         continue
 
                     if response.status_code not in [200, 206]:
                         self.logger.warning(
-                            f"[{datetime.datetime.now(tz=datetime.timezone.utc).isoformat()}] Status HTTP inválido para {status_name}: {response.status_code}"
+                            f"[{datetime.now(tz=timezone.utc).isoformat()}] Status HTTP inválido para {status_name}: {response.status_code}"
                         )
                         status_totals[status_name] = 0
                         continue
@@ -3032,7 +3020,7 @@ class GLPIService:
                             content_range = response.headers["Content-Range"]
                             if not content_range or "/" not in content_range:
                                 self.logger.warning(
-                                    f"[{datetime.datetime.now(tz=datetime.timezone.utc).isoformat()}] Content-Range mal formatado para {status_name}: {content_range}"
+                                    f"[{datetime.now(tz=timezone.utc).isoformat()}] Content-Range mal formatado para {status_name}: {content_range}"
                                 )
                                 status_totals[status_name] = 0
                                 continue
@@ -3040,48 +3028,48 @@ class GLPIService:
                             count = int(content_range.split("/")[-1])
                             status_totals[status_name] = max(0, count)
                             self.logger.debug(
-                                f"[{datetime.datetime.now(tz=datetime.timezone.utc).isoformat()}] Contagem para {status_name}: {count}"
+                                f"[{datetime.now(tz=timezone.utc).isoformat()}] Contagem para {status_name}: {count}"
                             )
                         except (ValueError, IndexError) as e:
                             self.logger.error(
-                                f"[{datetime.datetime.now(tz=datetime.timezone.utc).isoformat()}] Erro ao parsear Content-Range para {status_name}: {e}"
+                                f"[{datetime.now(tz=timezone.utc).isoformat()}] Erro ao parsear Content-Range para {status_name}: {e}"
                             )
                             status_totals[status_name] = 0
                     else:
                         self.logger.warning(
-                            f"[{datetime.datetime.now(tz=datetime.timezone.utc).isoformat()}] Content-Range ausente para {status_name}"
+                            f"[{datetime.now(tz=timezone.utc).isoformat()}] Content-Range ausente para {status_name}"
                         )
                         status_totals[status_name] = 0
 
                 except requests.exceptions.Timeout as e:
                     self.logger.error(
-                        f"[{datetime.datetime.now(tz=datetime.timezone.utc).isoformat()}] Timeout ao buscar {status_name}: {e}"
+                        f"[{datetime.now(tz=timezone.utc).isoformat()}] Timeout ao buscar {status_name}: {e}"
                     )
                     status_totals[status_name] = 0
                 except requests.exceptions.ConnectionError as e:
                     self.logger.error(
-                        f"[{datetime.datetime.now(tz=datetime.timezone.utc).isoformat()}] Erro de conexão ao buscar {status_name}: {e}"
+                        f"[{datetime.now(tz=timezone.utc).isoformat()}] Erro de conexão ao buscar {status_name}: {e}"
                     )
                     status_totals[status_name] = 0
                 except requests.exceptions.RequestException as e:
                     self.logger.error(
-                        f"[{datetime.datetime.now(tz=datetime.timezone.utc).isoformat()}] Erro de requisição ao buscar {status_name}: {e}"
+                        f"[{datetime.now(tz=timezone.utc).isoformat()}] Erro de requisição ao buscar {status_name}: {e}"
                     )
                     status_totals[status_name] = 0
                 except Exception as e:
                     self.logger.error(
-                        f"[{datetime.datetime.now(tz=datetime.timezone.utc).isoformat()}] Erro inesperado ao buscar {status_name}: {e}"
+                        f"[{datetime.now(tz=timezone.utc).isoformat()}] Erro inesperado ao buscar {status_name}: {e}"
                     )
                     status_totals[status_name] = 0
 
             except Exception as e:
                 self.logger.error(
-                    f"[{datetime.datetime.now(tz=datetime.timezone.utc).isoformat()}] Erro ao processar status {status_name}: {e}"
+                    f"[{datetime.now(tz=timezone.utc).isoformat()}] Erro ao processar status {status_name}: {e}"
                 )
                 status_totals[status_name] = 0
 
         self.logger.info(
-            f"[{datetime.datetime.now(tz=datetime.timezone.utc).isoformat()}] Totais gerais obtidos: {status_totals}"
+            f"[{datetime.now(tz=timezone.utc).isoformat()}] Totais gerais obtidos: {status_totals}"
         )
         return status_totals
 
@@ -3101,7 +3089,7 @@ class GLPIService:
         """
         start_time = time.time()
         self.logger.info(
-            f"[{datetime.datetime.now().strftime('%Y-%m-%d %H:%M:%S')}] Iniciando get_dashboard_metrics_with_date_filter com start_date={start_date}, end_date={end_date}"
+            f"[{datetime.now().strftime('%Y-%m-%d %H:%M:%S')}] Iniciando get_dashboard_metrics_with_date_filter com start_date={start_date}, end_date={end_date}"
         )
 
         try:
@@ -3555,10 +3543,11 @@ class GLPIService:
         3. Usa consulta direta sem iteração por todos os usuários
         4. Segue exatamente a estrutura da base de conhecimento
         """
+        start_time = time.time()  # Definir start_time no início para evitar NameError
         try:
             # LIMPAR CACHE INTERNO FORÇADAMENTE - CORREÇÃO CRÍTICA
             self.logger.info(
-                f"[{datetime.datetime.now(tz=datetime.timezone.utc).isoformat()}] LIMPANDO CACHE INTERNO DO GLPI SERVICE"
+                f"[{datetime.now(tz=timezone.utc).isoformat()}] LIMPANDO CACHE INTERNO DO GLPI SERVICE"
             )
             self._cache.clear()
 
@@ -3566,22 +3555,22 @@ class GLPIService:
             if limit is not None:
                 if not isinstance(limit, int):
                     self.logger.error(
-                        f"[{datetime.datetime.now(tz=datetime.timezone.utc).isoformat()}] limit deve ser int: {type(limit)}"
+                        f"[{datetime.now(tz=timezone.utc).isoformat()}] limit deve ser int: {type(limit)}"
                     )
                     return []
                 if limit <= 0:
                     self.logger.error(
-                        f"[{datetime.datetime.now(tz=datetime.timezone.utc).isoformat()}] limit deve ser positivo: {limit}"
+                        f"[{datetime.now(tz=timezone.utc).isoformat()}] limit deve ser positivo: {limit}"
                     )
                     return []
 
             # Validar configurações essenciais
             if not hasattr(self, "glpi_url") or not self.glpi_url:
-                self.logger.error(f"[{datetime.datetime.now(tz=datetime.timezone.utc).isoformat()}] glpi_url não configurado")
+                self.logger.error(f"[{datetime.now(tz=timezone.utc).isoformat()}] glpi_url não configurado")
                 return []
 
             self.logger.info(
-                f"[{datetime.datetime.now(tz=datetime.timezone.utc).isoformat()}] Iniciando get_technician_ranking com limit={limit}"
+                f"[{datetime.now(tz=timezone.utc).isoformat()}] Iniciando get_technician_ranking com limit={limit}"
             )
 
             # Verificar cache
@@ -3590,51 +3579,51 @@ class GLPIService:
                 cached_data = self._get_cache_data(cache_key)
                 if cached_data is not None:
                     self.logger.info(
-                        f"[{datetime.datetime.now(tz=datetime.timezone.utc).isoformat()}] RETORNANDO RANKING DO CACHE INTERNO (PROBLEMA!)"
+                        f"[{datetime.now(tz=timezone.utc).isoformat()}] RETORNANDO RANKING DO CACHE INTERNO (PROBLEMA!)"
                     )
                     self.logger.info(
-                        f"[{datetime.datetime.now(tz=datetime.timezone.utc).isoformat()}] Cache data: {cached_data[:2] if cached_data else 'None'}..."
+                        f"[{datetime.now(tz=timezone.utc).isoformat()}] Cache data: {cached_data[:2] if cached_data else 'None'}..."
                     )  # Primeiros 2 itens
                     if limit and len(cached_data) > limit:
                         return cached_data[:limit]
                     return cached_data
                 else:
                     self.logger.info(
-                        f"[{datetime.datetime.now(tz=datetime.timezone.utc).isoformat()}] CACHE INTERNO VAZIO, PROCESSANDO DADOS REAIS"
+                        f"[{datetime.now(tz=timezone.utc).isoformat()}] CACHE INTERNO VAZIO, PROCESSANDO DADOS REAIS"
                     )
             except Exception as e:
                 self.logger.warning(
-                    f"[{datetime.datetime.now(tz=datetime.timezone.utc).isoformat()}] Erro ao verificar cache interno: {e}"
+                    f"[{datetime.now(tz=timezone.utc).isoformat()}] Erro ao verificar cache interno: {e}"
                 )
 
             # Verificar autenticação
             try:
                 if not self._ensure_authenticated():
-                    self.logger.error(f"[{datetime.datetime.now(tz=datetime.timezone.utc).isoformat()}] Falha na autenticação")
+                    self.logger.error(f"[{datetime.now(tz=timezone.utc).isoformat()}] Falha na autenticação")
                     return []
             except Exception as e:
-                self.logger.error(f"[{datetime.datetime.now(tz=datetime.timezone.utc).isoformat()}] Erro na autenticação: {e}")
+                self.logger.error(f"[{datetime.now(tz=timezone.utc).isoformat()}] Erro na autenticação: {e}")
                 return []
 
             # Implementação seguindo a base de conhecimento
             try:
                 self.logger.info(
-                    f"[{datetime.datetime.now(tz=datetime.timezone.utc).isoformat()}] Chamando _get_technician_ranking_knowledge_base"
+                    f"[{datetime.now(tz=timezone.utc).isoformat()}] Chamando _get_technician_ranking_knowledge_base"
                 )
                 ranking = self._get_technician_ranking_knowledge_base()
 
                 if not isinstance(ranking, list):
                     self.logger.error(
-                        f"[{datetime.datetime.now(tz=datetime.timezone.utc).isoformat()}] ranking inválido: {type(ranking)}"
+                        f"[{datetime.now(tz=timezone.utc).isoformat()}] ranking inválido: {type(ranking)}"
                     )
                     return []
 
                 self.logger.info(
-                    f"[{datetime.datetime.now(tz=datetime.timezone.utc).isoformat()}] Resultado da busca: {len(ranking)} técnicos"
+                    f"[{datetime.now(tz=timezone.utc).isoformat()}] Resultado da busca: {len(ranking)} técnicos"
                 )
             except Exception as e:
                 self.logger.error(
-                    f"[{datetime.datetime.now(tz=datetime.timezone.utc).isoformat()}] Erro ao obter ranking: {e}"
+                    f"[{datetime.now(tz=timezone.utc).isoformat()}] Erro ao obter ranking: {e}"
                 )
                 return []
 
@@ -3643,11 +3632,11 @@ class GLPIService:
                 if ranking:
                     self._set_cache_data(cache_key, ranking, ttl=180)
                     self.logger.info(
-                        f"[{datetime.datetime.now(tz=datetime.timezone.utc).isoformat()}] Dados armazenados no cache por 3 minutos"
+                        f"[{datetime.now(tz=timezone.utc).isoformat()}] Dados armazenados no cache por 3 minutos"
                     )
             except Exception as e:
                 self.logger.warning(
-                    f"[{datetime.datetime.now(tz=datetime.timezone.utc).isoformat()}] Erro ao salvar no cache: {e}"
+                    f"[{datetime.now(tz=timezone.utc).isoformat()}] Erro ao salvar no cache: {e}"
                 )
 
             # Aplicar limite se especificado
@@ -3655,25 +3644,31 @@ class GLPIService:
                 if limit and len(ranking) > limit:
                     ranking = ranking[:limit]
                     self.logger.info(
-                        f"[{datetime.datetime.now(tz=datetime.timezone.utc).isoformat()}] Ranking limitado a {limit} técnicos"
+                        f"[{datetime.now(tz=timezone.utc).isoformat()}] Ranking limitado a {limit} técnicos"
                     )
             except Exception as e:
                 self.logger.error(
-                    f"[{datetime.datetime.now(tz=datetime.timezone.utc).isoformat()}] Erro ao aplicar limite: {e}"
+                    f"[{datetime.now(tz=timezone.utc).isoformat()}] Erro ao aplicar limite: {e}"
                 )
                 return []
 
             execution_time = time.time() - start_time
             self.logger.info(
-                f"[{datetime.datetime.now(tz=datetime.timezone.utc).isoformat()}] Ranking obtido com sucesso em {execution_time:.2f}s: {len(ranking)} técnicos"
+                f"[{datetime.now(tz=timezone.utc).isoformat()}] Ranking obtido com sucesso em {execution_time:.2f}s: {len(ranking)} técnicos"
             )
             return ranking
 
         except Exception as e:
-            execution_time = time.time() - start_time
-            self.logger.error(
-                f"[{datetime.datetime.now(tz=datetime.timezone.utc).isoformat()}] Erro geral em get_technician_ranking após {execution_time:.2f}s: {e}"
-            )
+            try:
+                execution_time = time.time() - start_time
+                self.logger.error(
+                    f"[{datetime.now(tz=timezone.utc).isoformat()}] Erro geral em get_technician_ranking após {execution_time:.2f}s: {e}"
+                )
+            except NameError:
+                # start_time não foi definido devido a exceção muito cedo
+                self.logger.error(
+                    f"[{datetime.now(tz=timezone.utc).isoformat()}] Erro geral em get_technician_ranking: {e}"
+                )
             self.logger.error(f"Stack trace: {traceback.format_exc()}")
             return []
 
@@ -4935,12 +4930,12 @@ class GLPIService:
                 cached_data = self._get_cache_data(cache_key)
                 if cached_data is not None:
                     self.logger.info(
-                        f"[{datetime.datetime.now(tz=datetime.timezone.utc).isoformat()}] Retornando dados de tickets do cache para {len(technician_ids)} técnicos"
+                        f"[{datetime.now(tz=timezone.utc).isoformat()}] Retornando dados de tickets do cache para {len(technician_ids)} técnicos"
                     )
                     return cached_data
             except Exception as e:
                 self.logger.warning(
-                    f"[{datetime.datetime.now(tz=datetime.timezone.utc).isoformat()}] Erro ao verificar cache de tickets: {e}"
+                    f"[{datetime.now(tz=timezone.utc).isoformat()}] Erro ao verificar cache de tickets: {e}"
                 )
 
             # Processar técnicos em lotes menores
@@ -5449,10 +5444,8 @@ class GLPIService:
         Returns:
             tuple: (lista de IDs, dicionário ID->nome)
         """
-        import datetime
-
         try:
-            timestamp = datetime.datetime.now(tz=datetime.timezone.utc).isoformat()
+            timestamp = datetime.now(tz=timezone.utc).isoformat()
             self.logger.info(f"[{timestamp}] Iniciando busca de técnicos com método alternativo")
 
             # Criar instância dos helpers
@@ -6332,8 +6325,6 @@ class GLPIService:
         Returns:
             dict: Métricas formatadas para o dashboard
         """
-        import datetime
-
         # Validar parâmetros
         if not start_date or not end_date:
             return self.get_dashboard_metrics(correlation_id=correlation_id)
@@ -6345,7 +6336,7 @@ class GLPIService:
         if self._is_cache_valid(cache_key):
             cached_data = self._get_cache_data(cache_key)
             if cached_data:
-                timestamp = datetime.datetime.now(tz=datetime.timezone.utc).isoformat()
+                timestamp = datetime.now(tz=timezone.utc).isoformat()
                 self.logger.info(f"[{timestamp}] Cache hit para métricas com filtro de modificação: {start_date} a {end_date}")
                 return cached_data
 
@@ -6358,7 +6349,7 @@ class GLPIService:
             if not self.discover_field_ids():
                 raise Exception("Falha ao descobrir field_ids")
 
-            timestamp = datetime.datetime.now(tz=datetime.timezone.utc).isoformat()
+            timestamp = datetime.now(tz=timezone.utc).isoformat()
             self.logger.info(f"[{timestamp}] Obtendo métricas com filtro de modificação: " f"{start_date} a {end_date}")
 
             # Obter métricas por data de modificação
@@ -6453,7 +6444,7 @@ class GLPIService:
             # Salvar no cache
             self._set_cache_data(cache_key, result, ttl_minutes=3)
 
-            timestamp = datetime.datetime.now(tz=datetime.timezone.utc).isoformat()
+            timestamp = datetime.now(tz=timezone.utc).isoformat()
             self.logger.info(
                 f"[{timestamp}] Métricas obtidas com sucesso - Filtro modificação, " f"Total: {sum(result['totals'].values())}"
             )
@@ -6461,7 +6452,7 @@ class GLPIService:
             return result
 
         except Exception as e:
-            timestamp = datetime.datetime.now(tz=datetime.timezone.utc).isoformat()
+            timestamp = datetime.now(tz=timezone.utc).isoformat()
             self.logger.error(f"[{timestamp}] Erro ao obter métricas com filtro de modificação: {e}")
             # Retornar métricas sem filtro em caso de erro
             return self.get_dashboard_metrics(correlation_id=correlation_id)

@@ -27,25 +27,25 @@ describe('Visual Regression Tests - CSS Migration', () => {
   describe('LevelsSection - Classes CSS Legacy', () => {
     it('deve renderizar corretamente com classes atuais (baseline)', () => {
       render(<LevelsSection metrics={mockMetrics} />);
-      
+
       // Verificar se os elementos principais estão presentes
       expect(screen.getByText('Níveis de Atendimento')).toBeInTheDocument();
       expect(screen.getByText('Nível 1')).toBeInTheDocument();
       expect(screen.getByText('Nível 2')).toBeInTheDocument();
       expect(screen.getByText('Nível 3')).toBeInTheDocument();
       expect(screen.getByText('Nível 4')).toBeInTheDocument();
-      
+
       // Verificar métricas específicas
       expect(screen.getByText('10')).toBeInTheDocument(); // Novos N1
       expect(screen.getByText('25')).toBeInTheDocument(); // Resolvidos N1
-      
+
       // Verificar taxa de resolução calculada
       expect(screen.getByText('58% Resolução')).toBeInTheDocument(); // N1: 25/43 = 58%
     });
 
     it('deve manter estrutura DOM após migração', () => {
       const { container } = render(<LevelsSection metrics={mockMetrics} />);
-      
+
       // Verificar estrutura de grid com classes Tailwind CSS
       const gridContainer = container.querySelector('.grid.grid-cols-12');
       expect(gridContainer).toBeInTheDocument();
@@ -53,7 +53,7 @@ describe('Visual Regression Tests - CSS Migration', () => {
       // Verificar cards de nível (agora usando Shadcn Card)
       const levelCards = container.querySelectorAll('.grid.grid-cols-2');
       expect(levelCards).toHaveLength(4);
-      
+
       // Verificar barras de progresso (agora usando classes Tailwind CSS)
       const progressBars = container.querySelectorAll('.bg-green-500');
       expect(progressBars).toHaveLength(4);
@@ -61,7 +61,7 @@ describe('Visual Regression Tests - CSS Migration', () => {
 
     it('deve preservar funcionalidade de cálculo de taxa de resolução', () => {
       render(<LevelsSection metrics={mockMetrics} />);
-      
+
       // Verificar cálculos corretos para cada nível
       expect(screen.getByText('58% Resolução')).toBeInTheDocument(); // N1: 25/(10+5+3+25) = 58%
       expect(screen.getByText('53% Resolução')).toBeInTheDocument(); // N2: 30/(8+12+7+30) = 53%
@@ -71,7 +71,7 @@ describe('Visual Regression Tests - CSS Migration', () => {
 
     it('deve aplicar classes de status corretamente', () => {
       const { container } = render(<LevelsSection metrics={mockMetrics} />);
-      
+
       // Verificar elementos de status por classes Tailwind CSS
       const statusElements = {
         new: container.querySelectorAll('.text-blue-600'),
@@ -79,7 +79,7 @@ describe('Visual Regression Tests - CSS Migration', () => {
         pending: container.querySelectorAll('.text-orange-600'),
         resolved: container.querySelectorAll('.text-green-600')
       };
-      
+
       // Cada nível deve ter elementos com cada status
       expect(statusElements.new.length).toBeGreaterThan(0);
       expect(statusElements.progress.length).toBeGreaterThan(0);
@@ -92,15 +92,15 @@ describe('Visual Regression Tests - CSS Migration', () => {
     it('deve usar componentes Card do Shadcn UI', () => {
       // Verificar se a migração para Shadcn Card foi bem-sucedida
       const { container } = render(<LevelsSection metrics={mockMetrics} />);
-      
+
       // Verificar que os componentes Shadcn Card estão sendo usados
       const cards = container.querySelectorAll('[data-testid="card"], .border.rounded-lg, .bg-card');
       expect(cards.length).toBeGreaterThan(0);
-      
+
       // Cada card deve ter estrutura de grid para métricas
       const metricsGrids = container.querySelectorAll('.grid.grid-cols-2');
       expect(metricsGrids).toHaveLength(4);
-      
+
       // Cada card deve ter barra de progresso
       const progressBars = container.querySelectorAll('.bg-gray-200.rounded-full');
       expect(progressBars).toHaveLength(4);
@@ -110,11 +110,11 @@ describe('Visual Regression Tests - CSS Migration', () => {
   describe('Responsividade', () => {
     it('deve manter classes responsivas após migração', () => {
       const { container } = render(<LevelsSection metrics={mockMetrics} />);
-      
+
       // Verificar classes de grid responsivo
       const responsiveElements = container.querySelectorAll('[class*="md:col-span"]');
       expect(responsiveElements.length).toBeGreaterThan(0);
-      
+
       const lgElements = container.querySelectorAll('[class*="lg:col-span"]');
       expect(lgElements.length).toBeGreaterThan(0);
     });

@@ -70,13 +70,13 @@ export const inputPattern = {
 /**
  * Funções utilitárias para aplicar padrões
  */
-export const createCardClasses = (className?: string) => 
+export const createCardClasses = (className?: string) =>
   cn(cardPattern.base, cardPattern.hover, cardPattern.padding, className);
 
-export const createListItemClasses = (className?: string) => 
+export const createListItemClasses = (className?: string) =>
   cn(listPattern.item, listPattern.itemHover, listPattern.itemActive, className);
 
-export const createBadgeClasses = (variant: keyof typeof badgePattern.variants = 'default', className?: string) => 
+export const createBadgeClasses = (variant: keyof typeof badgePattern.variants = 'default', className?: string) =>
   cn(badgePattern.base, badgePattern.variants[variant], className);
 
 export const createButtonClasses = (
@@ -85,5 +85,5 @@ export const createButtonClasses = (
   className?: string
 ) => cn(buttonPattern.base, buttonPattern.variants[variant], buttonPattern.sizes[size], className);
 
-export const createInputClasses = (className?: string) => 
+export const createInputClasses = (className?: string) =>
   cn(inputPattern.base, className);

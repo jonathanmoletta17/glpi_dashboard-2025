@@ -283,7 +283,7 @@ export const apiService = {
       console.log('🔍 getTechnicianRanking - response.data.success:', response.data.success);
       console.log('🔍 getTechnicianRanking - response.data.data:', response.data.data);
       console.log('🔍 getTechnicianRanking - response.data.data length:', response.data.data?.length);
-      
+
       if (response.data.success && response.data.data) {
         const data = response.data.data;
         // Armazenar no cache
@@ -488,13 +488,13 @@ export const apiService = {
     const startTime = Date.now();
     const cacheParams = { endpoint: 'filter-types' };
     const cacheKey = `filter-types-${JSON.stringify(cacheParams)}`;
-    
+
     return requestCoordinator.coordinateRequest(
       cacheKey,
       async () => {
         const response = await api.get('/api/filter-types');
         const responseTime = Date.now() - startTime;
-        
+
         console.log(`📋 Filter types fetched in ${responseTime}ms`);
         return response.data;
       }
