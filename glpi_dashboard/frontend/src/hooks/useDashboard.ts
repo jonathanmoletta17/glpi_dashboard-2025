@@ -1,5 +1,5 @@
 import { useState, useEffect, useCallback } from 'react';
-import { fetchDashboardMetrics } from '../services/api';
+import { fetchDashboardMetrics, apiService } from '../services/api';
 import type { DashboardMetrics, FilterParams } from '../types/api';
 import { SystemStatus, NotificationData } from '../types';
 import { useSmartRefresh } from './useSmartRefresh';
@@ -73,6 +73,12 @@ export const useDashboard = (initialFilters: FilterParams = {}): UseDashboardRet
   console.log('🔍 useDashboard - levelMetrics derivado:', levelMetrics);
   const systemStatus = data?.systemStatus || initialSystemStatus;
   const technicianRanking = data?.technicianRanking || [];
+  
+  // Debug logs para investigar o problema do ranking
+  console.log('🔍 useDashboard - data?.technicianRanking:', data?.technicianRanking);
+  console.log('🔍 useDashboard - technicianRanking final:', technicianRanking);
+  console.log('🔍 useDashboard - technicianRanking length:', technicianRanking?.length);
+  console.log('🔍 useDashboard - technicianRanking é array?', Array.isArray(technicianRanking));
   const [isPending] = useState<boolean>(false);
   const [notifications, setNotifications] = useState<any[]>([]);
   const [searchQuery, setSearchQuery] = useState<string>('');
@@ -97,10 +103,16 @@ export const useDashboard = (initialFilters: FilterParams = {}): UseDashboardRet
 
       try {
         // Fazer chamadas paralelas para todos os endpoints
+        console.log('🚀 useDashboard - Iniciando chamadas paralelas...');
+        
         const [metricsResult, systemStatusResult, technicianRankingResult] = await Promise.all([
           fetchDashboardMetrics(filtersToUse),
-          import('../services/api').then(api => api.getSystemStatus()),
-          import('../services/api').then(api => {
+          (async () => {
+            console.log('🔄 useDashboard - Chamando getSystemStatus...');
+            return await apiService.getSystemStatus();
+          })(),
+          (async () => {
+            console.log('🔄 useDashboard - Iniciando getTechnicianRanking...');
             // Preparar filtros para o ranking de técnicos
             const rankingFilters: any = {};
 
@@ -111,11 +123,22 @@ export const useDashboard = (initialFilters: FilterParams = {}): UseDashboardRet
               rankingFilters.end_date = filtersToUse.dateRange.endDate;
             }
 
-            return api.getTechnicianRanking(
-              Object.keys(rankingFilters).length > 0 ? rankingFilters : undefined
-            );
-          }),
+            console.log('🔍 useDashboard - Filtros para ranking:', rankingFilters);
+            
+            try {
+              const result = await apiService.getTechnicianRanking(
+                Object.keys(rankingFilters).length > 0 ? rankingFilters : undefined
+              );
+              console.log('✅ useDashboard - getTechnicianRanking sucesso:', result);
+              return result;
+            } catch (error) {
+              console.error('❌ useDashboard - Erro em getTechnicianRanking:', error);
+              throw error;
+            }
+          })()
         ]);
+        
+        console.log('✅ useDashboard - Todas as chamadas paralelas concluídas');
 
         // Performance metrics tracking removed for now
 
@@ -123,12 +146,19 @@ export const useDashboard = (initialFilters: FilterParams = {}): UseDashboardRet
         console.log('🔍 useDashboard - metricsResult.niveis:', metricsResult?.niveis);
 
         if (metricsResult) {
+          // Debug logs para investigar o problema do ranking
+          console.log('🔍 useDashboard - technicianRankingResult da API:', technicianRankingResult);
+          console.log('🔍 useDashboard - technicianRankingResult length:', technicianRankingResult?.length);
+          console.log('🔍 useDashboard - technicianRankingResult é array?', Array.isArray(technicianRankingResult));
+          
           // Combinar todos os dados em um objeto DashboardMetrics
           const combinedData: DashboardMetrics = {
             ...metricsResult,
             systemStatus: systemStatusResult || initialSystemStatus,
             technicianRanking: technicianRankingResult || [],
           };
+          
+          console.log('🔍 useDashboard - combinedData.technicianRanking:', combinedData.technicianRanking);
 
           console.log('✅ useDashboard - Definindo dados combinados no estado:', combinedData);
           console.log('✅ useDashboard - combinedData.niveis:', combinedData.niveis);

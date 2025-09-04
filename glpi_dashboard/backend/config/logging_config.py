@@ -52,6 +52,15 @@ def get_logging_config(
                 "level": log_level,
                 "formatter": "json",
                 "stream": "ext://sys.stdout",
+            },
+            "debug_ranking_file": {
+                "class": "logging.handlers.RotatingFileHandler",
+                "level": "DEBUG",
+                "formatter": "json",
+                "filename": "debug_ranking.log",
+                "maxBytes": 10485760,  # 10MB
+                "backupCount": 5,
+                "encoding": "utf-8",
             }
         },
         "loggers": {
@@ -63,6 +72,12 @@ def get_logging_config(
             "api_service": {
                 "level": log_level,
                 "handlers": ["console"],
+                "propagate": False,
+            },
+
+            "glpi.api": {
+                "level": "DEBUG",
+                "handlers": ["console", "debug_ranking_file"],
                 "propagate": False,
             },
             "structured_logger": {

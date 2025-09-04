@@ -13,38 +13,25 @@ interface MetricsGridProps {
 interface StatusCardProps {
   title: string;
   value: number;
-  icon: React.ComponentType<any>;
-  color: string;
-  bgColor: string;
-  status?: TicketStatus;
-  onClick?: (status: TicketStatus) => void;
+  icon: React.ComponentType<{ className?: string }>;
+  className: string;
+  onClick?: () => void;
 }
 
 const StatusCard = React.memo<StatusCardProps>(
-  ({ title, value, icon: Icon, color, bgColor, status, onClick }) => {
+  ({ title, value, icon: Icon, className, onClick }) => {
     const formattedValue = useMemo(() => value.toLocaleString(), [value]);
-    const isClickable = status && onClick;
+    const isClickable = onClick;
 
     const handleClick = useCallback(() => {
       if (isClickable) {
-        onClick(status);
+        onClick();
       }
-    }, [isClickable, onClick, status]);
-
-    // Mapear status para classes de gradiente
-    const getGradientClass = (status?: TicketStatus) => {
-      switch (status) {
-        case 'novo': return 'metrics-card-new';
-        case 'progresso': return 'metrics-card-progress';
-        case 'pendente': return 'metrics-card-pending';
-        case 'resolvido': return 'metrics-card-resolved';
-        default: return 'bg-white';
-      }
-    };
+    }, [isClickable, onClick]);
 
     return (
       <motion.div
-        className={`relative overflow-hidden rounded-xl border border-gray-200/50 p-6 transition-all duration-300 bg-white shadow-lg ${
+        className={`relative overflow-hidden rounded-xl border border-gray-200/50 p-6 transition-all duration-300 shadow-lg ${className} ${
           isClickable ? 'hover:shadow-2xl cursor-pointer hover:-translate-y-2' : ''
         }`}
         onClick={handleClick}
@@ -54,10 +41,10 @@ const StatusCard = React.memo<StatusCardProps>(
         <div className='flex items-center justify-between'>
           <div>
             <p className='text-sm font-semibold text-gray-700 mb-2'>{title}</p>
-            <p className={`text-3xl font-bold ${color}`}>{formattedValue}</p>
+            <p className='text-3xl font-bold'>{formattedValue}</p>
           </div>
-          <div className={`p-4 rounded-xl ${bgColor}`}>
-            <Icon className={`w-7 h-7 ${color}`} />
+          <div className='p-4 rounded-xl'>
+            <Icon className='w-7 h-7' />
           </div>
         </div>
       </motion.div>
@@ -90,48 +77,40 @@ const itemVariants = {
 
 export const MetricsGrid = React.memo<MetricsGridProps>(
   ({ metrics, onFilterByStatus, isLoading = false, className = '' }) => {
-    const cards = useMemo(() => {
-      if (!metrics) return [];
-
-      return [
-        {
-          title: 'Novos',
-          value: metrics.novos || 0,
-          status: 'novo' as TicketStatus,
-          icon: AlertTriangle,
-          color: 'text-blue-600',
-          bgColor: 'bg-blue-50',
-          onClick: onFilterByStatus,
-        },
-        {
-          title: 'Em Progresso',
-          value: metrics.progresso || 0,
-          status: 'progresso' as TicketStatus,
-          icon: Activity,
-          color: 'text-yellow-600',
-          bgColor: 'bg-yellow-50',
-          onClick: onFilterByStatus,
-        },
-        {
-          title: 'Pendentes',
-          value: metrics.pendentes || 0,
-          status: 'pendente' as TicketStatus,
-          icon: Clock,
-          color: 'text-orange-600',
-          bgColor: 'bg-orange-50',
-          onClick: onFilterByStatus,
-        },
-        {
-          title: 'Resolvidos',
-          value: metrics.resolvidos || 0,
-          status: 'resolvido' as TicketStatus,
-          icon: CheckCircle,
-          color: 'text-green-600',
-          bgColor: 'bg-green-50',
-          onClick: onFilterByStatus,
-        },
-      ];
-    }, [metrics, onFilterByStatus]);
+    const cardsData = useMemo(() => [
+       {
+         title: 'Novos',
+         value: metrics?.novos || 0,
+         status: 'novo' as TicketStatus,
+         icon: AlertTriangle,
+         className: 'metrics-card-new status-new',
+         onClick: () => onFilterByStatus?.('novo')
+       },
+       {
+         title: 'Em Progresso',
+         value: metrics?.progresso || 0,
+         status: 'progresso' as TicketStatus,
+         icon: Activity,
+         className: 'metrics-card-progress status-progress',
+         onClick: () => onFilterByStatus?.('progresso')
+       },
+       {
+         title: 'Pendentes',
+         value: metrics?.pendentes || 0,
+         status: 'pendente' as TicketStatus,
+         icon: Clock,
+         className: 'metrics-card-pending status-pending',
+         onClick: () => onFilterByStatus?.('pendente')
+       },
+       {
+         title: 'Resolvidos',
+         value: metrics?.resolvidos || 0,
+         status: 'resolvido' as TicketStatus,
+         icon: CheckCircle,
+         className: 'metrics-card-resolved status-resolved',
+         onClick: () => onFilterByStatus?.('resolvido')
+       }
+     ], [metrics, onFilterByStatus]);
 
     if (isLoading) {
       return (
@@ -163,15 +142,13 @@ export const MetricsGrid = React.memo<MetricsGridProps>(
         initial='hidden'
         animate='visible'
       >
-        {cards.map((card) => (
+        {cardsData.map((card) => (
           <motion.div key={`metrics-${card.status}`} variants={itemVariants}>
             <StatusCard
               title={card.title}
               value={card.value}
-              status={card.status}
               icon={card.icon}
-              color={card.color}
-              bgColor={card.bgColor}
+              className={card.className}
               onClick={card.onClick}
             />
           </motion.div>

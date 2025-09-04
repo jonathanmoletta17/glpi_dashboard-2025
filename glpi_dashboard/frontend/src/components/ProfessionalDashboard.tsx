@@ -122,21 +122,21 @@ const LevelSection = React.memo<LevelSectionProps>(({ level, data }) => {
       </div>
 
       <div className='grid grid-cols-2 lg:grid-cols-4 gap-4'>
-        <div className='text-center p-4 bg-blue-50 rounded-lg border border-blue-100'>
-          <div className='text-2xl font-bold text-blue-600 mb-1'>{data.novos}</div>
-          <div className='text-sm font-medium text-blue-700'>Novos</div>
+        <div className='text-center p-4 metrics-card-new rounded-lg'>
+          <div className='text-2xl font-bold mb-1'>{data.novos}</div>
+          <div className='text-sm font-medium'>Novos</div>
         </div>
-        <div className='text-center p-4 bg-yellow-50 rounded-lg border border-yellow-100'>
-          <div className='text-2xl font-bold text-yellow-600 mb-1'>{data.progresso}</div>
-          <div className='text-sm font-medium text-yellow-700'>Em Progresso</div>
+        <div className='text-center p-4 metrics-card-progress rounded-lg'>
+          <div className='text-2xl font-bold mb-1'>{data.progresso}</div>
+          <div className='text-sm font-medium'>Em Progresso</div>
         </div>
-        <div className='text-center p-4 bg-orange-50 rounded-lg border border-orange-100'>
-          <div className='text-2xl font-bold text-orange-600 mb-1'>{data.pendentes}</div>
-          <div className='text-sm font-medium text-orange-700'>Pendentes</div>
+        <div className='text-center p-4 metrics-card-pending rounded-lg'>
+          <div className='text-2xl font-bold mb-1'>{data.pendentes}</div>
+          <div className='text-sm font-medium'>Pendentes</div>
         </div>
-        <div className='text-center p-4 bg-green-50 rounded-lg border border-green-100'>
-          <div className='text-2xl font-bold text-green-600 mb-1'>{data.resolvidos}</div>
-          <div className='text-sm font-medium text-green-700'>Resolvidos</div>
+        <div className='text-center p-4 metrics-card-resolved rounded-lg'>
+          <div className='text-2xl font-bold mb-1'>{data.resolvidos}</div>
+          <div className='text-sm font-medium'>Resolvidos</div>
         </div>
       </div>
 
@@ -295,13 +295,13 @@ export const ProfessionalDashboard: React.FC<ProfessionalDashboardProps> = ({
       {/* Main Content */}
       <main className='max-w-7xl mx-auto px-6 py-8'>
         {/* Summary Cards */}
-        <div className='grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8'>
+        <div className='grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mt-8 mb-8'>
           <StatusCard
             title='Novos'
             value={metrics.novos}
             icon={AlertTriangle}
-            color='text-blue-600'
-            bgColor='bg-blue-50'
+            color=''
+            bgColor='metrics-card-new'
             status='novo'
             onClick={onFilterByStatus}
           />
@@ -309,8 +309,8 @@ export const ProfessionalDashboard: React.FC<ProfessionalDashboardProps> = ({
             title='Em Progresso'
             value={metrics.progresso}
             icon={Activity}
-            color='text-yellow-600'
-            bgColor='bg-yellow-50'
+            color=''
+            bgColor='metrics-card-progress'
             status='progresso'
             onClick={onFilterByStatus}
           />
@@ -318,8 +318,8 @@ export const ProfessionalDashboard: React.FC<ProfessionalDashboardProps> = ({
             title='Pendentes'
             value={metrics.pendentes}
             icon={Clock}
-            color='text-orange-600'
-            bgColor='bg-orange-50'
+            color=''
+            bgColor='metrics-card-pending'
             status='pendente'
             onClick={onFilterByStatus}
           />
@@ -327,8 +327,8 @@ export const ProfessionalDashboard: React.FC<ProfessionalDashboardProps> = ({
             title='Resolvidos'
             value={metrics.resolvidos}
             icon={CheckCircle}
-            color='text-green-600'
-            bgColor='bg-green-50'
+            color=''
+            bgColor='metrics-card-resolved'
             status='resolvido'
             onClick={onFilterByStatus}
           />
@@ -384,7 +384,7 @@ export const ProfessionalDashboard: React.FC<ProfessionalDashboardProps> = ({
                     </div>
                     <div className='text-right'>
                       <div className='text-lg font-semibold text-gray-900'>
-                        {tech.total_tickets || tech.total || 0}
+                        {tech.total_tickets || 0}
                       </div>
                       <div className='text-sm text-gray-500'>chamados</div>
                     </div>

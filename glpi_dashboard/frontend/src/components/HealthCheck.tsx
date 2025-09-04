@@ -1,5 +1,7 @@
 import React, { useState, useEffect, useCallback } from 'react';
 import { apiService } from '../services/api';
+import { createCardClasses, createFlexClasses, TAILWIND_CLASSES } from '../design-system/utils';
+import { cn } from '../lib/utils';
 
 interface HealthCheckProps {
   interval?: number; // Intervalo em ms para verificar a saúde da API
@@ -130,8 +132,11 @@ export const HealthCheck: React.FC<HealthCheckProps> = ({
 
   return (
     <div className="fixed top-4 right-4 z-50">
-      <div className="bg-white dark:bg-gray-800 rounded-lg shadow-lg p-3 border border-gray-200 dark:border-gray-700">
-        <div className="flex items-center space-x-2">
+      <div className={cn(
+        "bg-white dark:bg-gray-800 rounded-lg shadow-lg border border-gray-200 dark:border-gray-700",
+        TAILWIND_CLASSES.padding.normal
+      )}>
+        <div className={createFlexClasses('row', 'center', 'start', 'small')}>
           {getStatusIcon()}
           <span className="text-sm font-medium text-gray-700 dark:text-gray-300">
             {getStatusText()}
@@ -139,13 +144,16 @@ export const HealthCheck: React.FC<HealthCheckProps> = ({
         </div>
 
         {healthStatus.lastCheck && (
-          <div className="text-xs text-gray-500 dark:text-gray-400 mt-1">
+          <div className={cn("text-xs text-gray-500 dark:text-gray-400", TAILWIND_CLASSES.margin.small)}>
             Última verificação: {healthStatus.lastCheck.toLocaleTimeString()}
           </div>
         )}
 
         {!healthStatus.isHealthy && healthStatus.error && (
-          <div className="text-xs text-red-600 dark:text-red-400 mt-1 max-w-xs truncate" title={healthStatus.error}>
+          <div className={cn(
+            "text-xs text-red-600 dark:text-red-400 max-w-xs truncate",
+            TAILWIND_CLASSES.margin.small
+          )} title={healthStatus.error}>
             {healthStatus.error}
           </div>
         )}

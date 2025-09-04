@@ -38,7 +38,7 @@ export const apiService = {
       cacheKey,
       async () => {
         const startTime = Date.now();
-        let url = '/metrics';
+        let url = '/api/metrics';
         if (dateRange && dateRange.startDate && dateRange.endDate) {
           const params = new URLSearchParams({
             start_date: dateRange.startDate,
@@ -170,7 +170,7 @@ export const apiService = {
         const startTime = Date.now();
         console.log('🔍 Buscando status do sistema');
 
-        const response = await api.get<ApiResponse<SystemStatus>>('/status');
+        const response = await api.get<ApiResponse<SystemStatus>>('/api/status');
 
         // Monitora performance
         const responseTime = Date.now() - startTime;
@@ -210,7 +210,7 @@ export const apiService = {
   // Health check
   async healthCheck(): Promise<boolean> {
     try {
-      await api.head('/status');
+      await api.head('/api/status');
       return true;
     } catch (error) {
       console.error('Health check failed:', error);
@@ -244,7 +244,7 @@ export const apiService = {
     }
 
     try {
-      let url = '/technicians/ranking';
+      let url = '/api/technicians/ranking';
 
       // Construir query parameters se filtros foram fornecidos
       if (filters && Object.keys(filters).length > 0) {
@@ -277,11 +277,19 @@ export const apiService = {
       const cacheKey = JSON.stringify(cacheParams);
       technicianRankingCache.recordRequestTime(cacheKey, responseTime);
 
+      // Debug logs para investigar o problema do ranking
+      console.log('🔍 getTechnicianRanking - response completo:', response);
+      console.log('🔍 getTechnicianRanking - response.data:', response.data);
+      console.log('🔍 getTechnicianRanking - response.data.success:', response.data.success);
+      console.log('🔍 getTechnicianRanking - response.data.data:', response.data.data);
+      console.log('🔍 getTechnicianRanking - response.data.data length:', response.data.data?.length);
+      
       if (response.data.success && response.data.data) {
         const data = response.data.data;
         // Armazenar no cache
         technicianRankingCache.set(cacheParams, data);
         console.log('✅ Ranking de técnicos obtido com sucesso:', data.length, 'técnicos');
+        console.log('🔍 getTechnicianRanking - primeiro técnico dos dados:', data[0]);
         return data;
       } else {
         console.error('API returned unsuccessful response:', response.data);
@@ -306,7 +314,7 @@ export const apiService = {
     }
 
     try {
-      const response = await api.get<ApiResponse<any[]>>(`/tickets/new?limit=${limit}`);
+      const response = await api.get<ApiResponse<any[]>>(`/api/tickets/new?limit=${limit}`);
 
       // Monitora performance
       const responseTime = Date.now() - startTime;
@@ -429,7 +437,7 @@ export const apiService = {
     const cacheParams = { endpoint: 'tickets/detail', ticketId };
 
     try {
-      const response = await api.get<ApiResponse<any>>(`/tickets/${ticketId}`);
+      const response = await api.get<ApiResponse<any>>(`/api/tickets/${ticketId}`);
 
       if (response.data.success && response.data.data) {
         const data = response.data.data;
@@ -484,7 +492,7 @@ export const apiService = {
     return requestCoordinator.coordinateRequest(
       cacheKey,
       async () => {
-        const response = await api.get('/filter-types');
+        const response = await api.get('/api/filter-types');
         const responseTime = Date.now() - startTime;
         
         console.log(`📋 Filter types fetched in ${responseTime}ms`);
@@ -594,8 +602,8 @@ export const fetchDashboardMetrics = async (
     }
 
     url = queryParams.toString()
-      ? `${API_BASE_URL}/metrics?${queryParams.toString()}`
-      : `${API_BASE_URL}/metrics`;
+      ? `/api/metrics?${queryParams.toString()}`
+      : `/api/metrics`;
 
     console.log('🔍 Filtros originais:', filters);
     console.log('🔍 Query params construídos:', queryParams.toString());
@@ -604,24 +612,14 @@ export const fetchDashboardMetrics = async (
 
     const startTime = performance.now();
 
-    const response = await fetch(url, {
-      method: 'GET',
-      headers: {
-        'Content-Type': 'application/json',
-        Accept: 'application/json',
-      },
-      // Adicionar timeout
-      signal: AbortSignal.timeout(60000), // 60 segundos
+    const response = await httpClient.get(url, {
+      timeout: 60000, // 60 segundos
     });
 
     const endTime = performance.now();
     const responseTime = endTime - startTime;
 
-    if (!response.ok) {
-      throw new Error(`HTTP error! status: ${response.status}`);
-    }
-
-    const result: ApiResult<DashboardMetrics> = await response.json();
+    const result: ApiResult<DashboardMetrics> = response.data;
     console.log('Resposta da API recebida:', result);
 
     // Log de performance
@@ -629,7 +627,7 @@ export const fetchDashboardMetrics = async (
       responseTime,
       cacheHit: false,
       timestamp: new Date(),
-      endpoint: '/metrics',
+      endpoint: '/api/metrics',
     };
     console.log('Métricas de performance:', perfMetrics);
 

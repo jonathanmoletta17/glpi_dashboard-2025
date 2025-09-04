@@ -97,16 +97,35 @@ export const ModernDashboard = React.memo<ModernDashboardProps>(function ModernD
 
 
 
+  // Debug logs para investigar o problema do ranking zerado
+  console.log('🔍 ModernDashboard - technicianRanking recebido:', technicianRanking);
+  console.log('🔍 ModernDashboard - technicianRanking length:', technicianRanking?.length);
+  console.log('🔍 ModernDashboard - primeiro técnico:', technicianRanking?.[0]);
+
   // Memoizar dados do ranking processados
   const processedRankingData = useMemo(() => {
-    const result = technicianRanking.map(tech => ({
-      id: tech.id || String(tech.name),
-      name: tech.name || tech.nome || 'Técnico',
-      level: tech.level || 'N1',
-      total: tech.total_tickets || tech.total || 0,
-      rank: tech.rank || 0,
-    }));
+    if (!technicianRanking || !Array.isArray(technicianRanking)) {
+      console.warn('⚠️ ModernDashboard - technicianRanking não é um array válido:', technicianRanking);
+      return [];
+    }
 
+    const result = technicianRanking.map(tech => {
+      const processed = {
+        id: tech.id || String(tech.name),
+        name: tech.name || tech.nome || 'Técnico',
+        level: tech.level || 'N1',
+        total: tech.total_tickets || tech.resolved_tickets || tech.total || 0,
+        total_tickets: tech.total_tickets || tech.resolved_tickets || tech.total || 0,
+        resolved_tickets: tech.resolved_tickets || 0,
+        pending_tickets: tech.pending_tickets || 0,
+        avg_resolution_time: tech.avg_resolution_time || 0,
+        rank: tech.rank || 0,
+      };
+      console.log('🔍 ModernDashboard - processando técnico:', tech, '-> resultado:', processed);
+      return processed;
+    });
+
+    console.log('✅ ModernDashboard - processedRankingData final:', result);
     return result;
   }, [technicianRanking]);
 
@@ -161,29 +180,28 @@ export const ModernDashboard = React.memo<ModernDashboardProps>(function ModernD
       initial='hidden'
       animate='visible'
       className={cn(
-        'dashboard-fullscreen-container',
+        'dashboard-fullscreen-container px-6',
         className
       )}
     >
       {/* Cards de métricas gerais no topo */}
-      <motion.div variants={itemVariants} className='dashboard-metrics-section'>
+      <motion.div variants={itemVariants} className='w-full mt-8 mb-6'>
         <MetricsGrid 
           metrics={metrics} 
           onFilterByStatus={onFilterByStatus}
           isLoading={isLoading}
-          className='mb-6'
         />
       </motion.div>
 
       {/* Layout principal com métricas por nível e tickets novos */}
-      <div className='dashboard-main-grid'>
+      <div className='grid grid-cols-1 xl:grid-cols-3 gap-6 mb-6'>
         {/* Métricas por nível de atendimento - ocupando 2 colunas */}
-        <motion.div variants={itemVariants} className='dashboard-levels-section'>
+        <motion.div variants={itemVariants} className='xl:col-span-2'>
           <LevelMetricsGrid metrics={metrics} className='h-full' />
         </motion.div>
 
         {/* Lista de tickets novos - ocupando 1 coluna */}
-        <motion.div variants={itemVariants} className='dashboard-tickets-section'>
+        <motion.div variants={itemVariants} className='xl:col-span-1'>
           <Suspense fallback={<ListSkeleton />}>
             <LazyNewTicketsList className='h-full' limit={6} onTicketClick={onTicketClick} />
           </Suspense>
@@ -191,9 +209,9 @@ export const ModernDashboard = React.memo<ModernDashboardProps>(function ModernD
       </div>
 
       {/* Layout inferior com ranking */}
-      <div className='dashboard-bottom-grid'>
+      <div className='grid grid-cols-1 gap-6'>
         {/* Ranking de técnicos */}
-        <motion.div variants={itemVariants} className='dashboard-ranking-section'>
+        <motion.div variants={itemVariants} className='w-full'>
           <Suspense fallback={<TableSkeleton />}>
             <LazyRankingTable
               data={processedRankingData}

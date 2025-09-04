@@ -14,27 +14,27 @@ interface LevelMetricsGridProps {
 const levelConfig = {
   n1: {
     title: 'Nível N1',
-    color: 'from-slate-600 to-slate-700',
-    bgColor: 'bg-slate-100 dark:bg-slate-800',
-    textColor: 'text-slate-900 dark:text-slate-100 font-bold',
+    color: 'level-accent-n1',
+    bgColor: 'level-badge level-badge-n1',
+    textColor: '',
   },
   n2: {
     title: 'Nível N2',
-    color: 'from-slate-700 to-slate-800',
-    bgColor: 'bg-slate-100 dark:bg-slate-800',
-    textColor: 'text-slate-900 dark:text-slate-100 font-bold',
+    color: 'level-accent-n2',
+    bgColor: 'level-badge level-badge-n2',
+    textColor: '',
   },
   n3: {
     title: 'Nível N3',
-    color: 'from-slate-500 to-slate-600',
-    bgColor: 'bg-slate-100 dark:bg-slate-800',
-    textColor: 'text-slate-900 dark:text-slate-100 font-bold',
+    color: 'level-accent-n3',
+    bgColor: 'level-badge level-badge-n3',
+    textColor: '',
   },
   n4: {
     title: 'Nível N4',
-    color: 'from-slate-800 to-slate-900',
-    bgColor: 'bg-slate-100 dark:bg-slate-800',
-    textColor: 'text-slate-900 dark:text-slate-100 font-bold',
+    color: 'level-accent-n4',
+    bgColor: 'level-badge level-badge-n4',
+    textColor: '',
   },
 };
 
@@ -42,29 +42,29 @@ const statusConfig = {
   novos: {
     icon: AlertCircle,
     color: 'text-gray-900 dark:text-gray-100',
-    bgColor: 'bg-blue-100 dark:bg-blue-900/30 border-0',
-    iconColor: 'text-blue-600 dark:text-blue-400',
+    bgColor: 'status-new',
+    iconColor: '',
     label: 'Novos',
   },
   progresso: {
     icon: Clock,
     color: 'text-gray-900 dark:text-gray-100',
-    bgColor: 'bg-yellow-100 dark:bg-yellow-900/30 border-0',
-    iconColor: 'text-yellow-600 dark:text-yellow-400',
+    bgColor: 'status-progress',
+    iconColor: '',
     label: 'Em Progresso',
   },
   pendentes: {
     icon: Users,
     color: 'text-gray-900 dark:text-gray-100',
-    bgColor: 'bg-red-100 dark:bg-red-900/30 border-0',
-    iconColor: 'text-red-600 dark:text-red-400',
+    bgColor: 'status-pending',
+    iconColor: '',
     label: 'Pendentes',
   },
   resolvidos: {
     icon: CheckCircle,
     color: 'text-gray-900 dark:text-gray-100',
-    bgColor: 'bg-green-100 dark:bg-green-900/30 border-0',
-    iconColor: 'text-green-600 dark:text-green-400',
+    bgColor: 'status-resolved',
+    iconColor: '',
     label: 'Resolvidos',
   },
 };
@@ -170,7 +170,7 @@ const LevelCard = React.memo<{
       whileHover='hover'
       className='h-full flex cursor-pointer'
     >
-      <Card className='bg-white/80 backdrop-blur-sm border border-white/90 dark:bg-white/5 dark:border-white/10 border-0 shadow-none h-full w-full flex flex-col relative overflow-hidden rounded-lg'>
+      <Card className='bg-white/80 backdrop-blur-sm border border-white/90 dark:bg.white/5 dark:border-white/10 border-0 shadow-none h-full w-full flex flex-col relative overflow-hidden rounded-lg'>
         <CardHeader className='pb-3 px-4 pt-4 flex-shrink-0'>
           <div className='flex items-center justify-between relative z-10'>
             <CardTitle className='text-lg font-semibold flex items-center gap-3'>
@@ -253,14 +253,14 @@ export const LevelMetricsGrid = React.memo<LevelMetricsGridProps>(function Level
   return (
     <div className={cn('h-full flex flex-col overflow-hidden', className)}>
       <div className='grid grid-cols-1 sm:grid-cols-2 grid-rows-1 sm:grid-rows-2 gap-2 sm:gap-3 h-full overflow-hidden p-1'>
-        {levelEntries.map(([level, levelData]) => {
-          const config = levelConfig[level as keyof typeof levelConfig];
-          if (!config || !levelData) return null;
+        {levelEntries.map(([levelKey, levelData]) => {
+          const key = levelKey.toLowerCase() as keyof typeof levelConfig;
+          const config = levelConfig[key] || levelConfig.n1;
 
           return (
             <LevelCard
-              key={`level-card-${level}`}
-              level={level}
+              key={`level-card-${key}`}
+              level={String(levelKey)}
               levelData={levelData}
               config={config}
             />

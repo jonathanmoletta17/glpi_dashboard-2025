@@ -124,14 +124,7 @@
 }
 
 @layer components {
-  /* Figma Design System Classes - Migrated to Tailwind CSS */
-  /* All figma-* classes have been migrated to Tailwind equivalents */
-
-
-
-
-
-  /* Color Tokens - Migrated to Tailwind */
+  /* Design System - Migrated to Tailwind CSS */
 
   .metric-card {
     @apply p-4 lg:p-6 relative overflow-hidden min-w-0;
@@ -181,11 +174,7 @@
 
   /* Hover effects já definidos acima - removendo duplicação */
 
-  /* Button classes - Migrated to Tailwind CSS */
-  /* btn-primary and btn-secondary have been migrated to Tailwind equivalents */
-
-  /* Input and Status classes - Migrated to Tailwind CSS */
-  /* input-field and status-* classes have been migrated to Tailwind equivalents */
+  /* Status classes */
   }
 
   .status-success {
@@ -232,7 +221,6 @@
     @apply bg-red-900/30 text-red-300 border border-red-700/50;
     box-shadow: 0 2px 8px rgba(239, 68, 68, 0.2);
   }
-}
 
 /* Custom scrollbar */
 ::-webkit-scrollbar {
@@ -252,102 +240,14 @@
   @apply bg-gray-400 dark:bg-gray-500;
 }
 
-/* Animation classes - Migrated to Tailwind CSS */
-/* fade-in, slide-in, bounce-in have been migrated to Tailwind equivalents */
-
-/* Animação de brilho para modo escuro */
-@keyframes darkModeShine {
-  0% {
-    transform: translateX(-100%) skewX(-15deg);
-    opacity: 0;
-  }
-  50% {
-    opacity: 1;
-  }
-  100% {
-    transform: translateX(200%) skewX(-15deg);
-    opacity: 0;
-  }
-}
-
-.dark-mode-shine {
-  position: relative;
-  overflow: hidden;
-}
-
-.dark-mode-shine::after {
-  content: '';
-  position: absolute;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 100%;
-  background: linear-gradient(90deg, transparent, rgba(139, 92, 246, 0.3), transparent);
-  transform: translateX(-100%) skewX(-15deg);
-  transition: transform 0.6s;
-}
-
-.dark-mode-shine:hover::after {
-  animation: darkModeShine 0.8s ease-in-out;
-}
-
-/* Animação de pulse sofisticada */
-@keyframes sophisticatedPulse {
-  0%, 100% {
-    opacity: 1;
-    transform: scale(1);
-    box-shadow: 0 0 0 0 rgba(139, 92, 246, 0.4);
-  }
-  50% {
-    opacity: 0.9;
-    transform: scale(1.02);
-    box-shadow: 0 0 0 10px rgba(139, 92, 246, 0);
-  }
-}
-
-.sophisticated-pulse {
-  animation: sophisticatedPulse 2s cubic-bezier(0.4, 0, 0.6, 1) infinite;
-}
+/* Animation classes - Optimized */
 
 /* REMOVIDO: .pulse-glow - muito pesado */
 /* REMOVIDO: .float - muito pesado */
 
-/* Modern Dashboard Styles - OTIMIZADAS */
-/* Utility classes - Migrated to Tailwind CSS */
-/* custom-scrollbar, line-clamp-2, glassmorphism, modern-gradient have been migrated to Tailwind equivalents */
+/* Modern Dashboard Styles - Migrated to Tailwind CSS */
 
-.modern-card-hover {
-  /* ULTRA-RÁPIDO: transition */
-  transition: box-shadow 0.05s ease;
-}
-
-.modern-card-hover:hover {
-  /* REMOVIDO: transform: translateY(-4px) scale(1.02); */
-  /* SIMPLIFICADO: box-shadow */
-  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-}
-
-/* ANIMAÇÕES ULTRA-SIMPLIFICADAS */
-@keyframes fadeIn {
-  from {
-    opacity: 0;
-  }
-  to {
-    opacity: 1;
-  }
-}
-
-@keyframes slideIn {
-  from {
-    opacity: 0;
-    transform: translateX(-10px);
-  }
-  to {
-    opacity: 1;
-    transform: translateX(0);
-  }
-}
-
+/* ANIMAÇÕES OTIMIZADAS - Removendo duplicações */
 @keyframes slide-in-right {
   from {
     transform: translateX(100%);
@@ -363,25 +263,9 @@
   animation: slide-in-right 0.3s ease-out;
 }
 
-@keyframes bounceIn {
-  0% {
-    opacity: 0;
-    transform: scale(0.9);
-  }
-  100% {
-    opacity: 1;
-    transform: scale(1);
-  }
-}
+/* Dashboard Layout - Migrated to Tailwind CSS */
 
-/* Dashboard Layout classes - Migrated to Tailwind CSS */
-/* dashboard-* classes have been migrated to Tailwind Grid equivalents */
-
-/* Dashboard Media Queries - Migrated to Tailwind CSS */
-/* Responsive breakpoints have been migrated to Tailwind responsive utilities */
-
-/* Visual Effects - Migrated to Tailwind CSS */
-/* glass-effect, text-gradient, shadow-glow have been migrated to Tailwind equivalents */
+/* Visual Effects */
 
 /* Typography improvements */
 h1,
@@ -405,18 +289,7 @@ h3 {
   @apply text-xl lg:text-2xl;
 }
 
-/* Improved spacing and layout */
-.container-fluid {
-  @apply max-w-7xl mx-auto px-4 sm:px-6 lg:px-8;
-}
-
-.section-spacing {
-  @apply py-8 lg:py-12;
-}
-
-.card-spacing {
-  @apply p-6 lg:p-8;
-}
+/* Improved spacing and layout - Migrated to Tailwind CSS */
 
 /* Live indicator animation - SIMPLIFICADA */
 .live-indicator {
@@ -446,125 +319,246 @@ h3 {
 }
 */
 
-/* Manter apenas os estilos modernos */
-.modern-glass {
-  background: rgba(255, 255, 255, 0.25);
-  backdrop-filter: blur(20px);
-  border: 1px solid rgba(255, 255, 255, 0.18);
-  box-shadow: 0 8px 32px 0 rgba(31, 38, 135, 0.37);
+/* Modern glass effect - Migrated to Tailwind CSS */
+
+/* Efeitos visuais otimizados - migrados para Tailwind CSS */
+
+/* Sistema de Cores para Métricas Gerais - GLPI Dashboard */
+/* Baseado no documento SISTEMA_CORES_DASHBOARD_GLPI.md */
+
+/* Status: Novo */
+.metrics-card-new {
+  background: linear-gradient(135deg, #dbeafe 0%, #bfdbfe 50%, #93c5fd 100%);
+  border: 1px solid #3b82f6;
+  color: #1e40af;
 }
 
-.smooth-hover {
-  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+.metrics-card-new:hover {
+  background: linear-gradient(135deg, #bfdbfe 0%, #93c5fd 50%, #60a5fa 100%);
+  box-shadow: 0 8px 25px rgba(59, 130, 246, 0.25);
+  transform: translateY(-4px);
 }
 
-.smooth-hover:hover {
-  transform: translateY(-4px) scale(1.02);
-  box-shadow:
-    0 20px 25px -5px rgba(0, 0, 0, 0.1),
-    0 10px 10px -5px rgba(0, 0, 0, 0.04);
+body.dark .metrics-card-new {
+  background: linear-gradient(135deg, rgba(30, 58, 138, 0.3) 0%, rgba(59, 130, 246, 0.2) 50%, rgba(37, 99, 235, 0.1) 100%);
+  border: 1px solid rgba(59, 130, 246, 0.4);
+  color: #93c5fd;
 }
 
-/* Animações suaves para cards */
-.card-modern {
-  transition: all 0.3s ease;
-  backdrop-filter: blur(10px);
+body.dark .metrics-card-new:hover {
+  background: linear-gradient(135deg, rgba(30, 58, 138, 0.5) 0%, rgba(59, 130, 246, 0.3) 50%, rgba(37, 99, 235, 0.2) 100%);
+  box-shadow: 0 8px 25px rgba(59, 130, 246, 0.3);
 }
 
-.card-modern:hover {
-  transform: translateY(-2px);
-  box-shadow: 0 10px 25px rgba(0, 0, 0, 0.15);
+/* Status: Em Progresso */
+.metrics-card-progress {
+  background: linear-gradient(135deg, #fef3c7 0%, #fde68a 50%, #fcd34d 100%);
+  border: 1px solid #f59e0b;
+  color: #92400e;
 }
 
-/* Gradient and Metrics classes - Migrated to Tailwind CSS */
-/* modern-gradient-*, metrics-card-* have been migrated to Tailwind equivalents */
-
-/* Efeito de brilho para cards */
-.metrics-card-shine {
-  position: relative;
-  overflow: hidden;
+.metrics-card-progress:hover {
+  background: linear-gradient(135deg, #fde68a 0%, #fcd34d 50%, #fbbf24 100%);
+  box-shadow: 0 8px 25px rgba(245, 158, 11, 0.25);
+  transform: translateY(-4px);
 }
 
-.metrics-card-shine::before {
-  content: '';
-  position: absolute;
-  top: 0;
-  left: -100%;
-  width: 100%;
-  height: 100%;
-  background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.4), transparent);
-  transform: skewX(-15deg);
-  transition: left 0.6s ease;
+body.dark .metrics-card-progress {
+  background: linear-gradient(135deg, rgba(146, 64, 14, 0.3) 0%, rgba(245, 158, 11, 0.2) 50%, rgba(217, 119, 6, 0.1) 100%);
+  border: 1px solid rgba(245, 158, 11, 0.4);
+  color: #fcd34d;
 }
 
-.metrics-card-shine:hover::before {
-  left: 100%;
+body.dark .metrics-card-progress:hover {
+  background: linear-gradient(135deg, rgba(146, 64, 14, 0.5) 0%, rgba(245, 158, 11, 0.3) 50%, rgba(217, 119, 6, 0.2) 100%);
+  box-shadow: 0 8px 25px rgba(245, 158, 11, 0.3);
 }
 
-/* Sombras modernas */
-.modern-shadow {
-  box-shadow:
-    0 10px 25px -3px rgba(0, 0, 0, 0.1),
-    0 4px 6px -2px rgba(0, 0, 0, 0.05);
+/* Status: Pendente */
+.metrics-card-pending {
+  background: linear-gradient(135deg, #fed7aa 0%, #fdba74 50%, #fb923c 100%);
+  border: 1px solid #ea580c;
+  color: #9a3412;
 }
 
-.modern-shadow-lg {
-  box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.25);
+.metrics-card-pending:hover {
+  background: linear-gradient(135deg, #fdba74 0%, #fb923c 50%, #f97316 100%);
+  box-shadow: 0 8px 25px rgba(234, 88, 12, 0.25);
+  transform: translateY(-4px);
 }
 
-/* Animação de pulse moderna */
-@keyframes modern-pulse {
-  0%,
-  100% {
-    opacity: 1;
-    transform: scale(1);
-  }
-  50% {
-    opacity: 0.8;
-    transform: scale(1.05);
-  }
+body.dark .metrics-card-pending {
+  background: linear-gradient(135deg, rgba(154, 52, 18, 0.3) 0%, rgba(234, 88, 12, 0.2) 50%, rgba(194, 65, 12, 0.1) 100%);
+  border: 1px solid rgba(234, 88, 12, 0.4);
+  color: #fdba74;
 }
 
-.modern-pulse {
-  animation: modern-pulse 2s cubic-bezier(0.4, 0, 0.6, 1) infinite;
+body.dark .metrics-card-pending:hover {
+  background: linear-gradient(135deg, rgba(154, 52, 18, 0.5) 0%, rgba(234, 88, 12, 0.3) 50%, rgba(194, 65, 12, 0.2) 100%);
+  box-shadow: 0 8px 25px rgba(234, 88, 12, 0.3);
 }
 
-/* Efeito de brilho */
-@keyframes shine {
-  0% {
-    transform: translateX(-100%) skewX(-15deg);
-  }
-  100% {
-    transform: translateX(200%) skewX(-15deg);
-  }
+/* Status: Resolvido */
+.metrics-card-resolved {
+  background: linear-gradient(135deg, #dcfce7 0%, #bbf7d0 50%, #86efac 100%);
+  border: 1px solid #16a34a;
+  color: #15803d;
 }
 
-.shine-effect {
-  position: relative;
-  overflow: hidden;
+.metrics-card-resolved:hover {
+  background: linear-gradient(135deg, #bbf7d0 0%, #86efac 50%, #4ade80 100%);
+  box-shadow: 0 8px 25px rgba(22, 163, 74, 0.25);
+  transform: translateY(-4px);
 }
 
-.shine-effect::before {
-  content: '';
-  position: absolute;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 100%;
-  background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.4), transparent);
-  transform: translateX(-100%) skewX(-15deg);
-  transition: transform 0.6s;
+body.dark .metrics-card-resolved {
+  background: linear-gradient(135deg, rgba(21, 128, 61, 0.3) 0%, rgba(22, 163, 74, 0.2) 50%, rgba(34, 197, 94, 0.1) 100%);
+  border: 1px solid rgba(22, 163, 74, 0.4);
+  color: #86efac;
 }
 
-.shine-effect:hover::before {
-  animation: shine 0.6s ease-in-out;
+body.dark .metrics-card-resolved:hover {
+  background: linear-gradient(135deg, rgba(21, 128, 61, 0.5) 0%, rgba(22, 163, 74, 0.3) 50%, rgba(34, 197, 94, 0.2) 100%);
+  box-shadow: 0 8px 25px rgba(22, 163, 74, 0.3);
 }
-
-/* Classes Figma removidas - migradas para Tailwind CSS */
-
-
 
 /* Garantir bordas arredondadas nos cards de nível */
 .level-metrics-grid .card {
   @apply rounded-lg;
+}
+
+/* ==============================
+   Sistema de Cores - Níveis Técnicos
+   ============================== */
+
+/* Acentos de gradiente para ícones/headers (usado em LevelMetricsGrid) */
+.level-accent-n1 { @apply bg-gradient-to-br from-emerald-500 to-emerald-700; }
+.level-accent-n2 { @apply bg-gradient-to-br from-blue-500 to-blue-700; }
+.level-accent-n3 { @apply bg-gradient-to-br from-purple-500 to-purple-700; }
+.level-accent-n4 { @apply bg-gradient-to-br from-orange-500 to-orange-700; }
+
+/* Badge de contagem por nível */
+.level-badge { @apply text-sm px-3 py-1.5 font-bold border-0; }
+.level-badge-n1 { @apply bg-emerald-500 text-white; }
+.level-badge-n2 { @apply bg-blue-500 text-white; }
+.level-badge-n3 { @apply bg-purple-500 text-white; }
+.level-badge-n4 { @apply bg-orange-500 text-white; }
+
+/* Estilo opcional para cartões por nível (se aplicado futuramente) */
+.level-card-n1 {
+  background: linear-gradient(135deg, #ecfdf5 0%, #d1fae5 50%, #a7f3d0 100%);
+  border: 1px solid #10b981;
+  color: #065f46;
+}
+body.dark .level-card-n1 {
+  background: linear-gradient(135deg, rgba(6,95,70,0.3) 0%, rgba(16,185,129,0.2) 50%, rgba(52,211,153,0.1) 100%);
+  border: 1px solid rgba(16,185,129,0.4);
+  color: #a7f3d0;
+}
+
+.level-card-n2 {
+  background: linear-gradient(135deg, #eff6ff 0%, #dbeafe 50%, #bfdbfe 100%);
+  border: 1px solid #3b82f6;
+  color: #1e40af;
+}
+body.dark .level-card-n2 {
+  background: linear-gradient(135deg, rgba(30,58,138,0.3) 0%, rgba(59,130,246,0.2) 50%, rgba(37,99,235,0.1) 100%);
+  border: 1px solid rgba(59,130,246,0.4);
+  color: #93c5fd;
+}
+
+.level-card-n3 {
+  background: linear-gradient(135deg, #faf5ff 0%, #ede9fe 50%, #ddd6fe 100%);
+  border: 1px solid #8b5cf6;
+  color: #5b21b6;
+}
+body.dark .level-card-n3 {
+  background: linear-gradient(135deg, rgba(91,33,182,0.3) 0%, rgba(139,92,246,0.2) 50%, rgba(167,139,250,0.1) 100%);
+  border: 1px solid rgba(139,92,246,0.4);
+  color: #ddd6fe;
+}
+
+.level-card-n4 {
+  background: linear-gradient(135deg, #fff7ed 0%, #ffedd5 50%, #fed7aa 100%);
+  border: 1px solid #f59e0b;
+  color: #9a3412;
+}
+body.dark .level-card-n4 {
+  background: linear-gradient(135deg, rgba(154,52,18,0.3) 0%, rgba(245,158,11,0.2) 50%, rgba(217,119,6,0.1) 100%);
+  border: 1px solid rgba(245,158,11,0.4);
+  color: #fdba74;
+}
+
+/* ==============================
+   Sistema de Cores - Ranking
+   ============================== */
+/* Cores para posições (medalhas) */
+.ranking-pos-1 { @apply bg-gradient-to-br from-yellow-400 to-yellow-600 text-white; }
+.ranking-pos-2 { @apply bg-gradient-to-br from-gray-300 to-gray-500 text-white; }
+.ranking-pos-3 { @apply bg-gradient-to-br from-orange-400 to-orange-600 text-white; }
+.ranking-pos-default { @apply bg-gradient-to-br from-blue-400 to-blue-600 text-white; }
+
+/* Indicadores de performance (pontinhos) */
+.ranking-dot-top { @apply bg-green-500; }
+.ranking-dot-default { @apply bg-blue-500; }
+
+/* Badge para nível dentro do ranking */
+.ranking-level-n1 { @apply bg-emerald-500 text-white; }
+.ranking-level-n2 { @apply bg-blue-500 text-white; }
+.ranking-level-n3 { @apply bg-purple-500 text-white; }
+.ranking-level-n4 { @apply bg-orange-500 text-white; }
+
+/* ==============================
+   Sistema de Cores - Status Semânticos
+   ============================== */
+.status-new {
+  @apply px-3 py-2 rounded-lg font-medium border;
+  background: linear-gradient(135deg, #dbeafe 0%, #bfdbfe 100%);
+  color: #1e40af;
+  border-color: #bfdbfe;
+}
+body.dark .status-new {
+  @apply border;
+  background: linear-gradient(135deg, rgba(30,58,138,0.4) 0%, rgba(59,130,246,0.2) 100%);
+  color: #93c5fd;
+  border-color: rgba(59,130,246,0.4);
+}
+
+.status-progress {
+  @apply px-3 py-2 rounded-lg font-medium border;
+  background: linear-gradient(135deg, #fef3c7 0%, #fde68a 100%);
+  color: #92400e;
+  border-color: #fde68a;
+}
+body.dark .status-progress {
+  @apply border;
+  background: linear-gradient(135deg, rgba(146,64,14,0.4) 0%, rgba(245,158,11,0.2) 100%);
+  color: #fcd34d;
+  border-color: rgba(245,158,11,0.4);
+}
+
+.status-pending {
+  @apply px-3 py-2 rounded-lg font-medium border;
+  background: linear-gradient(135deg, #fed7aa 0%, #fdba74 100%);
+  color: #9a3412;
+  border-color: #fdba74;
+}
+body.dark .status-pending {
+  @apply border;
+  background: linear-gradient(135deg, rgba(154,52,18,0.4) 0%, rgba(234,88,12,0.2) 100%);
+  color: #fdba74;
+  border-color: rgba(234,88,12,0.4);
+}
+
+.status-resolved {
+  @apply px-3 py-2 rounded-lg font-medium border;
+  background: linear-gradient(135deg, #dcfce7 0%, #bbf7d0 100%);
+  color: #15803d;
+  border-color: #bbf7d0;
+}
+body.dark .status-resolved {
+  @apply border;
+  background: linear-gradient(135deg, rgba(21,128,61,0.4) 0%, rgba(22,163,74,0.2) 100%);
+  color: #86efac;
+  border-color: rgba(22,163,74,0.4);
 }

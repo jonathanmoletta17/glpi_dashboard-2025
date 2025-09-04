@@ -106,13 +106,13 @@ const TechnicianCard = React.memo<{
   const getPositionColor = () => {
     switch (position) {
       case 1:
-        return 'from-yellow-400 to-yellow-600';
+        return 'ranking-pos-1';
       case 2:
-        return 'from-gray-300 to-gray-500';
+        return 'ranking-pos-2';
       case 3:
-        return 'from-orange-400 to-orange-600';
+        return 'ranking-pos-3';
       default:
-        return 'from-blue-400 to-blue-600';
+        return 'ranking-pos-default';
     }
   };
 
@@ -126,7 +126,7 @@ const TechnicianCard = React.memo<{
         {/* Header com posição e nível */}
         <div className='flex items-center justify-between mb-3'>
           <div className={cn(
-            'flex items-center justify-center w-6 h-6 rounded-full text-white text-xs font-bold bg-gradient-to-br',
+            'flex items-center justify-center w-6 h-6 rounded-full text-white text-xs font-bold',
             getPositionColor()
           )}>
             {getPositionIcon()}
@@ -157,7 +157,7 @@ const TechnicianCard = React.memo<{
         {/* Estatísticas */}
         <div className='text-center'>
           <div className='text-2xl font-bold text-gray-900 dark:text-white mb-1'>
-            {formatNumber(technician.total || 0)}
+            {formatNumber(technician.total_tickets || 0)}
           </div>
           <div className='text-xs text-gray-600 dark:text-gray-400 mb-2'>
             tickets resolvidos
@@ -170,7 +170,7 @@ const TechnicianCard = React.memo<{
                 key={i}
                 className={cn(
                   'w-1.5 h-1.5 rounded-full',
-                  isTopThree ? 'bg-green-500' : 'bg-blue-500'
+                  isTopThree ? 'ranking-dot-top' : 'ranking-dot-default'
                 )}
               />
             ))}
@@ -188,28 +188,28 @@ function getLevelStyle(level?: string) {
       iconBg: 'bg-emerald-100',
       iconColor: 'text-emerald-600',
       textColor: 'text-emerald-600',
-      accentColor: 'bg-emerald-500',
+      accentColor: 'ranking-level-n1',
       icon: Zap,
     },
     N2: {
       iconBg: 'bg-blue-100',
       iconColor: 'text-blue-600',
       textColor: 'text-blue-600',
-      accentColor: 'bg-blue-500',
+      accentColor: 'ranking-level-n2',
       icon: Shield,
     },
     N3: {
       iconBg: 'bg-purple-100',
       iconColor: 'text-purple-600',
       textColor: 'text-purple-600',
-      accentColor: 'bg-purple-500',
+      accentColor: 'ranking-level-n3',
       icon: Wrench,
     },
     N4: {
       iconBg: 'bg-orange-100',
       iconColor: 'text-orange-600',
       textColor: 'text-orange-600',
-      accentColor: 'bg-orange-500',
+      accentColor: 'ranking-level-n4',
       icon: Settings,
     },
   };
@@ -240,7 +240,7 @@ export const RankingTable = React.memo<RankingTableProps>(function RankingTable(
 
   // Lógica de dados permanece a mesma
   const topTechnicians = useMemo(() => {
-    return [...data].sort((a, b) => (b.total || 0) - (a.total || 0));
+    return [...data].sort((a, b) => (b.total_tickets || 0) - (a.total_tickets || 0));
   }, [data]);
 
   const levelStats = useMemo(() => {

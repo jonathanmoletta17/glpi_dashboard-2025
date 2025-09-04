@@ -1,8 +1,9 @@
 # -*- coding: utf-8 -*-
 import logging
 import time
+import traceback
 from datetime import datetime, timedelta
-from typing import Dict, List, Optional, Tuple
+from typing import Any, Dict, List, Optional, Tuple
 
 import requests
 
@@ -659,12 +660,7 @@ class GLPIService:
                     self.logger.debug(f"[DEBUG] Response OK: {response.ok}")
                     self.logger.debug(f"[DEBUG] Response type: {type(response)}")
 
-                    # Log para arquivo de debug
-                    with open("debug_ranking.log", "a", encoding="utf-8") as f:
-                        f.write(
-                            f"[DEBUG] Requisição {method} {url} - Status: {response.status_code}, OK: {response.ok}\n"
-                        )
-                        f.write(f"[DEBUG] Response text: {response.text[:500]}\n")
+                    # Requisição processada com sucesso
 
                     # Registrar métricas da requisição GLPI
                     prometheus_metrics.record_glpi_request(
@@ -1268,7 +1264,7 @@ class GLPIService:
             # Validações de entrada
             if not isinstance(level, str) or not level.strip():
                 self.logger.error(
-                    f"[{datetime.datetime.now(tz=datetime.timezone.utc).isoformat()}] level inválido: {level}"
+                    f"[{datetime.now(tz=datetime.timezone.utc).isoformat()}] level inválido: {level}"
                 )
                 return 0
 
@@ -1276,7 +1272,7 @@ class GLPIService:
                 isinstance(status_id, str) and not status_id.strip()
             ):
                 self.logger.error(
-                    f"[{datetime.datetime.now(tz=datetime.timezone.utc).isoformat()}] status_id inválido: {status_id}"
+                    f"[{datetime.now(tz=datetime.timezone.utc).isoformat()}] status_id inválido: {status_id}"
                 )
                 return 0
 
@@ -1285,42 +1281,42 @@ class GLPIService:
                 status_id = int(status_id)
             except (ValueError, TypeError) as e:
                 self.logger.error(
-                    f"[{datetime.datetime.now(tz=datetime.timezone.utc).isoformat()}] Erro ao converter status_id para int: {e}"
+                    f"[{datetime.now(tz=datetime.timezone.utc).isoformat()}] Erro ao converter status_id para int: {e}"
                 )
                 return 0
 
             # Validar datas se fornecidas
             if start_date and not isinstance(start_date, str):
                 self.logger.error(
-                    f"[{datetime.datetime.now(tz=datetime.timezone.utc).isoformat()}] start_date deve ser string: {type(start_date)}"
+                    f"[{datetime.now(tz=datetime.timezone.utc).isoformat()}] start_date deve ser string: {type(start_date)}"
                 )
                 return 0
 
             if end_date and not isinstance(end_date, str):
                 self.logger.error(
-                    f"[{datetime.datetime.now(tz=datetime.timezone.utc).isoformat()}] end_date deve ser string: {type(end_date)}"
+                    f"[{datetime.now(tz=datetime.timezone.utc).isoformat()}] end_date deve ser string: {type(end_date)}"
                 )
                 return 0
 
             # Verificar configuração básica
             if not hasattr(self, "glpi_url") or not self.glpi_url:
                 self.logger.error(
-                    f"[{datetime.datetime.now(tz=datetime.timezone.utc).isoformat()}] GLPI URL não configurada"
+                    f"[{datetime.now(tz=datetime.timezone.utc).isoformat()}] GLPI URL não configurada"
                 )
                 return 0
 
             # Garantir autenticação
             if not self._ensure_authenticated():
                 self.logger.error(
-                    f"[{datetime.datetime.now(tz=datetime.timezone.utc).isoformat()}] Falha na autenticação"
+                    f"[{datetime.now(tz=datetime.timezone.utc).isoformat()}] Falha na autenticação"
                 )
                 return 0
 
             if not self.field_ids:
                 if not self.discover_field_ids():
-                    timestamp = datetime.datetime.now(
-                        tz=datetime.timezone.utc
-                    ).isoformat()
+                    timestamp = datetime.now(
+            tz=datetime.timezone.utc
+        ).isoformat()
                     self.logger.error(
                         f"[{timestamp}] Falha ao descobrir field_ids - "
                         f"level: {level}, status_id: {status_id}, "
@@ -1331,7 +1327,7 @@ class GLPIService:
             # Verificar se field_ids necessários estão disponíveis
             if not self.field_ids.get("STATUS"):
                 self.logger.error(
-                    f"[{datetime.datetime.now(tz=datetime.timezone.utc).isoformat()}] Field ID STATUS não encontrado: {self.field_ids.get('STATUS')}"
+                    f"[{datetime.now(tz=datetime.timezone.utc).isoformat()}] Field ID STATUS não encontrado: {self.field_ids.get('STATUS')}"
                 )
                 return 0
 
@@ -1362,7 +1358,7 @@ class GLPIService:
             url = f"{self.glpi_url}/search/Ticket"
 
             self.logger.info(
-                f"[{datetime.datetime.now(tz=datetime.timezone.utc).isoformat()}] Buscando tickets por hierarquia - level: {level}, status: {status_id}"
+                f"[{datetime.now(tz=datetime.timezone.utc).isoformat()}] Buscando tickets por hierarquia - level: {level}, status: {status_id}"
             )
 
             response = self._make_authenticated_request(
@@ -1916,9 +1912,137 @@ class GLPIService:
 
         except Exception as e:
             self.logger.error(
-                f"[{datetime.datetime.now(tz=datetime.timezone.utc).isoformat()}] Erro geral no _get_metrics_by_level_internal: {e}"
+                f"[{datetime.datetime.now(tz=datetime.timezone.utc).isoformat()}] Erro no _get_metrics_by_level_internal: {e}"
             )
             return {}
+
+    def debug_technician_tickets(self, technician_id: str, correlation_id: str = None) -> Dict[str, any]:
+        """Debug específico dos tickets de um técnico"""
+        try:
+            if not self._ensure_authenticated():
+                return {"error": "Falha na autenticação"}
+
+            if not self.discover_field_ids():
+                return {"error": "Falha ao descobrir IDs dos campos"}
+
+            # Descobrir ID do campo do técnico
+            tech_field_id = self._discover_tech_field_id()
+            if not tech_field_id:
+                return {"error": "Campo do técnico não encontrado"}
+
+            debug_data = {
+                "technician_id": technician_id,
+                "tech_field_id": tech_field_id,
+                "field_ids": self.field_ids,
+                "status_map": self.status_map,
+                "tickets": []
+            }
+
+            # Buscar tickets do técnico
+            search_params = {
+                "is_deleted": 0,
+                "range": "0-9",  # Primeiros 10 tickets
+                "criteria[0][field]": tech_field_id,
+                "criteria[0][searchtype]": "equals",
+                "criteria[0][value]": str(technician_id),
+                "forcedisplay[0]": "2",  # ID
+                "forcedisplay[1]": "1",  # Título
+                "forcedisplay[2]": "12", # Status
+                "forcedisplay[3]": "19", # Data modificação
+                "forcedisplay[4]": str(tech_field_id), # Técnico
+            }
+
+            response = self._make_authenticated_request(
+                "GET", f"{self.glpi_url}/search/Ticket", params=search_params
+            )
+
+            if response and response.status_code in [200, 206]:
+                tickets_data = response.json()
+                debug_data["api_response"] = {
+                    "status_code": response.status_code,
+                    "headers": dict(response.headers),
+                    "data_keys": list(tickets_data.keys()) if isinstance(tickets_data, dict) else "not_dict"
+                }
+                
+                if isinstance(tickets_data, dict) and "data" in tickets_data:
+                    debug_data["tickets"] = tickets_data["data"][:5]  # Primeiros 5
+                    debug_data["total_count"] = tickets_data.get("totalcount", 0)
+                else:
+                    debug_data["tickets"] = tickets_data if isinstance(tickets_data, list) else []
+            else:
+                debug_data["api_error"] = {
+                    "status_code": response.status_code if response else "no_response",
+                    "text": response.text if response else "no_response"
+                }
+
+            return debug_data
+
+        except Exception as e:
+            self.logger.error(f"Erro no debug do técnico {technician_id}: {e}", exc_info=True)
+            return {"error": str(e), "technician_id": technician_id}
+
+    def debug_technician_tickets_general(self, limit: int = 5, correlation_id: str = None) -> Dict[str, any]:
+        """Debug geral dos tickets dos técnicos"""
+        try:
+            if not self._ensure_authenticated():
+                return {"error": "Falha na autenticação"}
+
+            debug_data = {
+                "authentication": "success",
+                "field_discovery": False,
+                "technicians": [],
+                "field_ids": {},
+                "tech_field_id": None
+            }
+
+            # Tentar descobrir IDs dos campos
+            if self.discover_field_ids():
+                debug_data["field_discovery"] = True
+                debug_data["field_ids"] = self.field_ids
+
+                # Descobrir ID do campo do técnico
+                tech_field_id = self._discover_tech_field_id()
+                debug_data["tech_field_id"] = tech_field_id
+
+                if tech_field_id:
+                    # Buscar alguns técnicos
+                    try:
+                        # Buscar usuários com perfil de técnico (ID 6)
+                        profile_users_response = self._make_authenticated_request(
+                            "GET", f"{self.glpi_url}/Profile_User",
+                            params={"range": f"0-{limit-1}", "criteria[0][field]": "profiles_id", "criteria[0][value]": "6"}
+                        )
+
+                        if profile_users_response and profile_users_response.ok:
+                            profile_data = profile_users_response.json()
+                            debug_data["profile_users_response"] = {
+                                "status": "success",
+                                "count": len(profile_data) if isinstance(profile_data, list) else 0
+                            }
+
+                            # Para cada técnico, buscar alguns tickets
+                            for i, profile_user in enumerate(profile_data[:limit] if isinstance(profile_data, list) else []):
+                                user_id = profile_user.get("users_id")
+                                if user_id:
+                                    tech_debug = self.debug_technician_tickets(str(user_id), correlation_id)
+                                    debug_data["technicians"].append({
+                                        "user_id": user_id,
+                                        "debug_data": tech_debug
+                                    })
+                        else:
+                            debug_data["profile_users_response"] = {
+                                "status": "error",
+                                "status_code": profile_users_response.status_code if profile_users_response else "no_response"
+                            }
+
+                    except Exception as e:
+                        debug_data["technicians_error"] = str(e)
+
+            return debug_data
+
+        except Exception as e:
+            self.logger.error(f"Erro no debug geral dos técnicos: {e}", exc_info=True)
+            return {"error": str(e)}
 
     def get_ticket_by_id(self, ticket_id: int) -> Dict[str, any]:
         """Busca detalhes completos de um ticket específico pelo ID"""
@@ -2094,15 +2218,15 @@ class GLPIService:
             criteria_index = 0
             for i, level in enumerate(levels):
                 if i == 0:
-                    search_params[f"criteria[{criteria_index}][field]"] = "8"
-                    search_params[f"criteria[{criteria_index}][searchtype]"] = "equals"
-                    search_params[f"criteria[{criteria_index}][value]"] = level
+                    search_params[f"criteria[{criteria_index}][field]"] = "8"  # Campo hierarquia
+                    search_params[f"criteria[{criteria_index}][searchtype]"] = "contains"
+                    search_params[f"criteria[{criteria_index}][value]"] = level.upper()  # N1, N2, N3, N4
                 else:
                     criteria_index += 1
                     search_params[f"criteria[{criteria_index}][link]"] = "OR"
-                    search_params[f"criteria[{criteria_index}][field]"] = "8"
-                    search_params[f"criteria[{criteria_index}][searchtype]"] = "equals"
-                    search_params[f"criteria[{criteria_index}][value]"] = level
+                    search_params[f"criteria[{criteria_index}][field]"] = "8"  # Campo hierarquia
+                    search_params[f"criteria[{criteria_index}][searchtype]"] = "contains"
+                    search_params[f"criteria[{criteria_index}][value]"] = level.upper()  # N1, N2, N3, N4
 
             # Critério para status - usar OR para múltiplos status
             criteria_index += 1
@@ -2205,12 +2329,19 @@ class GLPIService:
                     # Contar tickets por nível e status nesta página
                     for ticket in page_data["data"]:
                         try:
-                            ticket_level = ticket.get(
-                                "8", ""
-                            ).strip()  # Campo hierarquia
+                            ticket_hierarchy = str(ticket.get("8", "")).strip()  # Campo hierarquia
                             ticket_status_id = int(ticket.get("12", 0))  # Campo status
 
-                            if ticket_level in result:
+                            # Extrair nível da hierarquia textual (ex: "CC-SE-SUBADM-DTIC > N2" -> "N2")
+                            ticket_level = None
+                            if ticket_hierarchy and ticket_hierarchy != "None":
+                                # Procurar por N1, N2, N3, N4 na string de hierarquia
+                                for level in ["N1", "N2", "N3", "N4"]:
+                                    if level in ticket_hierarchy:
+                                        ticket_level = level
+                                        break
+
+                            if ticket_level and ticket_level in result:
                                 # Encontrar nome do status
                                 for status_name, status_id in self.status_map.items():
                                     if int(status_id) == ticket_status_id:
@@ -3289,7 +3420,7 @@ class GLPIService:
         """
         start_time = time.time()
         self.logger.info(
-            f"[{datetime.now().strftime('%Y-%m-%d %H:%M:%S')}] Iniciando get_dashboard_metrics_with_date_filter com start_date={start_date}, end_date={end_date}"
+            f"[{datetime.datetime.now().strftime('%Y-%m-%d %H:%M:%S')}] Iniciando get_dashboard_metrics_with_date_filter com start_date={start_date}, end_date={end_date}"
         )
 
         try:
@@ -3301,7 +3432,7 @@ class GLPIService:
                     )
                     return None
                 try:
-                    datetime.strptime(start_date, "%Y-%m-%d")
+                    datetime.datetime.strptime(start_date, "%Y-%m-%d")
                 except ValueError as e:
                     self.logger.error(
                         f"Formato inválido para start_date '{start_date}': {e}"
@@ -3315,7 +3446,7 @@ class GLPIService:
                     )
                     return None
                 try:
-                    datetime.strptime(end_date, "%Y-%m-%d")
+                    datetime.datetime.strptime(end_date, "%Y-%m-%d")
                 except ValueError as e:
                     self.logger.error(
                         f"Formato inválido para end_date '{end_date}': {e}"
@@ -3650,8 +3781,6 @@ class GLPIService:
             self.logger.error(
                 f"[{datetime.now().strftime('%Y-%m-%d %H:%M:%S')}] Erro geral em get_dashboard_metrics_with_date_filter após {execution_time:.2f}s: {e}"
             )
-            import traceback
-
             self.logger.error(f"Stack trace: {traceback.format_exc()}")
             return None
 
@@ -3786,8 +3915,6 @@ class GLPIService:
 
         except Exception as e:
             self.logger.error(f"Erro ao calcular tendências: {e}")
-            import traceback
-
             self.logger.error(f"Stack trace: {traceback.format_exc()}")
             # Retornar valores padrão em caso de erro
             return {
@@ -3811,6 +3938,10 @@ class GLPIService:
         start_time = time.time()
 
         try:
+            # LIMPAR CACHE INTERNO FORÇADAMENTE - CORREÇÃO CRÍTICA
+            self.logger.info(f"[{datetime.datetime.now(tz=datetime.timezone.utc).isoformat()}] LIMPANDO CACHE INTERNO DO GLPI SERVICE")
+            self._cache.clear()
+            
             # Validações de entrada
             if limit is not None:
                 if not isinstance(limit, int):
@@ -3840,16 +3971,15 @@ class GLPIService:
             try:
                 cached_data = self._get_cache_data(cache_key)
                 if cached_data is not None:
-                    self.logger.info(
-                        f"[{datetime.datetime.now(tz=datetime.timezone.utc).isoformat()}] Retornando ranking de técnicos do cache"
-                    )
+                    self.logger.info(f"[{datetime.datetime.now(tz=datetime.timezone.utc).isoformat()}] RETORNANDO RANKING DO CACHE INTERNO (PROBLEMA!)")
+                    self.logger.info(f"[{datetime.datetime.now(tz=datetime.timezone.utc).isoformat()}] Cache data: {cached_data[:2] if cached_data else 'None'}...")  # Primeiros 2 itens
                     if limit and len(cached_data) > limit:
                         return cached_data[:limit]
                     return cached_data
+                else:
+                    self.logger.info(f"[{datetime.datetime.now(tz=datetime.timezone.utc).isoformat()}] CACHE INTERNO VAZIO, PROCESSANDO DADOS REAIS")
             except Exception as e:
-                self.logger.warning(
-                    f"[{datetime.datetime.now(tz=datetime.timezone.utc).isoformat()}] Erro ao verificar cache: {e}"
-                )
+                self.logger.warning(f"[{datetime.datetime.now(tz=datetime.timezone.utc).isoformat()}] Erro ao verificar cache interno: {e}")
 
             # Verificar autenticação
             try:
@@ -3886,12 +4016,12 @@ class GLPIService:
                 )
                 return []
 
-            # Armazenar no cache
+            # Armazenar no cache com TTL reduzido para 3 minutos
             try:
                 if ranking:
-                    self._set_cache_data(cache_key, ranking, ttl=300)
+                    self._set_cache_data(cache_key, ranking, ttl=180)
                     self.logger.info(
-                        f"[{datetime.datetime.now(tz=datetime.timezone.utc).isoformat()}] Dados armazenados no cache"
+                        f"[{datetime.datetime.now(tz=datetime.timezone.utc).isoformat()}] Dados armazenados no cache por 3 minutos"
                     )
             except Exception as e:
                 self.logger.warning(
@@ -3922,23 +4052,30 @@ class GLPIService:
             self.logger.error(
                 f"[{datetime.datetime.now(tz=datetime.timezone.utc).isoformat()}] Erro geral em get_technician_ranking após {execution_time:.2f}s: {e}"
             )
-            import traceback
-
             self.logger.error(f"Stack trace: {traceback.format_exc()}")
             return []
 
     def _discover_tech_field_id(self) -> Optional[str]:
         """Descobre dinamicamente o field ID do técnico atribuído"""
         try:
+            self.logger.info("=== DEBUG FIELD ID DISCOVERY ===")
+            
             response = self._make_authenticated_request(
                 "GET", f"{self.glpi_url}/listSearchOptions/Ticket"
             )
             if not response:
+                self.logger.error("Falha ao buscar search options do Ticket")
                 return None
+                
             search_options = response.json()
+            self.logger.info(f"Search options recebidos: {len(search_options)} campos")
+            
+            # Log de todos os campos disponíveis
+            for field_id, field_data in list(search_options.items())[:20]:  # Primeiros 20
+                if isinstance(field_data, dict) and "name" in field_data:
+                    self.logger.info(f"Campo {field_id}: {field_data['name']}")
 
             # Procurar por campos relacionados ao técnico atribuído
-            # Baseado no debug, o campo "5" é "Técnico" e "95" é "Técnico encarregado"
             tech_field_mapping = {"5": "Técnico", "95": "Técnico encarregado"}
 
             # Primeiro, tentar os campos conhecidos
@@ -3947,704 +4084,327 @@ class GLPIService:
                     field_data = search_options[field_id]
                     if isinstance(field_data, dict) and "name" in field_data:
                         field_name = field_data["name"]
+                        self.logger.info(f"Testando campo {field_id}: '{field_name}' vs esperado '{expected_name}'")
                         if field_name == expected_name:
-                            self.logger.info(
-                                f"Campo de técnico encontrado: {field_name} (ID: {field_id})"
-                            )
+                            self.logger.info(f"✅ CAMPO TÉCNICO ENCONTRADO: {field_name} (ID: {field_id})")
                             return field_id
+                        else:
+                            self.logger.warning(f"❌ Campo {field_id} não corresponde: '{field_name}' != '{expected_name}'")
 
             # Fallback: procurar por nomes
-            tech_field_names = [
-                "Técnico",
-                "Atribuído",
-                "Assigned to",
-                "Technician",
-                "Técnico encarregado",
-            ]
+            tech_field_names = ["Técnico", "Atribuído", "Assigned to", "Technician", "Técnico encarregado"]
 
             for field_id, field_data in search_options.items():
                 if isinstance(field_data, dict) and "name" in field_data:
                     field_name = field_data["name"]
                     if field_name in tech_field_names:
-                        self.logger.info(
-                            f"Campo de técnico encontrado (fallback): {field_name} (ID: {field_id})"
-                        )
+                        self.logger.info(f"✅ CAMPO TÉCNICO ENCONTRADO (fallback): {field_name} (ID: {field_id})")
                         return field_id
 
-            self.logger.error("Campo de técnico atribuído não encontrado")
+            self.logger.error("❌ CAMPO DE TÉCNICO NÃO ENCONTRADO")
+            self.logger.error(f"Campos disponíveis: {list(search_options.keys())}")
             return None
 
-        except requests.exceptions.RequestException as e:
+        except Exception as e:
             self.logger.error(f"Erro ao descobrir field ID do técnico: {e}")
             return None
 
-    def _get_technician_ranking_knowledge_base(self) -> list:
-        """Implementação seguindo exatamente a base de conhecimento fornecida
+    def _get_user_details_direct(self, user_id: str) -> Optional[Dict[str, Any]]:
+        """Busca direta de usuário por ID (baseado nos scripts que funcionam)"""
+        url = f"{self.glpi_url}/User/{user_id}"
+        
+        try:
+            self.logger.info(f"🔍 Buscando usuário direto: {url}")
+            response = self._make_authenticated_request("GET", url)
+            if not response or not response.ok:
+                self.logger.warning(f"⚠️ Falha ao buscar usuário {user_id} - Status: {response.status_code if response else 'None'}")
+                return None
+            
+            user_data = response.json()
+            self.logger.info(f"✅ Dados do usuário {user_id} recebidos")
+            
+            # Aplicar filtros (mesmo dos scripts)
+            is_active = str(user_data.get('is_active', '0')).strip()
+            is_deleted = str(user_data.get('is_deleted', '0')).strip()
+            
+            self.logger.info(f"👤 Usuário {user_id}: is_active={is_active}, is_deleted={is_deleted}")
+            
+            if str(is_active) != '1':
+                self.logger.warning(f"⚠️ Usuário {user_id} inativo (is_active={is_active})")
+                return None
+            
+            if str(is_deleted) == '1':
+                self.logger.warning(f"⚠️ Usuário {user_id} deletado (is_deleted={is_deleted})")
+                return None
+            
+            # Construir nome completo
+            firstname = str(user_data.get('firstname', '')).strip()
+            realname = str(user_data.get('realname', '')).strip()
+            username = str(user_data.get('name', '')).strip()
+            
+            full_name = f"{firstname} {realname}".strip()
+            if not full_name:
+                full_name = username
+            if not full_name:
+                full_name = f'Usuário {user_id}'
+            
+            self.logger.info(f"✅ Usuário {user_id} válido: {full_name}")
+            
+            return {
+                'id': user_id,
+                'name': full_name,
+                'realname': realname,
+                'firstname': firstname,
+                'username': username
+            }
+            
+        except Exception as e:
+            self.logger.error(f"❌ Erro ao buscar usuário {user_id}: {e}")
+            return None
 
-        Esta implementação:
-        1. Usa consulta direta de técnicos ativos com perfil ID 6
-        2. Evita iteração por todos os usuários do sistema
-        3. Usa forcedisplay para trazer apenas campos necessários
-        4. Segue a estrutura exata da base de conhecimento
+    def _get_technician_level_by_name_fallback(self, user_id: str) -> str:
+        """Determina o nível do técnico baseado no nome (fallback do backend)"""
+        try:
+            # Buscar nome do usuário
+            user_url = f"{self.glpi_url}/User/{user_id}"
+            response = self._make_authenticated_request("GET", user_url)
+            if not response or response.status_code != 200:
+                return "N1"  # Nível padrão
+
+            user_data = response.json()
+            firstname = user_data.get('firstname', '').lower()
+            realname = user_data.get('realname', '').lower()
+
+            # Mapeamento correto dos técnicos por nível (conforme backend real)
+            n1_names = [
+                "gabriel andrade da conceicao",
+                "nicolas fernando muniz nunez",
+            ]
+
+            n2_names = [
+                "alessandro carbonera vieira",
+                "jonathan nascimento moletta",
+                "thales vinicius paz leite",
+                "leonardo trojan repiso riela",
+                "edson joel dos santos silva",
+                "luciano marcelino da silva",
+                "joao pedro wilson dias",
+            ]
+
+            n3_names = [
+                "anderson da silva morim de oliveira",
+                "silvio godinho valim",
+                "jorge antonio vicente júnior",
+                "pablo hebling guimaraes",
+                "miguelangelo ferreira",
+            ]
+
+            n4_names = [
+                "gabriel silva machado",
+                "luciano de araujo silva",
+                "wagner mengue",
+                "paulo cesar pedo nunes",
+                "alexandre rovinski almoarqueg",
+            ]
+
+            # Verificar em qual nível o técnico está
+            full_name = f"{firstname} {realname}".strip()
+
+            if full_name in n4_names:
+                return "N4"
+            elif full_name in n3_names:
+                return "N3"
+            elif full_name in n2_names:
+                return "N2"
+            elif full_name in n1_names:
+                return "N1"
+            else:
+                # Se não encontrou, usar N1 como padrão
+                return "N1"
+
+        except Exception as e:
+            self.logger.error(f"Erro ao determinar nível por nome para usuário {user_id}: {e}")
+            return "N1"  # Nível padrão em caso de erro
+
+    def _get_technician_metrics_corrected(self, tecnico_id: str) -> Dict[str, Any]:
+        """Coleta métricas de performance de um técnico específico (igual ao script)"""
+        self.logger.info(f"=== DEBUG MÉTRICAS TÉCNICO {tecnico_id} ===")
+        
+        url = f"{self.glpi_url}/search/Ticket"
+        
+        # Buscar todos os tickets atribuídos ao técnico
+        params = {
+            'criteria[0][field]': 5,       # Campo técnico atribuído (FIXO)
+            'criteria[0][searchtype]': 'equals',
+            'criteria[0][value]': tecnico_id,
+            'forcedisplay[0]': 2,          # ID
+            'forcedisplay[1]': 12,         # Status
+            'range': '0-5000'
+        }
+        
+        self.logger.info(f"🔍 URL: {url}")
+        self.logger.info(f"🔍 Parâmetros: {params}")
+        
+        try:
+            response = self._make_authenticated_request("GET", url, params=params)
+            self.logger.info(f"🔍 Status da resposta: {response.status_code if response else 'None'}")
+            
+            if not response or response.status_code != 200:
+                self.logger.error(f"❌ Falha na requisição: {response.status_code if response else 'None'}")
+                return {'total_tickets': 0, 'resolved_tickets': 0, 'pending_tickets': 0, 'avg_resolution_time': 0.0}
+            
+            data = response.json()
+            tickets = data.get('data', [])
+            
+            self.logger.info(f"✅ Tickets encontrados: {len(tickets)}")
+            
+            total = len(tickets)
+            resolvidos = 0
+            pendentes = 0
+            
+            # Log detalhado de cada ticket
+            for i, ticket in enumerate(tickets[:5]):  # Primeiros 5 tickets
+                status_id = int(ticket.get('12', 0))
+                ticket_id = ticket.get('2', 'N/A')
+                self.logger.info(f"🎫 Ticket {i+1}: ID={ticket_id}, Status={status_id}")
+                
+                if status_id in [5, 6]:  # Solucionado ou Fechado
+                    resolvidos += 1
+                    self.logger.info(f"✅ Ticket {ticket_id} marcado como RESOLVIDO")
+                elif status_id in [2, 3, 4]:  # Em progresso, Planejado, Pendente
+                    pendentes += 1
+                    self.logger.info(f"⏳ Ticket {ticket_id} marcado como PENDENTE")
+                else:
+                    self.logger.info(f"❓ Ticket {ticket_id} com status desconhecido: {status_id}")
+            
+            self.logger.info(f"📊 RESUMO TÉCNICO {tecnico_id}:")
+            self.logger.info(f"   Total: {total}")
+            self.logger.info(f"   Resolvidos: {resolvidos}")
+            self.logger.info(f"   Pendentes: {pendentes}")
+            
+            return {
+                'total_tickets': total,
+                'resolved_tickets': resolvidos,
+                'pending_tickets': pendentes,
+                'avg_resolution_time': 0.0
+            }
+
+        except Exception as e:
+            self.logger.error(f"❌ Erro ao buscar métricas do técnico {tecnico_id}: {e}")
+            return {'total_tickets': 0, 'resolved_tickets': 0, 'pending_tickets': 0, 'avg_resolution_time': 0.0}
+
+    def _get_technician_ranking_knowledge_base(self) -> list:
+        """Implementação baseada nos scripts que funcionam - busca direta por ID
+
+        Esta implementação usa a mesma abordagem dos scripts:
+        1. Lista hardcoded de IDs de técnicos conhecidos
+        2. Busca individual de cada técnico
+        3. Validação direta de ativo/não deletado
         """
         import datetime
 
         start_time = time.time()
 
         try:
+            self.logger.info(f"=== DEBUG BUSCA DE TÉCNICOS (ABORDAGEM DOS SCRIPTS) ===")
+            
             # Validar configurações essenciais
             if not hasattr(self, "glpi_url") or not self.glpi_url:
-                self.logger.error(
-                    f"[{datetime.datetime.now(tz=datetime.timezone.utc).isoformat()}] glpi_url não configurado"
-                )
+                self.logger.error("❌ glpi_url não configurado")
                 return []
 
-            self.logger.info(
-                f"[{datetime.datetime.now(tz=datetime.timezone.utc).isoformat()}] Iniciando consulta otimizada de ranking de técnicos"
-            )
+            self.logger.info(f"🔗 GLPI URL: {self.glpi_url}")
 
-            # 1.1 Consulta de Técnicos Ativos (corrigida)
-            # Primeiro, buscar usuários com perfil de técnico usando Profile_User
-            profile_params = {
-                "range": "0-999",
-                "criteria[0][field]": "4",  # Campo Perfil na tabela Profile_User
-                "criteria[0][searchtype]": "equals",
-                "criteria[0][value]": "6",  # ID do perfil técnico
-                "forcedisplay[0]": "2",  # ID do Profile_User
-                "forcedisplay[1]": "5",  # Usuário (users_id)
-                "forcedisplay[2]": "4",  # Perfil
-                "forcedisplay[3]": "80",  # Entidade
-            }
-
-            # Log de observabilidade: parâmetros GLPI para busca de técnicos
-            timestamp = datetime.datetime.now(tz=datetime.timezone.utc).isoformat()
-            self.logger.info(
-                f"[{timestamp}] GLPI Technician Query Parameters - "
-                f"profile_id: 6, range: 0-999, "
-                f"search_fields: [4=profile, 5=user_id, 80=entity], "
-                f"endpoint: Profile_User"
-            )
-
-            self.logger.info(
-                f"[{datetime.datetime.now(tz=datetime.timezone.utc).isoformat()}] Buscando usuários com perfil ID 6"
-            )
-
-            # Buscar relação Profile_User para obter IDs dos técnicos
-            try:
-                response = self._make_authenticated_request(
-                    "GET", f"{self.glpi_url}/search/Profile_User", params=profile_params
-                )
-
-                if not response:
-                    self.logger.error(
-                        f"[{datetime.datetime.now(tz=datetime.timezone.utc).isoformat()}] Falha ao buscar usuários com perfil de técnico"
-                    )
-                    return []
-
-                if not response.ok:
-                    self.logger.error(
-                        f"[{datetime.datetime.now(tz=datetime.timezone.utc).isoformat()}] Erro HTTP ao buscar Profile_User: {response.status_code}"
-                    )
-                    return []
-
-            except requests.exceptions.Timeout:
-                self.logger.error(
-                    f"[{datetime.datetime.now(tz=datetime.timezone.utc).isoformat()}] Timeout ao buscar Profile_User"
-                )
-                return []
-            except requests.exceptions.ConnectionError:
-                self.logger.error(
-                    f"[{datetime.datetime.now(tz=datetime.timezone.utc).isoformat()}] Erro de conexão ao buscar Profile_User"
-                )
-                return []
-            except requests.exceptions.RequestException as e:
-                self.logger.error(
-                    f"[{datetime.datetime.now(tz=datetime.timezone.utc).isoformat()}] Erro de requisição ao buscar Profile_User: {e}"
-                )
+            # IDs dos técnicos válidos da entidade CAU (mesmo dos scripts)
+            technician_ids = [
+                "696", "32", "141", "60", "69", "1032", "252", "721", "926", "1291",
+                "185", "1331", "1404", "1088", "1263", "10", "53", "250", "1471"
+            ]
+            
+            self.logger.info(f"📋 Lista de técnicos para verificar: {len(technician_ids)} IDs")
+            
+            technician_candidates = []
+            
+            for tech_id in technician_ids:
+                try:
+                    self.logger.info(f"🔍 Verificando técnico ID: {tech_id}")
+                    
+                    # Buscar detalhes do usuário (mesmo método dos scripts)
+                    user_details = self._get_user_details_direct(tech_id)
+                    if user_details:
+                        technician_candidates.append({
+                            "id": tech_id,
+                            "name": user_details['name'],
+                            "realname": user_details['realname'],
+                            "firstname": user_details['firstname']
+                        })
+                        self.logger.info(f"✅ Técnico encontrado: {user_details['name']} (ID: {tech_id})")
+                    else:
+                        self.logger.warning(f"⚠️ Técnico não encontrado ou inativo: {tech_id}")
+                except Exception as e:
+                    self.logger.error(f"❌ Erro ao processar técnico {tech_id}: {e}")
+                    continue
+            
+            self.logger.info(f"📊 Total de técnicos candidatos encontrados: {len(technician_candidates)}")
+            
+            if not technician_candidates:
+                self.logger.warning("⚠️ Nenhum técnico candidato encontrado")
                 return []
 
-            # Processar resposta
-            try:
-                profile_result = response.json()
-                if not isinstance(profile_result, dict):
-                    self.logger.error(
-                        f"[{datetime.datetime.now(tz=datetime.timezone.utc).isoformat()}] Resposta inválida da busca de Profile_User: {type(profile_result)}"
-                    )
-                    return []
-
-                self.logger.info(
-                    f"[{datetime.datetime.now(tz=datetime.timezone.utc).isoformat()}] Resposta da busca de Profile_User recebida"
-                )
-            except ValueError as e:
-                self.logger.error(
-                    f"[{datetime.datetime.now(tz=datetime.timezone.utc).isoformat()}] Erro ao decodificar JSON da resposta Profile_User: {e}"
-                )
-                return []
-
-            # A API do GLPI retorna um objeto com 'data', não uma lista direta
-            if not isinstance(profile_result, dict):
-                self.logger.error("Resposta inválida da busca de Profile_User")
-                return []
-
-            # Verificar se há dados
-            total_count = profile_result.get("totalcount", 0)
-
-            # Log de observabilidade: contagem de técnicos encontrados
-            timestamp = datetime.datetime.now(tz=datetime.timezone.utc).isoformat()
-            self.logger.info(
-                f"[{timestamp}] GLPI Technician Count Result - "
-                f"profile_users_found: {total_count}, "
-                f"endpoint: Profile_User, profile_id: 6"
-            )
-
-            if total_count == 0:
-                self.logger.warning("Nenhum usuário encontrado com perfil de técnico")
-                return []
-
-            # Extrair dados dos usuários
-            profile_data = profile_result.get("data", [])
-            if not profile_data:
-                self.logger.error("Dados de Profile_User não encontrados na resposta")
-                return []
-
-            # Extrair IDs dos usuários
-            tech_user_ids = []
-            for profile_user in profile_data:
-                if (
-                    isinstance(profile_user, dict) and "5" in profile_user
-                ):  # Campo Usuário (users_id)
-                    # O campo 5 pode retornar o nome do usuário, precisamos extrair o ID
-                    user_info = profile_user["5"]
-                    # Se for um string, pode ser o nome do usuário, precisamos buscar o ID
-                    # Por enquanto, vamos tentar extrair o ID do campo 2 (ID do Profile_User)
-                    if "2" in profile_user:
-                        # Vamos usar uma abordagem diferente: buscar diretamente os usuários
-                        # por enquanto, vamos pular esta extração e usar uma busca direta
-                        pass
-
-            # Como a extração do users_id é complexa, vamos usar uma abordagem alternativa
-            # Buscar diretamente os usuários com perfil de técnico
-            self.logger.info("Usando abordagem alternativa: busca direta de usuários")
-
-            # Buscar usuários ativos (GLPI não possui campo is_deleted real, apenas is_active)
-            user_params = {
-                "range": "0-999",
-                "criteria[0][field]": "8",  # Campo is_active
-                "criteria[0][searchtype]": "equals",
-                "criteria[0][value]": "1",
-                "forcedisplay[0]": "2",  # ID
-                "forcedisplay[1]": "1",  # Nome de usuário
-                "forcedisplay[2]": "9",  # Primeiro nome (realname)
-                "forcedisplay[3]": "34",  # Sobrenome (firstname)
-            }
-
-            # Log de observabilidade: parâmetros GLPI para busca de usuários ativos
-            timestamp = datetime.datetime.now(tz=datetime.timezone.utc).isoformat()
-            self.logger.info(
-                f"[{timestamp}] GLPI Active Users Query Parameters - "
-                f"is_active: 1, range: 0-999, "
-                f"display_fields: [2=id, 1=username, 9=realname, 34=firstname], "
-                f"endpoint: User"
-            )
-
-            # Log para arquivo para debug
-            with open("debug_technician_ranking.log", "a", encoding="utf-8") as f:
-                f.write(
-                    f"{datetime.datetime.now()} - Iniciando busca de usuários ativos com parâmetros: {user_params}\n"
-                )
-                f.flush()
-
-            try:
-                user_response = self._make_authenticated_request(
-                    "GET", f"{self.glpi_url}/search/User", params=user_params
-                )
-            except requests.exceptions.Timeout:
-                self.logger.error(
-                    f"[{datetime.datetime.now(tz=datetime.timezone.utc).isoformat()}] Timeout na busca de usuários ativos"
-                )
-                return []
-            except requests.exceptions.ConnectionError:
-                self.logger.error(
-                    f"[{datetime.datetime.now(tz=datetime.timezone.utc).isoformat()}] Erro de conexão na busca de usuários ativos"
-                )
-                return []
-            except requests.exceptions.RequestException as e:
-                self.logger.error(
-                    f"[{datetime.datetime.now(tz=datetime.timezone.utc).isoformat()}] Erro na requisição de usuários ativos: {e}"
-                )
-                return []
-
-            # Log para arquivo para debug
-            with open("debug_technician_ranking.log", "a", encoding="utf-8") as f:
-                f.write(
-                    f"{datetime.datetime.now()} - Resposta da busca de usuários: {user_response is not None}\n"
-                )
-                if user_response:
-                    f.write(f"Status code: {user_response.status_code}\n")
-                f.flush()
-
-            if not user_response or not user_response.ok:
-                self.logger.error(
-                    f"Falha ao buscar usuários ativos - Status: {user_response.status_code if user_response else 'None'}"
-                )
-                with open("debug_technician_ranking.log", "a", encoding="utf-8") as f:
-                    f.write(
-                        f"{datetime.datetime.now()} - ERRO: Falha ao buscar usuários ativos\n"
-                    )
-                    f.flush()
-                return []
-
-            try:
-                user_result = user_response.json()
-            except ValueError as e:
-                self.logger.error(
-                    f"[{datetime.datetime.now(tz=datetime.timezone.utc).isoformat()}] Erro ao decodificar JSON da resposta de usuários: {e}"
-                )
-                return []
-
-            # Log para arquivo para debug
-            with open("debug_technician_ranking.log", "a", encoding="utf-8") as f:
-                f.write(
-                    f"{datetime.datetime.now()} - Resultado da busca de usuários: totalcount={user_result.get('totalcount', 0) if isinstance(user_result, dict) else 'N/A'}\n"
-                )
-                f.flush()
-
-            if (
-                not isinstance(user_result, dict)
-                or user_result.get("totalcount", 0) == 0
-            ):
-                self.logger.warning("Nenhum usuário ativo encontrado")
-                with open("debug_technician_ranking.log", "a", encoding="utf-8") as f:
-                    f.write(
-                        f"{datetime.datetime.now()} - AVISO: Nenhum usuário ativo encontrado\n"
-                    )
-                    f.flush()
-                return []
-
-            all_users = user_result.get("data", [])
-            self.logger.info(f"Encontrados {len(all_users)} usuários ativos")
-
-            # Log para arquivo para debug
-            with open("debug_technician_ranking.log", "a", encoding="utf-8") as f:
-                f.write(
-                    f"{datetime.datetime.now()} - Encontrados {len(all_users)} usuários ativos\n"
-                )
-                f.flush()
-
-            # Usar os dados já obtidos dos usuários com perfil de técnico
-            # Extrair IDs dos usuários que já sabemos que têm perfil de técnico
-            tech_user_ids = set()  # Usar set para evitar duplicatas
-            tech_users_data = {}
-
-            # Processar dados dos usuários com perfil de técnico já obtidos
-            profile_users_data = profile_result.get("data", [])
-
-            # Log para arquivo para debug
-            with open("debug_technician_ranking.log", "a", encoding="utf-8") as f:
-                f.write(
-                    f"{datetime.datetime.now()} - Processando {len(profile_users_data)} registros de Profile_User\n"
-                )
-                f.flush()
-
-            for profile_user in profile_users_data:
-                if isinstance(profile_user, dict):
-                    # Log para arquivo para debug - mostrar todos os campos disponíveis
-                    with open(
-                        "debug_technician_ranking.log", "a", encoding="utf-8"
-                    ) as f:
-                        f.write(
-                            f"{datetime.datetime.now()} - Dados do Profile_User: {profile_user}\n"
-                        )
-                        f.flush()
-
-                    # O campo 5 contém o nome de usuário (username), não o ID
-                    # Precisamos buscar o ID do usuário usando o username
-                    if "5" in profile_user:
-                        username = str(profile_user["5"])
-                        # Armazenar o username para buscar o ID depois (usar set evita duplicatas)
-                        tech_user_ids.add(username)
-                        # Armazenar dados do usuário para uso posterior
-                        tech_users_data[username] = profile_user
-
-                        # Log para arquivo para debug
-                        with open(
-                            "debug_technician_ranking.log", "a", encoding="utf-8"
-                        ) as f:
-                            f.write(
-                                f"{datetime.datetime.now()} - Username do técnico extraído: {username}\n"
-                            )
-                            f.flush()
-
-            # Criar um mapa de usuários ativos para acesso rápido usando username
-            active_users_map = {}
-            for user in all_users:
-                if isinstance(user, dict) and "1" in user:  # Campo 1 é o username
-                    username = str(user["1"])
-                    active_users_map[username] = user
-
-                    # Log para arquivo para debug
-                    with open(
-                        "debug_technician_ranking.log", "a", encoding="utf-8"
-                    ) as f:
-                        f.write(
-                            f"{datetime.datetime.now()} - Usuário ativo mapeado: {username}\n"
-                        )
-                        f.flush()
-
-            self.logger.info(
-                f"Encontrados {len(tech_user_ids)} usuários com perfil ID 6"
-            )
-
-            if not tech_user_ids:
-                self.logger.warning("Nenhum usuário encontrado com perfil de técnico")
-                return []
-
-            # Descobrir field ID do técnico para contagem de tickets
+            # Descobrir field ID do técnico
             tech_field_id = self._discover_tech_field_id()
             if not tech_field_id:
-                self.logger.error("Falha ao descobrir field ID do técnico")
-                with open("debug_technician_ranking.log", "a", encoding="utf-8") as f:
-                    f.write(
-                        f"{datetime.datetime.now()} - ERRO: Falha ao descobrir field ID do técnico\n"
-                    )
-                    f.flush()
+                self.logger.error("❌ Não foi possível descobrir o field ID do técnico")
                 return []
 
-            self.logger.info(f"Field ID do técnico descoberto: {tech_field_id}")
+            self.logger.info(f"🔍 Field ID do técnico descoberto: {tech_field_id}")
 
-            # Log para arquivo para debug
-            with open("debug_technician_ranking.log", "a", encoding="utf-8") as f:
-                f.write(
-                    f"{datetime.datetime.now()} - Field ID do técnico descoberto: {tech_field_id}\n"
-                )
-                f.flush()
-
-            # Processar apenas os técnicos ativos usando os mapas otimizados
+            # Construir ranking usando método corrigido (igual ao script)
             ranking = []
-            tech_user_ids_list = list(tech_user_ids)  # Converter set para lista
-            self.logger.info(
-                f"Processando {len(tech_user_ids_list)} técnicos: {tech_user_ids_list[:5]}..."
-            )
-            self.logger.info(
-                f"Usuários ativos disponíveis: {len(active_users_map)} usuários"
-            )
-            active_user_ids_sample = list(active_users_map.keys())[:10]
-            self.logger.info(
-                f"Amostra de IDs de usuários ativos: {active_user_ids_sample}"
-            )
-            self.logger.info(
-                f"Tipos de IDs - Técnicos: {type(tech_user_ids_list[0]) if tech_user_ids_list else 'N/A'}, Ativos: {type(active_user_ids_sample[0]) if active_user_ids_sample else 'N/A'}"
-            )
-
-            # Log para arquivo para debug
-            with open("debug_technician_ranking.log", "a", encoding="utf-8") as f:
-                f.write(
-                    f"{datetime.datetime.now()} - Iniciando filtro de técnicos ativos\n"
-                )
-                f.write(f"Total de técnicos: {len(tech_user_ids_list)}\n")
-                f.write(f"Total de usuários ativos: {len(active_users_map)}\n")
-                f.flush()
-
-            # Filtrar apenas técnicos que estão ativos e não deletados usando usernames
-            active_tech_usernames = [
-                username
-                for username in tech_user_ids_list
-                if username in active_users_map
-            ]
-            self.logger.info(
-                f"Encontrados {len(active_tech_usernames)} técnicos ativos e não deletados de {len(tech_user_ids_list)} total"
-            )
-
-            # Log para arquivo para debug
-            with open("debug_technician_ranking.log", "a", encoding="utf-8") as f:
-                f.write(
-                    f"{datetime.datetime.now()} - Encontrados {len(active_tech_usernames)} técnicos ativos de {len(tech_user_ids)} total\n"
-                )
-                f.write(f"Técnicos ativos encontrados: {active_tech_usernames[:10]}\n")
-                f.flush()
-
-            if not active_tech_usernames:
-                self.logger.warning("Nenhum técnico ativo e não deletado encontrado")
-                with open("debug_technician_ranking.log", "a", encoding="utf-8") as f:
-                    f.write(
-                        f"{datetime.datetime.now()} - AVISO: Nenhum técnico ativo encontrado\n"
-                    )
-                    f.flush()
-                return []
-
-            self.logger.info(
-                f"Processando {len(active_tech_usernames)} técnicos ativos"
-            )
-
-            # Log para arquivo para debug
-            with open("debug_technician_ranking.log", "a", encoding="utf-8") as f:
-                f.write(
-                    f"{datetime.datetime.now()} - Processando {len(active_tech_usernames)} técnicos ativos\n"
-                )
-                f.flush()
-
-            for username in active_tech_usernames:
-                # Obter o ID do usuário dos dados ativos
-                user_data_active = active_users_map.get(username)
-                if not user_data_active or "2" not in user_data_active:
-                    # Log para arquivo para debug
-                    with open(
-                        "debug_technician_ranking.log", "a", encoding="utf-8"
-                    ) as f:
-                        f.write(
-                            f"{datetime.datetime.now()} - ERRO: Dados do usuário ativo não encontrados para {username}\n"
-                        )
-                        f.flush()
-                    continue
-
-                user_id = str(user_data_active["2"])
-
-                # Log para arquivo para debug
-                with open("debug_technician_ranking.log", "a", encoding="utf-8") as f:
-                    f.write(
-                        f"{datetime.datetime.now()} - Processando técnico {username} (ID: {user_id})\n"
-                    )
-                    f.flush()
-
-                # Buscar dados do técnico diretamente da API
-                try:
-                    user_response = self._make_authenticated_request(
-                        "GET", f"{self.glpi_url}/User/{user_id}"
-                    )
-                except requests.exceptions.Timeout:
-                    self.logger.error(
-                        f"[{datetime.datetime.now(tz=datetime.timezone.utc).isoformat()}] Timeout ao buscar dados do técnico {user_id}"
-                    )
-                    continue
-                except requests.exceptions.ConnectionError:
-                    self.logger.error(
-                        f"[{datetime.datetime.now(tz=datetime.timezone.utc).isoformat()}] Erro de conexão ao buscar dados do técnico {user_id}"
-                    )
-                    continue
-                except requests.exceptions.RequestException as e:
-                    self.logger.error(
-                        f"[{datetime.datetime.now(tz=datetime.timezone.utc).isoformat()}] Erro na requisição do técnico {user_id}: {e}"
-                    )
-                    continue
-
-                # Log para arquivo para debug
-                with open("debug_technician_ranking.log", "a", encoding="utf-8") as f:
-                    f.write(
-                        f"{datetime.datetime.now()} - Resposta inicial para técnico {user_id}: {type(user_response)} - {user_response is not None}\n"
-                    )
-                    if user_response is not None:
-                        f.write(f"Status code: {user_response.status_code}\n")
-                        f.write(f"Response OK: {user_response.ok}\n")
-                        f.write(f"Response type: {type(user_response)}\n")
-                    else:
-                        f.write(f"user_response é None desde o início!\n")
-                    f.flush()
-
-                if not user_response or not user_response.ok:
-                    with open(
-                        "debug_technician_ranking.log", "a", encoding="utf-8"
-                    ) as f:
-                        if not user_response:
-                            f.write(
-                                f"{datetime.datetime.now()} - ERRO: Resposta nula para técnico {user_id}\n"
-                            )
-                        else:
-                            f.write(
-                                f"{datetime.datetime.now()} - ERRO: Status {user_response.status_code} para técnico {user_id} (usuário não encontrado ou inacessível)\n"
-                            )
-                        f.flush()
-                    continue
-
-                try:
-                    user_data = user_response.json()
-                    # Log do conteúdo da resposta para debug
-                    with open(
-                        "debug_technician_ranking.log", "a", encoding="utf-8"
-                    ) as f:
-                        f.write(
-                            f"{datetime.datetime.now()} - Conteúdo JSON para técnico {user_id}: {str(user_data)[:200]}...\n"
-                        )
-                        f.flush()
-                except ValueError as e:
-                    self.logger.error(
-                        f"[{datetime.datetime.now(tz=datetime.timezone.utc).isoformat()}] Erro ao decodificar JSON do técnico {user_id}: {e}"
-                    )
-                    with open(
-                        "debug_technician_ranking.log", "a", encoding="utf-8"
-                    ) as f:
-                        f.write(
-                            f"{datetime.datetime.now()} - ERRO JSON para técnico {user_id}: {e}\n"
-                        )
-                        f.flush()
-                    continue
-
-                if not user_data or not isinstance(user_data, dict):
-                    self.logger.error(
-                        f"[{datetime.datetime.now(tz=datetime.timezone.utc).isoformat()}] Dados inválidos para técnico {user_id}: {type(user_data)}"
-                    )
-                    with open(
-                        "debug_technician_ranking.log", "a", encoding="utf-8"
-                    ) as f:
-                        f.write(
-                            f"{datetime.datetime.now()} - ERRO: Dados vazios ou inválidos para técnico {user_id}\n"
-                        )
-                        f.flush()
-                    continue
-
-                # Log para arquivo para debug
-                with open("debug_technician_ranking.log", "a", encoding="utf-8") as f:
-                    f.write(
-                        f"{datetime.datetime.now()} - Dados do técnico {user_id} obtidos com sucesso\n"
-                    )
-                    f.flush()
-
-                # user_data já foi obtido acima via user_response.json()
-                if user_data:
-                    user = user_data
-                    try:
-                        # Construir nome de exibição a partir dos dados da API
-                        display_name = ""
-                        if (
-                            "realname" in user and "firstname" in user
-                        ):  # Nome e Sobrenome
-                            display_name = f"{user['firstname']} {user['realname']}"
-                        elif "realname" in user:  # Apenas sobrenome
-                            display_name = user["realname"]
-                        elif "name" in user:  # Nome de usuário
-                            display_name = user["name"]
-                        elif "1" in user:  # Fallback para campo 1
-                            display_name = user["1"]
-
-                        if not display_name or not display_name.strip():
-                            self.logger.warning(f"Usuário {user_id} sem nome válido")
-                            # Log para debug
-                            with open(
-                                "debug_technician_ranking.log", "a", encoding="utf-8"
-                            ) as f:
-                                f.write(
-                                    f"{datetime.datetime.now()} - ERRO: Usuário {user_id} sem nome válido. Dados: {str(user)[:100]}...\n"
-                                )
-                                f.flush()
-                            continue
-
-                        self.logger.info(
-                            f"Processando técnico: {display_name} (ID: {user_id})"
-                        )
-
-                        # Obter dados detalhados dos tickets do técnico
-                        try:
-                            ticket_data = self._get_technician_ticket_details(
-                                int(user_id), tech_field_id
-                            )
-
-                            if ticket_data is not None and isinstance(
-                                ticket_data, dict
-                            ):
-                                ranking.append(
-                                    {
-                                        "id": str(user_id),
-                                        "nome": display_name.strip(),
-                                        "name": display_name.strip(),
-                                        "total_tickets": ticket_data.get(
-                                            "total_tickets", 0
-                                        ),
-                                        "resolved_tickets": ticket_data.get(
-                                            "resolved_tickets", 0
-                                        ),
-                                        "pending_tickets": ticket_data.get(
-                                            "pending_tickets", 0
-                                        ),
-                                        "avg_resolution_time": ticket_data.get(
-                                            "avg_resolution_time", 0.0
-                                        ),
-                                        "level": "N1",  # Temporário, será atualizado após ordenação
-                                    }
-                                )
-                                self.logger.info(
-                                    f"Técnico {display_name} (ID: {user_id}): {ticket_data.get('total_tickets', 0)} tickets"
-                                )
-                            else:
-                                self.logger.warning(
-                                    f"Dados de tickets inválidos para técnico {display_name} (ID: {user_id}): {ticket_data}"
-                                )
-                        except Exception as count_error:
-                            self.logger.error(
-                                f"Erro ao obter dados de tickets para técnico {display_name} (ID: {user_id}): {count_error}"
-                            )
-                            continue
-
-                    except Exception as e:
-                        self.logger.error(f"Erro ao processar usuário {user_id}: {e}")
-                        continue
-
-            # Validar e ordenar ranking
-            if not ranking:
-                self.logger.warning("Nenhum técnico encontrado para o ranking")
-                return []
-
-            try:
-                # Ordenar por total de tickets (decrescente)
-                ranking.sort(key=lambda x: x.get("total_tickets", 0), reverse=True)
-
-                # Atribuir níveis baseados no mapeamento manual dos grupos
-                total_count = len(ranking)
-                self.logger.info(
-                    f"Atribuindo níveis para {total_count} técnicos baseado no mapeamento manual"
-                )
-
-                for idx, item in enumerate(ranking):
-                    try:
-                        user_id = int(item["id"])
-
-                        # Usar o método _get_technician_level para determinar o nível correto
-                        level = self._get_technician_level(
-                            user_id, item["total_tickets"], ranking
-                        )
-
-                        item["level"] = level
-                        item["rank"] = idx + 1
-
-                        self.logger.info(
-                            f"Técnico {item['name']} (Rank {idx + 1}): {item['total_tickets']} tickets - Nível: {level}"
-                        )
-                    except Exception as level_error:
-                        self.logger.error(
-                            f"Erro ao atribuir nível para técnico {item.get('name', 'Desconhecido')}: {level_error}"
-                        )
-                        # Atribuir valores padrão em caso de erro
-                        item["level"] = "N1"
-                        item["rank"] = idx + 1
-            except Exception as sort_error:
-                self.logger.error(f"Erro ao processar ranking final: {sort_error}")
-                return []
-
-            self.logger.info(
-                f"=== RANKING FINALIZADO: {len(ranking)} técnicos processados ==="
-            )
-
-            # Log para arquivo para debug
-            with open("debug_technician_ranking.log", "a", encoding="utf-8") as f:
-                f.write(
-                    f"{datetime.datetime.now()} - RANKING FINALIZADO: {len(ranking)} técnicos processados\n"
-                )
-                f.write(f"Ranking final: {ranking}\n")
-                f.flush()
-
+            for tech in technician_candidates:
+                tech_id = tech["id"]
+                
+                # Buscar métricas usando método corrigido (igual ao script)
+                metricas = self._get_technician_metrics_corrected(tech_id)
+                
+                # Determinar nível do técnico
+                tech_level = self._get_technician_level_by_name_fallback(tech_id)
+                
+                ranking.append({
+                    "id": tech_id,
+                    "name": tech["name"],
+                    "nome": tech["name"],
+                    "total_tickets": metricas["total_tickets"],
+                    "resolved_tickets": metricas["resolved_tickets"],
+                    "pending_tickets": metricas["pending_tickets"],
+                    "avg_resolution_time": metricas["avg_resolution_time"],
+                    "level": tech_level,
+                    "rank": 0
+                })
+                
+                self.logger.info(f"📊 TÉCNICO {tech['name']} (ID: {tech_id}):")
+                self.logger.info(f"   Total: {metricas['total_tickets']}")
+                self.logger.info(f"   Resolvidos: {metricas['resolved_tickets']}")
+                self.logger.info(f"   Pendentes: {metricas['pending_tickets']}")
+                self.logger.info(f"   Nível: {tech_level}")
+            
+            # Ordenar por total de tickets
+            ranking.sort(key=lambda x: x["total_tickets"], reverse=True)
+            
+            # Atribuir ranks
+            for i, tech in enumerate(ranking):
+                tech["rank"] = i + 1
+            
+            self.logger.info(f"🏆 Ranking final construído com {len(ranking)} técnicos")
+            
             return ranking
 
         except Exception as e:
-            self.logger.error(f"Erro na implementação da base de conhecimento: {e}")
-            import traceback
-
-            self.logger.error(f"Stack trace: {traceback.format_exc()}")
-
-            # Log para arquivo para debug
-            with open("debug_technician_ranking.log", "a", encoding="utf-8") as f:
-                f.write(f"{datetime.datetime.now()} - ERRO CRÍTICO: {e}\n")
-                f.write(f"Stack trace: {traceback.format_exc()}\n")
-                f.flush()
-
+            self.logger.error(f"❌ Erro geral na busca de técnicos: {e}")
             return []
+
+
+
 
     def _get_technician_level(
         self, user_id: int, total_tickets: int = 0, all_technicians_data: list = None
@@ -4654,8 +4414,8 @@ class GLPIService:
         Mapeamento correto dos técnicos por grupos:
         - N1 (ID 89): Gabriel Andrade da Conceicao, Nicolas Fernando Muniz Nunez
         - N2 (ID 90): Alessandro Carbonera Vieira, Edson Joel dos Santos Silva, Luciano Marcelino da Silva,
-            Jonathan Nascimento Moletta, Leonardo Trojan Repiso Riela, Thales Vinicius Paz Leite
-        - N3 (ID 91): Jorge Antonio Vicente Junior, Anderson da Silva Morim de Oliveira, Miguelangelo Ferreira,
+            Jonathan Nascimento Moletta, Leonardo Trojan Repiso Riela, Thales Vinicius Paz Leite, Joao Pedro Wilson Dias
+        - N3 (ID 91): Jorge Antonio Vicente Júnior, Anderson da Silva Morim de Oliveira, Miguelangelo Ferreira,
             Silvio Godinho Valim, Pablo Hebling Guimaraes
         - N4 (ID 92): Paulo Cesar Pedo Nunes, Luciano de Araujo Silva, Wagner Mengue,
             Alexandre Rovinski Almoarqueg, Gabriel Silva Machado
@@ -4774,6 +4534,7 @@ class GLPIService:
                                     "leonardo trojan repiso riela",
                                     "edson joel dos santos silva",
                                     "luciano marcelino da silva",
+                                    "joao pedro wilson dias"
                                 ]
                                 n3_names = [
                                     "anderson da silva morim de oliveira",
@@ -5060,7 +4821,10 @@ class GLPIService:
                                 "id": str(tech_id),
                                 "nome": tech_name.strip(),
                                 "name": tech_name.strip(),
-                                "total": total_tickets,
+                                "total_tickets": total_tickets,
+                                "resolved_tickets": 0,
+                                "pending_tickets": 0,
+                                "avg_resolution_time": 0.0,
                             }
                         )
                     else:
@@ -5105,8 +4869,6 @@ class GLPIService:
 
         except Exception as e:
             self.logger.error(f"Erro crítico no método de fallback: {e}")
-            import traceback
-
             self.logger.error(f"Stack trace do fallback: {traceback.format_exc()}")
             return []
 
@@ -5590,163 +5352,12 @@ class GLPIService:
             )
             return None
 
-    def _get_technician_ticket_details_legacy(
-        self, tech_id: int, tech_field_id: str
-    ) -> Optional[dict]:
-        """Versão original da função (mantida para referência)
 
-        Retorna:
-        {
-            "total_tickets": int,
-            "resolved_tickets": int,
-            "pending_tickets": int,
-            "avg_resolution_time": float
-        }
-        """
-        try:
-            # Validar parâmetros de entrada
-            if not tech_id or not isinstance(tech_id, int) or tech_id <= 0:
-                self.logger.error(f"ID de técnico inválido: {tech_id}")
-                return None
-
-            if not self.glpi_url:
-                self.logger.error("URL do GLPI não configurada")
-                return None
-
-            # Usar o tech_field_id descoberto dinamicamente
-            tech_field = tech_field_id
-
-            # Inicializar contadores
-            total_tickets = 0
-            resolved_tickets = 0
-            pending_tickets = 0
-            resolution_times = []
-
-            # 1. Contar total de tickets
-            params_total = {
-                "is_deleted": 0,
-                "criteria[0][field]": tech_field,
-                "criteria[0][searchtype]": "equals",
-                "criteria[0][value]": str(tech_id),
-                "range": "0-0",  # Apenas contagem
-            }
-
-            response = self._make_authenticated_request(
-                "GET", f"{self.glpi_url}/search/Ticket", params=params_total, timeout=30
-            )
-            if response and response.ok and "Content-Range" in response.headers:
-                content_range = response.headers["Content-Range"]
-                if "/" in content_range:
-                    total_str = content_range.split("/")[-1].strip()
-                    if total_str.isdigit():
-                        total_tickets = int(total_str)
-
-            # 2. Contar tickets resolvidos (status 5 = Solved)
-            params_solved = {
-                "is_deleted": 0,
-                "criteria[0][field]": tech_field,
-                "criteria[0][searchtype]": "equals",
-                "criteria[0][value]": str(tech_id),
-                "criteria[1][field]": "12",  # Campo status
-                "criteria[1][searchtype]": "equals",
-                "criteria[1][value]": "5",  # Status Solved
-                "range": "0-0",
-            }
-
-            solved_tickets = 0
-            response = self._make_authenticated_request(
-                "GET",
-                f"{self.glpi_url}/search/Ticket",
-                params=params_solved,
-                timeout=30,
-            )
-            if response and response.ok and "Content-Range" in response.headers:
-                content_range = response.headers["Content-Range"]
-                if "/" in content_range:
-                    solved_str = content_range.split("/")[-1].strip()
-                    if solved_str.isdigit():
-                        solved_tickets = int(solved_str)
-
-            # 2b. Contar tickets fechados (status 6 = Closed)
-            params_closed = {
-                "is_deleted": 0,
-                "criteria[0][field]": tech_field,
-                "criteria[0][searchtype]": "equals",
-                "criteria[0][value]": str(tech_id),
-                "criteria[1][field]": "12",  # Campo status
-                "criteria[1][searchtype]": "equals",
-                "criteria[1][value]": "6",  # Status Closed
-                "range": "0-0",
-            }
-
-            closed_tickets = 0
-            response = self._make_authenticated_request(
-                "GET",
-                f"{self.glpi_url}/search/Ticket",
-                params=params_closed,
-                timeout=30,
-            )
-            if response and response.ok and "Content-Range" in response.headers:
-                content_range = response.headers["Content-Range"]
-                if "/" in content_range:
-                    closed_str = content_range.split("/")[-1].strip()
-                    if closed_str.isdigit():
-                        closed_tickets = int(closed_str)
-
-            # Total de tickets resolvidos
-            resolved_tickets = solved_tickets + closed_tickets
-
-            # 3. Contar tickets pendentes (status 1-4: New, Assigned, Planned, Waiting)
-            pending_tickets = 0
-            pending_statuses = ["1", "2", "3", "4"]  # New, Assigned, Planned, Waiting
-
-            for status in pending_statuses:
-                params_pending = {
-                    "is_deleted": 0,
-                    "criteria[0][field]": tech_field,
-                    "criteria[0][searchtype]": "equals",
-                    "criteria[0][value]": str(tech_id),
-                    "criteria[1][field]": "12",  # Campo status
-                    "criteria[1][searchtype]": "equals",
-                    "criteria[1][value]": status,
-                    "range": "0-0",
-                }
-
-                response = self._make_authenticated_request(
-                    "GET",
-                    f"{self.glpi_url}/search/Ticket",
-                    params=params_pending,
-                    timeout=30,
-                )
-                if response and response.ok and "Content-Range" in response.headers:
-                    content_range = response.headers["Content-Range"]
-                    if "/" in content_range:
-                        status_str = content_range.split("/")[-1].strip()
-                        if status_str.isdigit():
-                            pending_tickets += int(status_str)
-
-            # 4. Calcular tempo médio de resolução (simplificado - usar 0 por enquanto)
-            # Para implementação completa, seria necessário buscar tickets resolvidos
-            # e calcular a diferença entre date e solvedate
-            avg_resolution_time = 0.0
-
-            return {
-                "total_tickets": total_tickets,
-                "resolved_tickets": resolved_tickets,
-                "pending_tickets": pending_tickets,
-                "avg_resolution_time": avg_resolution_time,
-            }
-
-        except Exception as e:
-            self.logger.error(
-                f"Erro ao obter dados detalhados dos tickets do técnico {tech_id}: {e}"
-            )
-            return None
 
     def _get_technician_ticket_details_optimized(
         self, technician_ids: list, tech_field_id: str
     ) -> dict:
-        """Obtém dados detalhados dos tickets de múltiplos técnicos em uma única consulta
+        """Obtém dados detalhados dos tickets de múltiplos técnicos com cache otimizado
 
         Args:
             technician_ids: Lista de IDs dos técnicos
@@ -5762,7 +5373,14 @@ class GLPIService:
                 }
             }
         """
+        import datetime
+        
         try:
+            self.logger.info(f"=== DEBUG RANKING TÉCNICOS ===")
+            self.logger.info(f"Técnicos para processar: {technician_ids}")
+            self.logger.info(f"Field ID do técnico: {tech_field_id}")
+            self.logger.info(f"Tipo do field ID: {type(tech_field_id)}")
+            
             # Inicializar resultado para todos os técnicos
             result = {}
             for tech_id in technician_ids:
@@ -5774,55 +5392,142 @@ class GLPIService:
                 }
 
             if not technician_ids:
+                self.logger.warning("❌ Lista de técnicos vazia")
                 return result
-
-            # Buscar todos os tickets dos técnicos em uma única consulta
-            # Usar OR para incluir todos os técnicos
-            params = {
+                
+            # Verificar se o field ID é válido
+            if not tech_field_id or tech_field_id == "None":
+                self.logger.error(f"❌ Field ID do técnico é inválido: '{tech_field_id}'")
+                return result
+            
+            # Testar consulta simples primeiro
+            test_params = {
                 "is_deleted": 0,
-                "forcedisplay[0]": tech_field_id,  # Campo do técnico
-                "forcedisplay[1]": "12",  # Status
-                "forcedisplay[2]": "15",  # Data de abertura
-                "forcedisplay[3]": "16",  # Data de fechamento
-                "range": "0-9999",  # Buscar muitos tickets
+                "range": "0-5",
+                "forcedisplay[0]": tech_field_id,
+                "forcedisplay[1]": "12"  # Status
             }
-
-            # Adicionar critérios OR para todos os técnicos
-            for i, tech_id in enumerate(technician_ids):
-                params[f"criteria[{i}][field]"] = tech_field_id
-                params[f"criteria[{i}][searchtype]"] = "equals"
-                params[f"criteria[{i}][value]"] = str(tech_id)
-                if i < len(technician_ids) - 1:
-                    params[f"criteria[{i}][link]"] = "OR"
-
-            # Fazer a requisição para buscar todos os tickets
-            response = self._make_authenticated_request(
-                "GET", f"{self.glpi_url}/search/Ticket", params=params
+            
+            self.logger.info(f"🔍 Testando consulta simples com params: {test_params}")
+            test_response = self._make_authenticated_request(
+                "GET", f"{self.glpi_url}/search/Ticket", params=test_params, timeout=30
             )
-            if response and response.status_code == 200:
-                tickets_json = response.json()
-                if "data" in tickets_json:
-                    # Processar os tickets e agrupar por técnico
-                    for ticket in tickets_json["data"]:
-                        tech_id_str = str(ticket.get(str(tech_field_id), ""))
-                        if tech_id_str in result:
-                            status = int(ticket.get("12", 0))  # Status do ticket
-                            result[tech_id_str]["total_tickets"] += 1
+            
+            if test_response and test_response.status_code == 200:
+                test_data = test_response.json()
+                self.logger.info(f"✅ Consulta de teste bem-sucedida: {len(test_data.get('data', []))} tickets encontrados")
+                if test_data.get('data'):
+                    sample_ticket = test_data['data'][0]
+                    self.logger.info(f"📋 Ticket de exemplo: {sample_ticket}")
+                    self.logger.info(f"🔍 Campo {tech_field_id} no ticket: {sample_ticket.get(tech_field_id, 'NÃO ENCONTRADO')}")
+                    self.logger.info(f"🔍 Status do ticket: {sample_ticket.get('12', 'NÃO ENCONTRADO')}")
+                else:
+                    self.logger.warning("⚠️ Nenhum ticket encontrado na consulta de teste")
+            else:
+                self.logger.error(f"❌ Consulta de teste falhou: {test_response.status_code if test_response else 'None'}")
+                if test_response:
+                    self.logger.error(f"Resposta: {test_response.text[:500]}")
 
-                            # Contar tickets resolvidos (status 5 e 6)
-                            if status in [5, 6]:
-                                result[tech_id_str]["resolved_tickets"] += 1
-                            # Contar tickets pendentes (status 1, 2, 3, 4)
-                            elif status in [1, 2, 3, 4]:
-                                result[tech_id_str]["pending_tickets"] += 1
+            # Verificar cache primeiro
+            cache_key = f"ticket_details_{hash(tuple(sorted(technician_ids)))}"
+            try:
+                cached_data = self._get_cache_data(cache_key)
+                if cached_data is not None:
+                    self.logger.info(
+                        f"[{datetime.datetime.now(tz=datetime.timezone.utc).isoformat()}] Retornando dados de tickets do cache para {len(technician_ids)} técnicos"
+                    )
+                    return cached_data
+            except Exception as e:
+                self.logger.warning(
+                    f"[{datetime.datetime.now(tz=datetime.timezone.utc).isoformat()}] Erro ao verificar cache de tickets: {e}"
+                )
 
-            self.logger.info(
-                f"Dados de tickets obtidos para {len(result)} técnicos em uma única consulta"
-            )
+            # Processar técnicos em lotes menores
+            batch_size = 10
+            batches = [technician_ids[i:i + batch_size] for i in range(0, len(technician_ids), batch_size)]
+            
+            self.logger.info(f"📦 Processando {len(technician_ids)} técnicos em {len(batches)} lotes de até {batch_size}")
+
+            for batch_idx, batch in enumerate(batches):
+                try:
+                    self.logger.info(f"🔄 Processando lote {batch_idx + 1}/{len(batches)} com {len(batch)} técnicos: {batch}")
+                    
+                    # Buscar tickets para este lote
+                    params = {
+                        "is_deleted": 0,
+                        "forcedisplay[0]": tech_field_id,
+                        "forcedisplay[1]": "12",
+                        "range": "0-2000",
+                    }
+
+                    # Adicionar critérios OR para técnicos do lote
+                    for i, tech_id in enumerate(batch):
+                        params[f"criteria[{i}][field]"] = tech_field_id
+                        params[f"criteria[{i}][searchtype]"] = "equals"
+                        params[f"criteria[{i}][value]"] = str(tech_id)
+                        if i < len(batch) - 1:
+                            params[f"criteria[{i}][link]"] = "OR"
+
+                    self.logger.info(f"🔍 Parâmetros da consulta: {params}")
+                    
+                    # Fazer a requisição
+                    response = self._make_authenticated_request(
+                        "GET", f"{self.glpi_url}/search/Ticket", params=params, timeout=30
+                    )
+                    
+                    if response and response.status_code == 200:
+                        tickets_json = response.json()
+                        self.logger.info(f"✅ Resposta recebida: {len(tickets_json.get('data', []))} tickets")
+                        
+                        if "data" in tickets_json:
+                            # Processar os tickets e agrupar por técnico
+                            for ticket in tickets_json["data"]:
+                                tech_id_str = str(ticket.get(str(tech_field_id), ""))
+                                self.logger.info(f"🎫 Processando ticket: técnico={tech_id_str}, status={ticket.get('12', 'N/A')}")
+                                
+                                if tech_id_str in result:
+                                    status = int(ticket.get("12", 0))
+                                    result[tech_id_str]["total_tickets"] += 1
+
+                                    # Contar tickets resolvidos (status 5 e 6)
+                                    if status in [5, 6]:
+                                        result[tech_id_str]["resolved_tickets"] += 1
+                                        self.logger.info(f"✅ Ticket resolvido para técnico {tech_id_str}")
+                                    # Contar tickets pendentes (status 1, 2, 3, 4)
+                                    elif status in [1, 2, 3, 4]:
+                                        result[tech_id_str]["pending_tickets"] += 1
+                                        self.logger.info(f"⏳ Ticket pendente para técnico {tech_id_str}")
+                                    else:
+                                        self.logger.info(f"❓ Status desconhecido {status} para técnico {tech_id_str}")
+                                else:
+                                    self.logger.warning(f"⚠️ Técnico {tech_id_str} não encontrado na lista de resultados")
+                        else:
+                            self.logger.warning("⚠️ Nenhum dado encontrado na resposta")
+                    else:
+                        self.logger.error(f"❌ Falha na requisição do lote {batch_idx + 1}: {response.status_code if response else 'None'}")
+                        if response:
+                            self.logger.error(f"Resposta: {response.text[:500]}")
+                        
+                except Exception as batch_error:
+                    self.logger.error(f"❌ Erro no lote {batch_idx + 1}: {batch_error}")
+                    continue
+
+            # Log do resultado final
+            self.logger.info(f"📊 RESULTADO FINAL:")
+            for tech_id, data in result.items():
+                self.logger.info(f"  Técnico {tech_id}: total={data['total_tickets']}, resolvidos={data['resolved_tickets']}, pendentes={data['pending_tickets']}")
+            
+            # Salvar no cache
+            try:
+                self._set_cache_data(cache_key, result, ttl=180)  # Cache por 3 minutos
+                self.logger.info(f"💾 Dados de tickets salvos no cache com chave: {cache_key}")
+            except Exception as cache_error:
+                self.logger.warning(f"⚠️ Erro ao salvar no cache: {cache_error}")
+            
             return result
 
         except Exception as e:
-            self.logger.error(f"Erro ao buscar dados de tickets em lote: {e}")
+            self.logger.error(f"❌ Erro geral no processamento de tickets: {e}")
             return result
 
     def close_session(self):
@@ -5955,6 +5660,43 @@ class GLPIService:
             self.logger.error(f"Erro ao converter prioridade {priority_id}: {e}")
             return "Média"
 
+    def _get_category_name_by_id(self, category_id: str) -> str:
+        """Converte ID de categoria do GLPI para nome legível"""
+        if not category_id:
+            return "Não categorizado"
+
+        try:
+            # Verificar cache primeiro
+            cache_key = f"category_name_{category_id}"
+            if self._is_cache_valid("category_names", cache_key):
+                cached_name = self._get_cache_data("category_names", cache_key)
+                if cached_name:
+                    return cached_name
+
+            # Buscar categoria na API GLPI
+            if not self._ensure_authenticated():
+                return "Não categorizado"
+
+            response = self._make_authenticated_request(
+                "GET", f"{self.glpi_url}/ITILCategory/{category_id}"
+            )
+
+            if response and response.ok:
+                category_data = response.json()
+                category_name = category_data.get("name", "Não categorizado")
+                
+                # Armazenar no cache por 1 hora
+                self._set_cache_data("category_names", category_name, 3600, cache_key)
+                
+                return category_name
+            else:
+                self.logger.warning(f"Falha ao buscar categoria {category_id}")
+                return "Não categorizado"
+
+        except Exception as e:
+            self.logger.error(f"Erro ao converter categoria {category_id}: {e}")
+            return "Não categorizado"
+
     def get_new_tickets(self, limit: int = 10) -> List[Dict[str, any]]:
         """Busca tickets com status 'novo' com detalhes completos"""
         if not self._ensure_authenticated():
@@ -5976,6 +5718,14 @@ class GLPIService:
                 "criteria[0][value]": status_id,
                 "sort": "19",  # Ordenar por data de criação (campo 19)
                 "order": "DESC",  # Mais recentes primeiro
+                "forcedisplay[0]": "2",  # ID do ticket
+                "forcedisplay[1]": "1",  # Título
+                "forcedisplay[2]": "21",  # Descrição
+                "forcedisplay[3]": "15",  # Data de abertura
+                "forcedisplay[4]": "4",  # Solicitante (users_id_recipient)
+                "forcedisplay[5]": "3",  # Prioridade
+                "forcedisplay[6]": "5",  # Categoria
+                "forcedisplay[7]": "12",  # Status
             }
 
             response = self._make_authenticated_request(
@@ -6005,6 +5755,14 @@ class GLPIService:
                     )  # Default para prioridade média (ID 3)
                     priority_name = self._get_priority_name_by_id(str(priority_id))
 
+                    # Extrair ID da categoria e converter para nome
+                    category_id = ticket_data.get("5", "")  # Campo 5 = categoria
+                    category_name = (
+                        self._get_category_name_by_id(str(category_id))
+                        if category_id
+                        else "Não categorizado"
+                    )
+
                     # Extrair informações do ticket
                     ticket_info = {
                         "id": str(ticket_data.get("2", "")),  # ID do ticket
@@ -6015,6 +5773,7 @@ class GLPIService:
                         "date": ticket_data.get("15", ""),  # Data de abertura
                         "requester": requester_name,  # Nome do solicitante
                         "priority": priority_name,  # Nome da prioridade convertido
+                        "category": category_name,  # Nome da categoria convertido
                         "status": "Novo",
                     }
                     tickets.append(ticket_info)
@@ -6208,14 +5967,7 @@ class GLPIService:
                 f"[{timestamp}] Iniciando busca de técnicos com método alternativo"
             )
 
-            print(
-                f"[DEBUG] _get_all_technician_ids_and_names INICIADO com entity_id: {entity_id}"
-            )
-            with open("debug_ranking.log", "a", encoding="utf-8") as f:
-                f.write(
-                    f"[DEBUG] _get_all_technician_ids_and_names INICIADO com entity_id: {entity_id}\n"
-                )
-                f.flush()
+            # Debug: Método alternativo iniciado
 
             # MÉTODO ALTERNATIVO: Buscar técnicos através de tickets atribuídos
             # Isso contorna o problema da tabela Profile_User vazia
@@ -6264,12 +6016,7 @@ class GLPIService:
             ticket_result = response.json()
             ticket_data = ticket_result.get("data", [])
 
-            print(f"[DEBUG] Tickets response status: {response.status_code}")
-            print(f"[DEBUG] Tickets data count: {len(ticket_data)}")
-            with open("debug_ranking.log", "a", encoding="utf-8") as f:
-                f.write(f"[DEBUG] Tickets response status: {response.status_code}\n")
-                f.write(f"[DEBUG] Tickets data count: {len(ticket_data)}\n")
-                f.flush()
+            # Debug: Status da resposta e contagem de tickets registrados
 
             if not ticket_data:
                 print(f"[DEBUG] PROBLEMA: Nenhum ticket encontrado no período")
@@ -6286,12 +6033,7 @@ class GLPIService:
                     if tech_id and tech_id != "0":
                         tech_ids_set.add(tech_id)
 
-            print(f"[DEBUG] Técnicos únicos encontrados: {len(tech_ids_set)}")
-            with open("debug_ranking.log", "a", encoding="utf-8") as f:
-                f.write(
-                    f"[DEBUG] Técnicos únicos encontrados: {len(tech_ids_set)} - {list(tech_ids_set)[:5]}\n"
-                )
-                f.flush()
+            # Debug: Técnicos únicos encontrados registrados
 
             if not tech_ids_set:
                 self.logger.warning(
@@ -6329,26 +6071,19 @@ class GLPIService:
                     if idx > 0:
                         user_params[f"criteria[{idx}][link]"] = "OR"
 
-                with open("debug_ranking.log", "a", encoding="utf-8") as f:
-                    f.write(f"[DEBUG] Buscando lote de {len(batch)} usuários\n")
+                # Debug: Busca de lote de usuários registrada
 
                 # Fazer a busca via search API
                 user_response = self._make_authenticated_request(
                     "GET", f"{self.glpi_url}/search/User", params=user_params
                 )
 
-                with open("debug_ranking.log", "a", encoding="utf-8") as f:
-                    f.write(
-                        f"[DEBUG] User search response status: {user_response.status_code if user_response else 'None'}\n"
-                    )
+                # Debug: Status da resposta de busca de usuários registrado
 
                 if user_response and user_response.status_code in [200, 206]:
                     try:
                         user_data = user_response.json().get("data", [])
-                        with open("debug_ranking.log", "a", encoding="utf-8") as f:
-                            f.write(
-                                f"[DEBUG] Encontrados {len(user_data)} usuários no lote\n"
-                            )
+                        # Debug: Usuários encontrados no lote registrados
 
                         for user in user_data:
                             if isinstance(user, dict):
@@ -6372,35 +6107,21 @@ class GLPIService:
                                         full_name = username
                                     tech_names[user_id] = full_name
 
-                                    with open(
-                                        "debug_ranking.log", "a", encoding="utf-8"
-                                    ) as f:
-                                        f.write(
-                                            f"[DEBUG] Técnico ativo encontrado: {user_id} - {full_name}\n"
-                                        )
+                                    # Debug: Técnico ativo encontrado registrado
                                 else:
-                                    with open(
-                                        "debug_ranking.log", "a", encoding="utf-8"
-                                    ) as f:
-                                        f.write(
-                                            f"[DEBUG] Técnico inativo/deletado: {user_id} - ativo:{is_active}, deletado:{is_deleted}\n"
-                                        )
+                                    # Debug: Técnico inativo/deletado registrado
+                                    pass
 
                     except Exception as e:
-                        with open("debug_ranking.log", "a", encoding="utf-8") as f:
-                            f.write(
-                                f"[DEBUG] Erro ao processar resposta da busca de usuários: {e}\n"
-                            )
+                        # Debug: Erro de processamento registrado
                         self.logger.error(
                             f"Erro ao processar resposta da busca de usuários: {e}"
                         )
                 else:
-                    with open("debug_ranking.log", "a", encoding="utf-8") as f:
-                        f.write(f"[DEBUG] Falha na busca de usuários no lote\n")
+                    # Debug: Falha na busca de usuários registrada
                     self.logger.warning("Falha na busca de usuários no lote")
 
-            with open("debug_ranking.log", "a", encoding="utf-8") as f:
-                f.write(f"[DEBUG] tech_ids finais: {len(tech_ids)} - {tech_ids[:5]}\n")
+            # Debug: tech_ids finais registrados
 
             if len(tech_ids) == 0:
                 self.logger.warning(f"[{timestamp}] Nenhum técnico ativo encontrado")
@@ -6615,8 +6336,6 @@ class GLPIService:
             self.logger.error(
                 f"[FALLBACK] Erro ao buscar tickets agrupados por técnico: {e}"
             )
-            import traceback
-
             self.logger.error(
                 f"[FALLBACK] Traceback completo: {traceback.format_exc()}"
             )
@@ -6646,22 +6365,13 @@ class GLPIService:
         import json
 
         try:
-            with open("debug_ranking.log", "a", encoding="utf-8") as f:
-                f.write(f"[DEBUG] _get_tickets_batch_with_date_filter INICIADO\n")
-                f.write(
-                    f"[DEBUG] technician_ids count: {len(technician_ids) if technician_ids else 0}\n"
-                )
-                f.write(f"[DEBUG] start_date: {start_date}, end_date: {end_date}\n")
-                f.write(f"[DEBUG] tech_field_id: {tech_field_id}\n")
-                f.flush()
+            # Debug: Método _get_tickets_batch_with_date_filter iniciado
 
             if not technician_ids:
                 print(
                     f"[DEBUG] _get_tickets_batch_with_date_filter: technician_ids vazio"
                 )
-                with open("debug_ranking.log", "a", encoding="utf-8") as f:
-                    f.write(f"[DEBUG] PROBLEMA: technician_ids vazio\n")
-                    f.flush()
+                # Debug: Problema de technician_ids vazio registrado
                 return {}
 
             self.logger.info(
@@ -7051,8 +6761,6 @@ class GLPIService:
             correlation_id: ID de correlação para logs
             entity_id: ID da entidade para filtrar técnicos
         """
-        from utils.structured_logging import glpi_logger
-
         # Log simples para confirmar que o método está sendo chamado
         print(
             f"[DEBUG] get_technician_ranking_with_filters CHAMADO - start_date: {start_date}, end_date: {end_date}"
@@ -7199,7 +6907,10 @@ class GLPIService:
                         {
                             "id": tech_id,
                             "name": tech_name,
-                            "total": ticket_count,  # Usar 'total' para compatibilidade
+                            "total_tickets": ticket_count,
+                            "resolved_tickets": 0,
+                            "pending_tickets": 0,
+                            "avg_resolution_time": 0.0,
                             "level": tech_level,  # Usar o nível real do técnico
                             "rank": 0,  # Será definido após ordenação
                         }
@@ -7207,8 +6918,6 @@ class GLPIService:
 
                 except Exception as e:
                     self.logger.error(f"Erro ao processar técnico {tech_id}: {e}")
-                    import traceback
-
                     self.logger.error(f"Traceback completo: {traceback.format_exc()}")
                     continue
 
@@ -7853,6 +7562,108 @@ class GLPIService:
                 totals[status_name] = 0
 
         return totals
+
+    def debug_field_values(self, correlation_id=None) -> Dict[str, Any]:
+        """Debug para verificar valores únicos nos campos do GLPI"""
+        try:
+            correlation_log = f"[{correlation_id}] " if correlation_id else ""
+            self.logger.info(f"{correlation_log}Iniciando debug de valores dos campos")
+            
+            if not self._ensure_authenticated():
+                raise Exception("Falha na autenticação")
+            
+            # Buscar alguns tickets para analisar os valores dos campos
+            search_params = {
+                "range": "0-50",  # Buscar apenas 50 tickets para análise
+                "forcedisplay[0]": "8",   # Campo hierarquia
+                "forcedisplay[1]": "12",  # Campo status
+                "forcedisplay[2]": "71",  # Campo grupo
+                "forcedisplay[3]": "5",   # Campo técnico
+                "forcedisplay[4]": "4",   # Campo categoria
+                "forcedisplay[5]": "7",   # Campo localização
+                "forcedisplay[6]": "6",   # Campo solicitante
+            }
+            
+            response = self._make_authenticated_request(
+                "GET", f"{self.glpi_url}/search/Ticket", params=search_params
+            )
+            
+            if not response or not response.ok:
+                raise Exception(f"Erro na busca: {response.status_code if response else 'Sem resposta'}")
+            
+            data = response.json()
+            tickets = data.get("data", [])
+            
+            # Analisar valores únicos
+            field_8_values = set()  # Hierarquia
+            field_12_values = set()  # Status
+            field_71_values = set()  # Grupo
+            field_5_values = set()  # Técnico
+            field_4_values = set()  # Categoria
+            field_7_values = set()  # Localização
+            field_6_values = set()  # Solicitante
+            
+            # Analisar todos os campos disponíveis em cada ticket
+            all_fields = set()
+            for ticket in tickets:
+                all_fields.update(ticket.keys())
+                if "8" in ticket:
+                    field_8_values.add(str(ticket["8"]))
+                if "12" in ticket:
+                    field_12_values.add(str(ticket["12"]))
+                if "71" in ticket:
+                    field_71_values.add(str(ticket["71"]))
+                if "5" in ticket:
+                    field_5_values.add(str(ticket["5"]))
+                if "4" in ticket:
+                    field_4_values.add(str(ticket["4"]))
+                if "7" in ticket:
+                    field_7_values.add(str(ticket["7"]))
+                if "6" in ticket:
+                    field_6_values.add(str(ticket["6"]))
+            
+            result = {
+                "total_tickets_analyzed": len(tickets),
+                "all_available_fields": sorted(list(all_fields)),
+                "field_8_hierarchy_values": sorted(list(field_8_values)),
+                "field_12_status_values": sorted(list(field_12_values)),
+                "field_71_group_values": sorted(list(field_71_values)),
+                "field_5_technician_values": sorted(list(field_5_values)),
+                "field_4_category_values": sorted(list(field_4_values)),
+                "field_7_location_values": sorted(list(field_7_values)),
+                "field_6_requester_values": sorted(list(field_6_values)),
+                "service_levels_config": self.service_levels,
+                "status_map_config": self.status_map,
+                "field_ids_config": getattr(self, 'field_ids', {})
+            }
+            
+            # Verificar se os IDs de grupo configurados existem nos dados
+            group_id_analysis = {}
+            for ticket in tickets:
+                if "71" in ticket:
+                    group_id = str(ticket["71"])
+                    if group_id not in group_id_analysis:
+                        group_id_analysis[group_id] = 0
+                    group_id_analysis[group_id] += 1
+            
+            result["group_id_analysis"] = group_id_analysis
+            result["configured_group_ids_found"] = {}
+            
+            # Verificar se os IDs configurados existem nos dados
+            for level_name, group_id in self.service_levels.items():
+                group_id_str = str(group_id)
+                result["configured_group_ids_found"][level_name] = {
+                    "configured_id": group_id,
+                    "found_in_data": group_id_str in group_id_analysis,
+                    "ticket_count": group_id_analysis.get(group_id_str, 0)
+                }
+            
+            self.logger.info(f"{correlation_log}Debug concluído: {result}")
+            return result
+            
+        except Exception as e:
+            self.logger.error(f"{correlation_log}Erro no debug de campos: {e}")
+            raise
 
     def _get_metrics_by_level_by_modification_date(
         self, start_date: str, end_date: str

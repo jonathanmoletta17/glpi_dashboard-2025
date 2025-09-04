@@ -1,6 +1,8 @@
 import React, { useState, useEffect } from 'react';
 import { Ticket } from '../types/ticket';
 import { Clock, User, AlertCircle, CheckCircle, Circle, Play } from 'lucide-react';
+import { createCardClasses, createFlexClasses, TAILWIND_CLASSES } from '../design-system/utils';
+import { cn } from '../lib/utils';
 
 interface TicketListProps {
   onTicketClick: (ticket: Ticket) => void;
@@ -176,74 +178,84 @@ export const TicketList: React.FC<TicketListProps> = ({ onTicketClick }) => {
 
   if (loading) {
     return (
-      <div className="flex items-center justify-center py-12">
+      <div className={createFlexClasses('row', 'center', 'center', 'normal')}>
         <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-blue-600"></div>
-        <span className="ml-3 text-gray-600">Carregando tickets...</span>
+        <span className={cn("text-gray-600", TAILWIND_CLASSES.margin.small)}>Carregando tickets...</span>
       </div>
     );
   }
 
   return (
-    <div className="space-y-6">
+    <div className={TAILWIND_CLASSES.spaceY.section}>
       {/* Filters */}
-      <div className="flex flex-wrap gap-2">
+      <div className={cn("flex flex-wrap", TAILWIND_CLASSES.gap.items)}>
         <button
           onClick={() => setFilter('all')}
-          className={`px-4 py-2 rounded-lg text-sm font-medium transition-colors ${
+          className={cn(
+            TAILWIND_CLASSES.padding.button,
+            "rounded-lg text-sm font-medium transition-colors",
             filter === 'all'
               ? 'bg-blue-600 text-white'
               : 'bg-gray-200 text-gray-700 hover:bg-gray-300'
-          }`}
+          )}
         >
           Todos ({tickets.length})
         </button>
         <button
           onClick={() => setFilter('novo')}
-          className={`px-4 py-2 rounded-lg text-sm font-medium transition-colors ${
+          className={cn(
+            TAILWIND_CLASSES.padding.button,
+            "rounded-lg text-sm font-medium transition-colors",
             filter === 'novo'
               ? 'bg-green-600 text-white'
               : 'bg-gray-200 text-gray-700 hover:bg-gray-300'
-          }`}
+          )}
         >
           Novos ({tickets.filter(t => t.status === 'novo').length})
         </button>
         <button
           onClick={() => setFilter('pendente')}
-          className={`px-4 py-2 rounded-lg text-sm font-medium transition-colors ${
+          className={cn(
+            TAILWIND_CLASSES.padding.button,
+            "rounded-lg text-sm font-medium transition-colors",
             filter === 'pendente'
               ? 'bg-yellow-600 text-white'
               : 'bg-gray-200 text-gray-700 hover:bg-gray-300'
-          }`}
+          )}
         >
           Pendentes ({tickets.filter(t => t.status === 'pendente').length})
         </button>
         <button
           onClick={() => setFilter('progresso')}
-          className={`px-4 py-2 rounded-lg text-sm font-medium transition-colors ${
+          className={cn(
+            TAILWIND_CLASSES.padding.button,
+            "rounded-lg text-sm font-medium transition-colors",
             filter === 'progresso'
               ? 'bg-blue-600 text-white'
               : 'bg-gray-200 text-gray-700 hover:bg-gray-300'
-          }`}
+          )}
         >
           Em Progresso ({tickets.filter(t => t.status === 'progresso').length})
         </button>
         <button
           onClick={() => setFilter('resolvido')}
-          className={`px-4 py-2 rounded-lg text-sm font-medium transition-colors ${
+          className={cn(
+            TAILWIND_CLASSES.padding.button,
+            "rounded-lg text-sm font-medium transition-colors",
             filter === 'resolvido'
               ? 'bg-purple-600 text-white'
               : 'bg-gray-200 text-gray-700 hover:bg-gray-300'
-          }`}
+          )}
         >
           Resolvidos ({tickets.filter(t => t.status === 'resolvido').length})
         </button>
       </div>
 
       {/* Ticket List */}
-      <div className="space-y-4">
+      <div className={TAILWIND_CLASSES.spaceY.md}>
         {filteredTickets.length === 0 ? (
-          <div className="text-center py-12">
-            <AlertCircle className="w-12 h-12 text-gray-400 mx-auto mb-4" />
+          <div className={cn("text-center", TAILWIND_CLASSES.padding.section)}>
+            <AlertCircle className={cn("w-12 h-12 text-gray-400 mx-auto", TAILWIND_CLASSES.margin.md)} />
             <p className="text-gray-600">Nenhum ticket encontrado para o filtro selecionado.</p>
           </div>
         ) : (
@@ -251,45 +263,51 @@ export const TicketList: React.FC<TicketListProps> = ({ onTicketClick }) => {
             <div
               key={ticket.id}
               onClick={() => onTicketClick(ticket)}
-              className={`border-l-4 bg-white rounded-lg shadow-sm hover:shadow-md transition-all duration-200 cursor-pointer p-6 ${getPriorityColor(ticket.priority)}`}
+              className={cn(
+                "border-l-4 bg-white rounded-lg shadow-sm hover:shadow-md transition-all duration-200 cursor-pointer",
+                TAILWIND_CLASSES.padding.section,
+                getPriorityColor(ticket.priority)
+              )}
             >
-              <div className="flex items-start justify-between">
+              <div className={createFlexClasses('row', 'start', 'between', 'normal')}>
                 <div className="flex-1">
-                  <div className="flex items-center gap-3 mb-2">
+                  <div className={cn(createFlexClasses('row', 'center', 'start', 'small'), TAILWIND_CLASSES.margin.small)}>
                     {getStatusIcon(ticket.status)}
                     <h3 className="font-semibold text-gray-900 text-lg">{ticket.title}</h3>
                     <span className="text-sm text-gray-500">#{ticket.id}</span>
                   </div>
 
-                  <p className="text-gray-600 mb-4 line-clamp-2">{ticket.description}</p>
+                  <p className={cn("text-gray-600 line-clamp-2", TAILWIND_CLASSES.margin.element)}>{ticket.description}</p>
 
-                  <div className="flex items-center gap-6 text-sm text-gray-500">
-                    <div className="flex items-center gap-2">
+                  <div className={cn(createFlexClasses('row', 'center', 'start', 'large'), "text-sm text-gray-500")}>
+                    <div className={createFlexClasses('row', 'center', 'start', 'small')}>
                       <User className="w-4 h-4" />
                       <span>{ticket.requester.name}</span>
                     </div>
-                    <div className="flex items-center gap-2">
+                    <div className={createFlexClasses('row', 'center', 'start', 'small')}>
                       <Clock className="w-4 h-4" />
                       <span>{new Date(ticket.createdAt).toLocaleDateString('pt-BR')}</span>
                     </div>
-                    <div className="bg-gray-100 px-2 py-1 rounded text-xs">
+                    <div className={cn("bg-gray-100 rounded text-xs", TAILWIND_CLASSES.padding.xs)}>
                       {ticket.category}
                     </div>
                   </div>
                 </div>
 
-                <div className="flex flex-col items-end gap-2">
-                  <span className={`px-3 py-1 rounded-full text-xs font-medium ${
+                <div className={cn("flex flex-col items-end", TAILWIND_CLASSES.gap.items)}>
+                  <span className={cn(
+                    "rounded-full text-xs font-medium",
+                    TAILWIND_CLASSES.padding.badge,
                     ticket.priority === 'urgente' ? 'bg-red-100 text-red-800' :
                     ticket.priority === 'alta' ? 'bg-orange-100 text-orange-800' :
                     ticket.priority === 'normal' ? 'bg-blue-100 text-blue-800' :
                     'bg-gray-100 text-gray-800'
-                  }`}>
+                  )}>
                     {ticket.priority.charAt(0).toUpperCase() + ticket.priority.slice(1)}
                   </span>
 
                   {ticket.technician && (
-                    <div className="flex items-center gap-2 text-sm text-gray-600">
+                    <div className={cn(createFlexClasses('row', 'center', 'start', 'small'), "text-sm text-gray-600")}>
                       {ticket.technician.avatar && (
                         <img
                           src={ticket.technician.avatar}
@@ -304,11 +322,14 @@ export const TicketList: React.FC<TicketListProps> = ({ onTicketClick }) => {
               </div>
 
               {ticket.tags && ticket.tags.length > 0 && (
-                <div className="flex flex-wrap gap-2 mt-4">
+                <div className={cn("flex flex-wrap", TAILWIND_CLASSES.gap.items, TAILWIND_CLASSES.margin.element)}>
                   {ticket.tags.slice(0, 3).map((tag, index) => (
                     <span
                       key={index}
-                      className="inline-flex items-center px-2 py-1 rounded-md text-xs font-medium bg-blue-100 text-blue-800"
+                      className={cn(
+                        "inline-flex items-center rounded-md text-xs font-medium bg-blue-100 text-blue-800",
+                        TAILWIND_CLASSES.padding.xs
+                      )}
                     >
                       {tag}
                     </span>

@@ -1,13 +1,16 @@
 import React from 'react';
 import { Ticket } from '../types/ticket';
 import { X, ExternalLink, Clock, User, Tag, Paperclip, MessageSquare } from 'lucide-react';
-import { formatDate } from '../lib/utils';
+import { formatDate, getStatusColor } from '../lib/utils';
+import { createCardClasses, createFlexClasses, TAILWIND_CLASSES } from '../design-system/utils';
+import { cn } from '../lib/utils';
 
 interface TicketDetailModalProps {
   ticket: Ticket | null;
   isOpen: boolean;
   onClose: () => void;
 }
+
 
 export const TicketDetailModal: React.FC<TicketDetailModalProps> = ({
   ticket,
@@ -16,24 +19,14 @@ export const TicketDetailModal: React.FC<TicketDetailModalProps> = ({
 }) => {
   if (!isOpen || !ticket) return null;
 
+  // Ajuste para classes semânticas de prioridade (definidas em App.css)
   const getPriorityColor = (priority: string) => {
     switch (priority) {
-      case 'urgente': return 'bg-red-500 text-white';
-      case 'alta': return 'bg-orange-500 text-white';
-      case 'normal': return 'bg-blue-500 text-white';
-      case 'baixa': return 'bg-gray-500 text-white';
-      default: return 'bg-gray-500 text-white';
-    }
-  };
-
-  const getStatusColor = (status: string) => {
-    switch (status) {
-      case 'novo': return 'bg-green-100 text-green-800 border-green-200';
-      case 'pendente': return 'bg-yellow-100 text-yellow-800 border-yellow-200';
-      case 'progresso': return 'bg-blue-100 text-blue-800 border-blue-200';
-      case 'resolvido': return 'bg-purple-100 text-purple-800 border-purple-200';
-      case 'fechado': return 'bg-gray-100 text-gray-800 border-gray-200';
-      default: return 'bg-gray-100 text-gray-800 border-gray-200';
+      case 'urgente': return 'priority-urgente';
+      case 'alta': return 'priority-alta';
+      case 'normal': return 'priority-normal';
+      case 'baixa': return 'priority-baixa';
+      default: return 'priority-normal';
     }
   };
 
@@ -46,12 +39,12 @@ export const TicketDetailModal: React.FC<TicketDetailModalProps> = ({
     <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4">
       <div className="bg-white rounded-xl shadow-2xl w-full max-w-4xl max-h-[90vh] overflow-hidden">
         {/* Header */}
-        <div className="bg-gradient-to-r from-blue-600 to-blue-700 text-white p-6 flex justify-between items-start">
+        <div className={cn("bg-gradient-to-r from-blue-600 to-blue-700 text-white", TAILWIND_CLASSES.padding.section, createFlexClasses('row', 'start', 'between'))}>
           <div className="flex-1">
-            <h2 className="text-2xl font-bold mb-2 pr-4">{ticket.title}</h2>
+            <h2 className={cn("text-2xl font-bold pr-4", TAILWIND_CLASSES.margin.small)}>{ticket.title}</h2>
             <p className="text-blue-100 text-sm">Ticket #{ticket.id}</p>
           </div>
-          <div className="flex items-center gap-3">
+          <div className={createFlexClasses('row', 'center', 'start', 'normal')}>
             <button
               onClick={handleOpenInGLPI}
               className="flex items-center gap-2 bg-white bg-opacity-20 hover:bg-opacity-30 px-4 py-2 rounded-lg transition-all duration-200"
@@ -69,13 +62,13 @@ export const TicketDetailModal: React.FC<TicketDetailModalProps> = ({
         </div>
 
         {/* Content */}
-        <div className="p-6 overflow-y-auto max-h-[calc(90vh-120px)]">
-          <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
+        <div className={cn(TAILWIND_CLASSES.padding.section, "overflow-y-auto max-h-[calc(90vh-120px)]")}>
+          <div className={cn("grid grid-cols-1 lg:grid-cols-3", TAILWIND_CLASSES.gap.section)}>
             {/* Main Content */}
-            <div className="lg:col-span-2 space-y-6">
+            <div className={cn("lg:col-span-2", TAILWIND_CLASSES.spaceY.section)}>
               {/* Description */}
-              <div className="bg-gray-50 rounded-lg p-4">
-                <h3 className="font-semibold text-gray-900 mb-3 flex items-center gap-2">
+              <div className={createCardClasses()}>
+                <h3 className={cn("font-semibold text-gray-900", TAILWIND_CLASSES.margin.small, createFlexClasses('row', 'center', 'start', 'small'))}>
                   <MessageSquare size={18} />
                   Descrição
                 </h3>
@@ -84,15 +77,15 @@ export const TicketDetailModal: React.FC<TicketDetailModalProps> = ({
 
               {/* Comments */}
               {ticket.comments && ticket.comments.length > 0 && (
-                <div className="bg-gray-50 rounded-lg p-4">
-                  <h3 className="font-semibold text-gray-900 mb-4 flex items-center gap-2">
+                <div className={createCardClasses()}>
+                  <h3 className={cn("font-semibold text-gray-900", TAILWIND_CLASSES.margin.element, createFlexClasses('row', 'center', 'start', 'small'))}>
                     <MessageSquare size={18} />
                     Comentários ({ticket.comments.length})
                   </h3>
-                  <div className="space-y-3 max-h-64 overflow-y-auto">
+                  <div className={cn(TAILWIND_CLASSES.spaceY.normal, "max-h-64 overflow-y-auto")}>
                     {ticket.comments.map((comment) => (
-                      <div key={comment.id} className="bg-white rounded-lg p-3 border border-gray-200">
-                        <div className="flex items-center gap-2 mb-2">
+                      <div key={comment.id} className={cn("bg-white rounded-lg border border-gray-200", TAILWIND_CLASSES.padding.normal)}>
+                        <div className={cn(createFlexClasses('row', 'center', 'start', 'small'), TAILWIND_CLASSES.margin.small)}>
                           {comment.author.avatar && (
                             <img
                               src={comment.author.avatar}
@@ -114,19 +107,19 @@ export const TicketDetailModal: React.FC<TicketDetailModalProps> = ({
 
               {/* Attachments */}
               {ticket.attachments && ticket.attachments.length > 0 && (
-                <div className="bg-gray-50 rounded-lg p-4">
-                  <h3 className="font-semibold text-gray-900 mb-3 flex items-center gap-2">
+                <div className={createCardClasses()}>
+                  <h3 className={cn("font-semibold text-gray-900", TAILWIND_CLASSES.margin.small, createFlexClasses('row', 'center', 'start', 'small'))}>
                     <Paperclip size={18} />
                     Anexos ({ticket.attachments.length})
                   </h3>
-                  <div className="space-y-2">
+                  <div className={TAILWIND_CLASSES.spaceY.list}>
                     {ticket.attachments.map((attachment) => (
                       <a
                         key={attachment.id}
                         href={attachment.url}
                         target="_blank"
                         rel="noopener noreferrer"
-                        className="flex items-center gap-3 p-3 bg-white rounded-lg border border-gray-200 hover:border-blue-300 hover:bg-blue-50 transition-all duration-200"
+                        className={cn(createFlexClasses('row', 'center', 'start', 'normal'), TAILWIND_CLASSES.padding.normal, "bg-white rounded-lg border border-gray-200 hover:border-blue-300 hover:bg-blue-50 transition-all duration-200")}
                       >
                         <Paperclip size={16} className="text-gray-500" />
                         <div className="flex-1">
@@ -144,40 +137,40 @@ export const TicketDetailModal: React.FC<TicketDetailModalProps> = ({
             </div>
 
             {/* Sidebar */}
-            <div className="space-y-4">
+            <div className={TAILWIND_CLASSES.spaceY.md}>
               {/* Status and Priority Section */}
-              <div className="bg-white border border-gray-200 rounded-lg p-4">
-                <h3 className="font-semibold text-gray-900 mb-4">Status e Prioridade</h3>
-                <div className="space-y-3">
+              <div className={cn("bg-white border border-gray-200 rounded-lg", TAILWIND_CLASSES.padding.card)}>
+                <h3 className={cn("font-semibold text-gray-900", TAILWIND_CLASSES.margin.element)}>Status e Prioridade</h3>
+                <div className={TAILWIND_CLASSES.spaceY.normal}>
                   <div>
-                    <label className="text-sm font-medium text-gray-600 block mb-1">Status</label>
-                    <span className={`inline-flex items-center px-3 py-1 rounded-full text-sm font-medium border ${getStatusColor(ticket.status)}`}>
+                    <label className={cn("text-sm font-medium text-gray-600 block", TAILWIND_CLASSES.margin.xs)}>Status</label>
+                    <span className={cn("inline-flex items-center text-sm font-medium", getStatusColor(ticket.status))}>
                       {ticket.status.charAt(0).toUpperCase() + ticket.status.slice(1)}
                     </span>
                   </div>
                   <div>
-                    <label className="text-sm font-medium text-gray-600 block mb-1">Prioridade</label>
+                    <label className={cn("text-sm font-medium text-gray-600 block", TAILWIND_CLASSES.margin.xs)}>Prioridade</label>
                     <span className={`inline-flex items-center px-3 py-1 rounded-full text-sm font-medium ${getPriorityColor(ticket.priority)}`}>
                       {ticket.priority.charAt(0).toUpperCase() + ticket.priority.slice(1)}
                     </span>
                   </div>
                   <div>
-                    <label className="text-sm font-medium text-gray-600 block mb-1">Categoria</label>
+                    <label className={cn("text-sm font-medium text-gray-600 block", TAILWIND_CLASSES.margin.xs)}>Categoria</label>
                     <p className="text-sm text-gray-900">{ticket.category}</p>
                   </div>
                 </div>
               </div>
 
               {/* People Involved Section */}
-              <div className="bg-white border border-gray-200 rounded-lg p-4">
-                <h3 className="font-semibold text-gray-900 mb-4 flex items-center gap-2">
+              <div className={cn("bg-white border border-gray-200 rounded-lg", TAILWIND_CLASSES.padding.card)}>
+                <h3 className={cn("font-semibold text-gray-900", TAILWIND_CLASSES.margin.element, createFlexClasses('row', 'center', 'start', 'small'))}>
                   <User size={18} />
                   Pessoas Envolvidas
                 </h3>
-                <div className="space-y-4">
+                <div className={TAILWIND_CLASSES.spaceY.card}>
                   <div>
-                    <label className="text-sm font-medium text-gray-600 block mb-2">Solicitante</label>
-                    <div className="flex items-center gap-3">
+                    <label className={cn("text-sm font-medium text-gray-600 block", TAILWIND_CLASSES.margin.small)}>Solicitante</label>
+                    <div className={createFlexClasses('row', 'center', 'start', 'normal')}>
                       {ticket.requester.avatar && (
                         <img
                           src={ticket.requester.avatar}
@@ -194,8 +187,8 @@ export const TicketDetailModal: React.FC<TicketDetailModalProps> = ({
 
                   {ticket.technician && (
                     <div>
-                      <label className="text-sm font-medium text-gray-600 block mb-2">Técnico Responsável</label>
-                      <div className="flex items-center gap-3">
+                      <label className={cn("text-sm font-medium text-gray-600 block", TAILWIND_CLASSES.margin.small)}>Técnico Responsável</label>
+                      <div className={createFlexClasses('row', 'center', 'start', 'normal')}>
                         {ticket.technician.avatar && (
                           <img
                             src={ticket.technician.avatar}
@@ -213,7 +206,7 @@ export const TicketDetailModal: React.FC<TicketDetailModalProps> = ({
 
                   {ticket.group && (
                     <div>
-                      <label className="text-sm font-medium text-gray-600 block mb-1">Grupo</label>
+                      <label className={cn("text-sm font-medium text-gray-600 block", TAILWIND_CLASSES.margin.xs)}>Grupo</label>
                       <p className="text-sm text-gray-900">{ticket.group.name}</p>
                     </div>
                   )}
@@ -221,27 +214,27 @@ export const TicketDetailModal: React.FC<TicketDetailModalProps> = ({
               </div>
 
               {/* Time Information */}
-              <div className="bg-white border border-gray-200 rounded-lg p-4">
-                <h3 className="font-semibold text-gray-900 mb-4 flex items-center gap-2">
+              <div className={cn("bg-white border border-gray-200 rounded-lg", TAILWIND_CLASSES.padding.card)}>
+                <h3 className={cn("font-semibold text-gray-900", TAILWIND_CLASSES.margin.md, createFlexClasses('row', 'center', 'start', 'small'))}>
                   <Clock size={18} />
                   Informações de Tempo
                 </h3>
-                <div className="space-y-3">
+                <div className={TAILWIND_CLASSES.spaceY.normal}>
                   <div>
-                    <label className="text-sm font-medium text-gray-600 block mb-1">Criado em</label>
+                    <label className={cn("text-sm font-medium text-gray-600 block", TAILWIND_CLASSES.margin.xs)}>Criado em</label>
                     <p className="text-sm text-gray-900">
                       {formatDate(ticket.createdAt, 'time')}
                     </p>
                   </div>
                   <div>
-                    <label className="text-sm font-medium text-gray-600 block mb-1">Última atualização</label>
+                    <label className={cn("text-sm font-medium text-gray-600 block", TAILWIND_CLASSES.margin.xs)}>Última atualização</label>
                     <p className="text-sm text-gray-900">
                       {formatDate(ticket.updatedAt, 'time')}
                     </p>
                   </div>
                   {ticket.dueDate && (
                     <div>
-                      <label className="text-sm font-medium text-gray-600 block mb-1">Prazo</label>
+                      <label className={cn("text-sm font-medium text-gray-600 block", TAILWIND_CLASSES.margin.xs)}>Prazo</label>
                       <p className="text-sm text-gray-900">
                         {formatDate(ticket.dueDate, 'time')}
                       </p>
@@ -249,7 +242,7 @@ export const TicketDetailModal: React.FC<TicketDetailModalProps> = ({
                   )}
                   {ticket.timeTracking && (
                     <div>
-                      <label className="text-sm font-medium text-gray-600 block mb-1">Tempo Total</label>
+                      <label className={cn("text-sm font-medium text-gray-600 block", TAILWIND_CLASSES.margin.xs)}>Tempo Total</label>
                       <p className="text-sm text-gray-900">
                         {Math.floor(ticket.timeTracking.totalTime / 60)}h {ticket.timeTracking.totalTime % 60}m
                       </p>
@@ -260,12 +253,12 @@ export const TicketDetailModal: React.FC<TicketDetailModalProps> = ({
 
               {/* Tags */}
               {ticket.tags && ticket.tags.length > 0 && (
-                <div className="bg-white border border-gray-200 rounded-lg p-4">
-                  <h3 className="font-semibold text-gray-900 mb-3 flex items-center gap-2">
+                <div className={cn("bg-white border border-gray-200 rounded-lg", TAILWIND_CLASSES.padding.card)}>
+                  <h3 className={cn("font-semibold text-gray-900", TAILWIND_CLASSES.margin.small, createFlexClasses('row', 'center', 'start', 'small'))}>
                     <Tag size={18} />
                     Tags
                   </h3>
-                  <div className="flex flex-wrap gap-2">
+                  <div className={cn("flex flex-wrap", TAILWIND_CLASSES.gap.items)}>
                     {ticket.tags.map((tag, index) => (
                       <span
                         key={index}

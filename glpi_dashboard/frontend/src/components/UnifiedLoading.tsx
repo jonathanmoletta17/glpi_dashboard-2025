@@ -2,6 +2,8 @@ import React, { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { Loader2, Clock, AlertCircle, CheckCircle2 } from 'lucide-react';
 import { componentConfigs } from '../config/appConfig';
+import { createCardClasses, createFlexClasses, TAILWIND_CLASSES } from '../design-system/utils';
+import { cn } from '../lib/utils';
 
 // Tipos unificados para loading
 export type LoadingType = 'spinner' | 'skeleton' | 'progress' | 'overlay';
@@ -425,18 +427,32 @@ export const ErrorState: React.FC<ErrorStateProps> = ({
   className = ''
 }) => {
   return (
-    <div className={`flex flex-col items-center justify-center space-y-4 p-8 ${className}`}>
-      <div className='w-16 h-16 bg-red-100 dark:bg-red-900/20 rounded-full flex items-center justify-center'>
+    <div className={cn(
+      createFlexClasses('col', 'center', 'center', 'normal'),
+      TAILWIND_CLASSES.padding.section,
+      className
+    )}>
+      <div className={cn(
+        "w-16 h-16 bg-red-100 dark:bg-red-900/20 rounded-full",
+        createFlexClasses('row', 'center', 'center')
+      )}>
         <AlertCircle className='w-8 h-8 text-red-600 dark:text-red-400' />
       </div>
 
-      <div className='text-center space-y-2'>
+      <div className={cn("text-center", TAILWIND_CLASSES.spaceY.list)}>
         <h3 className='text-lg font-semibold text-gray-900 dark:text-white'>{title}</h3>
         <p className='text-gray-600 dark:text-gray-400 max-w-md'>{message}</p>
       </div>
 
       {onRetry && (
-        <button onClick={onRetry} className='flex items-center space-x-2 font-semibold py-3 px-6 rounded-xl bg-gradient-to-r from-blue-500 to-blue-700 hover:from-blue-600 hover:to-blue-800 text-white shadow-lg hover:shadow-xl transform hover:-translate-y-0.5 transition-all duration-300'>
+        <button 
+          onClick={onRetry} 
+          className={cn(
+            createFlexClasses('row', 'center', 'start', 'small'),
+            "font-semibold rounded-xl bg-gradient-to-r from-blue-500 to-blue-700 hover:from-blue-600 hover:to-blue-800 text-white shadow-lg hover:shadow-xl transform hover:-translate-y-0.5 transition-all duration-300",
+            TAILWIND_CLASSES.padding.button
+          )}
+        >
           <svg className='w-4 h-4' fill='none' stroke='currentColor' viewBox='0 0 24 24'>
             <path
               strokeLinecap='round'

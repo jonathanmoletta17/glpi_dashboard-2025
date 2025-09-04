@@ -5,13 +5,17 @@
  * Executa análise de componentes e sugere limpezas
  */
 
-const fs = require('fs');
-const path = require('path');
+import fs from 'fs';
+import path from 'path';
+import { fileURLToPath } from 'url';
+
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
 
 // Configuração
 const PROJECT_ROOT = path.join(__dirname, '..');
 const COMPONENTS_DIR = path.join(PROJECT_ROOT, 'components');
-const CSS_FILE = path.join(PROJECT_ROOT, '..', 'index.css');
+const CSS_FILE = path.join(PROJECT_ROOT, 'index.css');
 
 // Padrões de código obsoleto
 const OBSOLETE_PATTERNS = {
@@ -137,11 +141,20 @@ function main() {
   
   const allIssues = [];
   
+  // Debug: verificar caminhos
+  console.log('DEBUG - PROJECT_ROOT:', PROJECT_ROOT);
+  console.log('DEBUG - COMPONENTS_DIR:', COMPONENTS_DIR);
+  console.log('DEBUG - CSS_FILE:', CSS_FILE);
+  
   // Analisar componentes
   const componentsDir = path.join(PROJECT_ROOT, 'components');
+  console.log('DEBUG - componentsDir:', componentsDir);
+  console.log('DEBUG - Diretório existe?', fs.existsSync(componentsDir));
+  
   const components = getAllFiles(componentsDir, ['.tsx', '.ts']);
   
   console.log(`📁 Analisando ${components.length} componentes...`);
+  console.log('DEBUG - Componentes encontrados:', components);
   
   components.forEach(componentPath => {
     const issues = analyzeFile(componentPath);
@@ -198,8 +211,11 @@ function main() {
 }
 
 // Executar análise
-if (require.main === module) {
+if (import.meta.url.startsWith('file:') && process.argv[1] && import.meta.url.includes(process.argv[1].replace(/\\/g, '/'))) {
+  main();
+} else {
+  // Fallback: executar sempre quando chamado diretamente
   main();
 }
 
-module.exports = { analyzeFile, analyzeCSS, getAllFiles };
+export { analyzeFile, analyzeCSS, getAllFiles };

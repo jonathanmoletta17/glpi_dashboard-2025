@@ -17,6 +17,7 @@ export default {
         '6xl': '4rem',      // 64px
       },
       colors: {
+        // Brand colors
         primary: {
           50: '#f0f9ff',
           100: '#e0f2fe',
@@ -31,6 +32,7 @@ export default {
           DEFAULT: 'hsl(var(--primary))',
           foreground: 'hsl(var(--primary-foreground))',
         },
+        // Semantic colors
         success: {
           50: '#f0fdf4',
           100: '#dcfce7',
@@ -42,6 +44,8 @@ export default {
           700: '#15803d',
           800: '#166534',
           900: '#14532d',
+          DEFAULT: '#22c55e',
+          foreground: '#ffffff',
         },
         warning: {
           50: '#fffbeb',
@@ -54,6 +58,8 @@ export default {
           700: '#b45309',
           800: '#92400e',
           900: '#78350f',
+          DEFAULT: '#f59e0b',
+          foreground: '#ffffff',
         },
         danger: {
           50: '#fef2f2',
@@ -66,6 +72,21 @@ export default {
           700: '#b91c1c',
           800: '#991b1b',
           900: '#7f1d1d',
+          DEFAULT: '#ef4444',
+          foreground: '#ffffff',
+        },
+        // Neutral colors
+        gray: {
+          50: '#f9fafb',
+          100: '#f3f4f6',
+          200: '#e5e7eb',
+          300: '#d1d5db',
+          400: '#9ca3af',
+          500: '#6b7280',
+          600: '#4b5563',
+          700: '#374151',
+          800: '#1f2937',
+          900: '#111827',
         },
         background: 'hsl(var(--background))',
         foreground: 'hsl(var(--foreground))',
@@ -108,10 +129,24 @@ export default {
         sans: ['Inter', 'system-ui', 'sans-serif'],
         mono: ['JetBrains Mono', 'monospace'],
       },
+      boxShadow: {
+        // Enhanced shadow system
+        'card': '0 4px 16px rgba(0, 0, 0, 0.1)',
+        'card-hover': '0 8px 24px rgba(0, 0, 0, 0.15)',
+        'card-dark': '0 8px 32px rgba(0, 0, 0, 0.2), inset 0 1px 0 rgba(255, 255, 255, 0.08)',
+        'focus-ring': '0 0 0 2px rgba(59, 130, 246, 0.5)',
+        'focus-ring-danger': '0 0 0 2px rgba(239, 68, 68, 0.5)',
+        'glass': '0 8px 32px rgba(0, 0, 0, 0.1), inset 0 1px 0 rgba(255, 255, 255, 0.2)',
+      },
       animation: {
         'fade-in': 'fadeIn 0.5s ease-in-out',
+        'fade-in-fast': 'fadeIn 0.3s ease-out',
         'slide-in': 'slideIn 0.3s ease-out',
+        'slide-in-right': 'slideInRight 0.3s ease-out',
+        'slide-up': 'slideUp 0.3s ease-out',
         'pulse-slow': 'pulse 3s infinite',
+        'bounce-subtle': 'bounceSubtle 0.6s ease-out',
+        'scale-in': 'scaleIn 0.2s ease-out',
       },
       keyframes: {
         fadeIn: {
@@ -130,6 +165,42 @@ export default {
           },
           '100%': {
             transform: 'translateX(0)',
+          },
+        },
+        slideInRight: {
+          '0%': {
+            transform: 'translateX(100%)',
+          },
+          '100%': {
+            transform: 'translateX(0)',
+          },
+        },
+        slideUp: {
+          '0%': {
+            transform: 'translateY(100%)',
+            opacity: '0',
+          },
+          '100%': {
+            transform: 'translateY(0)',
+            opacity: '1',
+          },
+        },
+        bounceSubtle: {
+          '0%, 100%': {
+            transform: 'translateY(0)',
+          },
+          '50%': {
+            transform: 'translateY(-4px)',
+          },
+        },
+        scaleIn: {
+          '0%': {
+            transform: 'scale(0.95)',
+            opacity: '0',
+          },
+          '100%': {
+            transform: 'scale(1)',
+            opacity: '1',
           },
         },
       },

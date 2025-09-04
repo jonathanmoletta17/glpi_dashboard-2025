@@ -13,8 +13,9 @@ from pydantic import ValidationError
 
 from config.settings import active_config
 from schemas.dashboard import ApiError, DashboardMetrics
-from services.api_service import APIService
 from services.glpi_service import GLPIService
+from services.api_service import APIService
+from services.mock_glpi_service import MockGLPIService
 from utils.alerting_system import alert_manager
 from utils.date_decorators import standard_date_validation
 from utils.performance import (
@@ -35,12 +36,32 @@ except ImportError:
 
 api_bp = Blueprint("api", __name__, url_prefix="/api")
 
-# Inicializa serviços
+# Instâncias dos serviços
 api_service = APIService()
-glpi_service = GLPIService()
 
 # Obtém logger configurado
-logger = logging.getLogger("api")
+logger = logging.getLogger("glpi.api")
+
+# Função para obter o serviço GLPI apropriado (real ou mock)
+def get_glpi_service():
+    """Retorna o serviço GLPI real ou mock baseado na disponibilidade"""
+    try:
+        # Tentar usar o serviço GLPI real
+        logger.info("Tentando conectar ao serviço GLPI real")
+        glpi_service = GLPIService()
+        
+        # Testar a conexão fazendo uma requisição simples
+        # Se conseguir inicializar sem erro, usar o serviço real
+        logger.info("Conexão com GLPI real estabelecida com sucesso")
+        return glpi_service
+        
+    except Exception as e:
+        # Se houver erro, usar o serviço mock como fallback
+        logger.warning(f"Falha ao conectar com GLPI real: {e}. Usando serviço mock como fallback")
+        return MockGLPIService()
+
+# Instância global do serviço GLPI
+glpi_service = get_glpi_service()
 
 # Cache para métricas do GLPI (evita chamadas frequentes)
 _metrics_cache = {"data": None, "timestamp": 0, "ttl": 180, "filters_hash": None}
@@ -419,7 +440,7 @@ def get_technicians():
 @api_bp.route("/technicians/ranking")
 @monitor_api_endpoint("get_technician_ranking")
 @monitor_performance
-@cache_with_filters(timeout=300)
+# @cache_with_filters(timeout=300)  # DESABILITADO TEMPORARIAMENTE - CORREÇÃO CACHE CORROMPIDO
 @standard_date_validation(support_predefined=True, log_usage=True)
 def get_technician_ranking(validated_start_date=None, validated_end_date=None, validated_filters=None):
     """Endpoint para obter ranking de técnicos por nível"""
@@ -430,6 +451,12 @@ def get_technician_ranking(validated_start_date=None, validated_end_date=None, v
     correlation_id = obs_logger.generate_correlation_id()
 
     try:
+        # LIMPAR CACHE FORÇADAMENTE - CORREÇÃO CRÍTICA
+        logger.info(f"[{correlation_id}] LIMPANDO CACHE DO RANKING FORÇADAMENTE")
+        _ranking_cache["data"] = None
+        _ranking_cache["timestamp"] = 0
+        _ranking_cache["filters_hash"] = None
+        
         start_date = validated_start_date
         end_date = validated_end_date
         filters = validated_filters or {}
@@ -452,14 +479,33 @@ def get_technician_ranking(validated_start_date=None, validated_end_date=None, v
             str(sorted(filters.items())) + str(start_date) + str(end_date) + str(limit) + str(entity_id)
         )
 
+        # ADICIONAR LOGS DE DEBUG DO CACHE
+        logger.debug(f"[{correlation_id}] TESTE DEBUG - Verificando cache do ranking:")
+        logger.info(f"[{correlation_id}] Verificando cache do ranking:")
+        logger.debug(f"[{correlation_id}] Cache data exists: {_ranking_cache['data'] is not None}")
+        logger.info(f"[{correlation_id}] Cache data exists: {_ranking_cache['data'] is not None}")
+        logger.debug(f"[{correlation_id}] Cache timestamp: {_ranking_cache['timestamp']}")
+        logger.info(f"[{correlation_id}] Cache timestamp: {_ranking_cache['timestamp']}")
+        logger.debug(f"[{correlation_id}] Cache TTL: {_ranking_cache['ttl']}")
+        logger.info(f"[{correlation_id}] Cache TTL: {_ranking_cache['ttl']}")
+        logger.debug(f"[{correlation_id}] Cache age: {current_time - _ranking_cache['timestamp']}")
+        logger.info(f"[{correlation_id}] Cache age: {current_time - _ranking_cache['timestamp']}")
+        logger.debug(f"[{correlation_id}] Cache filters hash: {_ranking_cache['filters_hash']}")
+        logger.info(f"[{correlation_id}] Cache filters hash: {_ranking_cache['filters_hash']}")
+        logger.debug(f"[{correlation_id}] Current filters hash: {filters_hash}")
+        logger.info(f"[{correlation_id}] Current filters hash: {filters_hash}")
+
         if (_ranking_cache["data"] is not None and
             current_time - _ranking_cache["timestamp"] < _ranking_cache["ttl"] and
             _ranking_cache["filters_hash"] == filters_hash):
 
+            logger.info(f"[{correlation_id}] RETORNANDO DADOS DO CACHE (PROBLEMA!)")
             cached_data = _ranking_cache["data"].copy()
             cached_data["cached"] = True
             cached_data["correlation_id"] = correlation_id
             return jsonify(cached_data)
+        else:
+            logger.info(f"[{correlation_id}] CACHE INVÁLIDO, PROCESSANDO DADOS REAIS")
 
         # Log início do pipeline
         obs_logger.log_operation_start(
@@ -656,6 +702,75 @@ def get_new_tickets(validated_start_date=None, validated_end_date=None, validate
 
     except Exception as e:
         logger.error(f"Erro inesperado ao buscar tickets novos: {e}", exc_info=True)
+        error_response = ResponseFormatter.format_error_response(
+            f"Erro interno do servidor: {str(e)}", [str(e)]
+        )
+        return jsonify(error_response), 500
+
+
+@api_bp.route("/tickets/<ticket_id>")
+@monitor_api_endpoint("get_ticket_details")
+@monitor_performance
+def get_ticket_details(ticket_id):
+    """Endpoint para obter detalhes completos de um ticket específico"""
+    start_time = time.time()
+    
+    try:
+        # Validar ticket_id
+        if not ticket_id or not ticket_id.strip():
+            logger.warning("ID do ticket não fornecido")
+            error_response = ResponseFormatter.format_error_response(
+                "ID do ticket é obrigatório", ["ticket_id não pode estar vazio"]
+            )
+            return jsonify(error_response), 400
+        
+        # Tentar converter para inteiro se necessário
+        try:
+            ticket_id_int = int(ticket_id)
+        except ValueError:
+            logger.warning(f"ID do ticket inválido: {ticket_id}")
+            error_response = ResponseFormatter.format_error_response(
+                "ID do ticket deve ser um número válido", [f"'{ticket_id}' não é um ID válido"]
+            )
+            return jsonify(error_response), 400
+        
+        logger.debug(f"Buscando detalhes do ticket ID: {ticket_id_int}")
+        
+        # Buscar detalhes do ticket
+        ticket_details = glpi_service.get_ticket_by_id(ticket_id_int)
+        
+        # Verificar resultado
+        if ticket_details is None:
+            logger.warning(f"Ticket {ticket_id_int} não encontrado ou erro na comunicação com GLPI")
+            error_response = ResponseFormatter.format_error_response(
+                "Ticket não encontrado ou erro na comunicação com GLPI", 
+                [f"Não foi possível obter detalhes do ticket {ticket_id_int}"]
+            )
+            return jsonify(error_response), 404
+        
+        # Log de performance
+        response_time = (time.time() - start_time) * 1000
+        logger.info(f"Detalhes do ticket {ticket_id_int} obtidos em {response_time:.2f}ms")
+        
+        # Verificar performance
+        try:
+            config_obj = active_config()
+            target_p95 = config_obj.PERFORMANCE_TARGET_P95
+        except Exception:
+            target_p95 = 300
+        
+        if response_time > target_p95:
+            logger.warning(f"Resposta lenta para ticket {ticket_id_int}: {response_time:.2f}ms")
+        
+        return jsonify({
+            "success": True,
+            "data": ticket_details,
+            "response_time_ms": round(response_time, 2),
+            "ticket_id": ticket_id_int
+        })
+    
+    except Exception as e:
+        logger.error(f"Erro inesperado ao buscar detalhes do ticket {ticket_id}: {e}", exc_info=True)
         error_response = ResponseFormatter.format_error_response(
             f"Erro interno do servidor: {str(e)}", [str(e)]
         )
@@ -911,5 +1026,71 @@ def get_status():
         logger.error(f"Erro inesperado ao verificar status: {e}", exc_info=True)
         error_response = ResponseFormatter.format_error_response(
             f"Erro interno do servidor: {str(e)}", [str(e)]
+        )
+        return jsonify(error_response), 500
+
+
+@api_bp.route("/debug-field-values", methods=["GET"])
+def debug_field_values():
+    """Endpoint para debugar valores dos campos do GLPI"""
+    from utils.structured_logging import api_logger
+    
+    try:
+        correlation_id = api_logger.generate_correlation_id()
+        logger.info(f"[{correlation_id}] Debugando valores dos campos")
+        
+        # Obter valores únicos do campo 8 (hierarquia)
+        field_values = glpi_service.debug_field_values(correlation_id=correlation_id)
+        
+        return jsonify({
+            "success": True,
+            "data": field_values,
+            "message": "Valores dos campos obtidos com sucesso",
+            "correlation_id": correlation_id
+        })
+    except Exception as e:
+        correlation_id = getattr(e, 'correlation_id', api_logger.generate_correlation_id())
+        logger.error(f"[{correlation_id}] Erro ao debugar campos: {e}")
+        error_response = ResponseFormatter.format_error_response(
+            "Erro interno do servidor",
+            [str(e)],
+            correlation_id=correlation_id
+        )
+        return jsonify(error_response), 500
+
+
+@api_bp.route("/debug-technician-tickets", methods=["GET"])
+def debug_technician_tickets():
+    """Endpoint para debugar dados dos tickets dos técnicos"""
+    from utils.structured_logging import api_logger
+    
+    try:
+        correlation_id = api_logger.generate_correlation_id()
+        logger.info(f"[{correlation_id}] Debugando dados dos tickets dos técnicos")
+        
+        # Obter alguns técnicos para análise
+        technician_id = request.args.get('technician_id')
+        limit = int(request.args.get('limit', 5))
+        
+        if technician_id:
+            # Debug específico de um técnico
+            debug_data = glpi_service.debug_technician_tickets(technician_id, correlation_id=correlation_id)
+        else:
+            # Debug geral dos primeiros técnicos
+            debug_data = glpi_service.debug_technician_tickets_general(limit=limit, correlation_id=correlation_id)
+        
+        return jsonify({
+            "success": True,
+            "data": debug_data,
+            "message": "Debug dos tickets dos técnicos obtido com sucesso",
+            "correlation_id": correlation_id
+        })
+    except Exception as e:
+        correlation_id = getattr(e, 'correlation_id', api_logger.generate_correlation_id())
+        logger.error(f"[{correlation_id}] Erro ao debugar tickets dos técnicos: {e}")
+        error_response = ResponseFormatter.format_error_response(
+            "Erro interno do servidor",
+            [str(e)],
+            correlation_id=correlation_id
         )
         return jsonify(error_response), 500

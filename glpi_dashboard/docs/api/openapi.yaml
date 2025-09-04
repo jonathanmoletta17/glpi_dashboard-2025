@@ -1,4 +1,4 @@
-openapi: 3.0.3
+openapi: 3.1.0
 info:
   title: GLPI Dashboard API
   description: |
@@ -658,26 +658,26 @@ components:
           type: string
           description: ID de correlação da requisição
         filters_applied:
-           type: object
-           properties:
-             start_date:
-               oneOf:
-                 - type: string
-                 - type: "null"
-               description: Data de início do filtro
-             end_date:
-               oneOf:
-                 - type: string
-                 - type: "null"
-               description: Data de fim do filtro
-             level:
-               oneOf:
-                 - type: string
-                 - type: "null"
-               description: Nível filtrado
-             limit:
-               type: integer
-               description: Limite de resultados
+          type: object
+          properties:
+            start_date:
+              oneOf:
+                - type: string
+                - type: "null"
+              description: Data de início do filtro
+            end_date:
+              oneOf:
+                - type: string
+                - type: "null"
+              description: Data de fim do filtro
+            level:
+              oneOf:
+                - type: string
+                - type: "null"
+              description: Nível filtrado
+            limit:
+              type: integer
+              description: Limite de resultados
         message:
           type: string
           description: Mensagem quando não há dados

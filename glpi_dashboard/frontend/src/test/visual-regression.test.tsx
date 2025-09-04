@@ -11,12 +11,11 @@ const mockMetrics: MetricsData = {
     n3: { novos: 15, progresso: 8, pendentes: 5, resolvidos: 20 },
     n4: { novos: 5, progresso: 3, pendentes: 2, resolvidos: 15 }
   },
-  geral: {
-    novos: 38,
-    progresso: 28,
-    pendentes: 17,
-    resolvidos: 90
-  }
+  novos: 38,
+  progresso: 28,
+  pendentes: 17,
+  resolvidos: 90,
+  total: 173
 };
 
 describe('Visual Regression Tests - CSS Migration', () => {

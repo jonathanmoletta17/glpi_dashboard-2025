@@ -124,8 +124,19 @@ def _setup_cors(app: Flask) -> None:
 
 def _setup_logging(app: Flask) -> None:
     """Configura logging da aplicação"""
-    if not app.debug:
-        logging.basicConfig(level=logging.INFO)
+    from config.logging_config import configure_structured_logging
+    
+    log_level = app.config.get('LOG_LEVEL', 'INFO')
+    try:
+        configure_structured_logging(log_level)
+        logger = logging.getLogger("app")
+        logger.info(f"Logging estruturado configurado com nível: {log_level}")
+    except Exception as e:
+        # Fallback para configuração básica
+        logging.basicConfig(level=getattr(logging, log_level.upper(), logging.INFO))
+        logger = logging.getLogger("app")
+        logger.error(f"Erro ao configurar logging estruturado: {e}")
+        logger.info("Usando configuração básica de logging como fallback")
 
 
 def create_app(config=None) -> Flask:

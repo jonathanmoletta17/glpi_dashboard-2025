@@ -7,10 +7,8 @@ import { TicketDetailModal } from './components/TicketDetailModal';
 
 import { Ticket } from './types/ticket';
 import {
-  LoadingSpinner,
-  SkeletonLevelsSection,
-  ErrorState,
-} from './components/LoadingSpinner';
+  UnifiedLoading,
+} from './components/UnifiedLoading';
 
 
 // Componentes lazy centralizados
@@ -58,9 +56,12 @@ function App() {
 
   const [selectedTicket, setSelectedTicket] = useState<Ticket | null>(null);
   const [isTicketModalOpen, setIsTicketModalOpen] = useState(false);
+  const [isLoadingTicketDetails, setIsLoadingTicketDetails] = useState(false);
 
   // Ticket modal handlers
   const handleTicketClick = async (ticket: Ticket) => {
+    setIsLoadingTicketDetails(true);
+    
     try {
       // Import the API function dynamically to avoid circular dependencies
       const { getTicketById } = await import('./services/api');
@@ -83,6 +84,8 @@ function App() {
       // Fallback to original ticket data if API fails
       setSelectedTicket(ticket);
       setIsTicketModalOpen(true);
+    } finally {
+      setIsLoadingTicketDetails(false);
     }
   };
 
@@ -141,32 +144,12 @@ function App() {
   // Show loading state on initial load
   if (isLoading && !levelMetrics) {
     return (
-      <div className='min-h-screen bg-gradient-to-br from-blue-50 via-white to-purple-50'>
-        <div className='animate-pulse'>
-          {/* Header skeleton */}
-          <div className='bg-white/80 backdrop-blur-sm border-b border-gray-200 px-6 py-4'>
-            <div className='flex items-center justify-between'>
-              <div className='flex items-center space-x-4'>
-                <div className='w-10 h-10 bg-gray-200 rounded-lg' />
-                <div className='space-y-2'>
-                  <div className='w-48 h-5 bg-gray-200 rounded' />
-                  <div className='w-32 h-3 bg-gray-200 rounded' />
-                </div>
-              </div>
-              <div className='flex items-center space-x-4'>
-                <div className='w-64 h-10 bg-gray-200 rounded-lg' />
-                <div className='w-32 h-8 bg-gray-200 rounded' />
-              </div>
-            </div>
-          </div>
-
-          {/* Content skeleton */}
-          <div className='p-6 space-y-8'>
-            {/* SkeletonMetricsGrid removido - MetricsGrid foi removido */}
-            <SkeletonLevelsSection />
-          </div>
-        </div>
-      </div>
+      <UnifiedLoading 
+        isLoading={true}
+        type="skeleton" 
+        text="Carregando dashboard..." 
+        fullScreen 
+      />
     );
   }
 
@@ -174,7 +157,13 @@ function App() {
   if (error && !levelMetrics) {
     return (
       <div className='min-h-screen bg-gradient-to-br from-red-50 via-white to-orange-50 flex items-center justify-center'>
-        <ErrorState title='Erro ao Carregar Dashboard' message={error} onRetry={loadData} />
+        <UnifiedLoading 
+          isLoading={true}
+          type="spinner" 
+          text={error} 
+          title="Erro ao Carregar Dashboard"
+          fullScreen 
+        />
       </div>
     );
   }
@@ -233,6 +222,10 @@ function App() {
                   dashboardMetrics
                 );
               console.log('🔍 App.tsx - Objeto metrics completo:', metrics);
+              console.log('🔍 App.tsx - technicianRanking sendo passado:', technicianRanking);
+              console.log('🔍 App.tsx - technicianRanking length:', technicianRanking?.length);
+              console.log('🔍 App.tsx - technicianRanking tipo:', typeof technicianRanking);
+              console.log('🔍 App.tsx - technicianRanking é array?', Array.isArray(technicianRanking));
               return (
                 <ModernDashboard
                   metrics={dashboardMetrics}
@@ -283,7 +276,7 @@ function App() {
       {isLoading && levelMetrics && (
         <div className='fixed top-20 right-6 z-50'>
           <div className='bg-white/90 backdrop-blur-sm rounded-xl shadow-lg p-4'>
-            <LoadingSpinner size='sm' text='Atualizando...' />
+            <UnifiedLoading isLoading={true} type='spinner' size='sm' text='Atualizando...' />
           </div>
         </div>
       )}

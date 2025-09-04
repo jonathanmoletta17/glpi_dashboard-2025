@@ -6,12 +6,17 @@ import { Button } from '@/components/ui/button';
 import { AlertCircle, Clock, User, Calendar, RefreshCw, ExternalLink } from 'lucide-react';
 import { NewTicket, Ticket } from '@/types';
 import { cn, formatRelativeTime, formatDate } from '@/lib/utils';
+import { createFlexClasses, TAILWIND_CLASSES } from '@/design-system/utils';
 import { apiService } from '@/services/api';
 import { useThrottledCallback } from '@/hooks/useDebounce';
 import { useSmartRefresh } from '@/hooks/useSmartRefresh';
-import './NewTicketsList.css';
-
-
+import { 
+  createCardClasses, 
+  createListItemClasses, 
+  createBadgeClasses,
+  createButtonClasses 
+} from '@/design-system/component-patterns';
+import { componentSpacing } from '@/design-system/spacing';
 
 interface NewTicketsListProps {
   className?: string;
@@ -19,72 +24,43 @@ interface NewTicketsListProps {
   onTicketClick?: (ticket: Ticket) => void;
 }
 
-// Configuração de prioridades com mapeamento BEM
+// Configuração de prioridades simplificada
 const priorityConfig = {
-  'Crítica': {
-    bemClass: 'new-tickets-list__priority-badge--critical',
-    icon: '🔴',
-  },
-  'Muito Alta': {
-    bemClass: 'new-tickets-list__priority-badge--critical',
-    icon: '🔴',
-  },
-  'Alta': {
-    bemClass: 'new-tickets-list__priority-badge--high',
-    icon: '🟠',
-  },
-  'Média': {
-    bemClass: 'new-tickets-list__priority-badge--medium',
-    icon: '🟡',
-  },
-  'Baixa': {
-    bemClass: 'new-tickets-list__priority-badge--low',
-    icon: '🟢',
-  },
-  'Muito Baixa': {
-    bemClass: 'new-tickets-list__priority-badge--normal',
-    icon: '🔵',
-  },
-  'Normal': {
-    bemClass: 'new-tickets-list__priority-badge--normal',
-    icon: '🔵',
-  },
-};
+  'Crítica': { variant: 'danger' as const, icon: '🔴' },
+  'Muito Alta': { variant: 'danger' as const, icon: '🔴' },
+  'Alta': { variant: 'warning' as const, icon: '🟠' },
+  'Média': { variant: 'default' as const, icon: '🟡' },
+  'Baixa': { variant: 'success' as const, icon: '🟢' },
+  'Muito Baixa': { variant: 'default' as const, icon: '🔵' },
+  'Normal': { variant: 'default' as const, icon: '🔵' },
+} as const;
 
-// Variantes de animação
+// Variantes de animação otimizadas
 const itemVariants = {
-  hidden: { opacity: 0, x: -20 },
-  visible: {
-    opacity: 1,
-    x: 0,
-    transition: {
-      duration: 0.3,
-      ease: 'easeOut' as const,
-    },
-  },
+  hidden: { opacity: 0, y: 10 },
+  visible: { opacity: 1, y: 0, transition: { duration: 0.2 } },
 } as const;
 
 const containerVariants = {
   hidden: { opacity: 0 },
   visible: {
     opacity: 1,
-    transition: {
-      staggerChildren: 0.1,
-    },
+    transition: { staggerChildren: 0.05 },
   },
 } as const;
 
-// Função auxiliar para obter configuração de prioridade
-const getPriorityConfig = (priority: string) => {
-  return priorityConfig[priority as keyof typeof priorityConfig] || priorityConfig['Normal'];
-};
-
-// Componente TicketItem refatorado com BEM
-const TicketItem = React.memo<{ ticket: NewTicket; index: number; onTicketClick?: (ticket: Ticket) => void }>(({ ticket, onTicketClick }) => {
-  const priorityConf = useMemo(() => getPriorityConfig(ticket.priority), [ticket.priority]);
+// Componente TicketItem refatorado
+const TicketItem = React.memo<{ 
+  ticket: NewTicket; 
+  onTicketClick?: (ticket: Ticket) => void 
+}>(({ ticket, onTicketClick }) => {
+  const priorityConf = useMemo(() => 
+    priorityConfig[ticket.priority as keyof typeof priorityConfig] || priorityConfig['Normal'], 
+    [ticket.priority]
+  );
+  
   const formattedDate = useMemo(() => formatDate(ticket.date), [ticket.date]);
 
-  // Função para converter NewTicket para Ticket
   const handleTicketClick = () => {
     if (onTicketClick) {
       const convertedTicket: Ticket = {
@@ -101,7 +77,7 @@ const TicketItem = React.memo<{ ticket: NewTicket; index: number; onTicketClick?
         technician: undefined,
         createdAt: ticket.date,
         updatedAt: ticket.date,
-        category: 'Geral',
+        category: ticket.category || 'Não categorizado',
         location: '',
         urgency: 2,
         impact: 2,
@@ -121,50 +97,55 @@ const TicketItem = React.memo<{ ticket: NewTicket; index: number; onTicketClick?
     <motion.div
       key={ticket.id}
       variants={itemVariants}
-      className="new-tickets-list__item"
+      className={createListItemClasses()}
       onClick={handleTicketClick}
     >
-      <div className="new-tickets-list__item-content">
-        {/* Badge de prioridade com BEM */}
-        <div className="new-tickets-list__priority">
-          <div className={cn('new-tickets-list__priority-badge', priorityConf.bemClass)}>
-            <span className="new-tickets-list__priority-icon">{priorityConf.icon}</span>
+      <div className={createFlexClasses('row', 'start', 'between', 'normal')}>
+        {/* Badge de prioridade */}
+        <div className="flex-shrink-0">
+          <Badge 
+            variant={priorityConf.variant}
+            className="flex items-center gap-1"
+          >
+            <span>{priorityConf.icon}</span>
             {ticket.priority}
-          </div>
+          </Badge>
         </div>
 
-        {/* Conteúdo do ticket com BEM */}
-        <div className="new-tickets-list__ticket-content">
-          <div className="new-tickets-list__ticket-header">
-            <div className="new-tickets-list__ticket-meta">
-              <span className="new-tickets-list__ticket-id">#{ticket.id}</span>
-              <Badge variant="secondary" className="new-tickets-list__new-badge">
+        {/* Conteúdo do ticket */}
+        <div className="flex-1 min-w-0">
+          <div className="flex items-start justify-between gap-2 mb-2">
+            <div className={createFlexClasses('row', 'center', 'start', 'small')}>
+              <span className="text-sm font-medium text-gray-500">#{ticket.id}</span>
+              <Badge variant="secondary" className="text-xs">
                 NOVO
               </Badge>
             </div>
             <Button
               variant="ghost"
-              size="sm"
-              className="new-tickets-list__external-btn"
+              size="icon"
+              className="h-6 w-6 flex-shrink-0"
             >
               <ExternalLink className="h-3 w-3" />
             </Button>
           </div>
 
-          <h4 className="new-tickets-list__ticket-title">{ticket.title}</h4>
+          <h4 className="font-medium text-gray-900 dark:text-gray-100 mb-1 line-clamp-2">
+            {ticket.title}
+          </h4>
 
           {ticket.description && (
-            <p className="new-tickets-list__ticket-description">
+            <p className="text-sm text-gray-600 dark:text-gray-400 mb-3 line-clamp-2">
               {ticket.description}
             </p>
           )}
 
-          <div className="new-tickets-list__ticket-footer">
-            <div className="new-tickets-list__requester">
+          <div className={createFlexClasses('row', 'center', 'between')}>
+            <div className={createFlexClasses('row', 'center', 'start', 'small')}>
               <User className="h-3 w-3" />
-              <span className="new-tickets-list__requester-name">{ticket.requester}</span>
+              <span className="truncate">{ticket.requester}</span>
             </div>
-            <div className="new-tickets-list__date">
+            <div className={createFlexClasses('row', 'center', 'start', 'small')}>
               <Calendar className="h-3 w-3" />
               <span>{formattedDate}</span>
             </div>
@@ -177,14 +158,50 @@ const TicketItem = React.memo<{ ticket: NewTicket; index: number; onTicketClick?
 
 TicketItem.displayName = 'TicketItem';
 
-export const NewTicketsList = React.memo<NewTicketsListProps>(({ className, limit = 8, onTicketClick }) => {
+// Componente de loading skeleton
+const LoadingSkeleton = () => (
+  <div className={TAILWIND_CLASSES.spaceY.card}>
+    {[...Array(4)].map((_, i) => (
+      <div key={i} className="animate-pulse">
+        <div className={createCardClasses()}>
+          <div className={createFlexClasses('row', 'start', 'start', 'normal')}>
+            <div className="h-6 w-16 bg-gray-200 dark:bg-gray-700 rounded-full flex-shrink-0" />
+            <div className={cn('flex-1', TAILWIND_CLASSES.spaceY.list)}>
+              <div className="h-4 bg-gray-200 dark:bg-gray-700 rounded w-3/4" />
+              <div className="h-3 bg-gray-200 dark:bg-gray-700 rounded w-1/2" />
+              <div className="h-3 bg-gray-200 dark:bg-gray-700 rounded w-1/3" />
+            </div>
+          </div>
+        </div>
+      </div>
+    ))}
+  </div>
+);
+
+// Componente de estado vazio
+const EmptyState = ({ error }: { error?: string }) => (
+  <div className="text-center py-8">
+    <AlertCircle className="h-12 w-12 text-gray-400 mx-auto mb-4" />
+    <h3 className="text-lg font-medium text-gray-900 dark:text-gray-100 mb-2">
+      {error ? 'Erro ao carregar' : 'Nenhum ticket novo'}
+    </h3>
+    <p className="text-sm text-gray-500 dark:text-gray-400">
+      {error || 'Não há tickets novos no momento.'}
+    </p>
+  </div>
+);
+
+export const NewTicketsList = React.memo<NewTicketsListProps>(({ 
+  className, 
+  limit = 8, 
+  onTicketClick 
+}) => {
   const [tickets, setTickets] = useState<NewTicket[]>([]);
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const [lastUpdate, setLastUpdate] = useState<Date | null>(null);
   const [isPending, startTransition] = useTransition();
 
-  // Hook para refresh inteligente
   const fetchTickets = useThrottledCallback(async () => {
     try {
       setError(null);
@@ -208,7 +225,7 @@ export const NewTicketsList = React.memo<NewTicketsListProps>(({ className, limi
   }, [fetchTickets]);
 
   const { shouldRefresh, markRefreshed } = useSmartRefresh({
-    intervalMs: 30000, // 30 segundos
+    intervalMs: 30000,
     refreshKey: 'new-tickets',
     refreshFn: fetchTickets,
     enabled: true,
@@ -228,26 +245,26 @@ export const NewTicketsList = React.memo<NewTicketsListProps>(({ className, limi
   );
 
   return (
-    <Card className={cn('new-tickets-list rounded-lg', className)}>
-      <CardHeader className="new-tickets-list__header">
-        <div className="new-tickets-list__header-content">
-          <CardTitle className="new-tickets-list__title">
-            <div className="new-tickets-list__title-icon">
-              <AlertCircle className="h-5 w-5 text-white" />
+    <Card className={cn(createCardClasses(), className)}>
+      <CardHeader className="pb-3">
+        <div className="flex items-center justify-between">
+          <CardTitle className="flex items-center gap-2">
+            <div className="h-8 w-8 bg-blue-500 rounded-lg flex items-center justify-center">
+              <AlertCircle className="h-4 w-4 text-white" />
             </div>
             Tickets Novos
           </CardTitle>
 
-          <div className="new-tickets-list__header-actions">
-            <Badge variant="outline" className="new-tickets-list__count-badge">
+          <div className="flex items-center gap-2">
+            <Badge variant="outline" className="text-xs">
               {ticketsCount} tickets
             </Badge>
             <Button
               variant="outline"
-              size="sm"
+              size="icon"
               onClick={fetchTickets}
               disabled={isLoading}
-              className="new-tickets-list__refresh-btn"
+              className="h-8 w-8"
             >
               <RefreshCw className={cn('h-4 w-4', isLoading && 'animate-spin')} />
             </Button>
@@ -255,58 +272,35 @@ export const NewTicketsList = React.memo<NewTicketsListProps>(({ className, limi
         </div>
 
         {formattedLastUpdate && (
-          <div className="new-tickets-list__last-update">
+          <div className="flex items-center gap-1 text-xs text-gray-500 dark:text-gray-400">
             <Clock className="h-3 w-3" />
             Atualizado {formattedLastUpdate}
           </div>
         )}
       </CardHeader>
 
-      <CardContent className="new-tickets-list__content">
+      <CardContent className="pt-0">
         {isLoading ? (
-          <div className="new-tickets-list__skeleton">
-            {[...Array(4)].map((_, i) => (
-              <div key={i} className="new-tickets-list__skeleton-item">
-                <div className="new-tickets-list__skeleton-card">
-                  <div className="new-tickets-list__skeleton-avatar" />
-                  <div className="new-tickets-list__skeleton-content">
-                    <div className="new-tickets-list__skeleton-line new-tickets-list__skeleton-line--75" />
-                    <div className="new-tickets-list__skeleton-line new-tickets-list__skeleton-line--50" />
-                  </div>
-                </div>
-              </div>
-            ))}
-          </div>
+          <LoadingSkeleton />
         ) : error ? (
-          <div className="new-tickets-list__empty">
-            <AlertCircle className="new-tickets-list__empty-icon" />
-            <h3 className="new-tickets-list__empty-title">Erro ao carregar</h3>
-            <p className="new-tickets-list__empty-description">{error}</p>
-          </div>
+          <EmptyState error={error} />
         ) : hasTickets ? (
           <motion.div
-            className="new-tickets-list__items"
+            className={TAILWIND_CLASSES.spaceY.list}
             variants={containerVariants}
             initial="hidden"
             animate="visible"
           >
-            {tickets.map((ticket, index) => (
+            {tickets.map((ticket) => (
               <TicketItem
                 key={ticket.id}
                 ticket={ticket}
-                index={index}
                 onTicketClick={onTicketClick}
               />
             ))}
           </motion.div>
         ) : (
-          <div className="new-tickets-list__empty">
-            <AlertCircle className="new-tickets-list__empty-icon" />
-            <h3 className="new-tickets-list__empty-title">Nenhum ticket novo</h3>
-            <p className="new-tickets-list__empty-description">
-              Não há tickets novos no momento.
-            </p>
-          </div>
+          <EmptyState />
         )}
       </CardContent>
     </Card>
@@ -316,25 +310,3 @@ export const NewTicketsList = React.memo<NewTicketsListProps>(({ className, limi
 NewTicketsList.displayName = 'NewTicketsList';
 
 export default NewTicketsList;
-
-/* 
-=== REFATORAÇÃO CSS APLICADA ===
-
-Esta versão refatorada do NewTicketsList implementa:
-
-1. **Metodologia BEM**: Classes semânticas seguindo o padrão Block__Element--Modifier
-2. **CSS Consolidado**: Importação do arquivo CSS refatorado
-3. **Estrutura Simplificada**: HTML mais limpo e semântico
-4. **Manutenibilidade**: Código mais fácil de manter e estender
-5. **Responsividade**: Melhor suporte a diferentes dispositivos
-6. **Acessibilidade**: Melhor suporte a leitores de tela e navegação por teclado
-7. **Performance**: CSS otimizado com variáveis e menos especificidade
-8. **Temas**: Suporte nativo a tema claro/escuro
-
-Principais mudanças:
-- Substituição de classes utilitárias por classes BEM semânticas
-- Remoção de classes figma-* obsoletas
-- Importação do CSS refatorado
-- Estrutura HTML simplificada
-- Melhor organização do código
-*/

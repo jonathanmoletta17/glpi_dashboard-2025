@@ -82,11 +82,10 @@ export interface TechnicianRanking {
   nome?: string; // Campo alternativo da API
   level: string;
   rank: number;
-  total?: number; // Total de tickets do técnico (campo legado)
-  total_tickets?: number; // Total de tickets do técnico (campo atual da API)
-  resolved_tickets?: number; // Tickets resolvidos
-  pending_tickets?: number; // Tickets pendentes
-  avg_resolution_time?: number; // Tempo médio de resolução
+  total_tickets: number; // Total de tickets do técnico
+  resolved_tickets: number; // Tickets resolvidos
+  pending_tickets: number; // Tickets pendentes
+  avg_resolution_time: number; // Tempo médio de resolução
   score?: number; // Campo opcional para compatibilidade
   ticketsResolved?: number; // Campo opcional para compatibilidade
   ticketsInProgress?: number; // Campo opcional para compatibilidade
@@ -101,6 +100,7 @@ export interface NewTicket {
   requester: string;
   priority: string;
   status: string;
+  category: string;
 }
 
 export interface DashboardState {
