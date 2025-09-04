@@ -206,13 +206,13 @@ const rankingColors = {
   --status-progresso: #F59E0B;  /* Amarelo - Atenção */
   --status-pendentes: #F97316;  /* Laranja - Urgente */
   --status-resolvidos: #10B981; /* Verde - Sucesso */
-  
+
   /* Níveis de Técnicos */
   --level-n1: #22C55E;          /* Verde - Básico */
   --level-n2: #06B6D4;          /* Ciano - Especializado */
   --level-n3: #8B5CF6;          /* Roxo - Avançado */
   --level-n4: #EC4899;          /* Rosa - Expert */
-  
+
   /* Ranking */
   --ranking-1st: #F59E0B;       /* Dourado - Excelência */
   --ranking-2nd: #6B7280;       /* Prata - Muito Bom */
@@ -230,18 +230,18 @@ const rankingColors = {
   --status-progresso-light: #FFFBEB;
   --status-pendentes-light: #FFF7ED;
   --status-resolvidos-light: #ECFDF5;
-  
+
   --level-n1-light: #F0FDF4;
   --level-n2-light: #ECFEFF;
   --level-n3-light: #F5F3FF;
   --level-n4-light: #FDF2F8;
-  
+
   /* Tons escuros para texto */
   --status-novos-dark: #1E40AF;
   --status-progresso-dark: #D97706;
   --status-pendentes-dark: #EA580C;
   --status-resolvidos-dark: #059669;
-  
+
   --level-n1-dark: #16A34A;
   --level-n2-dark: #0891B2;
   --level-n3-dark: #7C3AED;
@@ -257,22 +257,22 @@ const rankingColors = {
   --bg-primary: #FFFFFF;
   --bg-secondary: #F8FAFC;
   --bg-tertiary: #F1F5F9;
-  
+
   /* Textos */
   --text-primary: #0F172A;
   --text-secondary: #475569;
   --text-tertiary: #64748B;
-  
+
   /* Bordas */
   --border-primary: #E2E8F0;
   --border-secondary: #CBD5E1;
   --border-tertiary: #94A3B8;
-  
+
   /* Tema Escuro */
   --dark-bg-primary: #0F172A;
   --dark-bg-secondary: #1E293B;
   --dark-bg-tertiary: #334155;
-  
+
   --dark-text-primary: #F8FAFC;
   --dark-text-secondary: #CBD5E1;
   --dark-text-tertiary: #94A3B8;
@@ -289,9 +289,9 @@ const rankingColors = {
 // Implementação dos cards de status com gradientes
 const StatusCard = ({ status, value, title }) => {
   const config = statusColors[status];
-  
+
   return (
-    <div 
+    <div
       className="relative overflow-hidden rounded-xl p-6 transition-all duration-300"
       style={{
         background: config.gradient,
@@ -301,14 +301,14 @@ const StatusCard = ({ status, value, title }) => {
       <div className="flex items-center justify-between">
         <div>
           <p className="text-sm font-semibold text-gray-700 mb-2">{title}</p>
-          <p 
+          <p
             className="text-3xl font-bold"
             style={{ color: config.primary }}
           >
             {value.toLocaleString()}
           </p>
         </div>
-        <div 
+        <div
           className="p-4 rounded-xl"
           style={{ backgroundColor: config.light }}
         >
@@ -326,9 +326,9 @@ const StatusCard = ({ status, value, title }) => {
 // Implementação dos cards de nível com cores distintas
 const LevelCard = ({ level, data }) => {
   const config = levelColors[level];
-  
+
   return (
-    <div 
+    <div
       className="relative overflow-hidden rounded-xl p-6 transition-all duration-300"
       style={{
         background: config.gradient,
@@ -336,27 +336,27 @@ const LevelCard = ({ level, data }) => {
       }}
     >
       <div className="flex items-center justify-between mb-4">
-        <h3 
+        <h3
           className="text-lg font-semibold"
           style={{ color: config.primary }}
         >
           {config.title}
         </h3>
-        <div 
+        <div
           className="p-2 rounded-lg"
           style={{ backgroundColor: config.light }}
         >
           <config.icon className="w-5 h-5" style={{ color: config.primary }} />
         </div>
       </div>
-      
+
       {/* Conteúdo específico do nível */}
       <div className="grid grid-cols-2 gap-4">
         {/* Status items com cores de status, não de nível */}
         {Object.entries(data).map(([status, value]) => (
-          <StatusItem 
-            key={status} 
-            status={status} 
+          <StatusItem
+            key={status}
+            status={status}
             value={value}
             // Usa cores de status, não de nível
           />
@@ -374,9 +374,9 @@ const LevelCard = ({ level, data }) => {
 const TechnicianCard = ({ technician, position }) => {
   const rankingConfig = rankingColors.position[position] || rankingColors.position.default;
   const levelConfig = levelColors[technician.level];
-  
+
   return (
-    <div 
+    <div
       className="relative overflow-hidden rounded-xl p-4 transition-all duration-300"
       style={{
         background: rankingConfig.gradient,
@@ -384,37 +384,37 @@ const TechnicianCard = ({ technician, position }) => {
       }}
     >
       {/* Posição no ranking */}
-      <div 
+      <div
         className="flex items-center justify-center w-8 h-8 rounded-full text-white text-sm font-bold mb-3"
         style={{ backgroundColor: rankingConfig.primary }}
       >
         <rankingConfig.icon className="w-4 h-4" />
       </div>
-      
+
       {/* Nível do técnico */}
-      <div 
+      <div
         className="flex items-center gap-2 mb-3"
       >
-        <div 
+        <div
           className="p-1 rounded-full"
           style={{ backgroundColor: levelConfig.light }}
         >
           <levelConfig.icon className="w-3 h-3" style={{ color: levelConfig.primary }} />
         </div>
-        <span 
+        <span
           className="text-xs font-medium px-2 py-1 rounded text-white"
           style={{ backgroundColor: levelConfig.primary }}
         >
           {technician.level}
         </span>
       </div>
-      
+
       {/* Nome e performance */}
       <div className="text-center">
         <h4 className="font-medium text-gray-900 text-sm mb-2">
           {technician.name}
         </h4>
-        <div 
+        <div
           className="text-2xl font-bold"
           style={{ color: rankingConfig.primary }}
         >
@@ -555,7 +555,7 @@ Status Gerais:     Níveis Técnicos:     Ranking:
 
 ### **Solução Proposta:**
 1. **Status**: Cores baseadas em estado/resultado
-2. **Níveis**: Cores baseadas em hierarquia/competência  
+2. **Níveis**: Cores baseadas em hierarquia/competência
 3. **Ranking**: Cores baseadas em performance/posição
 
 ### **Resultado Esperado:**

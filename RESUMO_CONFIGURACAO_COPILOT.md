@@ -126,6 +126,6 @@ FORMATO DE RESPOSTA:
 
 ---
 
-**Status:** ✅ PRONTO PARA IMPLEMENTAÇÃO  
-**Data:** 04/09/2025  
+**Status:** ✅ PRONTO PARA IMPLEMENTAÇÃO
+**Data:** 04/09/2025
 **Responsável:** Sistema de Extração GLPI

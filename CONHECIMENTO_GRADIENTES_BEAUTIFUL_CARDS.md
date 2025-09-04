@@ -53,13 +53,13 @@ const statusColors = {
     borderColor: 'border-blue-100'
   },
   progresso: {
-    color: 'text-yellow-600', 
+    color: 'text-yellow-600',
     bgColor: 'bg-yellow-50',
     borderColor: 'border-yellow-100'
   },
   pendentes: {
     color: 'text-orange-600',
-    bgColor: 'bg-orange-50', 
+    bgColor: 'bg-orange-50',
     borderColor: 'border-orange-100'
   },
   resolvidos: {
@@ -87,13 +87,13 @@ No arquivo `glpi_dashboard/frontend/src/index.css`, encontrei o sistema mais sof
 ```css
 /* Dark theme para metric-card - Design Sofisticado */
 body.dark .metric-card {
-  background: linear-gradient(135deg, 
-    rgba(30, 41, 59, 0.7) 0%, 
-    rgba(45, 27, 105, 0.4) 50%, 
+  background: linear-gradient(135deg,
+    rgba(30, 41, 59, 0.7) 0%,
+    rgba(45, 27, 105, 0.4) 50%,
     rgba(15, 23, 42, 0.8) 100%
   );
   border: 1px solid rgba(139, 92, 246, 0.25);
-  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.2), 
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.2),
               inset 0 1px 0 rgba(255, 255, 255, 0.08);
   backdrop-filter: blur(16px);
 }
@@ -106,22 +106,22 @@ body.dark .metric-card::before {
   left: 0;
   right: 0;
   height: 1px;
-  background: linear-gradient(90deg, 
-    transparent, 
-    rgba(139, 92, 246, 0.6), 
+  background: linear-gradient(90deg,
+    transparent,
+    rgba(139, 92, 246, 0.6),
     transparent
   );
 }
 
 /* Hover effect com gradiente dinâmico */
 body.dark .metric-card:hover {
-  background: linear-gradient(135deg, 
-    rgba(30, 41, 59, 0.85) 0%, 
-    rgba(45, 27, 105, 0.6) 50%, 
+  background: linear-gradient(135deg,
+    rgba(30, 41, 59, 0.85) 0%,
+    rgba(45, 27, 105, 0.6) 50%,
     rgba(15, 23, 42, 0.9) 100%
   );
-  box-shadow: 0 16px 40px rgba(139, 92, 246, 0.15), 
-              0 8px 32px rgba(0, 0, 0, 0.3), 
+  box-shadow: 0 16px 40px rgba(139, 92, 246, 0.15),
+              0 8px 32px rgba(0, 0, 0, 0.3),
               inset 0 1px 0 rgba(255, 255, 255, 0.15);
   transform: translateY(-4px) scale(1.02);
   border-color: rgba(139, 92, 246, 0.4);
@@ -180,7 +180,7 @@ export const gradientTokens = {
       semantic: 'SUCESSO'
     }
   },
-  
+
   // Gradientes para níveis de técnicos (novo sistema sem conflitos)
   levels: {
     N1: {
@@ -224,7 +224,7 @@ export const gradientTokens = {
       semantic: 'EXPERT'
     }
   },
-  
+
   // Gradientes para ranking de técnicos
   ranking: {
     first: {
@@ -268,7 +268,7 @@ export const gradientTokens = {
       semantic: 'PARTICIPANTE'
     }
   },
-  
+
   // Gradientes sofisticados para tema escuro
   sophisticated: {
     dark: {
@@ -306,7 +306,7 @@ export const StatusCardWithGradient: React.FC<StatusCardWithGradientProps> = ({
   onClick
 }) => {
   const gradientConfig = gradientTokens.status[status];
-  
+
   return (
     <motion.div
       className="relative overflow-hidden rounded-xl p-6 transition-all duration-300 cursor-pointer group"
@@ -315,8 +315,8 @@ export const StatusCardWithGradient: React.FC<StatusCardWithGradientProps> = ({
         border: `1px solid ${gradientConfig.border}`
       }}
       onClick={onClick}
-      whileHover={{ 
-        scale: 1.03, 
+      whileHover={{
+        scale: 1.03,
         y: -6,
         boxShadow: '0 20px 40px rgba(0, 0, 0, 0.15)'
       }}
@@ -331,7 +331,7 @@ export const StatusCardWithGradient: React.FC<StatusCardWithGradientProps> = ({
         }}
         transition={{ duration: 0.6 }}
       />
-      
+
       {/* Conteúdo do card */}
       <div className="flex items-center justify-between relative z-10">
         <div>
@@ -362,7 +362,7 @@ export const StatusCardWithGradient: React.FC<StatusCardWithGradientProps> = ({
     transition: all 0.3s ease;
     backdrop-filter: blur(16px);
   }
-  
+
   .status-card-sophisticated::before {
     content: '';
     position: absolute;
@@ -370,89 +370,89 @@ export const StatusCardWithGradient: React.FC<StatusCardWithGradientProps> = ({
     left: 0;
     right: 0;
     height: 1px;
-    background: linear-gradient(90deg, 
-      transparent, 
-      rgba(139, 92, 246, 0.6), 
+    background: linear-gradient(90deg,
+      transparent,
+      rgba(139, 92, 246, 0.6),
       transparent
     );
   }
-  
+
   /* Gradientes específicos por status no tema escuro */
   .status-card-sophisticated.novos {
-    background: linear-gradient(135deg, 
-      rgba(30, 41, 59, 0.7) 0%, 
-      rgba(59, 130, 246, 0.1) 50%, 
+    background: linear-gradient(135deg,
+      rgba(30, 41, 59, 0.7) 0%,
+      rgba(59, 130, 246, 0.1) 50%,
       rgba(15, 23, 42, 0.8) 100%
     );
     border: 1px solid rgba(59, 130, 246, 0.25);
   }
-  
+
   .status-card-sophisticated.progresso {
-    background: linear-gradient(135deg, 
-      rgba(30, 41, 59, 0.7) 0%, 
-      rgba(251, 191, 36, 0.1) 50%, 
+    background: linear-gradient(135deg,
+      rgba(30, 41, 59, 0.7) 0%,
+      rgba(251, 191, 36, 0.1) 50%,
       rgba(15, 23, 42, 0.8) 100%
     );
     border: 1px solid rgba(251, 191, 36, 0.25);
   }
-  
+
   .status-card-sophisticated.pendentes {
-    background: linear-gradient(135deg, 
-      rgba(30, 41, 59, 0.7) 0%, 
-      rgba(239, 68, 68, 0.1) 50%, 
+    background: linear-gradient(135deg,
+      rgba(30, 41, 59, 0.7) 0%,
+      rgba(239, 68, 68, 0.1) 50%,
       rgba(15, 23, 42, 0.8) 100%
     );
     border: 1px solid rgba(239, 68, 68, 0.25);
   }
-  
+
   .status-card-sophisticated.resolvidos {
-    background: linear-gradient(135deg, 
-      rgba(30, 41, 59, 0.7) 0%, 
-      rgba(34, 197, 94, 0.1) 50%, 
+    background: linear-gradient(135deg,
+      rgba(30, 41, 59, 0.7) 0%,
+      rgba(34, 197, 94, 0.1) 50%,
       rgba(15, 23, 42, 0.8) 100%
     );
     border: 1px solid rgba(34, 197, 94, 0.25);
   }
-  
+
   /* Hover effects */
   .status-card-sophisticated:hover {
     transform: translateY(-4px) scale(1.02);
-    box-shadow: 0 16px 40px rgba(139, 92, 246, 0.15), 
-                0 8px 32px rgba(0, 0, 0, 0.3), 
+    box-shadow: 0 16px 40px rgba(139, 92, 246, 0.15),
+                0 8px 32px rgba(0, 0, 0, 0.3),
                 inset 0 1px 0 rgba(255, 255, 255, 0.15);
   }
-  
+
   .status-card-sophisticated.novos:hover {
-    background: linear-gradient(135deg, 
-      rgba(30, 41, 59, 0.85) 0%, 
-      rgba(59, 130, 246, 0.2) 50%, 
+    background: linear-gradient(135deg,
+      rgba(30, 41, 59, 0.85) 0%,
+      rgba(59, 130, 246, 0.2) 50%,
       rgba(15, 23, 42, 0.9) 100%
     );
     border-color: rgba(59, 130, 246, 0.4);
   }
-  
+
   .status-card-sophisticated.progresso:hover {
-    background: linear-gradient(135deg, 
-      rgba(30, 41, 59, 0.85) 0%, 
-      rgba(251, 191, 36, 0.2) 50%, 
+    background: linear-gradient(135deg,
+      rgba(30, 41, 59, 0.85) 0%,
+      rgba(251, 191, 36, 0.2) 50%,
       rgba(15, 23, 42, 0.9) 100%
     );
     border-color: rgba(251, 191, 36, 0.4);
   }
-  
+
   .status-card-sophisticated.pendentes:hover {
-    background: linear-gradient(135deg, 
-      rgba(30, 41, 59, 0.85) 0%, 
-      rgba(239, 68, 68, 0.2) 50%, 
+    background: linear-gradient(135deg,
+      rgba(30, 41, 59, 0.85) 0%,
+      rgba(239, 68, 68, 0.2) 50%,
       rgba(15, 23, 42, 0.9) 100%
     );
     border-color: rgba(239, 68, 68, 0.4);
   }
-  
+
   .status-card-sophisticated.resolvidos:hover {
-    background: linear-gradient(135deg, 
-      rgba(30, 41, 59, 0.85) 0%, 
-      rgba(34, 197, 94, 0.2) 50%, 
+    background: linear-gradient(135deg,
+      rgba(30, 41, 59, 0.85) 0%,
+      rgba(34, 197, 94, 0.2) 50%,
       rgba(15, 23, 42, 0.9) 100%
     );
     border-color: rgba(34, 197, 94, 0.4);
