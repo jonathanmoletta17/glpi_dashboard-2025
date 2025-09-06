@@ -102,6 +102,24 @@ export const useDashboard = (initialFilters: FilterParams = {}): UseDashboardRet
       setError(null);
 
       try {
+        // Limpar cache quando filtros mudam para garantir dados atualizados
+        const currentDateRange = filters.dateRange;
+        const newDateRange = newFilters?.dateRange;
+        
+        // Comparar filtros de data para detectar mudanças
+        const dateRangeChanged = 
+          (currentDateRange?.startDate !== newDateRange?.startDate) ||
+          (currentDateRange?.endDate !== newDateRange?.endDate) ||
+          (currentDateRange && !newDateRange) ||
+          (!currentDateRange && newDateRange);
+        
+        if (dateRangeChanged) {
+          console.log('🔄 useDashboard - Limpando cache devido a mudança de filtros de data');
+          console.log('🔍 useDashboard - Filtros anteriores:', currentDateRange);
+          console.log('🔍 useDashboard - Novos filtros:', newDateRange);
+          apiService.clearAllCaches();
+        }
+
         // Fazer chamadas paralelas para todos os endpoints
         console.log('🚀 useDashboard - Iniciando chamadas paralelas...');
 
