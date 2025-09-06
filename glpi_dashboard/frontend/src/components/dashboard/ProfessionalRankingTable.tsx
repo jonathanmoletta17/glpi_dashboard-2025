@@ -250,10 +250,10 @@ export const ProfessionalRankingTable = React.memo<ProfessionalRankingTableProps
 }) => {
   const scrollContainerRef = useRef<HTMLDivElement>(null);
 
-  // Lógica de dados - filtrar técnicos com dados válidos
+  // Lógica de dados - incluir todos os técnicos, mesmo com dados zerados
   const topTechnicians = useMemo(() => {
     return [...data]
-      .filter(tech => tech && (tech.total_tickets > 0 || tech.resolved_tickets > 0 || tech.pending_tickets > 0))
+      .filter(tech => tech && tech.name) // Apenas verificar se existe e tem nome
       .sort((a, b) => (b.total_tickets || 0) - (a.total_tickets || 0));
   }, [data]);
 

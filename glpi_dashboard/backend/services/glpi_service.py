@@ -1138,11 +1138,12 @@ class GLPIService:
             }
 
             # Adicionar filtros de data se fornecidos usando função utilitária
+            # Para métricas por nível, usar data de modificação (campo 19) em vez de criação
             if start_date or end_date:
                 date_criteria = DateValidator.construir_criterios_filtro_data(
                     start_date=start_date,
                     end_date=end_date,
-                    field_id=self.field_ids.get("DATE_CREATION", "15"),
+                    field_id="19",  # Campo de data de modificação para métricas por nível
                     criteria_start_index=2,
                 )
                 search_params.update(date_criteria)
@@ -1243,6 +1244,7 @@ class GLPIService:
         start_date: Optional[str] = None,
         end_date: Optional[str] = None,
         correlation_id: Optional[str] = None,
+        date_field: str = "15",  # Campo de data padrão (15 = criação, 19 = modificação)
     ) -> Optional[int]:
         """Busca o total de tickets para um grupo e status específicos, com filtro de data opcional"""
         try:
@@ -1336,7 +1338,7 @@ class GLPIService:
                     date_criteria = DateValidator.construir_criterios_filtro_data(
                         start_date=start_date.strip() if start_date else None,
                         end_date=end_date.strip() if end_date else None,
-                        field_id="15",
+                        field_id=date_field,  # Usar campo de data configurável
                         criteria_start_index=2,
                     )
                     search_params.update(date_criteria)
@@ -1629,6 +1631,7 @@ class GLPIService:
                                 start_date,
                                 end_date,
                                 correlation_id,
+                                date_field="19",  # Usar data de modificação para métricas por nível
                             )
                             level_metrics[status_name] = count if count is not None else 0
 
@@ -2033,11 +2036,12 @@ class GLPIService:
                 search_params[f"criteria[{criteria_index}][value]"] = status_id
 
             # Adicionar filtros de data se fornecidos usando função utilitária
+            # Para métricas por nível, usar data de modificação (campo 19) em vez de criação (campo 15)
             if start_date or end_date:
                 date_criteria = DateValidator.construir_criterios_filtro_data(
                     start_date=start_date,
                     end_date=end_date,
-                    field_id="15",
+                    field_id="19",  # Campo de data de modificação para métricas por nível
                     criteria_start_index=criteria_index + 1,
                 )
                 search_params.update(date_criteria)
