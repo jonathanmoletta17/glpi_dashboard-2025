@@ -323,6 +323,7 @@ export const UnifiedLoading: React.FC<UnifiedLoadingProps> = ({
             </div>
           </div>
         );
+      }
 
       case 'overlay': {
         return (
