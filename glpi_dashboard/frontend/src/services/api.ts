@@ -194,7 +194,7 @@ export const apiService = {
   // Get system status
   async getSystemStatus(): Promise<SystemStatus> {
     const cacheParams = { endpoint: 'status' };
-    
+
     // Verificar cache primeiro
     const cachedData = unifiedCache.get('systemStatus', cacheParams);
     if (cachedData) {
@@ -526,7 +526,7 @@ export const apiService = {
   async getFilterTypes(): Promise<ApiResponse<any>> {
     const startTime = Date.now();
     const cacheParams = { endpoint: 'filter-types' };
-    
+
     // Verificar cache primeiro
     const cachedData = unifiedCache.get('filterTypes', cacheParams);
     if (cachedData) {
@@ -543,10 +543,10 @@ export const apiService = {
         const responseTime = Date.now() - startTime;
 
         console.log(`📋 Filter types fetched in ${responseTime}ms`);
-        
+
         // Armazenar no cache
         unifiedCache.set('filterTypes', cacheParams, response.data);
-        
+
         return response.data;
       },
       {

@@ -6,12 +6,12 @@
 import React from 'react';
 import { motion } from 'framer-motion';
 import { cn } from '../../lib/utils';
-import { 
-  getPriorityConfig, 
-  getStatusConfig, 
-  ticketAnimations, 
+import {
+  getPriorityConfig,
+  getStatusConfig,
+  ticketAnimations,
   ticketSpacing,
-  ticketTypography 
+  ticketTypography
 } from '../../design-system/ticket-tokens';
 
 export interface TicketBadgeProps {
@@ -78,7 +78,7 @@ const TicketBadge: React.FC<TicketBadgeProps> = ({
   const BadgeContent = () => (
     <>
       {showIcon && (
-        <IconComponent 
+        <IconComponent
           className={iconClasses}
           aria-hidden="true"
         />
@@ -106,7 +106,7 @@ const TicketBadge: React.FC<TicketBadgeProps> = ({
   }
 
   return (
-    <span 
+    <span
       className={badgeClasses}
       role="status"
       aria-label={`${type}: ${value}`}
@@ -140,7 +140,7 @@ export const TicketBadgeShowcase: React.FC = () => {
           ))}
         </div>
       </div>
-      
+
       <div>
         <h3 className="text-lg font-semibold mb-3">Status</h3>
         <div className="flex flex-wrap gap-2">
@@ -149,7 +149,7 @@ export const TicketBadgeShowcase: React.FC = () => {
           ))}
         </div>
       </div>
-      
+
       <div>
         <h3 className="text-lg font-semibold mb-3">Tamanhos</h3>
         <div className="flex items-center gap-4">

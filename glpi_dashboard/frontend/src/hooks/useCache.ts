@@ -61,17 +61,17 @@ export const useCache = (): UseCacheReturn => {
   const refreshAll = useCallback(async () => {
     setIsLoading(true);
     setError(null);
-    
+
     try {
       // Limpar todos os caches
       unifiedCache.clearAll();
-      
+
       // Aguardar um pouco para garantir que a limpeza foi processada
       await new Promise(resolve => setTimeout(resolve, 100));
-      
+
       // Atualizar estatísticas
       setStats(unifiedCache.getAllStats());
-      
+
       console.log('✅ Todos os caches foram atualizados');
     } catch (err) {
       const errorMessage = err instanceof Error ? err.message : 'Erro desconhecido';

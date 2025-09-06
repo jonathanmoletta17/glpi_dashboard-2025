@@ -214,7 +214,7 @@ export const ModernDashboard = React.memo<ModernDashboardProps>(function ModernD
               ]}
             />
           </div>
-          
+
           <div className="glpi-card-premium glpi-glass-premium glpi-hover-lift">
             <PremiumLevelCard
               title="Nível N3"
@@ -243,7 +243,7 @@ export const ModernDashboard = React.memo<ModernDashboardProps>(function ModernD
               ]}
             />
           </div>
-          
+
           <div className="glpi-card-premium glpi-glass-premium glpi-hover-lift">
             <PremiumLevelCard
               title="Nível N4"

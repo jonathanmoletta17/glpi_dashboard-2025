@@ -11,7 +11,7 @@ const formatDescription = (description: string): JSX.Element => {
 
   // Verifica se é uma descrição estruturada (contém campos como LOCALIZAÇÃO, RAMAL, etc.)
   const hasStructuredFields = /\b(LOCALIZAÇÃO|RAMAL|DESCRIÇÃO|DESCR)\s*:/i.test(description);
-  
+
   if (hasStructuredFields) {
     // Remove HTML tags e divide a descrição em linhas
     const cleanDescription = description.replace(/<[^>]*>/g, '').replace(/&nbsp;/g, ' ');
@@ -19,10 +19,10 @@ const formatDescription = (description: string): JSX.Element => {
     const formattedLines: JSX.Element[] = [];
     let currentField = '';
     let currentContent: string[] = [];
-    
+
     const processField = (fieldName: string, content: string[]) => {
       if (!fieldName) return;
-      
+
       const getFieldIcon = (field: string) => {
         switch (field.toUpperCase()) {
           case 'LOCALIZAÇÃO': return '📍';
@@ -32,7 +32,7 @@ const formatDescription = (description: string): JSX.Element => {
           default: return '📋';
         }
       };
-      
+
       const joinedContent = content.join(' ').trim();
       if (joinedContent) {
         formattedLines.push(
@@ -50,20 +50,20 @@ const formatDescription = (description: string): JSX.Element => {
         );
       }
     };
-    
+
     lines.forEach((line, index) => {
       const trimmedLine = line.trim();
       if (!trimmedLine) return;
-      
+
       // Verifica se é um título de campo (LOCALIZAÇÃO:, RAMAL:, etc.)
       const fieldMatch = trimmedLine.match(/^(\d+\)\s*)?(LOCALIZAÇÃO|RAMAL|DESCRIÇÃO|DESCR)\s*:?\s*(.*)$/i);
-      
+
       if (fieldMatch) {
         // Processa o campo anterior se existir
         if (currentField) {
           processField(currentField, currentContent);
         }
-        
+
         // Inicia novo campo
         const [, , fieldName, fieldValue] = fieldMatch;
         currentField = fieldName;
@@ -82,15 +82,15 @@ const formatDescription = (description: string): JSX.Element => {
         }
       }
     });
-    
+
     // Processa o último campo se existir
     if (currentField) {
       processField(currentField, currentContent);
     }
-    
+
     return <div className="space-y-2">{formattedLines}</div>;
   }
-  
+
   // Descrição não estruturada - exibe como texto normal com quebras de linha
   return (
     <div className="whitespace-pre-wrap text-gray-700 leading-relaxed p-3 bg-gray-50 rounded-lg">
@@ -181,7 +181,7 @@ export const TicketDetailModal: React.FC<TicketDetailModalProps> = ({
                   <p className="text-gray-700 dark:text-gray-300 font-medium">{ticket.phone}</p>
                 </div>
               )}
-              
+
               {/* Description */}
               <div className="bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-lg p-4">
                 <div className="flex items-center gap-2 mb-3">

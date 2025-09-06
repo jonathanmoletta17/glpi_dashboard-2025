@@ -84,29 +84,29 @@ const ProfessionalTechnicianCard = React.memo<{
   const getPositionConfig = () => {
     switch (position) {
       case 1:
-        return { 
-          bgClass: 'bg-gradient-to-br from-yellow-50 to-yellow-100', 
+        return {
+          bgClass: 'bg-gradient-to-br from-yellow-50 to-yellow-100',
           borderClass: 'border-yellow-200',
           iconClass: 'text-yellow-600',
           textClass: 'text-yellow-800'
         };
       case 2:
-        return { 
-          bgClass: 'bg-gradient-to-br from-gray-50 to-gray-100', 
+        return {
+          bgClass: 'bg-gradient-to-br from-gray-50 to-gray-100',
           borderClass: 'border-gray-200',
           iconClass: 'text-gray-600',
           textClass: 'text-gray-800'
         };
       case 3:
-        return { 
-          bgClass: 'bg-gradient-to-br from-orange-50 to-orange-100', 
+        return {
+          bgClass: 'bg-gradient-to-br from-orange-50 to-orange-100',
           borderClass: 'border-orange-200',
           iconClass: 'text-orange-600',
           textClass: 'text-orange-800'
         };
       default:
-        return { 
-          bgClass: 'bg-gradient-to-br from-blue-50 to-blue-100', 
+        return {
+          bgClass: 'bg-gradient-to-br from-blue-50 to-blue-100',
           borderClass: 'border-blue-200',
           iconClass: 'text-blue-600',
           textClass: 'text-blue-800'
@@ -117,32 +117,32 @@ const ProfessionalTechnicianCard = React.memo<{
   const getLevelConfig = (level?: string) => {
     switch (level) {
       case 'N1':
-        return { 
-          bgClass: 'bg-emerald-50 border-emerald-200', 
+        return {
+          bgClass: 'bg-emerald-50 border-emerald-200',
           textClass: 'text-emerald-700',
           label: 'N1'
         };
       case 'N2':
-        return { 
-          bgClass: 'bg-blue-50 border-blue-200', 
+        return {
+          bgClass: 'bg-blue-50 border-blue-200',
           textClass: 'text-blue-700',
           label: 'N2'
         };
       case 'N3':
-        return { 
-          bgClass: 'bg-purple-50 border-purple-200', 
+        return {
+          bgClass: 'bg-purple-50 border-purple-200',
           textClass: 'text-purple-700',
           label: 'N3'
         };
       case 'N4':
-        return { 
-          bgClass: 'bg-orange-50 border-orange-200', 
+        return {
+          bgClass: 'bg-orange-50 border-orange-200',
           textClass: 'text-orange-700',
           label: 'N4'
         };
       default:
-        return { 
-          bgClass: 'bg-gray-50 border-gray-200', 
+        return {
+          bgClass: 'bg-gray-50 border-gray-200',
           textClass: 'text-gray-700',
           label: 'Outros'
         };
@@ -179,8 +179,8 @@ const ProfessionalTechnicianCard = React.memo<{
                 #{position}
               </span>
             </div>
-            <Badge 
-              variant="outline" 
+            <Badge
+              variant="outline"
               className={cn(
                 "text-xs px-2 py-1 font-semibold dark:border-gray-600",
                 levelConfig.bgClass,
@@ -337,7 +337,7 @@ export const ProfessionalRankingTable = React.memo<ProfessionalRankingTableProps
                     return 'bg-gray-50 dark:bg-gray-800 text-gray-700 dark:text-gray-300 border-gray-200 dark:border-gray-600';
                 }
               };
-              
+
               return (
                 <Badge
                   key={`ranking-level-${level}`}

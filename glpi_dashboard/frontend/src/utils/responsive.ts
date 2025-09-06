@@ -4,7 +4,7 @@
 export const RESPONSIVE_GRID_CLASSES = {
   // Base grid classes
   grid: 'grid gap-4',
-  
+
   // Responsive columns
   cols: {
     1: 'grid-cols-1',
@@ -14,23 +14,23 @@ export const RESPONSIVE_GRID_CLASSES = {
     5: 'grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-5',
     6: 'grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-6'
   },
-  
+
   // Auto-fit responsive grid
   autoFit: {
     sm: 'grid-cols-[repeat(auto-fit,minmax(200px,1fr))]',
     md: 'grid-cols-[repeat(auto-fit,minmax(250px,1fr))]',
     lg: 'grid-cols-[repeat(auto-fit,minmax(300px,1fr))]'
   },
-  
+
   // Dashboard specific layouts
   dashboard: 'grid grid-cols-1 xl:grid-cols-3',
   levelMetrics: 'grid grid-cols-1 md:grid-cols-2 lg:grid-cols-2',
-  
+
   // Metrics cards layout
   metricsCards: {
     base: 'grid gap-4 sm:gap-6',
     mobile: 'grid-cols-1',
-    tablet: 'grid-cols-2', 
+    tablet: 'grid-cols-2',
     desktop: 'grid-cols-4'
   }
 };
@@ -39,10 +39,10 @@ export const RESPONSIVE_GRID_CLASSES = {
 export const RESPONSIVE_CONTAINER = {
   // Base container
   base: 'w-full mx-auto',
-  
+
   // Responsive padding
   padding: 'px-4 sm:px-6 lg:px-8',
-  
+
   // Max width containers
   maxWidth: {
     sm: 'max-w-sm',
@@ -57,7 +57,7 @@ export const RESPONSIVE_CONTAINER = {
     '7xl': 'max-w-7xl',
     full: 'max-w-full'
   },
-  
+
   // Full container with padding
   full: 'w-full mx-auto px-4 sm:px-6 lg:px-8'
 };
@@ -72,7 +72,7 @@ export const RESPONSIVE_SPACING = {
     lg: 'gap-6 sm:gap-8',
     xl: 'gap-8 sm:gap-10'
   },
-  
+
   // Responsive margins
   margin: {
     xs: 'm-2 sm:m-3',
@@ -89,7 +89,7 @@ export const RESPONSIVE_SPACING = {
       xl: 'mb-8 sm:mb-10'
     }
   },
-  
+
   // Responsive padding
   padding: {
     xs: 'p-2 sm:p-3',
@@ -122,7 +122,7 @@ export const createResponsiveClasses = ({
   if (base && mobile && tablet && desktop) {
     return `${base} ${mobile} md:${tablet} lg:${desktop}`;
   }
-  
+
   // Caso contrário, use a abordagem original com cols
   if (cols) {
     return [
@@ -132,7 +132,7 @@ export const createResponsiveClasses = ({
       RESPONSIVE_SPACING.padding[padding]
     ].join(' ');
   }
-  
+
   return '';
 };
 
@@ -173,7 +173,7 @@ export const mediaQueries = {
 export const useResponsive = () => {
   const getScreenSize = () => {
     if (typeof window === 'undefined') return 'lg';
-    
+
     const width = window.innerWidth;
     if (width < 640) return 'xs';
     if (width < 768) return 'sm';
@@ -181,7 +181,7 @@ export const useResponsive = () => {
     if (width < 1280) return 'lg';
     return 'xl';
   };
-  
+
   return {
     screenSize: getScreenSize(),
     isMobile: getScreenSize() === 'xs' || getScreenSize() === 'sm',

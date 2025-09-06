@@ -167,7 +167,7 @@ export const Header: React.FC<HeaderProps> = ({
         onNotification('Professional Dashboard', 'Modo Professional Dashboard ativado! 💼', 'success');
         return;
       }
-      
+
       onThemeChange(newTheme as Theme);
       setShowThemeSelector(false);
       const themeName = themes.find(t => t.value === newTheme)?.label;

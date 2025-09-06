@@ -117,10 +117,10 @@ export const MetricsGrid = React.memo<MetricsGridProps>(
       const gridClasses = createResponsiveClasses({
         base: RESPONSIVE_GRID_CLASSES.metricsCards.base,
         mobile: 'grid-cols-1',
-        tablet: 'grid-cols-2', 
+        tablet: 'grid-cols-2',
         desktop: 'grid-cols-4'
       });
-      
+
       return (
         <div className={`${gridClasses} ${className}`}>
           {Array.from({ length: 4 }).map((_, index) => (

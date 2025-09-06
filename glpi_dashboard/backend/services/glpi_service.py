@@ -1820,7 +1820,7 @@ class GLPIService:
                 "Session-Token": self.session_token,
                 "Content-Type": "application/json"
             }
-            
+
             response = self.session.get(url, params=params, headers=headers, timeout=30)
 
             if response.status_code == 200:
@@ -1854,10 +1854,10 @@ class GLPIService:
             # Extrair dados básicos do ticket
             raw_description = ticket_data.get("content", "")
             clean_description = clean_html_content(raw_description)
-            
+
             # Extrair ramal da descrição original
             phone = self._extract_phone_from_description(raw_description)
-            
+
             processed = {
                 "id": ticket_data.get("id"),
                 "title": ticket_data.get("name", ""),
@@ -1918,33 +1918,33 @@ class GLPIService:
 
     def _extract_phone_from_description(self, description: str) -> str:
         """Extrai o ramal completo da descrição do ticket
-        
+
         Args:
             description: Descrição original do ticket (pode conter HTML)
-            
+
         Returns:
             Ramal completo ou string vazia se não encontrado
         """
         try:
             if not description:
                 return ""
-            
+
             # Limpar HTML primeiro
             clean_desc = clean_html_content(description)
-            
+
             # Padrão simples e eficaz para extrair ramal - captura apenas os dígitos após RAMAL
             # Busca por "RAMAL" seguido de dois pontos opcionais e captura os dígitos
             phone_pattern = r'RAMAL\s*:?\s*:?\s*(\d+)'
-            
+
             import re
             phone_match = re.search(phone_pattern, clean_desc, re.IGNORECASE)
-            
+
             if phone_match and phone_match.group(1).strip():
                 phone_clean = phone_match.group(1).strip().replace(':', '').strip()
                 return phone_clean if phone_clean else ""
-            
+
             return ""
-            
+
         except Exception as e:
             self.logger.warning(f"Erro ao extrair ramal da descrição: {e}")
             return ""
@@ -3726,7 +3726,7 @@ class GLPIService:
         # Verificar cache primeiro
         if hasattr(self, '_cached_tech_field_id') and self._cached_tech_field_id:
             return self._cached_tech_field_id
-            
+
         try:
             self.logger.debug("Descobrindo field ID do técnico...")
 
@@ -3907,7 +3907,7 @@ class GLPIService:
         try:
             # Timeout reduzido para 15 segundos
             response = self._make_authenticated_request("GET", url, params=params, timeout=15)
-            
+
             if not response or response.status_code != 200:
                 self.logger.warning(f"Falha na requisição para técnico {tecnico_id}: {response.status_code if response else 'None'}")
                 return {
@@ -4010,7 +4010,7 @@ class GLPIService:
             # Processar técnicos em paralelo (máximo 5 threads para não sobrecarregar o GLPI)
             with concurrent.futures.ThreadPoolExecutor(max_workers=5) as executor:
                 future_to_tech = {executor.submit(get_technician_data, tech_id): tech_id for tech_id in technician_ids}
-                
+
                 for future in concurrent.futures.as_completed(future_to_tech):
                     tech_id = future_to_tech[future]
                     try:
@@ -4038,7 +4038,7 @@ class GLPIService:
                     # Buscar métricas e nível em paralelo
                     metricas = self._get_technician_metrics_corrected(tech_id)
                     tech_level = self._get_technician_level_by_name_fallback(tech_id)
-                    
+
                     return {
                         "id": tech_id,
                         "name": tech["name"],
@@ -4058,7 +4058,7 @@ class GLPIService:
             # Processar métricas em paralelo (máximo 3 threads para não sobrecarregar)
             with concurrent.futures.ThreadPoolExecutor(max_workers=3) as executor:
                 future_to_tech = {executor.submit(get_technician_metrics_and_level, tech): tech for tech in technician_candidates}
-                
+
                 for future in concurrent.futures.as_completed(future_to_tech):
                     tech = future_to_tech[future]
                     try:
@@ -5227,31 +5227,31 @@ class GLPIService:
 
     def format_ticket_description(self, raw_description: str) -> str:
         """Formata descrição de ticket de forma inteligente
-        
+
         Detecta se é uma descrição estruturada (com campos como LOCALIZAÇÃO, RAMAL, etc.)
         e formata de forma legível, ou mantém texto livre com limite apropriado.
-        
+
         Args:
             raw_description: Descrição bruta do ticket
-            
+
         Returns:
             Descrição formatada e legível
         """
         try:
             if not raw_description or not raw_description.strip():
                 return "Sem descrição"
-            
+
             # Limpar HTML primeiro
             clean_description = clean_html_content(raw_description)
-            
+
             # Detectar se é descrição estruturada
             is_structured = (
-                "Dados do formulário" in clean_description or 
+                "Dados do formulário" in clean_description or
                 "Dados Gerais" in clean_description or
                 "LOCALIZAÇÃO" in clean_description or
                 "RAMAL" in clean_description
             )
-            
+
             if is_structured:
                 return self._format_structured_description(clean_description)
             else:
@@ -5259,7 +5259,7 @@ class GLPIService:
                 if len(clean_description) > 500:
                     return clean_description[:497] + "..."
                 return clean_description
-                
+
         except Exception as e:
             self.logger.warning(f"Erro ao formatar descrição: {e}")
             # Fallback: retornar descrição limpa com limite de 500 caracteres
@@ -5267,47 +5267,47 @@ class GLPIService:
             if len(clean_fallback) > 500:
                 return clean_fallback[:497] + "..."
             return clean_fallback
-    
+
     def _format_structured_description(self, description: str) -> str:
         """Formata descrição estruturada extraindo campos principais
-        
+
         Args:
             description: Descrição limpa com estrutura de formulário
-            
+
         Returns:
             Descrição formatada de forma profissional e legível
         """
         try:
             # Extrair campos principais usando regex
             import re
-            
+
             # Padrões para extrair informações
             location_pattern = r'LOCALIZAÇÃO\s*:?\s*([^\n\r]+?)(?=\d+\)|$|RAMAL|DESCR)'
             phone_pattern = r'RAMAL\s*:?\s*:?\s*([^\n\r]+?)(?=\d+\)|$|DESCR)'
             description_pattern = r'DESCR[IÇ]?[ÃA]?O?\s*DO\s*PEDIDO\s*:?\s*([\s\S]+?)(?=$|\n\n|Dados|\d+\)\s*ARQUIVO)'
-            
+
             location = re.search(location_pattern, description, re.IGNORECASE)
             phone = re.search(phone_pattern, description, re.IGNORECASE)
             desc_content = re.search(description_pattern, description, re.IGNORECASE)
-            
+
             # Construir descrição formatada
             formatted_parts = []
-            
+
             if location and location.group(1).strip():
                 formatted_parts.append(f"Localização: {location.group(1).strip()}")
-            
+
             if phone and phone.group(1).strip():
                 phone_clean = phone.group(1).strip().replace(':', '').strip()
                 if phone_clean:
                     formatted_parts.append(f"Ramal: {phone_clean}")
-            
+
             if desc_content and desc_content.group(1).strip():
                 desc_text = desc_content.group(1).strip()
                 # Limitar descrição a 300 caracteres para manter legibilidade
                 if len(desc_text) > 300:
                     desc_text = desc_text[:297] + "..."
                 formatted_parts.append(f"Descrição: {desc_text}")
-            
+
             if formatted_parts:
                 return " | ".join(formatted_parts)
             else:
@@ -5315,7 +5315,7 @@ class GLPIService:
                 if len(description) > 300:
                     return description[:297] + "..."
                 return description
-                
+
         except Exception as e:
             self.logger.warning(f"Erro ao formatar descrição estruturada: {e}")
             # Fallback para descrição original limitada
@@ -5380,7 +5380,7 @@ class GLPIService:
                     # Extrair e formatar descrição usando nova função inteligente
                     raw_description = ticket_data.get("21", "")
                     formatted_description = self.format_ticket_description(raw_description)
-                    
+
                     # Extrair informações do ticket
                     ticket_info = {
                         "id": str(ticket_data.get("2", "")),  # ID do ticket
@@ -5877,48 +5877,48 @@ class GLPIService:
             return {tech_id: 0 for tech_id in technician_ids}
 
     def _get_technician_batch_optimized(
-        self, 
-        technician_ids: List[str], 
-        start_date: str = None, 
+        self,
+        technician_ids: List[str],
+        start_date: str = None,
         end_date: str = None
     ) -> Dict[str, int]:
         """
         Busca dados de múltiplos técnicos em uma única requisição
         Reduz de N requisições para 1 requisição
-        
+
         Args:
             technician_ids: Lista de IDs dos técnicos
             start_date: Data de início no formato YYYY-MM-DD (opcional)
             end_date: Data de fim no formato YYYY-MM-DD (opcional)
-            
+
         Returns:
             Dict com contagem de tickets por técnico
         """
         import time
-        
+
         start_time = time.time()
-        
+
         try:
             # Log detalhado de início
             self.logger.info(f"[BATCH_OPTIMIZED] Iniciando processamento em lote para {len(technician_ids)} técnicos")
             self.logger.info(f"[BATCH_OPTIMIZED] Período: {start_date or 'sem filtro'} a {end_date or 'sem filtro'}")
-            
+
             # Validação de entrada
             if not technician_ids:
                 self.logger.warning("[BATCH_OPTIMIZED] Lista de técnicos vazia")
                 return {}
-            
+
             # Descobrir o campo correto para técnico responsável dinamicamente
             tech_field_id = self._discover_tech_field_id()
             if not tech_field_id:
                 self.logger.error("[BATCH_OPTIMIZED] Não foi possível descobrir o campo do técnico")
                 raise Exception("Campo do técnico não encontrado")
-            
+
             self.logger.info(f"[BATCH_OPTIMIZED] Campo do técnico descoberto: {tech_field_id}")
-            
+
             # Usar método otimizado com requisições individuais range 0-0
             ticket_counts = {tech_id: 0 for tech_id in technician_ids}
-            
+
             # Para cada técnico, usar método otimizado que retorna apenas contagem
             for tech_id in technician_ids:
                 try:
@@ -5928,27 +5928,27 @@ class GLPIService:
                     else:
                         # Usar método otimizado sem filtro de data (range 0-0)
                         count = self._count_tickets_by_technician_optimized(int(tech_id), tech_field_id)
-                    
+
                     ticket_counts[tech_id] = count if count is not None else 0
                     self.logger.info(f"[BATCH_OPTIMIZED] Técnico {tech_id}: {ticket_counts[tech_id]} tickets")
-                    
+
                 except Exception as e:
                     self.logger.error(f"[BATCH_OPTIMIZED] Erro ao processar técnico {tech_id}: {e}")
                     ticket_counts[tech_id] = 0
-            
+
             elapsed_time = time.time() - start_time
             total_tickets = sum(ticket_counts.values())
             self.logger.info(f"[BATCH_OPTIMIZED] Processamento concluído em {elapsed_time:.2f}s")
             self.logger.info(f"[BATCH_OPTIMIZED] Total de tickets encontrados: {total_tickets}")
             self.logger.info(f"[BATCH_OPTIMIZED] Distribuição por técnico: {dict(ticket_counts)}")
-            
+
             return ticket_counts
 
-            
+
         except Exception as e:
             elapsed_time = time.time() - start_time
             self.logger.error(f"[BATCH_OPTIMIZED] Erro no batch processing após {elapsed_time:.2f}s: {e}")
-            
+
             # Fallback para método original
             self.logger.info("[BATCH_OPTIMIZED] Executando fallback para método original")
             try:
@@ -6025,7 +6025,7 @@ class GLPIService:
             entity_id: ID da entidade para filtrar técnicos
         """
         start_time = time.time()  # Definir start_time no início para evitar NameError
-        
+
         # Log simples para confirmar que o método está sendo chamado
         print(f"[DEBUG] get_technician_ranking_with_filters CHAMADO - start_date: {start_date}, end_date: {end_date}")
 
@@ -6341,7 +6341,7 @@ class GLPIService:
                         ticket_id = str(ticket_data.get("2", ""))
                         title = ticket_data.get("1", "Sem título")
                         raw_description = ticket_data.get("21", "")
-                        
+
                         # Formatar descrição usando nova função inteligente
                         description = self.format_ticket_description(raw_description)
 

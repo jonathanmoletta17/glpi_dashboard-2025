@@ -1,6 +1,6 @@
 /**
  * Sistema de Cache Unificado
- * 
+ *
  * Consolida todos os sistemas de cache em uma única interface,
  * eliminando duplicidades e inconsistências identificadas na auditoria.
  */
@@ -63,7 +63,7 @@ class UnifiedCacheManager {
   private pendingRequests = new Map<string, PendingRequest>();
   private lastRequestTimes = new Map<string, number>();
   private globalCache = new Map<string, { data: any; timestamp: number }>();
-  
+
   private readonly defaultConfig: CacheConfig = {
     ttl: 5 * 60 * 1000, // 5 minutos
     maxSize: 100,
@@ -87,7 +87,7 @@ class UnifiedCacheManager {
    * Registra um novo tipo de cache
    */
   registerCacheType(
-    type: string, 
+    type: string,
     config: Partial<CacheConfig> = {}
   ): void {
     const finalConfig = { ...this.defaultConfig, ...config };
@@ -126,14 +126,14 @@ class UnifiedCacheManager {
   private isCacheActive(type: string): boolean {
     const config = this.configs.get(type);
     if (!config) return false;
-    
+
     if (!config.autoActivate) return true;
-    
+
     // Verificar se deve ativar baseado em performance/uso
     const requestCount = this.requestCounts.get(type) || 0;
     const avgResponseTime = this.getAverageResponseTime(type);
-    
-    return avgResponseTime >= config.performanceThreshold! || 
+
+    return avgResponseTime >= config.performanceThreshold! ||
            requestCount >= config.usageThreshold!;
   }
 
@@ -278,12 +278,12 @@ class UnifiedCacheManager {
 
     const key = this.generateKey(params);
     const deleted = cache.delete(key);
-    
+
     if (deleted) {
       const stats = this.stats.get(type);
       if (stats) stats.deletes++;
     }
-    
+
     return deleted;
   }
 
@@ -319,7 +319,7 @@ class UnifiedCacheManager {
 
     const regex = new RegExp(pattern);
     let deletedCount = 0;
-    
+
     for (const [key] of cache.entries()) {
       if (regex.test(key)) {
         cache.delete(key);
@@ -369,7 +369,7 @@ class UnifiedCacheManager {
 
     // Executar requisição
     const promise = this.executeRequest(type, globalKey, requestFn, finalConfig);
-    
+
     this.pendingRequests.set(globalKey, {
       promise,
       timestamp: now,
@@ -418,7 +418,7 @@ class UnifiedCacheManager {
     const cache = this.caches.get(type);
     const config = this.configs.get(type);
     const stats = this.stats.get(type);
-    
+
     if (!cache || !config || !stats) return null;
 
     const entries = Array.from(cache.entries()).map(([key, entry]) => ({
@@ -445,14 +445,14 @@ class UnifiedCacheManager {
    */
   getAllStats(): Record<string, CacheStats> {
     const allStats: Record<string, CacheStats> = {};
-    
+
     for (const type of this.caches.keys()) {
       const stats = this.getStats(type);
       if (stats) {
         allStats[type] = stats;
       }
     }
-    
+
     return allStats;
   }
 

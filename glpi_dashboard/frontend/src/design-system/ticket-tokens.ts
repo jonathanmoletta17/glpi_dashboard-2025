@@ -235,11 +235,11 @@ export const ticketTypography = {
 export const ticketAnimations = {
   item: {
     hidden: { opacity: 0, y: 8, scale: 0.98 },
-    visible: { 
-      opacity: 1, 
-      y: 0, 
+    visible: {
+      opacity: 1,
+      y: 0,
       scale: 1,
-      transition: { 
+      transition: {
         duration: 0.2,
         ease: 'easeOut'
       }
@@ -257,7 +257,7 @@ export const ticketAnimations = {
     hidden: { opacity: 0 },
     visible: {
       opacity: 1,
-      transition: { 
+      transition: {
         staggerChildren: 0.05,
         delayChildren: 0.1
       }
@@ -265,8 +265,8 @@ export const ticketAnimations = {
   },
   badge: {
     initial: { scale: 0.9, opacity: 0 },
-    animate: { 
-      scale: 1, 
+    animate: {
+      scale: 1,
       opacity: 1,
       transition: { duration: 0.2 }
     }

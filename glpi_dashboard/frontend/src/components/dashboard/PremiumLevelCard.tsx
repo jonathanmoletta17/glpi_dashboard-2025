@@ -24,32 +24,32 @@ const statusIcons = {
 const getStatusConfig = (label: string) => {
   switch (label) {
     case 'Novos':
-      return { 
-        iconColor: 'text-blue-500 dark:text-blue-400', 
+      return {
+        iconColor: 'text-blue-500 dark:text-blue-400',
         textColor: 'text-gray-900 dark:text-white',
         bgClass: 'bg-gray-50 dark:bg-gray-800/50 border-gray-200 dark:border-gray-700'
       };
     case 'Em Progresso':
-      return { 
-        iconColor: 'text-amber-500 dark:text-amber-400', 
+      return {
+        iconColor: 'text-amber-500 dark:text-amber-400',
         textColor: 'text-gray-900 dark:text-white',
         bgClass: 'bg-gray-50 dark:bg-gray-800/50 border-gray-200 dark:border-gray-700'
       };
     case 'Pendentes':
-      return { 
-        iconColor: 'text-orange-500 dark:text-orange-400', 
+      return {
+        iconColor: 'text-orange-500 dark:text-orange-400',
         textColor: 'text-gray-900 dark:text-white',
         bgClass: 'bg-gray-50 dark:bg-gray-800/50 border-gray-200 dark:border-gray-700'
       };
     case 'Resolvidos':
-      return { 
-        iconColor: 'text-emerald-500 dark:text-emerald-400', 
+      return {
+        iconColor: 'text-emerald-500 dark:text-emerald-400',
         textColor: 'text-gray-900 dark:text-white',
         bgClass: 'bg-gray-50 dark:bg-gray-800/50 border-gray-200 dark:border-gray-700'
       };
     default:
-      return { 
-        iconColor: 'text-gray-500 dark:text-gray-400', 
+      return {
+        iconColor: 'text-gray-500 dark:text-gray-400',
         textColor: 'text-gray-900 dark:text-white',
         bgClass: 'bg-gray-50 dark:bg-gray-800/50 border-gray-200 dark:border-gray-700'
       };
@@ -64,32 +64,32 @@ export const PremiumLevelCard: React.FC<LevelCardProps> = ({
   const getLevelConfig = (title: string) => {
     switch (title) {
       case 'Nível N1':
-        return { 
-          bgClass: 'bg-gradient-to-br from-gray-50 to-gray-100 dark:from-gray-800 dark:to-gray-900', 
+        return {
+          bgClass: 'bg-gradient-to-br from-gray-50 to-gray-100 dark:from-gray-800 dark:to-gray-900',
           textClass: 'text-gray-900 dark:text-white',
           accentColor: 'text-emerald-600 dark:text-emerald-400'
         };
       case 'Nível N2':
-        return { 
-          bgClass: 'bg-gradient-to-br from-gray-50 to-gray-100 dark:from-gray-800 dark:to-gray-900', 
+        return {
+          bgClass: 'bg-gradient-to-br from-gray-50 to-gray-100 dark:from-gray-800 dark:to-gray-900',
           textClass: 'text-gray-900 dark:text-white',
           accentColor: 'text-blue-600 dark:text-blue-400'
         };
       case 'Nível N3':
-        return { 
-          bgClass: 'bg-gradient-to-br from-gray-50 to-gray-100 dark:from-gray-800 dark:to-gray-900', 
+        return {
+          bgClass: 'bg-gradient-to-br from-gray-50 to-gray-100 dark:from-gray-800 dark:to-gray-900',
           textClass: 'text-gray-900 dark:text-white',
           accentColor: 'text-purple-600 dark:text-purple-400'
         };
       case 'Nível N4':
-        return { 
-          bgClass: 'bg-gradient-to-br from-gray-50 to-gray-100 dark:from-gray-800 dark:to-gray-900', 
+        return {
+          bgClass: 'bg-gradient-to-br from-gray-50 to-gray-100 dark:from-gray-800 dark:to-gray-900',
           textClass: 'text-gray-900 dark:text-white',
           accentColor: 'text-orange-600 dark:text-orange-400'
         };
       default:
-        return { 
-          bgClass: 'bg-gradient-to-br from-gray-50 to-gray-100 dark:from-gray-800 dark:to-gray-900', 
+        return {
+          bgClass: 'bg-gradient-to-br from-gray-50 to-gray-100 dark:from-gray-800 dark:to-gray-900',
           textClass: 'text-gray-900 dark:text-white',
           accentColor: 'text-gray-600 dark:text-gray-400'
         };
@@ -122,7 +122,7 @@ export const PremiumLevelCard: React.FC<LevelCardProps> = ({
           {stats.map((stat, index) => {
             const Icon = statusIcons[stat.label as keyof typeof statusIcons] || AlertCircle;
             const statusConfig = getStatusConfig(stat.label);
-            
+
             return (
               <div
                 key={index}

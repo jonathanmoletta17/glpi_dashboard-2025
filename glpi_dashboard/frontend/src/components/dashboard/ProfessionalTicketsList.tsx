@@ -19,13 +19,13 @@ interface ProfessionalTicketsListProps {
 // Variantes de animação profissionais
 const itemVariants = {
   hidden: { opacity: 0, y: 10 },
-  visible: { 
-    opacity: 1, 
-    y: 0, 
-    transition: { 
+  visible: {
+    opacity: 1,
+    y: 0,
+    transition: {
       duration: 0.3,
       ease: 'easeOut' as const
-    } 
+    }
   },
   hover: {
     y: -1,
@@ -86,26 +86,26 @@ const ProfessionalTicketItem = React.memo<{
   const getPriorityConfig = (priority: string) => {
     switch (priority.toLowerCase()) {
       case 'alta':
-        return { 
-          bgClass: 'bg-red-50 border-red-200', 
+        return {
+          bgClass: 'bg-red-50 border-red-200',
           textClass: 'text-red-700',
           iconClass: 'text-red-600'
         };
       case 'média':
-        return { 
-          bgClass: 'bg-yellow-50 border-yellow-200', 
+        return {
+          bgClass: 'bg-yellow-50 border-yellow-200',
           textClass: 'text-yellow-700',
           iconClass: 'text-yellow-600'
         };
       case 'baixa':
-        return { 
-          bgClass: 'bg-green-50 border-green-200', 
+        return {
+          bgClass: 'bg-green-50 border-green-200',
           textClass: 'text-green-700',
           iconClass: 'text-green-600'
         };
       default:
-        return { 
-          bgClass: 'bg-gray-50 border-gray-200', 
+        return {
+          bgClass: 'bg-gray-50 border-gray-200',
           textClass: 'text-gray-700',
           iconClass: 'text-gray-600'
         };
@@ -126,8 +126,8 @@ const ProfessionalTicketItem = React.memo<{
         <div className="flex items-start justify-between gap-3">
           {/* Badge de prioridade */}
           <div className="flex-shrink-0">
-            <Badge 
-              variant="outline" 
+            <Badge
+              variant="outline"
               className={`${priorityConfig.bgClass} ${priorityConfig.textClass} border text-xs px-2 py-1`}
             >
               {ticket.priority}
@@ -139,8 +139,8 @@ const ProfessionalTicketItem = React.memo<{
             <div className="flex items-start justify-between gap-2">
               <div className="flex items-center gap-2">
                 <span className="text-xs font-medium text-gray-500 dark:text-gray-400">#{ticket.id}</span>
-                <Badge 
-                  variant="outline" 
+                <Badge
+                  variant="outline"
                   className="bg-blue-50 dark:bg-blue-900/30 text-blue-700 dark:text-blue-300 border-blue-200 dark:border-blue-700 text-xs px-2 py-1"
                 >
                   Novo
@@ -298,8 +298,8 @@ export const ProfessionalTicketsList = React.memo<ProfessionalTicketsListProps>(
           </CardTitle>
 
           <div className="flex items-center gap-2">
-            <Badge 
-              variant="outline" 
+            <Badge
+              variant="outline"
               className="bg-white dark:bg-gray-700 text-gray-700 dark:text-gray-300 border-gray-300 dark:border-gray-600 text-xs px-2 py-1 font-semibold shadow-sm"
             >
               {ticketsCount} tickets

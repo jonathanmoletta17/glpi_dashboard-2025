@@ -100,8 +100,8 @@ const TicketItem = React.memo<{
       <div className={cn('flex items-start justify-between gap-3')}>
         {/* Badge de prioridade */}
         <div className="flex-shrink-0">
-          <PriorityBadge 
-            value={ticket.priority} 
+          <PriorityBadge
+            value={ticket.priority}
             size="sm"
             className={ticketSpacing.badge.margin}
           />
@@ -112,8 +112,8 @@ const TicketItem = React.memo<{
           <div className="flex items-start justify-between gap-2">
             <div className="flex items-center gap-2">
               <span className={cn(ticketTypography.metadata.size, ticketTypography.metadata.weight, ticketTypography.metadata.color)}>#{ticket.id}</span>
-              <StatusBadge 
-                value="novo" 
+              <StatusBadge
+                value="novo"
                 size="sm"
               />
             </div>

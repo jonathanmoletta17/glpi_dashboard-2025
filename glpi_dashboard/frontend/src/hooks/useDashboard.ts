@@ -131,7 +131,7 @@ export const useDashboard = (initialFilters: FilterParams = {}): UseDashboardRet
               const startDate = new Date(filtersToUse.dateRange.startDate);
               const endDate = new Date(filtersToUse.dateRange.endDate);
               const daysDiff = (endDate.getTime() - startDate.getTime()) / (1000 * 60 * 60 * 24);
-              
+
               if (daysDiff >= 30) { // Só aplicar filtros se período for >= 30 dias
                 rankingFilters.start_date = filtersToUse.dateRange.startDate;
                 rankingFilters.end_date = filtersToUse.dateRange.endDate;
@@ -148,7 +148,7 @@ export const useDashboard = (initialFilters: FilterParams = {}): UseDashboardRet
             try {
               const result = await apiService.getTechnicianRanking(rankingFilters);
               console.log('✅ useDashboard - getTechnicianRanking sucesso:', result);
-              
+
               // Se não retornou dados com filtros, tentar sem filtros
               if (result.length === 0 && (rankingFilters.start_date || rankingFilters.end_date)) {
                 console.log('🔄 useDashboard - Nenhum técnico encontrado com filtros, tentando sem filtros...');
@@ -156,7 +156,7 @@ export const useDashboard = (initialFilters: FilterParams = {}): UseDashboardRet
                 console.log('✅ useDashboard - getTechnicianRanking fallback sucesso:', fallbackResult);
                 return fallbackResult;
               }
-              
+
               return result;
             } catch (error) {
               console.error('❌ useDashboard - Erro em getTechnicianRanking:', error);
