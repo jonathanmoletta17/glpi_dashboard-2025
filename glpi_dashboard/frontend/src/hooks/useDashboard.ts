@@ -3,7 +3,6 @@ import { apiService } from '../services/api';
 import type { DashboardMetrics, FilterParams } from '../types/api';
 import { SystemStatus, NotificationData } from '../types';
 import { useSmartRefresh } from './useSmartRefresh';
-// Removed unused imports
 
 interface UseDashboardReturn {
   metrics: DashboardMetrics | null;
@@ -36,10 +35,6 @@ interface UseDashboardReturn {
   updateDateRange: (dateRange: any) => void;
 }
 
-// Removed unused initialFilterState
-
-// Removed unused initialMetrics
-
 const initialSystemStatus: SystemStatus = {
   api: 'offline',
   glpi: 'offline',
@@ -52,33 +47,16 @@ const initialSystemStatus: SystemStatus = {
   ultima_atualizacao: new Date().toISOString(),
 };
 
-// Removed unused getDefaultDateRange
-
-// Removed unused initialState
-
-// Removed unused performConsistencyChecks function
-
 export const useDashboard = (initialFilters: FilterParams = {}): UseDashboardReturn => {
   const [data, setData] = useState<DashboardMetrics | null>(null);
   const [loading, setLoading] = useState<boolean>(true);
   const [error, setError] = useState<string | null>(null);
-  // Removed unused state variables
   const [filters, setFilters] = useState<FilterParams>(initialFilters);
   // Derivar dados dos resultados da API
   const levelMetrics = data?.niveis || null;
 
-  // Debug logs temporários
-  console.log('🔍 useDashboard - data completo:', data);
-  console.log('🔍 useDashboard - data.niveis:', data?.niveis);
-  console.log('🔍 useDashboard - levelMetrics derivado:', levelMetrics);
   const systemStatus = data?.systemStatus || initialSystemStatus;
   const technicianRanking = data?.technicianRanking || [];
-
-  // Debug logs para investigar o problema do ranking
-  console.log('🔍 useDashboard - data?.technicianRanking:', data?.technicianRanking);
-  console.log('🔍 useDashboard - technicianRanking final:', technicianRanking);
-  console.log('🔍 useDashboard - technicianRanking length:', technicianRanking?.length);
-  console.log('🔍 useDashboard - technicianRanking é array?', Array.isArray(technicianRanking));
   const [isPending] = useState<boolean>(false);
   const [notifications, setNotifications] = useState<any[]>([]);
   const [searchQuery, setSearchQuery] = useState<string>('');
@@ -114,14 +92,10 @@ export const useDashboard = (initialFilters: FilterParams = {}): UseDashboardRet
           (!currentDateRange && newDateRange);
         
         if (dateRangeChanged) {
-          console.log('🔄 useDashboard - Limpando cache devido a mudança de filtros de data');
-          console.log('🔍 useDashboard - Filtros anteriores:', currentDateRange);
-          console.log('🔍 useDashboard - Novos filtros:', newDateRange);
           apiService.clearAllCaches();
         }
 
         // Fazer chamadas paralelas para todos os endpoints
-        console.log('🚀 useDashboard - Iniciando chamadas paralelas...');
 
         const [metricsResult, systemStatusResult, technicianRankingResult] = await Promise.all([
           apiService.getMetrics(filtersToUse.dateRange ? {
@@ -130,11 +104,9 @@ export const useDashboard = (initialFilters: FilterParams = {}): UseDashboardRet
             label: filtersToUse.dateRange.label || 'Período personalizado'
           } : undefined),
           (async () => {
-            console.log('🔄 useDashboard - Chamando getSystemStatus...');
             return await apiService.getSystemStatus();
           })(),
           (async () => {
-            console.log('🔄 useDashboard - Iniciando getTechnicianRanking...');
             // Preparar filtros para o ranking de técnicos
             // NOTA: Ranking de técnicos não deve ser filtrado por data pois pode não ter dados históricos
             const rankingFilters: any = {
@@ -153,25 +125,15 @@ export const useDashboard = (initialFilters: FilterParams = {}): UseDashboardRet
               if (daysDiff >= 30) { // Só aplicar filtros se período for >= 30 dias
                 rankingFilters.start_date = filtersToUse.dateRange.startDate;
                 rankingFilters.end_date = filtersToUse.dateRange.endDate;
-                console.log('🔍 useDashboard - Aplicando filtros de data ao ranking:', rankingFilters);
-              } else {
-                console.log('🔍 useDashboard - Período muito restritivo, buscando ranking sem filtros de data');
               }
-            } else {
-              console.log('🔍 useDashboard - Buscando ranking sem filtros de data');
             }
-
-            console.log('🔍 useDashboard - Filtros finais para ranking:', rankingFilters);
 
             try {
               const result = await apiService.getTechnicianRanking(rankingFilters);
-              console.log('✅ useDashboard - getTechnicianRanking sucesso:', result);
 
               // Se não retornou dados com filtros, tentar sem filtros
               if (result.length === 0 && (rankingFilters.start_date || rankingFilters.end_date)) {
-                console.log('🔄 useDashboard - Nenhum técnico encontrado com filtros, tentando sem filtros...');
                 const fallbackResult = await apiService.getTechnicianRanking({ limit: 50 });
-                console.log('✅ useDashboard - getTechnicianRanking fallback sucesso:', fallbackResult);
                 return fallbackResult;
               }
 
@@ -221,8 +183,6 @@ export const useDashboard = (initialFilters: FilterParams = {}): UseDashboardRet
     },
     [filters]
   );
-
-  // Removed unused forceRefresh function
 
   // Load data on mount
   useEffect(() => {
