@@ -3,6 +3,7 @@ import { Ticket } from '../types/ticket';
 import { Clock, User, AlertCircle, CheckCircle, Circle, Play } from 'lucide-react';
 import { createCardClasses, createFlexClasses, TAILWIND_CLASSES } from '../design-system/utils';
 import { cn } from '../lib/utils';
+import { PriorityBadge, StatusBadge } from './ui/TicketBadge';
 
 interface TicketListProps {
   onTicketClick: (ticket: Ticket) => void;
@@ -272,7 +273,7 @@ export const TicketList: React.FC<TicketListProps> = ({ onTicketClick }) => {
               <div className={createFlexClasses('row', 'start', 'between', 'normal')}>
                 <div className="flex-1">
                   <div className={cn(createFlexClasses('row', 'center', 'start', 'small'), TAILWIND_CLASSES.margin.small)}>
-                    {getStatusIcon(ticket.status)}
+                    <StatusBadge value={ticket.status} />
                     <h3 className="font-semibold text-gray-900 text-lg">{ticket.title}</h3>
                     <span className="text-sm text-gray-500">#{ticket.id}</span>
                   </div>
@@ -295,16 +296,7 @@ export const TicketList: React.FC<TicketListProps> = ({ onTicketClick }) => {
                 </div>
 
                 <div className={cn("flex flex-col items-end", TAILWIND_CLASSES.gap.items)}>
-                  <span className={cn(
-                    "rounded-full text-xs font-medium",
-                    TAILWIND_CLASSES.padding.badge,
-                    ticket.priority === 'urgente' ? 'bg-red-100 text-red-800' :
-                    ticket.priority === 'alta' ? 'bg-orange-100 text-orange-800' :
-                    ticket.priority === 'normal' ? 'bg-blue-100 text-blue-800' :
-                    'bg-gray-100 text-gray-800'
-                  )}>
-                    {ticket.priority.charAt(0).toUpperCase() + ticket.priority.slice(1)}
-                  </span>
+                  <PriorityBadge value={ticket.priority} />
 
                   {ticket.technician && (
                     <div className={cn(createFlexClasses('row', 'center', 'start', 'small'), "text-sm text-gray-600")}>

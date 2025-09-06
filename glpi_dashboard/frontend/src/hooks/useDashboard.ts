@@ -1,5 +1,5 @@
 import { useState, useEffect, useCallback } from 'react';
-import { fetchDashboardMetrics, apiService } from '../services/api';
+import { apiService } from '../services/api';
 import type { DashboardMetrics, FilterParams } from '../types/api';
 import { SystemStatus, NotificationData } from '../types';
 import { useSmartRefresh } from './useSmartRefresh';
@@ -106,7 +106,11 @@ export const useDashboard = (initialFilters: FilterParams = {}): UseDashboardRet
         console.log('🚀 useDashboard - Iniciando chamadas paralelas...');
 
         const [metricsResult, systemStatusResult, technicianRankingResult] = await Promise.all([
-          fetchDashboardMetrics(filtersToUse),
+          apiService.getMetrics(filtersToUse.dateRange ? {
+            startDate: filtersToUse.dateRange.startDate,
+            endDate: filtersToUse.dateRange.endDate,
+            label: filtersToUse.dateRange.label || 'Período personalizado'
+          } : undefined),
           (async () => {
             console.log('🔄 useDashboard - Chamando getSystemStatus...');
             return await apiService.getSystemStatus();
@@ -114,22 +118,45 @@ export const useDashboard = (initialFilters: FilterParams = {}): UseDashboardRet
           (async () => {
             console.log('🔄 useDashboard - Iniciando getTechnicianRanking...');
             // Preparar filtros para o ranking de técnicos
-            const rankingFilters: any = {};
+            // NOTA: Ranking de técnicos não deve ser filtrado por data pois pode não ter dados históricos
+            const rankingFilters: any = {
+              limit: 50 // Aumentar limite para mostrar mais técnicos
+            };
 
-            if (filtersToUse.dateRange?.startDate) {
-              rankingFilters.start_date = filtersToUse.dateRange.startDate;
-            }
-            if (filtersToUse.dateRange?.endDate) {
-              rankingFilters.end_date = filtersToUse.dateRange.endDate;
+            // Aplicar filtros de data apenas se especificamente solicitado
+            // Por padrão, buscar ranking sem filtros de data para garantir dados
+            if (filtersToUse.dateRange?.startDate && filtersToUse.dateRange?.endDate) {
+              // Só aplicar filtros de data se ambos startDate e endDate estiverem definidos
+              // e se não for um período muito restritivo (menos de 30 dias)
+              const startDate = new Date(filtersToUse.dateRange.startDate);
+              const endDate = new Date(filtersToUse.dateRange.endDate);
+              const daysDiff = (endDate.getTime() - startDate.getTime()) / (1000 * 60 * 60 * 24);
+              
+              if (daysDiff >= 30) { // Só aplicar filtros se período for >= 30 dias
+                rankingFilters.start_date = filtersToUse.dateRange.startDate;
+                rankingFilters.end_date = filtersToUse.dateRange.endDate;
+                console.log('🔍 useDashboard - Aplicando filtros de data ao ranking:', rankingFilters);
+              } else {
+                console.log('🔍 useDashboard - Período muito restritivo, buscando ranking sem filtros de data');
+              }
+            } else {
+              console.log('🔍 useDashboard - Buscando ranking sem filtros de data');
             }
 
-            console.log('🔍 useDashboard - Filtros para ranking:', rankingFilters);
+            console.log('🔍 useDashboard - Filtros finais para ranking:', rankingFilters);
 
             try {
-              const result = await apiService.getTechnicianRanking(
-                Object.keys(rankingFilters).length > 0 ? rankingFilters : undefined
-              );
+              const result = await apiService.getTechnicianRanking(rankingFilters);
               console.log('✅ useDashboard - getTechnicianRanking sucesso:', result);
+              
+              // Se não retornou dados com filtros, tentar sem filtros
+              if (result.length === 0 && (rankingFilters.start_date || rankingFilters.end_date)) {
+                console.log('🔄 useDashboard - Nenhum técnico encontrado com filtros, tentando sem filtros...');
+                const fallbackResult = await apiService.getTechnicianRanking({ limit: 50 });
+                console.log('✅ useDashboard - getTechnicianRanking fallback sucesso:', fallbackResult);
+                return fallbackResult;
+              }
+              
               return result;
             } catch (error) {
               console.error('❌ useDashboard - Erro em getTechnicianRanking:', error);
@@ -182,7 +209,7 @@ export const useDashboard = (initialFilters: FilterParams = {}): UseDashboardRet
   // Load data on mount
   useEffect(() => {
     loadData();
-  }, [loadData]);
+  }, []); // eslint-disable-line react-hooks/exhaustive-deps
 
   // Smart refresh - coordenado e inteligente
   useSmartRefresh({

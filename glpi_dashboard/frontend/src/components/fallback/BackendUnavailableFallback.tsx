@@ -1,5 +1,5 @@
 import React from 'react';
-import { AlertTriangle, RefreshCw, Wifi, WifiOff } from 'lucide-react';
+import { AlertTriangle, RefreshCw, Wifi, WifiOff, Lightbulb } from 'lucide-react';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { cn } from '@/lib/utils';
 
@@ -90,7 +90,7 @@ const BackendUnavailableFallback: React.FC<BackendUnavailableFallbackProps> = ({
 
           {type === 'timeout' && (
             <div className='text-sm text-gray-500 dark:text-gray-500 space-y-1'>
-              <p>💡 <strong>Dicas:</strong></p>
+              <p className="flex items-center gap-2"><Lightbulb className="w-4 h-4" /> <strong>Dicas:</strong></p>
               <ul className='text-left space-y-1 ml-4'>
                 <li>• Tente reduzir o período de consulta</li>
                 <li>• Remova filtros complexos</li>
@@ -101,7 +101,7 @@ const BackendUnavailableFallback: React.FC<BackendUnavailableFallbackProps> = ({
 
           {type === 'connection' && (
             <div className='text-sm text-gray-500 dark:text-gray-500 space-y-1'>
-              <p>💡 <strong>Possíveis causas:</strong></p>
+              <p className="flex items-center gap-2"><Lightbulb className="w-4 h-4" /> <strong>Possíveis causas:</strong></p>
               <ul className='text-left space-y-1 ml-4'>
                 <li>• Servidor backend não está rodando</li>
                 <li>• Problemas de rede</li>

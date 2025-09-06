@@ -2,6 +2,7 @@ import React, { useMemo, useCallback } from 'react';
 import { motion } from 'framer-motion';
 import { AlertTriangle, Activity, Clock, CheckCircle } from 'lucide-react';
 import { MetricsData, TicketStatus } from '../../types';
+import { RESPONSIVE_GRID_CLASSES, createResponsiveClasses, createSimpleGridClasses } from '@/utils/responsive';
 
 interface MetricsGridProps {
   metrics: MetricsData;
@@ -31,7 +32,7 @@ const StatusCard = React.memo<StatusCardProps>(
 
     return (
       <motion.div
-        className={`relative overflow-hidden rounded-xl border border-gray-200/50 p-6 transition-all duration-300 shadow-lg ${className} ${
+        className={`relative overflow-hidden rounded-xl border border-gray-200/50 dark:border-gray-700/50 p-6 transition-all duration-300 shadow-lg dark:shadow-xl ${className} ${
           isClickable ? 'hover:shadow-2xl cursor-pointer hover:-translate-y-2' : ''
         }`}
         onClick={handleClick}
@@ -40,11 +41,11 @@ const StatusCard = React.memo<StatusCardProps>(
       >
         <div className='flex items-center justify-between'>
           <div>
-            <p className='text-sm font-semibold text-gray-700 mb-2'>{title}</p>
-            <p className='text-3xl font-bold'>{formattedValue}</p>
+            <p className='text-sm font-semibold text-gray-700 dark:text-gray-300 mb-2'>{title}</p>
+            <p className='text-3xl font-bold text-gray-900 dark:text-white'>{formattedValue}</p>
           </div>
           <div className='p-4 rounded-xl'>
-            <Icon className='w-7 h-7' />
+            <Icon className='w-7 h-7 text-gray-600 dark:text-gray-400' />
           </div>
         </div>
       </motion.div>
@@ -113,20 +114,27 @@ export const MetricsGrid = React.memo<MetricsGridProps>(
      ], [metrics, onFilterByStatus]);
 
     if (isLoading) {
+      const gridClasses = createResponsiveClasses({
+        base: RESPONSIVE_GRID_CLASSES.metricsCards.base,
+        mobile: 'grid-cols-1',
+        tablet: 'grid-cols-2', 
+        desktop: 'grid-cols-4'
+      });
+      
       return (
-        <div className={`grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 ${className}`}>
+        <div className={`${gridClasses} ${className}`}>
           {Array.from({ length: 4 }).map((_, index) => (
             <div
               key={index}
-              className='bg-white rounded-xl shadow-sm border border-gray-200 p-6 animate-pulse'
+              className='bg-white dark:bg-gray-800 rounded-xl shadow-sm border border-gray-200 dark:border-gray-700 p-4 sm:p-6 animate-pulse'
             >
               <div className='flex items-center justify-between'>
                 <div>
-                  <div className='h-4 bg-gray-200 rounded w-16 mb-2'></div>
-                  <div className='h-8 bg-gray-200 rounded w-12'></div>
+                  <div className='h-4 bg-gray-200 dark:bg-gray-700 rounded w-16 mb-2'></div>
+                  <div className='h-6 sm:h-8 bg-gray-200 dark:bg-gray-700 rounded w-12'></div>
                 </div>
-                <div className='p-3 rounded-lg bg-gray-100'>
-                  <div className='w-6 h-6 bg-gray-200 rounded'></div>
+                <div className='p-2 sm:p-3 rounded-lg bg-gray-100 dark:bg-gray-700'>
+                  <div className='w-5 h-5 sm:w-6 sm:h-6 bg-gray-200 dark:bg-gray-600 rounded'></div>
                 </div>
               </div>
             </div>
@@ -135,9 +143,16 @@ export const MetricsGrid = React.memo<MetricsGridProps>(
       );
     }
 
+    const gridClasses = createSimpleGridClasses({
+      base: RESPONSIVE_GRID_CLASSES.metricsCards.base,
+      mobile: 'grid-cols-1',
+      tablet: 'grid-cols-2',
+      desktop: 'grid-cols-4'
+    });
+
     return (
       <motion.div
-        className={`grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 ${className}`}
+        className={`${gridClasses} ${className}`}
         variants={containerVariants}
         initial='hidden'
         animate='visible'

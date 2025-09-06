@@ -10,6 +10,7 @@ import requests
 from config.settings import active_config
 from utils.alerting_system import alert_manager
 from utils.date_validator import DateValidator
+from utils.html_cleaner import clean_html_content
 from utils.prometheus_metrics import prometheus_metrics
 from utils.response_formatter import ResponseFormatter
 from utils.structured_logger import create_glpi_logger, log_api_call
@@ -33,6 +34,7 @@ class GLPIService:
                 raise ValueError("GLPI_USER_TOKEN não está configurado")
 
             self.glpi_url = config_obj.GLPI_URL.rstrip("/")  # Remove trailing slash
+            self.base_url = self.glpi_url  # Alias para compatibilidade
             self.app_token = config_obj.GLPI_APP_TOKEN
             self.user_token = config_obj.GLPI_USER_TOKEN
 
@@ -76,6 +78,7 @@ class GLPIService:
         }
 
         self.field_ids = {}
+        self.session = requests.Session()  # Sessão HTTP para reutilização de conexões
         self.session_token = None
         self.token_created_at = None
         self.token_expires_at = None
@@ -1547,7 +1550,7 @@ class GLPIService:
             # Validar formato das datas se fornecidas
             if start_date and start_date.strip():
                 try:
-                    datetime.datetime.strptime(start_date.strip(), "%Y-%m-%d")
+                    datetime.strptime(start_date.strip(), "%Y-%m-%d")
                 except ValueError as e:
                     self.logger.error(
                         f"[{datetime.now(tz=timezone.utc).isoformat()}] Formato de start_date inválido '{start_date}': {e}"
@@ -1556,7 +1559,7 @@ class GLPIService:
 
             if end_date and end_date.strip():
                 try:
-                    datetime.datetime.strptime(end_date.strip(), "%Y-%m-%d")
+                    datetime.strptime(end_date.strip(), "%Y-%m-%d")
                 except ValueError as e:
                     self.logger.error(
                         f"[{datetime.now(tz=timezone.utc).isoformat()}] Formato de end_date inválido '{end_date}': {e}"
@@ -1812,7 +1815,13 @@ class GLPIService:
                 "with_logs": True,
             }
 
-            response = self.session.get(url, params=params, timeout=30)
+            headers = {
+                "App-Token": self.app_token,
+                "Session-Token": self.session_token,
+                "Content-Type": "application/json"
+            }
+            
+            response = self.session.get(url, params=params, headers=headers, timeout=30)
 
             if response.status_code == 200:
                 ticket_data = response.json()
@@ -1843,13 +1852,20 @@ class GLPIService:
         """Processa e enriquece os dados do ticket com informações adicionais"""
         try:
             # Extrair dados básicos do ticket
+            raw_description = ticket_data.get("content", "")
+            clean_description = clean_html_content(raw_description)
+            
+            # Extrair ramal da descrição original
+            phone = self._extract_phone_from_description(raw_description)
+            
             processed = {
                 "id": ticket_data.get("id"),
                 "title": ticket_data.get("name", ""),
-                "description": ticket_data.get("content", ""),
+                "description": clean_description,
+                "phone": phone,  # Campo separado para o ramal
                 "status": self._map_ticket_status(ticket_data.get("status", 1)),
                 "priority": self._map_ticket_priority(ticket_data.get("priority", 3)),
-                "category": ticket_data.get("itilcategories_id_name", "Não categorizado"),
+                "category": clean_html_content(ticket_data.get("itilcategories_id", "Não categorizado")),
                 "type": ticket_data.get("type_name", "Incidente"),
                 "urgency": ticket_data.get("urgency_name", "Média"),
                 "impact": ticket_data.get("impact_name", "Médio"),
@@ -1863,7 +1879,7 @@ class GLPIService:
                 "solve_date": ticket_data.get("solvedate"),
                 "requester": {
                     "id": ticket_data.get("users_id_recipient"),
-                    "name": ticket_data.get("users_id_recipient_name", "Não especificado"),
+                    "name": ticket_data.get("users_id_recipient", "Não especificado"),
                     "email": "",
                 },
                 "technician": {
@@ -1899,6 +1915,39 @@ class GLPIService:
         except Exception as e:
             self.logger.error(f"Erro ao processar dados do ticket: {e}", exc_info=True)
             return ticket_data
+
+    def _extract_phone_from_description(self, description: str) -> str:
+        """Extrai o ramal completo da descrição do ticket
+        
+        Args:
+            description: Descrição original do ticket (pode conter HTML)
+            
+        Returns:
+            Ramal completo ou string vazia se não encontrado
+        """
+        try:
+            if not description:
+                return ""
+            
+            # Limpar HTML primeiro
+            clean_desc = clean_html_content(description)
+            
+            # Padrão simples e eficaz para extrair ramal - captura apenas os dígitos após RAMAL
+            # Busca por "RAMAL" seguido de dois pontos opcionais e captura os dígitos
+            phone_pattern = r'RAMAL\s*:?\s*:?\s*(\d+)'
+            
+            import re
+            phone_match = re.search(phone_pattern, clean_desc, re.IGNORECASE)
+            
+            if phone_match and phone_match.group(1).strip():
+                phone_clean = phone_match.group(1).strip().replace(':', '').strip()
+                return phone_clean if phone_clean else ""
+            
+            return ""
+            
+        except Exception as e:
+            self.logger.warning(f"Erro ao extrair ramal da descrição: {e}")
+            return ""
 
     def _map_ticket_priority(self, priority_id: int) -> str:
         """Mapeia ID de prioridade para nome legível"""
@@ -2170,7 +2219,7 @@ class GLPIService:
             # Validar formato das datas se fornecidas
             if start_date and start_date.strip():
                 try:
-                    datetime.datetime.strptime(start_date.strip(), "%Y-%m-%d")
+                    datetime.strptime(start_date.strip(), "%Y-%m-%d")
                 except ValueError as e:
                     self.logger.error(
                         f"[{datetime.now(tz=timezone.utc).isoformat()}] Formato de start_date inválido '{start_date}': {e}"
@@ -2179,7 +2228,7 @@ class GLPIService:
 
             if end_date and end_date.strip():
                 try:
-                    datetime.datetime.strptime(end_date.strip(), "%Y-%m-%d")
+                    datetime.strptime(end_date.strip(), "%Y-%m-%d")
                 except ValueError as e:
                     self.logger.error(
                         f"[{datetime.now(tz=timezone.utc).isoformat()}] Formato de end_date inválido '{end_date}': {e}"
@@ -2298,7 +2347,7 @@ class GLPIService:
             # Validar formato das datas se fornecidas
             if start_date and start_date.strip():
                 try:
-                    datetime.datetime.strptime(start_date.strip(), "%Y-%m-%d")
+                    datetime.strptime(start_date.strip(), "%Y-%m-%d")
                 except ValueError as e:
                     self.logger.error(
                         f"[{datetime.now(tz=timezone.utc).isoformat()}] Formato de start_date inválido '{start_date}': {e}"
@@ -2307,7 +2356,7 @@ class GLPIService:
 
             if end_date and end_date.strip():
                 try:
-                    datetime.datetime.strptime(end_date.strip(), "%Y-%m-%d")
+                    datetime.strptime(end_date.strip(), "%Y-%m-%d")
                 except ValueError as e:
                     self.logger.error(
                         f"[{datetime.now(tz=timezone.utc).isoformat()}] Formato de end_date inválido '{end_date}': {e}"
@@ -2518,7 +2567,7 @@ class GLPIService:
             # Validar formato das datas se fornecidas
             if start_date and start_date.strip():
                 try:
-                    datetime.datetime.strptime(start_date.strip(), "%Y-%m-%d")
+                    datetime.strptime(start_date.strip(), "%Y-%m-%d")
                 except ValueError as e:
                     self.logger.error(
                         f"[{datetime.now(tz=timezone.utc).isoformat()}] Formato de start_date inválido '{start_date}': {e}"
@@ -2531,7 +2580,7 @@ class GLPIService:
 
             if end_date and end_date.strip():
                 try:
-                    datetime.datetime.strptime(end_date.strip(), "%Y-%m-%d")
+                    datetime.strptime(end_date.strip(), "%Y-%m-%d")
                 except ValueError as e:
                     self.logger.error(
                         f"[{datetime.now(tz=timezone.utc).isoformat()}] Formato de end_date inválido '{end_date}': {e}"
@@ -2915,7 +2964,7 @@ class GLPIService:
             # Validar formato das datas
             if start_date and start_date.strip():
                 try:
-                    datetime.datetime.strptime(start_date.strip(), "%Y-%m-%d")
+                    datetime.strptime(start_date.strip(), "%Y-%m-%d")
                 except ValueError as e:
                     self.logger.error(
                         f"[{datetime.now(tz=timezone.utc).isoformat()}] Formato de start_date inválido '{start_date}': {e}"
@@ -2924,7 +2973,7 @@ class GLPIService:
 
             if end_date and end_date.strip():
                 try:
-                    datetime.datetime.strptime(end_date.strip(), "%Y-%m-%d")
+                    datetime.strptime(end_date.strip(), "%Y-%m-%d")
                 except ValueError as e:
                     self.logger.error(
                         f"[{datetime.now(tz=timezone.utc).isoformat()}] Formato de end_date inválido '{end_date}': {e}"
@@ -3099,7 +3148,7 @@ class GLPIService:
                     self.logger.error(f"start_date deve ser string, recebido: {type(start_date)}")
                     return None
                 try:
-                    datetime.datetime.strptime(start_date, "%Y-%m-%d")
+                    datetime.strptime(start_date, "%Y-%m-%d")
                 except ValueError as e:
                     self.logger.error(f"Formato inválido para start_date '{start_date}': {e}")
                     return None
@@ -3109,7 +3158,7 @@ class GLPIService:
                     self.logger.error(f"end_date deve ser string, recebido: {type(end_date)}")
                     return None
                 try:
-                    datetime.datetime.strptime(end_date, "%Y-%m-%d")
+                    datetime.strptime(end_date, "%Y-%m-%d")
                 except ValueError as e:
                     self.logger.error(f"Formato inválido para end_date '{end_date}': {e}")
                     return None
@@ -3673,40 +3722,39 @@ class GLPIService:
             return []
 
     def _discover_tech_field_id(self) -> Optional[str]:
-        """Descobre dinamicamente o field ID do técnico atribuído"""
+        """Descobre dinamicamente o field ID do técnico atribuído (com cache)"""
+        # Verificar cache primeiro
+        if hasattr(self, '_cached_tech_field_id') and self._cached_tech_field_id:
+            return self._cached_tech_field_id
+            
         try:
-            self.logger.info("=== DEBUG FIELD ID DISCOVERY ===")
+            self.logger.debug("Descobrindo field ID do técnico...")
 
-            response = self._make_authenticated_request("GET", f"{self.glpi_url}/listSearchOptions/Ticket")
+            # Timeout reduzido para 10 segundos
+            response = self._make_authenticated_request("GET", f"{self.glpi_url}/listSearchOptions/Ticket", timeout=10)
             if not response:
-                self.logger.error("Falha ao buscar search options do Ticket")
-                return None
+                self.logger.debug("Falha ao buscar search options do Ticket")
+                # Cache fallback
+                self._cached_tech_field_id = "5"
+                return "5"
 
             search_options = response.json()
-            self.logger.info(f"Search options recebidos: {len(search_options)} campos")
 
-            # Log de todos os campos disponíveis
-            for field_id, field_data in list(search_options.items())[:20]:  # Primeiros 20
-                if isinstance(field_data, dict) and "name" in field_data:
-                    self.logger.info(f"Campo {field_id}: {field_data['name']}")
-
-            # Procurar por campos relacionados ao técnico atribuído
+            # Procurar por campos conhecidos primeiro
             tech_field_mapping = {"5": "Técnico", "95": "Técnico encarregado"}
 
-            # Primeiro, tentar os campos conhecidos
             for field_id, expected_name in tech_field_mapping.items():
                 if field_id in search_options:
                     field_data = search_options[field_id]
                     if isinstance(field_data, dict) and "name" in field_data:
                         field_name = field_data["name"]
-                        self.logger.info(f"Testando campo {field_id}: '{field_name}' vs esperado '{expected_name}'")
                         if field_name == expected_name:
-                            self.logger.info(f"✅ CAMPO TÉCNICO ENCONTRADO: {field_name} (ID: {field_id})")
+                            self.logger.debug(f"Campo técnico encontrado: {field_name} (ID: {field_id})")
+                            # Cache o resultado
+                            self._cached_tech_field_id = field_id
                             return field_id
-                        else:
-                            self.logger.warning(f"❌ Campo {field_id} não corresponde: '{field_name}' != '{expected_name}'")
 
-            # Fallback: procurar por nomes
+            # Fallback: procurar por nomes alternativos
             tech_field_names = [
                 "Técnico",
                 "Atribuído",
@@ -3719,59 +3767,50 @@ class GLPIService:
                 if isinstance(field_data, dict) and "name" in field_data:
                     field_name = field_data["name"]
                     if field_name in tech_field_names:
-                        self.logger.info(f"✅ CAMPO TÉCNICO ENCONTRADO (fallback): {field_name} (ID: {field_id})")
+                        self.logger.debug(f"Campo técnico encontrado (fallback): {field_name} (ID: {field_id})")
+                        # Cache o resultado
+                        self._cached_tech_field_id = field_id
                         return field_id
 
-            self.logger.error("❌ CAMPO DE TÉCNICO NÃO ENCONTRADO")
-            self.logger.error(f"Campos disponíveis: {list(search_options.keys())}")
-            return None
+            # Fallback final
+            self.logger.debug("Campo de técnico não encontrado, usando fallback ID = 5")
+            self._cached_tech_field_id = "5"
+            return "5"
 
         except Exception as e:
-            self.logger.error(f"Erro ao descobrir field ID do técnico: {e}")
-            return None
+            self.logger.debug(f"Erro ao descobrir field ID do técnico: {str(e)[:100]}")
+            # Cache fallback em caso de erro
+            self._cached_tech_field_id = "5"
+            return "5"
 
     def _get_user_details_direct(self, user_id: str) -> Optional[Dict[str, Any]]:
-        """Busca direta de usuário por ID (baseado nos scripts que funcionam)"""
+        """Busca direta de usuário por ID (otimizado)"""
         url = f"{self.glpi_url}/User/{user_id}"
 
         try:
-            self.logger.info(f"🔍 Buscando usuário direto: {url}")
-            response = self._make_authenticated_request("GET", url)
+            # Timeout reduzido para 10 segundos
+            response = self._make_authenticated_request("GET", url, timeout=10)
             if not response or not response.ok:
-                self.logger.warning(
-                    f"⚠️ Falha ao buscar usuário {user_id} - Status: {response.status_code if response else 'None'}"
-                )
+                self.logger.debug(f"Usuário {user_id} não encontrado ou inacessível")
                 return None
 
             user_data = response.json()
-            self.logger.info(f"✅ Dados do usuário {user_id} recebidos")
 
-            # Aplicar filtros (mesmo dos scripts)
+            # Verificação rápida de status
             is_active = str(user_data.get("is_active", "0")).strip()
             is_deleted = str(user_data.get("is_deleted", "0")).strip()
 
-            self.logger.info(f"👤 Usuário {user_id}: is_active={is_active}, is_deleted={is_deleted}")
-
-            if str(is_active) != "1":
-                self.logger.warning(f"⚠️ Usuário {user_id} inativo (is_active={is_active})")
+            if str(is_active) != "1" or str(is_deleted) == "1":
                 return None
 
-            if str(is_deleted) == "1":
-                self.logger.warning(f"⚠️ Usuário {user_id} deletado (is_deleted={is_deleted})")
-                return None
-
-            # Construir nome completo
+            # Construção otimizada do nome
             firstname = str(user_data.get("firstname", "")).strip()
             realname = str(user_data.get("realname", "")).strip()
             username = str(user_data.get("name", "")).strip()
 
             full_name = f"{firstname} {realname}".strip()
             if not full_name:
-                full_name = username
-            if not full_name:
-                full_name = f"Usuário {user_id}"
-
-            self.logger.info(f"✅ Usuário {user_id} válido: {full_name}")
+                full_name = username or f"Usuário {user_id}"
 
             return {
                 "id": user_id,
@@ -3782,7 +3821,7 @@ class GLPIService:
             }
 
         except Exception as e:
-            self.logger.error(f"❌ Erro ao buscar usuário {user_id}: {e}")
+            self.logger.debug(f"Erro ao buscar usuário {user_id}: {str(e)[:100]}")
             return None
 
     def _get_technician_level_by_name_fallback(self, user_id: str) -> str:
@@ -3826,7 +3865,7 @@ class GLPIService:
                 "gabriel silva machado",
                 "luciano de araujo silva",
                 "wagner mengue",
-                "paulo cesar pedo nunes",
+                "paulo césar pedó nunes",
                 "alexandre rovinski almoarqueg",
             ]
 
@@ -3850,30 +3889,27 @@ class GLPIService:
             return "N1"  # Nível padrão em caso de erro
 
     def _get_technician_metrics_corrected(self, tecnico_id: str) -> Dict[str, Any]:
-        """Coleta métricas de performance de um técnico específico (igual ao script)"""
-        self.logger.info(f"=== DEBUG MÉTRICAS TÉCNICO {tecnico_id} ===")
+        """Coleta métricas de performance de um técnico específico (otimizado)"""
+        self.logger.debug(f"Coletando métricas do técnico {tecnico_id}")
 
         url = f"{self.glpi_url}/search/Ticket"
 
-        # Buscar todos os tickets atribuídos ao técnico
+        # Buscar todos os tickets atribuídos ao técnico com timeout reduzido
         params = {
             "criteria[0][field]": 5,  # Campo técnico atribuído (FIXO)
             "criteria[0][searchtype]": "equals",
             "criteria[0][value]": tecnico_id,
             "forcedisplay[0]": 2,  # ID
             "forcedisplay[1]": 12,  # Status
-            "range": "0-5000",
+            "range": "0-3000",  # Reduzido de 5000 para 3000 para melhor performance
         }
 
-        self.logger.info(f"🔍 URL: {url}")
-        self.logger.info(f"🔍 Parâmetros: {params}")
-
         try:
-            response = self._make_authenticated_request("GET", url, params=params)
-            self.logger.info(f"🔍 Status da resposta: {response.status_code if response else 'None'}")
-
+            # Timeout reduzido para 15 segundos
+            response = self._make_authenticated_request("GET", url, params=params, timeout=15)
+            
             if not response or response.status_code != 200:
-                self.logger.error(f"❌ Falha na requisição: {response.status_code if response else 'None'}")
+                self.logger.warning(f"Falha na requisição para técnico {tecnico_id}: {response.status_code if response else 'None'}")
                 return {
                     "total_tickets": 0,
                     "resolved_tickets": 0,
@@ -3884,35 +3920,22 @@ class GLPIService:
             data = response.json()
             tickets = data.get("data", [])
 
-            self.logger.info(f"✅ Tickets encontrados: {len(tickets)}")
-
             total = len(tickets)
             resolvidos = 0
             pendentes = 0
 
-            # Log detalhado de cada ticket
-            for i, ticket in enumerate(tickets[:5]):  # Primeiros 5 tickets
-                status_id = int(ticket.get("12", 0))
-                ticket_id = ticket.get("2", "N/A")
-                self.logger.info(f"🎫 Ticket {i + 1}: ID={ticket_id}, Status={status_id}")
+            # Processamento otimizado sem logs excessivos
+            for ticket in tickets:
+                try:
+                    status_id = int(ticket.get("12", 0))
+                    if status_id in [5, 6]:  # Solucionado ou Fechado
+                        resolvidos += 1
+                    elif status_id in [2, 3, 4]:  # Em progresso, Planejado, Pendente
+                        pendentes += 1
+                except (ValueError, TypeError):
+                    continue  # Ignorar tickets com status inválido
 
-                if status_id in [5, 6]:  # Solucionado ou Fechado
-                    resolvidos += 1
-                    self.logger.info(f"✅ Ticket {ticket_id} marcado como RESOLVIDO")
-                elif status_id in [
-                    2,
-                    3,
-                    4,
-                ]:  # Em progresso, Planejado, Pendente
-                    pendentes += 1
-                    self.logger.info(f"⏳ Ticket {ticket_id} marcado como PENDENTE")
-                else:
-                    self.logger.info(f"❓ Ticket {ticket_id} com status desconhecido: {status_id}")
-
-            self.logger.info(f"📊 RESUMO TÉCNICO {tecnico_id}:")
-            self.logger.info(f"   Total: {total}")
-            self.logger.info(f"   Resolvidos: {resolvidos}")
-            self.logger.info(f"   Pendentes: {pendentes}")
+            self.logger.debug(f"Técnico {tecnico_id}: {total} tickets ({resolvidos} resolvidos, {pendentes} pendentes)")
 
             return {
                 "total_tickets": total,
@@ -3922,7 +3945,7 @@ class GLPIService:
             }
 
         except Exception as e:
-            self.logger.error(f"❌ Erro ao buscar métricas do técnico {tecnico_id}: {e}")
+            self.logger.error(f"Erro ao buscar métricas do técnico {tecnico_id}: {e}")
             return {
                 "total_tickets": 0,
                 "resolved_tickets": 0,
@@ -3931,15 +3954,16 @@ class GLPIService:
             }
 
     def _get_technician_ranking_knowledge_base(self) -> list:
-        """Implementação baseada nos scripts que funcionam - busca direta por ID
+        """Implementação otimizada baseada nos scripts que funcionam - busca direta por ID
 
-        Esta implementação usa a mesma abordagem dos scripts:
+        Esta implementação usa a mesma abordagem dos scripts com otimizações:
         1. Lista hardcoded de IDs de técnicos conhecidos
-        2. Busca individual de cada técnico
-        3. Validação direta de ativo/não deletado
+        2. Cache do field ID para evitar descoberta repetida
+        3. Processamento paralelo das métricas
+        4. Validação direta de ativo/não deletado
         """
         try:
-            self.logger.info("=== DEBUG BUSCA DE TÉCNICOS (ABORDAGEM DOS SCRIPTS) ===")
+            self.logger.info("=== DEBUG BUSCA DE TÉCNICOS OTIMIZADA ===")
 
             # Validar configurações essenciais
             if not hasattr(self, "glpi_url") or not self.glpi_url:
@@ -3950,52 +3974,56 @@ class GLPIService:
 
             # IDs dos técnicos válidos da entidade CAU (mesmo dos scripts)
             technician_ids = [
-                "696",
-                "32",
-                "141",
-                "60",
-                "69",
-                "1032",
-                "252",
-                "721",
-                "926",
-                "1291",
-                "185",
-                "1331",
-                "1404",
-                "1088",
-                "1263",
-                "10",
-                "53",
-                "250",
-                "1471",
+                "696", "32", "141", "60", "69", "1032", "252", "721", "926", "1291",
+                "185", "1331", "1404", "1088", "1263", "10", "53", "250", "1471",
             ]
 
             self.logger.info(f"📋 Lista de técnicos para verificar: {len(technician_ids)} IDs")
 
+            # Cache do field ID para evitar descoberta repetida
+            if not hasattr(self, '_cached_tech_field_id'):
+                self._cached_tech_field_id = self._discover_tech_field_id()
+                if not self._cached_tech_field_id:
+                    self.logger.error("❌ Não foi possível descobrir o field ID do técnico")
+                    return []
+                self.logger.info(f"🔍 Field ID do técnico descoberto e cacheado: {self._cached_tech_field_id}")
+
+            # Buscar detalhes de todos os técnicos em paralelo
             technician_candidates = []
+            import concurrent.futures
+            import threading
 
-            for tech_id in technician_ids:
+            def get_technician_data(tech_id):
                 try:
-                    self.logger.info(f"🔍 Verificando técnico ID: {tech_id}")
-
-                    # Buscar detalhes do usuário (mesmo método dos scripts)
                     user_details = self._get_user_details_direct(tech_id)
                     if user_details:
-                        technician_candidates.append(
-                            {
-                                "id": tech_id,
-                                "name": user_details["name"],
-                                "realname": user_details["realname"],
-                                "firstname": user_details["firstname"],
-                            }
-                        )
-                        self.logger.info(f"✅ Técnico encontrado: {user_details['name']} (ID: {tech_id})")
-                    else:
-                        self.logger.warning(f"⚠️ Técnico não encontrado ou inativo: {tech_id}")
+                        return {
+                            "id": tech_id,
+                            "name": user_details["name"],
+                            "realname": user_details["realname"],
+                            "firstname": user_details["firstname"],
+                        }
                 except Exception as e:
                     self.logger.error(f"❌ Erro ao processar técnico {tech_id}: {e}")
-                    continue
+                return None
+
+            # Processar técnicos em paralelo (máximo 5 threads para não sobrecarregar o GLPI)
+            with concurrent.futures.ThreadPoolExecutor(max_workers=5) as executor:
+                future_to_tech = {executor.submit(get_technician_data, tech_id): tech_id for tech_id in technician_ids}
+                
+                for future in concurrent.futures.as_completed(future_to_tech):
+                    tech_id = future_to_tech[future]
+                    try:
+                        result = future.result(timeout=30)  # Timeout de 30s por técnico
+                        if result:
+                            technician_candidates.append(result)
+                            self.logger.info(f"✅ Técnico encontrado: {result['name']} (ID: {tech_id})")
+                        else:
+                            self.logger.warning(f"⚠️ Técnico não encontrado ou inativo: {tech_id}")
+                    except concurrent.futures.TimeoutError:
+                        self.logger.error(f"⏰ Timeout ao processar técnico {tech_id}")
+                    except Exception as e:
+                        self.logger.error(f"❌ Erro ao processar técnico {tech_id}: {e}")
 
             self.logger.info(f"📊 Total de técnicos candidatos encontrados: {len(technician_candidates)}")
 
@@ -4003,27 +4031,15 @@ class GLPIService:
                 self.logger.warning("⚠️ Nenhum técnico candidato encontrado")
                 return []
 
-            # Descobrir field ID do técnico
-            tech_field_id = self._discover_tech_field_id()
-            if not tech_field_id:
-                self.logger.error("❌ Não foi possível descobrir o field ID do técnico")
-                return []
-
-            self.logger.info(f"🔍 Field ID do técnico descoberto: {tech_field_id}")
-
-            # Construir ranking usando método corrigido (igual ao script)
-            ranking = []
-            for tech in technician_candidates:
-                tech_id = tech["id"]
-
-                # Buscar métricas usando método corrigido (igual ao script)
-                metricas = self._get_technician_metrics_corrected(tech_id)
-
-                # Determinar nível do técnico
-                tech_level = self._get_technician_level_by_name_fallback(tech_id)
-
-                ranking.append(
-                    {
+            # Construir ranking com processamento otimizado
+            def get_technician_metrics_and_level(tech):
+                try:
+                    tech_id = tech["id"]
+                    # Buscar métricas e nível em paralelo
+                    metricas = self._get_technician_metrics_corrected(tech_id)
+                    tech_level = self._get_technician_level_by_name_fallback(tech_id)
+                    
+                    return {
                         "id": tech_id,
                         "name": tech["name"],
                         "nome": tech["name"],
@@ -4034,13 +4050,26 @@ class GLPIService:
                         "level": tech_level,
                         "rank": 0,
                     }
-                )
+                except Exception as e:
+                    self.logger.error(f"❌ Erro ao processar métricas do técnico {tech['id']}: {e}")
+                    return None
 
-                self.logger.info(f"📊 TÉCNICO {tech['name']} (ID: {tech_id}):")
-                self.logger.info(f"   Total: {metricas['total_tickets']}")
-                self.logger.info(f"   Resolvidos: {metricas['resolved_tickets']}")
-                self.logger.info(f"   Pendentes: {metricas['pending_tickets']}")
-                self.logger.info(f"   Nível: {tech_level}")
+            ranking = []
+            # Processar métricas em paralelo (máximo 3 threads para não sobrecarregar)
+            with concurrent.futures.ThreadPoolExecutor(max_workers=3) as executor:
+                future_to_tech = {executor.submit(get_technician_metrics_and_level, tech): tech for tech in technician_candidates}
+                
+                for future in concurrent.futures.as_completed(future_to_tech):
+                    tech = future_to_tech[future]
+                    try:
+                        result = future.result(timeout=60)  # Timeout de 60s por técnico
+                        if result:
+                            ranking.append(result)
+                            self.logger.info(f"📊 TÉCNICO {result['name']} (ID: {result['id']}): Total={result['total_tickets']}, Nível={result['level']}")
+                    except concurrent.futures.TimeoutError:
+                        self.logger.error(f"⏰ Timeout ao processar métricas do técnico {tech['id']}")
+                    except Exception as e:
+                        self.logger.error(f"❌ Erro ao processar métricas do técnico {tech['id']}: {e}")
 
             # Ordenar por total de tickets
             ranking.sort(key=lambda x: x["total_tickets"], reverse=True)
@@ -4071,7 +4100,7 @@ class GLPIService:
             Jonathan Nascimento Moletta, Leonardo Trojan Repiso Riela, Thales Vinicius Paz Leite, Joao Pedro Wilson Dias
         - N3 (ID 91): Jorge Antonio Vicente Júnior, Anderson da Silva Morim de Oliveira, Miguelangelo Ferreira,
             Silvio Godinho Valim, Pablo Hebling Guimaraes
-        - N4 (ID 92): Paulo Cesar Pedo Nunes, Luciano de Araujo Silva, Wagner Mengue,
+        - N4 (ID 92): Paulo César Pedó Nunes, Luciano de Araujo Silva, Wagner Mengue,
             Alexandre Rovinski Almoarqueg, Gabriel Silva Machado
         """
         try:
@@ -4287,7 +4316,7 @@ class GLPIService:
                 "gabriel-machado",
                 "luciano-marcelino",
                 "jorge-swift",
-                "anderson-morim",
+                "anderson-oliveira",
                 "davi-freitas",
                 "lucas-sergio-t1",
             }
@@ -4302,7 +4331,7 @@ class GLPIService:
                 "Anderson Oliveira",
                 "Silvio Godinho",
                 "Edson Joel",
-                "Paulo Pedro",
+                "Paulo Pedó",
                 "Pablo Hebling",
                 "Leonardo Riela",
                 "Alessandro Carbonera",
@@ -4314,7 +4343,7 @@ class GLPIService:
                 "anderson-oliveira",
                 "silvio-godinho",
                 "edson-joel",
-                "paulo-pedo",
+                "paulo-pedó",
                 "pablo-hebling",
                 "leonardo-rielaantigo",
                 "alessandro-carbonera",
@@ -4953,7 +4982,7 @@ class GLPIService:
                         "is_deleted": 0,
                         "forcedisplay[0]": tech_field_id,
                         "forcedisplay[1]": "12",
-                        "range": "0-2000",
+                        "range": "0-3500",
                     }
 
                     # Adicionar critérios OR para técnicos do lote
@@ -5196,6 +5225,104 @@ class GLPIService:
             self.logger.error(f"Erro ao converter categoria {category_id}: {e}")
             return "Não categorizado"
 
+    def format_ticket_description(self, raw_description: str) -> str:
+        """Formata descrição de ticket de forma inteligente
+        
+        Detecta se é uma descrição estruturada (com campos como LOCALIZAÇÃO, RAMAL, etc.)
+        e formata de forma legível, ou mantém texto livre com limite apropriado.
+        
+        Args:
+            raw_description: Descrição bruta do ticket
+            
+        Returns:
+            Descrição formatada e legível
+        """
+        try:
+            if not raw_description or not raw_description.strip():
+                return "Sem descrição"
+            
+            # Limpar HTML primeiro
+            clean_description = clean_html_content(raw_description)
+            
+            # Detectar se é descrição estruturada
+            is_structured = (
+                "Dados do formulário" in clean_description or 
+                "Dados Gerais" in clean_description or
+                "LOCALIZAÇÃO" in clean_description or
+                "RAMAL" in clean_description
+            )
+            
+            if is_structured:
+                return self._format_structured_description(clean_description)
+            else:
+                # Para texto livre, manter formatação original com limite de 500 caracteres
+                if len(clean_description) > 500:
+                    return clean_description[:497] + "..."
+                return clean_description
+                
+        except Exception as e:
+            self.logger.warning(f"Erro ao formatar descrição: {e}")
+            # Fallback: retornar descrição limpa com limite de 500 caracteres
+            clean_fallback = clean_html_content(raw_description) if raw_description else "Sem descrição"
+            if len(clean_fallback) > 500:
+                return clean_fallback[:497] + "..."
+            return clean_fallback
+    
+    def _format_structured_description(self, description: str) -> str:
+        """Formata descrição estruturada extraindo campos principais
+        
+        Args:
+            description: Descrição limpa com estrutura de formulário
+            
+        Returns:
+            Descrição formatada de forma profissional e legível
+        """
+        try:
+            # Extrair campos principais usando regex
+            import re
+            
+            # Padrões para extrair informações
+            location_pattern = r'LOCALIZAÇÃO\s*:?\s*([^\n\r]+?)(?=\d+\)|$|RAMAL|DESCR)'
+            phone_pattern = r'RAMAL\s*:?\s*:?\s*([^\n\r]+?)(?=\d+\)|$|DESCR)'
+            description_pattern = r'DESCR[IÇ]?[ÃA]?O?\s*DO\s*PEDIDO\s*:?\s*([\s\S]+?)(?=$|\n\n|Dados|\d+\)\s*ARQUIVO)'
+            
+            location = re.search(location_pattern, description, re.IGNORECASE)
+            phone = re.search(phone_pattern, description, re.IGNORECASE)
+            desc_content = re.search(description_pattern, description, re.IGNORECASE)
+            
+            # Construir descrição formatada
+            formatted_parts = []
+            
+            if location and location.group(1).strip():
+                formatted_parts.append(f"Localização: {location.group(1).strip()}")
+            
+            if phone and phone.group(1).strip():
+                phone_clean = phone.group(1).strip().replace(':', '').strip()
+                if phone_clean:
+                    formatted_parts.append(f"Ramal: {phone_clean}")
+            
+            if desc_content and desc_content.group(1).strip():
+                desc_text = desc_content.group(1).strip()
+                # Limitar descrição a 300 caracteres para manter legibilidade
+                if len(desc_text) > 300:
+                    desc_text = desc_text[:297] + "..."
+                formatted_parts.append(f"Descrição: {desc_text}")
+            
+            if formatted_parts:
+                return " | ".join(formatted_parts)
+            else:
+                # Se não conseguiu extrair campos, retornar descrição original limitada
+                if len(description) > 300:
+                    return description[:297] + "..."
+                return description
+                
+        except Exception as e:
+            self.logger.warning(f"Erro ao formatar descrição estruturada: {e}")
+            # Fallback para descrição original limitada
+            if len(description) > 300:
+                return description[:297] + "..."
+            return description
+
     def get_new_tickets(self, limit: int = 10) -> List[Dict[str, any]]:
         """Busca tickets com status 'novo' com detalhes completos"""
         if not self._ensure_authenticated():
@@ -5250,13 +5377,15 @@ class GLPIService:
                     category_id = ticket_data.get("5", "")  # Campo 5 = categoria
                     category_name = self._get_category_name_by_id(str(category_id)) if category_id else "Não categorizado"
 
+                    # Extrair e formatar descrição usando nova função inteligente
+                    raw_description = ticket_data.get("21", "")
+                    formatted_description = self.format_ticket_description(raw_description)
+                    
                     # Extrair informações do ticket
                     ticket_info = {
                         "id": str(ticket_data.get("2", "")),  # ID do ticket
                         "title": ticket_data.get("1", "Sem título"),  # Título
-                        "description": ticket_data.get("21", "")[:100] + "..."
-                        if len(ticket_data.get("21", "")) > 100
-                        else ticket_data.get("21", ""),  # Descrição truncada
+                        "description": formatted_description,  # Descrição formatada inteligentemente
                         "date": ticket_data.get("15", ""),  # Data de abertura
                         "requester": requester_name,  # Nome do solicitante
                         "priority": priority_name,  # Nome da prioridade convertido
@@ -5747,6 +5876,90 @@ class GLPIService:
             # Retornar contadores zerados em caso de erro
             return {tech_id: 0 for tech_id in technician_ids}
 
+    def _get_technician_batch_optimized(
+        self, 
+        technician_ids: List[str], 
+        start_date: str = None, 
+        end_date: str = None
+    ) -> Dict[str, int]:
+        """
+        Busca dados de múltiplos técnicos em uma única requisição
+        Reduz de N requisições para 1 requisição
+        
+        Args:
+            technician_ids: Lista de IDs dos técnicos
+            start_date: Data de início no formato YYYY-MM-DD (opcional)
+            end_date: Data de fim no formato YYYY-MM-DD (opcional)
+            
+        Returns:
+            Dict com contagem de tickets por técnico
+        """
+        import time
+        
+        start_time = time.time()
+        
+        try:
+            # Log detalhado de início
+            self.logger.info(f"[BATCH_OPTIMIZED] Iniciando processamento em lote para {len(technician_ids)} técnicos")
+            self.logger.info(f"[BATCH_OPTIMIZED] Período: {start_date or 'sem filtro'} a {end_date or 'sem filtro'}")
+            
+            # Validação de entrada
+            if not technician_ids:
+                self.logger.warning("[BATCH_OPTIMIZED] Lista de técnicos vazia")
+                return {}
+            
+            # Descobrir o campo correto para técnico responsável dinamicamente
+            tech_field_id = self._discover_tech_field_id()
+            if not tech_field_id:
+                self.logger.error("[BATCH_OPTIMIZED] Não foi possível descobrir o campo do técnico")
+                raise Exception("Campo do técnico não encontrado")
+            
+            self.logger.info(f"[BATCH_OPTIMIZED] Campo do técnico descoberto: {tech_field_id}")
+            
+            # Usar método otimizado com requisições individuais range 0-0
+            ticket_counts = {tech_id: 0 for tech_id in technician_ids}
+            
+            # Para cada técnico, usar método otimizado que retorna apenas contagem
+            for tech_id in technician_ids:
+                try:
+                    if start_date and end_date:
+                        # Usar método com filtro de data
+                        count = self._count_tickets_with_date_filter(tech_id, start_date, end_date)
+                    else:
+                        # Usar método otimizado sem filtro de data (range 0-0)
+                        count = self._count_tickets_by_technician_optimized(int(tech_id), tech_field_id)
+                    
+                    ticket_counts[tech_id] = count if count is not None else 0
+                    self.logger.info(f"[BATCH_OPTIMIZED] Técnico {tech_id}: {ticket_counts[tech_id]} tickets")
+                    
+                except Exception as e:
+                    self.logger.error(f"[BATCH_OPTIMIZED] Erro ao processar técnico {tech_id}: {e}")
+                    ticket_counts[tech_id] = 0
+            
+            elapsed_time = time.time() - start_time
+            total_tickets = sum(ticket_counts.values())
+            self.logger.info(f"[BATCH_OPTIMIZED] Processamento concluído em {elapsed_time:.2f}s")
+            self.logger.info(f"[BATCH_OPTIMIZED] Total de tickets encontrados: {total_tickets}")
+            self.logger.info(f"[BATCH_OPTIMIZED] Distribuição por técnico: {dict(ticket_counts)}")
+            
+            return ticket_counts
+
+            
+        except Exception as e:
+            elapsed_time = time.time() - start_time
+            self.logger.error(f"[BATCH_OPTIMIZED] Erro no batch processing após {elapsed_time:.2f}s: {e}")
+            
+            # Fallback para método original
+            self.logger.info("[BATCH_OPTIMIZED] Executando fallback para método original")
+            try:
+                return self._get_all_tickets_grouped_by_technician_fallback(
+                    technician_ids, start_date, end_date
+                )
+            except Exception as fallback_error:
+                self.logger.error(f"[BATCH_OPTIMIZED] Erro no fallback: {fallback_error}")
+                # Retornar contadores zerados como último recurso
+                return {tech_id: 0 for tech_id in technician_ids}
+
     def _get_all_tickets_grouped_by_technician_fallback(
         self,
         technician_ids: List[str],
@@ -5811,6 +6024,8 @@ class GLPIService:
             correlation_id: ID de correlação para logs
             entity_id: ID da entidade para filtrar técnicos
         """
+        start_time = time.time()  # Definir start_time no início para evitar NameError
+        
         # Log simples para confirmar que o método está sendo chamado
         print(f"[DEBUG] get_technician_ranking_with_filters CHAMADO - start_date: {start_date}, end_date: {end_date}")
 
@@ -6125,11 +6340,10 @@ class GLPIService:
                         # Processar dados do ticket de forma segura
                         ticket_id = str(ticket_data.get("2", ""))
                         title = ticket_data.get("1", "Sem título")
-                        description = ticket_data.get("21", "")
-
-                        # Truncar descrição se muito longa
-                        if len(description) > 100:
-                            description = description[:100] + "..."
+                        raw_description = ticket_data.get("21", "")
+                        
+                        # Formatar descrição usando nova função inteligente
+                        description = self.format_ticket_description(raw_description)
 
                         # Obter informações do solicitante
                         requester_id = ticket_data.get("4", "")

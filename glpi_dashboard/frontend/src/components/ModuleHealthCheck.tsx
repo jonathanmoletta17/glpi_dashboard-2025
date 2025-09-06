@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react';
+import { X } from 'lucide-react';
 
 interface ModuleStatus {
   name: string;
@@ -144,10 +145,10 @@ const ModuleHealthCheck: React.FC<ModuleHealthCheckProps> = ({
                   <span className={module.loaded ? 'text-green-700' : 'text-red-700'}>
                     {module.name}
                   </span>
-                  <span className="opacity-75">
+                  <span className="opacity-75 flex items-center">
                     {module.loaded
                       ? `${module.loadTime}ms`
-                      : '❌'
+                      : <X className="w-4 h-4 text-red-500" />
                     }
                   </span>
                 </div>

@@ -106,6 +106,8 @@ function App() {
   const { notifications: cacheNotifications, removeNotification: removeCacheNotification } =
     useCacheNotifications();
 
+  // Execute cache migration on mount
+
   // Load data on mount
   useEffect(() => {
     loadData();

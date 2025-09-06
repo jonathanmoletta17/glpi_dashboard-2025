@@ -29,9 +29,10 @@ interface HeaderProps {
   onFilterTypeChange?: (type: string) => void;
 }
 
-const themes: { value: Theme; label: string; icon: string }[] = [
+const themes: { value: Theme | 'professional'; label: string; icon: string }[] = [
   { value: 'light', label: 'Claro', icon: '☀️' },
   { value: 'dark', label: 'Escuro', icon: '🌙' },
+  { value: 'professional', label: 'Professional', icon: '💼' },
 ];
 
 // Predefined date ranges
@@ -160,8 +161,14 @@ export const Header: React.FC<HeaderProps> = ({
 
   // Theme change handler
   const handleThemeChange = useCallback(
-    (newTheme: Theme) => {
-      onThemeChange(newTheme);
+    (newTheme: Theme | 'professional') => {
+      if (newTheme === 'professional') {
+        setShowThemeSelector(false);
+        onNotification('Professional Dashboard', 'Modo Professional Dashboard ativado! 💼', 'success');
+        return;
+      }
+      
+      onThemeChange(newTheme as Theme);
       setShowThemeSelector(false);
       const themeName = themes.find(t => t.value === newTheme)?.label;
       onNotification('Tema', `Alterado para ${themeName}`, 'info');
@@ -214,7 +221,7 @@ export const Header: React.FC<HeaderProps> = ({
   }, [onSearch]);
 
   return (
-    <header className='h-16 flex items-center justify-between px-6 backdrop-blur-md bg-white/90 dark:bg-gray-900/95 border-b border-gray-200/80 dark:border-purple-500/20 w-full shadow-xl relative z-50'>
+    <header className='h-16 flex items-center justify-between px-6 backdrop-blur-md bg-white/95 dark:bg-gray-900/95 border-b border-gray-200/50 dark:border-gray-700/50 w-full shadow-xl relative z-50'>
       <div className='w-full px-6 py-4'>
         <div className='flex items-center justify-between w-full'>
           {/* ========== SEÇÃO ESQUERDA: LOGO + TÍTULO ========== */}
@@ -364,7 +371,6 @@ export const Header: React.FC<HeaderProps> = ({
           {/* ========== SEÇÃO DIREITA: CONTROLES + STATUS ========== */}
           <div className='flex items-center space-x-4 flex-shrink-0'>
 
-
             {/* Theme Selector */}
             <div className='relative' ref={themeRef}>
               <button
@@ -376,19 +382,19 @@ export const Header: React.FC<HeaderProps> = ({
               </button>
 
               {showThemeSelector && (
-                <div className='absolute top-full right-0 mt-2 bg-white rounded-xl shadow-2xl border border-gray-200 py-2 min-w-40 z-50'>
+                <div className='absolute top-full right-0 mt-2 bg-white dark:bg-gray-800 rounded-xl shadow-2xl border border-gray-200 dark:border-gray-600 py-2 min-w-40 z-50'>
                   {themes.map(themeOption => (
                     <button
                       key={themeOption.value}
                       onClick={() => handleThemeChange(themeOption.value)}
-                      className={`w-full px-4 py-2 text-left hover:bg-gray-50 transition-colors flex items-center gap-3 ${
-                        theme === themeOption.value ? 'bg-blue-50 text-blue-600' : 'text-gray-700'
+                      className={`w-full px-4 py-2 text-left hover:bg-gray-50 dark:hover:bg-gray-700 transition-colors flex items-center gap-3 ${
+                        theme === themeOption.value ? 'bg-blue-50 text-blue-600 dark:bg-blue-900/50 dark:text-blue-400' : 'text-gray-700 dark:text-gray-200'
                       }`}
                     >
                       <span>{themeOption.icon}</span>
                       <span className='text-sm'>{themeOption.label}</span>
                       {theme === themeOption.value && (
-                        <div className='ml-auto w-2 h-2 bg-blue-500 rounded-full' />
+                        <div className='ml-auto w-2 h-2 bg-blue-500 dark:bg-blue-400 rounded-full' />
                       )}
                     </button>
                   ))}

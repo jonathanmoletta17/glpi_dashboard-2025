@@ -8,7 +8,7 @@ interface CacheManagerProps {
 }
 
 const CacheManager: React.FC<CacheManagerProps> = ({ className = '' }) => {
-  const { stats, isLoading, updateStats, clearAll, clearSpecificCache, refreshCache } = useCache();
+  const { stats, isLoading, clearAll, refreshAll, refreshMetrics, refreshSystemStatus, refreshTechnicianRanking, refreshNewTickets } = useCache();
 
   const formatHitRate = useCallback((hitRate: number) => {
     return `${(hitRate * 100).toFixed(1)}%`;
@@ -17,6 +17,30 @@ const CacheManager: React.FC<CacheManagerProps> = ({ className = '' }) => {
   const formatSize = useCallback((size: number) => {
     return `${size} ${size === 1 ? 'item' : 'itens'}`;
   }, []);
+
+  const handleRefreshCache = useCallback((cacheType: string) => {
+    switch (cacheType) {
+      case 'metrics':
+        refreshMetrics();
+        break;
+      case 'systemStatus':
+        refreshSystemStatus();
+        break;
+      case 'technicianRanking':
+        refreshTechnicianRanking();
+        break;
+      case 'newTickets':
+        refreshNewTickets();
+        break;
+      default:
+        refreshAll();
+    }
+  }, [refreshMetrics, refreshSystemStatus, refreshTechnicianRanking, refreshNewTickets, refreshAll]);
+
+  const handleClearCache = useCallback((cacheType: string) => {
+    // Para simplificar, vamos limpar todos os caches
+    clearAll();
+  }, [clearAll]);
 
   const cacheTypeLabels = useMemo(
     () => ({
@@ -78,7 +102,7 @@ const CacheManager: React.FC<CacheManagerProps> = ({ className = '' }) => {
           </div>
           <div className='flex space-x-2'>
             <button
-              onClick={updateStats}
+              onClick={refreshAll}
               disabled={isLoading}
               className='flex items-center space-x-1 px-3 py-1.5 text-sm bg-blue-50 text-blue-600 rounded-md hover:bg-blue-100 transition-colors disabled:opacity-50'
             >
@@ -144,14 +168,14 @@ const CacheManager: React.FC<CacheManagerProps> = ({ className = '' }) => {
 
               <div className='flex space-x-1 mt-3'>
                 <button
-                  onClick={() => refreshCache(cacheType as any)}
+                  onClick={() => handleRefreshCache(cacheType as any)}
                   className='flex-1 flex items-center justify-center space-x-1 px-2 py-1 text-xs bg-blue-50 text-blue-600 rounded hover:bg-blue-100 transition-colors'
                 >
                   <RefreshCw className='w-3 h-3' />
                   <span>Refresh</span>
                 </button>
                 <button
-                  onClick={() => clearSpecificCache(cacheType as any)}
+                  onClick={() => handleClearCache(cacheType as any)}
                   className='flex-1 flex items-center justify-center space-x-1 px-2 py-1 text-xs bg-red-50 text-red-600 rounded hover:bg-red-100 transition-colors'
                 >
                   <Trash2 className='w-3 h-3' />

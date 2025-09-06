@@ -44,24 +44,31 @@
     --chart-3: 197 37% 24%;
     --chart-4: 43 74% 66%;
     --chart-5: 27 87% 67%;
+    
+    /* Light theme specific colors */
+    --text-primary: 222.2 84% 4.9%;
+    --text-secondary: 215.4 16.3% 46.9%;
+    --surface-primary: 0 0% 100%;
+    --surface-secondary: 210 40% 96%;
+    --surface-tertiary: 214.3 31.8% 91.4%;
   }
 
   .dark {
     --background: 224 71% 4%;
     --foreground: 213 31% 91%;
-    --card: 224 71% 4%;
+    --card: 215 25% 27%;
     --card-foreground: 213 31% 91%;
-    --popover: 224 71% 4%;
+    --popover: 215 25% 27%;
     --popover-foreground: 213 31% 91%;
     --primary: 263 70% 50%;
-    --primary-foreground: 210 20% 98%;
+    --primary-foreground: 224 71% 4%;
     --secondary: 215 25% 27%;
     --secondary-foreground: 210 20% 98%;
     --muted: 215 25% 27%;
     --muted-foreground: 217 10% 65%;
     --accent: 215 25% 27%;
     --accent-foreground: 210 20% 98%;
-    --destructive: 0 63% 31%;
+    --destructive: 0 63% 50%;
     --destructive-foreground: 210 20% 98%;
     --border: 215 28% 17%;
     --input: 215 28% 17%;
@@ -71,6 +78,17 @@
     --chart-3: 197 37% 24%;
     --chart-4: 43 74% 66%;
     --chart-5: 27 87% 67%;
+    
+    /* Dark theme specific colors */
+    --text-primary: 213 31% 91%;
+    --text-secondary: 217 10% 65%;
+    --text-tertiary: 215 16% 47%;
+    --surface-primary: 224 71% 4%;
+    --surface-secondary: 215 25% 27%;
+    --surface-tertiary: 215 25% 35%;
+    --surface-hover: 215 25% 32%;
+    --border-primary: 215 28% 17%;
+    --border-secondary: 215 28% 25%;
   }
 
   * {
@@ -106,10 +124,10 @@
     background: linear-gradient(135deg, #f8fafc 0%, #e2e8f0 50%, #f1f5f9 100%);
   }
 
-  /* Dark theme styles - Sophisticated Design */
+  /* Dark theme styles - Professional Design */
   body.dark {
     @apply text-gray-100;
-    background: linear-gradient(135deg, #0a0f1c 0%, #1a1f2e 25%, #2d1b69 50%, #1e293b 75%, #0f172a 100%);
+    background: linear-gradient(135deg, #0f172a 0%, #1e293b 25%, #334155 50%, #1e293b 75%, #0f172a 100%);
     background-attachment: fixed;
   }
 
@@ -340,14 +358,14 @@ h3 {
 }
 
 body.dark .metrics-card-new {
-  background: linear-gradient(135deg, rgba(30, 58, 138, 0.3) 0%, rgba(59, 130, 246, 0.2) 50%, rgba(37, 99, 235, 0.1) 100%);
-  border: 1px solid rgba(59, 130, 246, 0.4);
-  color: #93c5fd;
+  background: linear-gradient(135deg, rgba(30, 58, 138, 0.4) 0%, rgba(59, 130, 246, 0.3) 50%, rgba(37, 99, 235, 0.2) 100%);
+  border: 1px solid rgba(59, 130, 246, 0.6);
+  color: #dbeafe;
 }
 
 body.dark .metrics-card-new:hover {
-  background: linear-gradient(135deg, rgba(30, 58, 138, 0.5) 0%, rgba(59, 130, 246, 0.3) 50%, rgba(37, 99, 235, 0.2) 100%);
-  box-shadow: 0 8px 25px rgba(59, 130, 246, 0.3);
+  background: linear-gradient(135deg, rgba(30, 58, 138, 0.6) 0%, rgba(59, 130, 246, 0.4) 50%, rgba(37, 99, 235, 0.3) 100%);
+  box-shadow: 0 8px 25px rgba(59, 130, 246, 0.4);
 }
 
 /* Status: Em Progresso */
@@ -364,14 +382,14 @@ body.dark .metrics-card-new:hover {
 }
 
 body.dark .metrics-card-progress {
-  background: linear-gradient(135deg, rgba(146, 64, 14, 0.3) 0%, rgba(245, 158, 11, 0.2) 50%, rgba(217, 119, 6, 0.1) 100%);
-  border: 1px solid rgba(245, 158, 11, 0.4);
-  color: #fcd34d;
+  background: linear-gradient(135deg, rgba(146, 64, 14, 0.4) 0%, rgba(245, 158, 11, 0.3) 50%, rgba(217, 119, 6, 0.2) 100%);
+  border: 1px solid rgba(245, 158, 11, 0.6);
+  color: #fef3c7;
 }
 
 body.dark .metrics-card-progress:hover {
-  background: linear-gradient(135deg, rgba(146, 64, 14, 0.5) 0%, rgba(245, 158, 11, 0.3) 50%, rgba(217, 119, 6, 0.2) 100%);
-  box-shadow: 0 8px 25px rgba(245, 158, 11, 0.3);
+  background: linear-gradient(135deg, rgba(146, 64, 14, 0.6) 0%, rgba(245, 158, 11, 0.4) 50%, rgba(217, 119, 6, 0.3) 100%);
+  box-shadow: 0 8px 25px rgba(245, 158, 11, 0.4);
 }
 
 /* Status: Pendente */
@@ -388,14 +406,14 @@ body.dark .metrics-card-progress:hover {
 }
 
 body.dark .metrics-card-pending {
-  background: linear-gradient(135deg, rgba(154, 52, 18, 0.3) 0%, rgba(234, 88, 12, 0.2) 50%, rgba(194, 65, 12, 0.1) 100%);
-  border: 1px solid rgba(234, 88, 12, 0.4);
-  color: #fdba74;
+  background: linear-gradient(135deg, rgba(154, 52, 18, 0.4) 0%, rgba(234, 88, 12, 0.3) 50%, rgba(194, 65, 12, 0.2) 100%);
+  border: 1px solid rgba(234, 88, 12, 0.6);
+  color: #fed7aa;
 }
 
 body.dark .metrics-card-pending:hover {
-  background: linear-gradient(135deg, rgba(154, 52, 18, 0.5) 0%, rgba(234, 88, 12, 0.3) 50%, rgba(194, 65, 12, 0.2) 100%);
-  box-shadow: 0 8px 25px rgba(234, 88, 12, 0.3);
+  background: linear-gradient(135deg, rgba(154, 52, 18, 0.6) 0%, rgba(234, 88, 12, 0.4) 50%, rgba(194, 65, 12, 0.3) 100%);
+  box-shadow: 0 8px 25px rgba(234, 88, 12, 0.4);
 }
 
 /* Status: Resolvido */
@@ -412,14 +430,14 @@ body.dark .metrics-card-pending:hover {
 }
 
 body.dark .metrics-card-resolved {
-  background: linear-gradient(135deg, rgba(21, 128, 61, 0.3) 0%, rgba(22, 163, 74, 0.2) 50%, rgba(34, 197, 94, 0.1) 100%);
-  border: 1px solid rgba(22, 163, 74, 0.4);
-  color: #86efac;
+  background: linear-gradient(135deg, rgba(21, 128, 61, 0.4) 0%, rgba(22, 163, 74, 0.3) 50%, rgba(34, 197, 94, 0.2) 100%);
+  border: 1px solid rgba(22, 163, 74, 0.6);
+  color: #dcfce7;
 }
 
 body.dark .metrics-card-resolved:hover {
-  background: linear-gradient(135deg, rgba(21, 128, 61, 0.5) 0%, rgba(22, 163, 74, 0.3) 50%, rgba(34, 197, 94, 0.2) 100%);
-  box-shadow: 0 8px 25px rgba(22, 163, 74, 0.3);
+  background: linear-gradient(135deg, rgba(21, 128, 61, 0.6) 0%, rgba(22, 163, 74, 0.4) 50%, rgba(34, 197, 94, 0.3) 100%);
+  box-shadow: 0 8px 25px rgba(22, 163, 74, 0.4);
 }
 
 /* Garantir bordas arredondadas nos cards de nível */
@@ -436,6 +454,12 @@ body.dark .metrics-card-resolved:hover {
 .level-accent-n2 { @apply bg-gradient-to-br from-blue-500 to-blue-700; }
 .level-accent-n3 { @apply bg-gradient-to-br from-purple-500 to-purple-700; }
 .level-accent-n4 { @apply bg-gradient-to-br from-orange-500 to-orange-700; }
+
+/* Dark theme para acentos de nível */
+body.dark .level-accent-n1 { @apply bg-gradient-to-br from-emerald-700 to-emerald-900; }
+body.dark .level-accent-n2 { @apply bg-gradient-to-br from-blue-700 to-blue-900; }
+body.dark .level-accent-n3 { @apply bg-gradient-to-br from-purple-700 to-purple-900; }
+body.dark .level-accent-n4 { @apply bg-gradient-to-br from-orange-700 to-orange-900; }
 
 /* Badge de contagem por nível */
 .level-badge { @apply text-sm px-3 py-1.5 font-bold border-0; }
@@ -508,6 +532,214 @@ body.dark .level-card-n4 {
 .ranking-level-n3 { @apply bg-purple-500 text-white; }
 .ranking-level-n4 { @apply bg-orange-500 text-white; }
 
+/* Dark theme para badges de ranking */
+body.dark .ranking-level-n1 { @apply bg-emerald-700 text-emerald-100; }
+body.dark .ranking-level-n2 { @apply bg-blue-700 text-blue-100; }
+body.dark .ranking-level-n3 { @apply bg-purple-700 text-purple-100; }
+body.dark .ranking-level-n4 { @apply bg-orange-700 text-orange-100; }
+
+/* ==============================
+   Design System Premium - Grid e Animações
+   ============================== */
+
+/* Grid responsivo para cards de nível - OTIMIZADO */
+.glpi-grid-levels {
+  @apply grid gap-4;
+  grid-template-columns: 1fr;
+}
+
+@media (min-width: 768px) {
+  .glpi-grid-levels {
+    grid-template-columns: 1fr 1fr;
+  }
+}
+
+@media (min-width: 1280px) {
+  .glpi-grid-levels {
+    grid-template-columns: 1fr 1fr 1fr;
+  }
+}
+
+/* Cards premium com design profissional */
+.glpi-card-premium {
+  @apply relative overflow-hidden rounded-lg;
+  background: rgba(255, 255, 255, 0.95);
+  backdrop-filter: blur(8px);
+  border: 1px solid rgba(229, 231, 235, 0.8);
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1), 0 1px 2px rgba(0, 0, 0, 0.06);
+  transition: all 0.2s ease-in-out;
+}
+
+.glpi-card-premium:hover {
+  background: rgba(255, 255, 255, 1);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15), 0 2px 4px rgba(0, 0, 0, 0.1);
+  transform: translateY(-1px);
+  border-color: rgba(156, 163, 175, 0.5);
+}
+
+/* Efeito glassmorphism sutil e profissional */
+.glpi-glass-premium {
+  background: linear-gradient(135deg, 
+    rgba(248, 250, 252, 0.8) 0%, 
+    rgba(255, 255, 255, 0.9) 100%);
+  backdrop-filter: blur(4px);
+  border: 1px solid rgba(229, 231, 235, 0.6);
+}
+
+/* Efeito de elevação sutil */
+.glpi-hover-lift {
+  transition: all 0.2s ease-in-out;
+}
+
+.glpi-hover-lift:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 8px 25px rgba(0, 0, 0, 0.1);
+}
+
+/* Animações premium */
+.glpi-animate-fade-up {
+  animation: glpi-fade-up 0.6s ease-out;
+}
+
+.glpi-animate-slide-right {
+  animation: glpi-slide-right 0.8s ease-out;
+}
+
+@keyframes glpi-fade-up {
+  from {
+    opacity: 0;
+    transform: translateY(30px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes glpi-slide-right {
+  from {
+    opacity: 0;
+    transform: translateX(-30px);
+  }
+  to {
+    opacity: 1;
+    transform: translateX(0);
+  }
+}
+
+/* Dark theme profissional para cards premium */
+body.dark .glpi-card-premium {
+  background: rgba(15, 23, 42, 0.95);
+  border: 1px solid rgba(51, 65, 85, 0.6);
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.3), 0 2px 4px rgba(0, 0, 0, 0.2);
+}
+
+body.dark .glpi-card-premium:hover {
+  background: rgba(15, 23, 42, 1);
+  box-shadow: 0 8px 25px rgba(0, 0, 0, 0.4), 0 4px 12px rgba(0, 0, 0, 0.3);
+  border-color: rgba(71, 85, 105, 0.8);
+}
+
+body.dark .glpi-glass-premium {
+  background: linear-gradient(135deg, 
+    rgba(15, 23, 42, 0.9) 0%, 
+    rgba(30, 41, 59, 0.95) 100%);
+  backdrop-filter: blur(8px);
+  border: 1px solid rgba(51, 65, 85, 0.6);
+}
+
+/* Cores profissionais para status */
+.text-status-new { color: #374151; }
+.text-status-progress { color: #6b7280; }
+.text-status-pending { color: #9ca3af; }
+.text-status-resolved { color: #059669; }
+
+.bg-status-new { 
+  background-color: #f3f4f6; 
+  border: 1px solid #e5e7eb;
+}
+.bg-status-progress { 
+  background-color: #fef3c7; 
+  border: 1px solid #fde68a;
+}
+.bg-status-pending { 
+  background-color: #fef2f2; 
+  border: 1px solid #fecaca;
+}
+.bg-status-resolved { 
+  background-color: #ecfdf5; 
+  border: 1px solid #bbf7d0;
+}
+
+/* Dark theme para cores de status */
+body.dark .text-status-new { color: #dbeafe !important; }
+body.dark .text-status-progress { color: #fef3c7 !important; }
+body.dark .text-status-pending { color: #fed7aa !important; }
+body.dark .text-status-resolved { color: #dcfce7 !important; }
+
+body.dark .bg-status-new { 
+  background-color: rgba(30, 58, 138, 0.4) !important; 
+  border: 1px solid rgba(59, 130, 246, 0.6) !important;
+}
+body.dark .bg-status-progress { 
+  background-color: rgba(146, 64, 14, 0.4) !important; 
+  border: 1px solid rgba(245, 158, 11, 0.6) !important;
+}
+body.dark .bg-status-pending { 
+  background-color: rgba(154, 52, 18, 0.4) !important; 
+  border: 1px solid rgba(234, 88, 12, 0.6) !important;
+}
+body.dark .bg-status-resolved { 
+  background-color: rgba(21, 128, 61, 0.4) !important; 
+  border: 1px solid rgba(22, 163, 74, 0.6) !important;
+}
+
+/* Cores profissionais para níveis */
+.text-level-n1 { color: #1f2937; }
+.text-level-n2 { color: #374151; }
+.text-level-n3 { color: #4b5563; }
+.text-level-n4 { color: #6b7280; }
+
+.bg-level-n1 { 
+  background: linear-gradient(135deg, #f9fafb 0%, #f3f4f6 100%);
+  border: 1px solid #e5e7eb;
+}
+.bg-level-n2 { 
+  background: linear-gradient(135deg, #f8fafc 0%, #f1f5f9 100%);
+  border: 1px solid #cbd5e1;
+}
+.bg-level-n3 { 
+  background: linear-gradient(135deg, #fefefe 0%, #f8fafc 100%);
+  border: 1px solid #e2e8f0;
+}
+.bg-level-n4 { 
+  background: linear-gradient(135deg, #fafafa 0%, #f4f4f5 100%);
+  border: 1px solid #d4d4d8;
+}
+
+/* Dark theme para cores de níveis */
+body.dark .text-level-n1 { color: #dcfce7 !important; }
+body.dark .text-level-n2 { color: #dbeafe !important; }
+body.dark .text-level-n3 { color: #e9d5ff !important; }
+body.dark .text-level-n4 { color: #fed7aa !important; }
+
+body.dark .bg-level-n1 { 
+  background: linear-gradient(135deg, rgba(6, 95, 70, 0.3) 0%, rgba(16, 185, 129, 0.2) 100%) !important;
+  border: 1px solid rgba(16, 185, 129, 0.5) !important;
+}
+body.dark .bg-level-n2 { 
+  background: linear-gradient(135deg, rgba(30, 58, 138, 0.3) 0%, rgba(59, 130, 246, 0.2) 100%) !important;
+  border: 1px solid rgba(59, 130, 246, 0.5) !important;
+}
+body.dark .bg-level-n3 { 
+  background: linear-gradient(135deg, rgba(91, 33, 182, 0.3) 0%, rgba(139, 92, 246, 0.2) 100%) !important;
+  border: 1px solid rgba(139, 92, 246, 0.5) !important;
+}
+body.dark .bg-level-n4 { 
+  background: linear-gradient(135deg, rgba(154, 52, 18, 0.3) 0%, rgba(245, 158, 11, 0.2) 100%) !important;
+  border: 1px solid rgba(245, 158, 11, 0.5) !important;
+}
+
 /* ==============================
    Sistema de Cores - Status Semânticos
    ============================== */
@@ -519,9 +751,9 @@ body.dark .level-card-n4 {
 }
 body.dark .status-new {
   @apply border;
-  background: linear-gradient(135deg, rgba(30,58,138,0.4) 0%, rgba(59,130,246,0.2) 100%);
-  color: #93c5fd;
-  border-color: rgba(59,130,246,0.4);
+  background: linear-gradient(135deg, rgba(30,58,138,0.5) 0%, rgba(59,130,246,0.3) 100%);
+  color: #dbeafe;
+  border-color: rgba(59,130,246,0.6);
 }
 
 .status-progress {
@@ -532,9 +764,9 @@ body.dark .status-new {
 }
 body.dark .status-progress {
   @apply border;
-  background: linear-gradient(135deg, rgba(146,64,14,0.4) 0%, rgba(245,158,11,0.2) 100%);
-  color: #fcd34d;
-  border-color: rgba(245,158,11,0.4);
+  background: linear-gradient(135deg, rgba(146,64,14,0.5) 0%, rgba(245,158,11,0.3) 100%);
+  color: #fef3c7;
+  border-color: rgba(245,158,11,0.6);
 }
 
 .status-pending {
@@ -545,9 +777,9 @@ body.dark .status-progress {
 }
 body.dark .status-pending {
   @apply border;
-  background: linear-gradient(135deg, rgba(154,52,18,0.4) 0%, rgba(234,88,12,0.2) 100%);
-  color: #fdba74;
-  border-color: rgba(234,88,12,0.4);
+  background: linear-gradient(135deg, rgba(154,52,18,0.5) 0%, rgba(234,88,12,0.3) 100%);
+  color: #fed7aa;
+  border-color: rgba(234,88,12,0.6);
 }
 
 .status-resolved {
@@ -558,7 +790,7 @@ body.dark .status-pending {
 }
 body.dark .status-resolved {
   @apply border;
-  background: linear-gradient(135deg, rgba(21,128,61,0.4) 0%, rgba(22,163,74,0.2) 100%);
-  color: #86efac;
-  border-color: rgba(22,163,74,0.4);
+  background: linear-gradient(135deg, rgba(21,128,61,0.5) 0%, rgba(22,163,74,0.3) 100%);
+  color: #dcfce7;
+  border-color: rgba(22,163,74,0.6);
 }

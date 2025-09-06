@@ -4,7 +4,7 @@
  */
 
 import { useEffect, useRef, useCallback } from 'react';
-import { requestCoordinator } from '../services/requestCoordinator';
+import { unifiedCache } from '../services/unifiedCache';
 
 interface SmartRefreshConfig {
   /** Intervalo base em milissegundos (padrão: 5 minutos) */
@@ -187,7 +187,8 @@ export function useSmartRefresh(config: SmartRefreshConfig) {
 
   const refreshFn = useCallback(async () => {
     // Usar coordenador de requisições para evitar duplicatas
-    return requestCoordinator.coordinateRequest(
+    return unifiedCache.coordinateRequest(
+      'refresh',
       `refresh-${config.refreshKey}`,
       async () => {
         await config.refreshFn();

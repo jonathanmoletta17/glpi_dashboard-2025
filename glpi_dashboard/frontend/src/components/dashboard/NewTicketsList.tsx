@@ -3,7 +3,7 @@ import { motion } from 'framer-motion';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
-import { AlertCircle, Clock, User, Calendar, RefreshCw, ExternalLink } from 'lucide-react';
+import { AlertCircle, Clock, User, Calendar, RefreshCw, ExternalLink, XCircle } from 'lucide-react';
 import { NewTicket, Ticket } from '@/types';
 import { cn, formatRelativeTime, formatDate } from '@/lib/utils';
 import { createFlexClasses, TAILWIND_CLASSES } from '@/design-system/utils';
@@ -17,6 +17,15 @@ import {
   createButtonClasses
 } from '@/design-system/component-patterns';
 import { componentSpacing } from '@/design-system/spacing';
+import { PriorityBadge, StatusBadge } from '@/components/ui/TicketBadge';
+import {
+  getPriorityConfig,
+  getStatusConfig,
+  ticketAnimations,
+  ticketSpacing,
+  ticketTypography,
+  ticketClasses
+} from '@/design-system/ticket-tokens';
 
 interface NewTicketsListProps {
   className?: string;
@@ -24,16 +33,7 @@ interface NewTicketsListProps {
   onTicketClick?: (ticket: Ticket) => void;
 }
 
-// Configuração de prioridades simplificada
-const priorityConfig = {
-  'Crítica': { variant: 'danger' as const, icon: '🔴' },
-  'Muito Alta': { variant: 'danger' as const, icon: '🔴' },
-  'Alta': { variant: 'warning' as const, icon: '🟠' },
-  'Média': { variant: 'default' as const, icon: '🟡' },
-  'Baixa': { variant: 'success' as const, icon: '🟢' },
-  'Muito Baixa': { variant: 'default' as const, icon: '🔵' },
-  'Normal': { variant: 'default' as const, icon: '🔵' },
-} as const;
+// Removido - usando design tokens agora
 
 // Variantes de animação otimizadas
 const itemVariants = {
@@ -54,11 +54,6 @@ const TicketItem = React.memo<{
   ticket: NewTicket;
   onTicketClick?: (ticket: Ticket) => void
 }>(({ ticket, onTicketClick }) => {
-  const priorityConf = useMemo(() =>
-    priorityConfig[ticket.priority as keyof typeof priorityConfig] || priorityConfig['Normal'],
-    [ticket.priority]
-  );
-
   const formattedDate = useMemo(() => formatDate(ticket.date), [ticket.date]);
 
   const handleTicketClick = () => {
@@ -96,58 +91,82 @@ const TicketItem = React.memo<{
   return (
     <motion.div
       key={ticket.id}
-      variants={itemVariants}
-      className={createListItemClasses()}
+      variants={ticketAnimations.item}
+      whileHover={ticketAnimations.item.hover}
+      whileTap={ticketAnimations.item.tap}
+      className={cn(ticketClasses.item, ticketClasses.itemActive, 'group')}
       onClick={handleTicketClick}
     >
-      <div className={createFlexClasses('row', 'start', 'between', 'normal')}>
+      <div className={cn('flex items-start justify-between gap-3')}>
         {/* Badge de prioridade */}
         <div className="flex-shrink-0">
-          <Badge
-            variant={priorityConf.variant}
-            className="flex items-center gap-1"
-          >
-            <span>{priorityConf.icon}</span>
-            {ticket.priority}
-          </Badge>
+          <PriorityBadge 
+            value={ticket.priority} 
+            size="sm"
+            className={ticketSpacing.badge.margin}
+          />
         </div>
 
         {/* Conteúdo do ticket */}
-        <div className="flex-1 min-w-0">
-          <div className="flex items-start justify-between gap-2 mb-2">
-            <div className={createFlexClasses('row', 'center', 'start', 'small')}>
-              <span className="text-sm font-medium text-gray-500">#{ticket.id}</span>
-              <Badge variant="secondary" className="text-xs">
-                NOVO
-              </Badge>
+        <div className="flex-1 min-w-0 space-y-2">
+          <div className="flex items-start justify-between gap-2">
+            <div className="flex items-center gap-2">
+              <span className={cn(ticketTypography.metadata.size, ticketTypography.metadata.weight, ticketTypography.metadata.color)}>#{ticket.id}</span>
+              <StatusBadge 
+                value="novo" 
+                size="sm"
+              />
             </div>
             <Button
               variant="ghost"
               size="icon"
-              className="h-6 w-6 flex-shrink-0"
+              className="h-6 w-6 flex-shrink-0 opacity-0 group-hover:opacity-100 transition-opacity"
             >
               <ExternalLink className="h-3 w-3" />
             </Button>
           </div>
 
-          <h4 className="font-medium text-gray-900 dark:text-gray-100 mb-1 line-clamp-2">
+          <h4 className={cn(
+            ticketTypography.title.size,
+            ticketTypography.title.weight,
+            ticketTypography.title.color,
+            ticketTypography.title.lineHeight,
+            ticketClasses.lineClamp
+          )}>
             {ticket.title}
           </h4>
 
           {ticket.description && (
-            <p className="text-sm text-gray-600 dark:text-gray-400 mb-3 line-clamp-2">
+            <p className={cn(
+              ticketTypography.description.size,
+              ticketTypography.description.weight,
+              ticketTypography.description.color,
+              ticketTypography.description.lineHeight,
+              ticketClasses.lineClamp
+            )}>
               {ticket.description}
             </p>
           )}
 
-          <div className={createFlexClasses('row', 'center', 'between')}>
-            <div className={createFlexClasses('row', 'center', 'start', 'small')}>
-              <User className="h-3 w-3" />
-              <span className="truncate">{ticket.requester}</span>
+          <div className="flex items-center justify-between gap-2">
+            <div className="flex items-center gap-1 min-w-0">
+              <User className={cn(ticketSpacing.icon.sizeSmall, 'flex-shrink-0')} />
+              <span className={cn(
+                ticketTypography.metadata.size,
+                ticketTypography.metadata.color,
+                ticketClasses.truncate
+              )}>
+                {ticket.requester}
+              </span>
             </div>
-            <div className={createFlexClasses('row', 'center', 'start', 'small')}>
-              <Calendar className="h-3 w-3" />
-              <span>{formattedDate}</span>
+            <div className="flex items-center gap-1 flex-shrink-0">
+              <Calendar className={ticketSpacing.icon.sizeSmall} />
+              <span className={cn(
+                ticketTypography.metadata.size,
+                ticketTypography.metadata.color
+              )}>
+                {formattedDate}
+              </span>
             </div>
           </div>
         </div>
@@ -286,8 +305,8 @@ export const NewTicketsList = React.memo<NewTicketsListProps>(({
           <EmptyState error={error} />
         ) : hasTickets ? (
           <motion.div
-            className={TAILWIND_CLASSES.spaceY.list}
-            variants={containerVariants}
+            className={ticketSpacing.card.gap}
+            variants={ticketAnimations.container}
             initial="hidden"
             animate="visible"
           >

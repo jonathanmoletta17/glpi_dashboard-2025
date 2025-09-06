@@ -339,25 +339,42 @@ export const RankingTable = React.memo<RankingTableProps>(function RankingTable(
       </CardHeader>
 
       <CardContent className='px-4 pb-4 pt-0 flex-1 flex flex-col'>
-        <motion.div
-          variants={containerVariants}
-          initial='hidden'
-          animate='visible'
-          className='flex-1 flex flex-col'
-        >
-          <div
-            ref={scrollContainerRef}
-            className='flex w-full flex-1 overflow-x-auto scrollbar-thin scrollbar-thumb-gray-300 scrollbar-track-transparent px-2 space-x-3'
-          >
-            {topTechnicians.map((technician, index) => (
-              <TechnicianCard
-                key={`${technician.id}-${index}`}
-                technician={technician}
-                index={index}
-              />
-            ))}
+        {isLoading ? (
+          <div className="flex flex-col items-center justify-center p-8 space-y-4">
+            <div className="relative">
+              <div className="animate-spin rounded-full h-12 w-12 border-4 border-blue-200"></div>
+              <div className="animate-spin rounded-full h-12 w-12 border-4 border-blue-600 border-t-transparent absolute top-0 left-0"></div>
+            </div>
+            <div className="text-center">
+              <h3 className="text-lg font-semibold text-gray-900 dark:text-white mb-2">Carregando Ranking de Técnicos</h3>
+              <p className="text-sm text-gray-600 dark:text-gray-400 mb-2">Processando dados do GLPI...</p>
+              <p className="text-xs text-gray-500 dark:text-gray-500">Isso pode levar até 2 minutos na primeira vez</p>
+            </div>
+            <div className="w-full max-w-xs bg-gray-200 dark:bg-gray-700 rounded-full h-2">
+              <div className="bg-blue-600 h-2 rounded-full animate-pulse" style={{width: '60%'}}></div>
+            </div>
           </div>
-        </motion.div>
+        ) : (
+          <motion.div
+            variants={containerVariants}
+            initial='hidden'
+            animate='visible'
+            className='flex-1 flex flex-col'
+          >
+            <div
+              ref={scrollContainerRef}
+              className='flex w-full flex-1 overflow-x-auto scrollbar-thin scrollbar-thumb-gray-300 scrollbar-track-transparent px-2 space-x-3'
+            >
+              {topTechnicians.map((technician, index) => (
+                <TechnicianCard
+                  key={`${technician.id}-${index}`}
+                  technician={technician}
+                  index={index}
+                />
+              ))}
+            </div>
+          </motion.div>
+        )}
       </CardContent>
     </Card>
   );

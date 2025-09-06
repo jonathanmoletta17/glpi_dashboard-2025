@@ -2,6 +2,7 @@ export interface Ticket {
   id: string;
   title: string;
   description: string;
+  phone?: string;  // Campo para ramal/telefone
   status: 'novo' | 'pendente' | 'progresso' | 'resolvido' | 'fechado';
   priority: 'baixa' | 'normal' | 'alta' | 'urgente';
   category: string;

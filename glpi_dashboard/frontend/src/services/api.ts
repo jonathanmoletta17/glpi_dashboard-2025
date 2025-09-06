@@ -2,9 +2,7 @@ import { httpClient, apiUtils, API_CONFIG, updateAuthTokens } from './httpClient
 import { SystemStatus, DateRange } from '../types';
 import type { ApiResult, DashboardMetrics, FilterParams, PerformanceMetrics } from '../types/api';
 import { isApiError, isApiResponse, transformLegacyData } from '../types/api';
-import { metricsCache, systemStatusCache, technicianRankingCache, newTicketsCache } from './cache';
-import { requestCoordinator } from './requestCoordinator';
-import { smartCacheManager } from './smartCache';
+import { unifiedCache } from './unifiedCache';
 
 
 // Base URL for API (mantido para compatibilidade)
@@ -30,11 +28,17 @@ export const apiService = {
       dateRange: dateRange || null,
     };
 
+    // Verificar cache primeiro
+    const cachedData = unifiedCache.get('metrics', cacheParams);
+    if (cachedData) {
+      return cachedData;
+    }
+
     // Usar coordenador de requisições para evitar chamadas duplicadas
     const cacheKey = `metrics-${JSON.stringify(cacheParams)}`;
-    const metricsCache = smartCacheManager.getCache('metrics');
 
-    return requestCoordinator.coordinateRequest(
+    return unifiedCache.coordinateRequest(
+      'metrics',
       cacheKey,
       async () => {
         const startTime = Date.now();
@@ -51,8 +55,7 @@ export const apiService = {
 
         // Monitora performance
         const responseTime = Date.now() - startTime;
-        const cacheKey = JSON.stringify(cacheParams);
-        metricsCache.recordRequestTime(cacheKey, responseTime);
+        unifiedCache.recordRequestTime('metrics', cacheKey, responseTime);
 
         if (response.data && response.data.success && response.data.data) {
           const rawData = response.data.data;
@@ -89,31 +92,50 @@ export const apiService = {
                 }
               });
             }
-
-            // Calcular totais gerais dos níveis específicos (excluindo geral)
-            const levelValues = Object.entries(processedNiveis)
-              .filter(([key]) => key !== 'geral')
-              .map(([, value]) => value);
-
-            const geralTotals = {
-              novos: levelValues.reduce((sum, nivel) => sum + nivel.novos, 0),
-              pendentes: levelValues.reduce((sum, nivel) => sum + nivel.pendentes, 0),
-              progresso: levelValues.reduce((sum, nivel) => sum + nivel.progresso, 0),
-              resolvidos: levelValues.reduce((sum, nivel) => sum + nivel.resolvidos, 0),
-            };
-
-            // Removido processedNiveis.geral: não existe nos dados do backend
-
-            // processedNiveis já está definido
           } else {
             // Estrutura normal
 
             // Processar dados dos níveis
             if (rawData.niveis) {
-              processedNiveis = rawData.niveis;
+              // Calcular total para cada nível
+              processedNiveis = {
+                n1: {
+                  ...rawData.niveis.n1,
+                  total: (rawData.niveis.n1.novos || 0) + (rawData.niveis.n1.pendentes || 0) + (rawData.niveis.n1.progresso || 0) + (rawData.niveis.n1.resolvidos || 0)
+                },
+                n2: {
+                  ...rawData.niveis.n2,
+                  total: (rawData.niveis.n2.novos || 0) + (rawData.niveis.n2.pendentes || 0) + (rawData.niveis.n2.progresso || 0) + (rawData.niveis.n2.resolvidos || 0)
+                },
+                n3: {
+                  ...rawData.niveis.n3,
+                  total: (rawData.niveis.n3.novos || 0) + (rawData.niveis.n3.pendentes || 0) + (rawData.niveis.n3.progresso || 0) + (rawData.niveis.n3.resolvidos || 0)
+                },
+                n4: {
+                  ...rawData.niveis.n4,
+                  total: (rawData.niveis.n4.novos || 0) + (rawData.niveis.n4.pendentes || 0) + (rawData.niveis.n4.progresso || 0) + (rawData.niveis.n4.resolvidos || 0)
+                }
+              };
             } else if (rawData.levels) {
               // Caso os dados venham como 'levels' ao invés de 'niveis'
-              processedNiveis = rawData.levels;
+              processedNiveis = {
+                n1: {
+                  ...rawData.levels.n1,
+                  total: (rawData.levels.n1.novos || 0) + (rawData.levels.n1.pendentes || 0) + (rawData.levels.n1.progresso || 0) + (rawData.levels.n1.resolvidos || 0)
+                },
+                n2: {
+                  ...rawData.levels.n2,
+                  total: (rawData.levels.n2.novos || 0) + (rawData.levels.n2.pendentes || 0) + (rawData.levels.n2.progresso || 0) + (rawData.levels.n2.resolvidos || 0)
+                },
+                n3: {
+                  ...rawData.levels.n3,
+                  total: (rawData.levels.n3.novos || 0) + (rawData.levels.n3.pendentes || 0) + (rawData.levels.n3.progresso || 0) + (rawData.levels.n3.resolvidos || 0)
+                },
+                n4: {
+                  ...rawData.levels.n4,
+                  total: (rawData.levels.n4.novos || 0) + (rawData.levels.n4.pendentes || 0) + (rawData.levels.n4.progresso || 0) + (rawData.levels.n4.resolvidos || 0)
+                }
+              };
             } else {
               // Fallback com zeros
               processedNiveis = {
@@ -125,19 +147,30 @@ export const apiService = {
             }
           }
 
-          // Garantir que todos os campos necessários existam
+          // Usar totais gerais diretamente da API (mais confiável)
           const data: DashboardMetrics = {
+            // Totais gerais da API
+            novos: rawData.novos || 0,
+            pendentes: rawData.pendentes || 0,
+            progresso: rawData.progresso || 0,
+            resolvidos: rawData.resolvidos || 0,
+            total: rawData.total || 0,
+            // Estrutura por níveis
             niveis: processedNiveis,
-
           };
 
           // Armazenar no cache
-          metricsCache.set(cacheParams, data);
+          unifiedCache.set('metrics', cacheParams, data);
           return data;
         } else {
           console.error('API returned unsuccessful response:', response.data);
           // Return fallback data
           const fallbackData: import('../types/api').DashboardMetrics = {
+            novos: 0,
+            pendentes: 0,
+            progresso: 0,
+            resolvidos: 0,
+            total: 0,
             niveis: {
               n1: { novos: 0, pendentes: 0, progresso: 0, resolvidos: 0, total: 0 },
               n2: { novos: 0, pendentes: 0, progresso: 0, resolvidos: 0, total: 0 },
@@ -161,10 +194,17 @@ export const apiService = {
   // Get system status
   async getSystemStatus(): Promise<SystemStatus> {
     const cacheParams = { endpoint: 'status' };
-    const cacheKey = `system-status-${JSON.stringify(cacheParams)}`;
-    const systemCache = smartCacheManager.getCache('systemStatus');
+    
+    // Verificar cache primeiro
+    const cachedData = unifiedCache.get('systemStatus', cacheParams);
+    if (cachedData) {
+      return cachedData;
+    }
 
-    return requestCoordinator.coordinateRequest(
+    const cacheKey = `system-status-${JSON.stringify(cacheParams)}`;
+
+    return unifiedCache.coordinateRequest(
+      'systemStatus',
       cacheKey,
       async () => {
         const startTime = Date.now();
@@ -175,13 +215,12 @@ export const apiService = {
         // Monitora performance
         const responseTime = Date.now() - startTime;
         console.log(`⏱️ Status do sistema obtido em ${responseTime}ms`);
-        const cacheKeyInternal = JSON.stringify(cacheParams);
-        systemStatusCache.recordRequestTime(cacheKeyInternal, responseTime);
+        unifiedCache.recordRequestTime('systemStatus', cacheKey, responseTime);
 
         if (response.data.success && response.data.data) {
           const data = response.data.data;
           // Armazenar no cache
-          systemStatusCache.set(cacheParams, data);
+          unifiedCache.set('systemStatus', cacheParams, data);
           return data;
         } else {
           console.error('API returned unsuccessful response:', response.data);
@@ -237,7 +276,7 @@ export const apiService = {
     };
 
     // Verificar cache primeiro
-    const cachedData = technicianRankingCache.get(cacheParams);
+    const cachedData = unifiedCache.get('technicianRanking', cacheParams);
     if (cachedData) {
       console.log('📦 Retornando dados do cache para ranking de técnicos');
       return cachedData;
@@ -262,20 +301,20 @@ export const apiService = {
 
       console.log('🔍 Buscando ranking de técnicos:', url);
 
-      // Usar timeout maior para ranking (sempre 3 minutos pois demora ~44s)
-      const timeoutConfig = { timeout: 180000 }; // 3 minutos para ranking
+      // Usar timeout maior para ranking (5 minutos para casos complexos)
+      const timeoutConfig = { timeout: 300000 }; // 5 minutos para ranking
 
       console.log(
-        `⏱️ Usando timeout de 180 segundos para ranking de técnicos`
+        `⏱️ Usando timeout de 300 segundos para ranking de técnicos`
       );
       const response = await api.get<ApiResponse<any[]>>(url, {
-        timeout: 180000, // 3 minutos para ranking
+        timeout: 300000, // 5 minutos para ranking
       });
 
       // Monitora performance
       const responseTime = Date.now() - startTime;
       const cacheKey = JSON.stringify(cacheParams);
-      technicianRankingCache.recordRequestTime(cacheKey, responseTime);
+      unifiedCache.recordRequestTime('technicianRanking', cacheKey, responseTime);
 
       // Debug logs para investigar o problema do ranking
       console.log('🔍 getTechnicianRanking - response completo:', response);
@@ -287,7 +326,7 @@ export const apiService = {
       if (response.data.success && response.data.data) {
         const data = response.data.data;
         // Armazenar no cache
-        technicianRankingCache.set(cacheParams, data);
+        unifiedCache.set('technicianRanking', cacheParams, data);
         console.log('✅ Ranking de técnicos obtido com sucesso:', data.length, 'técnicos');
         console.log('🔍 getTechnicianRanking - primeiro técnico dos dados:', data[0]);
         return data;
@@ -307,7 +346,7 @@ export const apiService = {
     const cacheParams = { endpoint: 'tickets/new', limit: limit.toString() };
 
     // Verificar cache primeiro
-    const cachedData = newTicketsCache.get(cacheParams);
+    const cachedData = unifiedCache.get('newTickets', cacheParams);
     if (cachedData) {
       console.log('📦 Retornando dados do cache para novos tickets');
       return cachedData;
@@ -319,12 +358,12 @@ export const apiService = {
       // Monitora performance
       const responseTime = Date.now() - startTime;
       const cacheKey = JSON.stringify(cacheParams);
-      newTicketsCache.recordRequestTime(cacheKey, responseTime);
+      unifiedCache.recordRequestTime('newTickets', cacheKey, responseTime);
 
       if (response.data.success && response.data.data) {
         const data = response.data.data;
         // Armazenar no cache
-        newTicketsCache.set(cacheParams, data);
+        unifiedCache.set('newTickets', cacheParams, data);
         return data;
       } else {
         console.error('API returned unsuccessful response:', response.data);
@@ -388,7 +427,7 @@ export const apiService = {
     const cacheParams = { endpoint: 'search', query };
 
     // Verificar cache primeiro
-    const cachedData = metricsCache.get(cacheParams);
+    const cachedData = unifiedCache.get('search', cacheParams);
     if (cachedData) {
       console.log('📦 Retornando dados do cache para busca');
       return cachedData;
@@ -419,11 +458,11 @@ export const apiService = {
 
       // Monitora performance
       const responseTime = Date.now() - startTime;
-      const cacheKey = JSON.stringify(cacheParams);
-      metricsCache.recordRequestTime(cacheKey, responseTime);
+      const cacheKey = `search-${JSON.stringify(cacheParams)}`;
+      unifiedCache.recordRequestTime('search', cacheKey, responseTime);
 
       // Armazenar no cache
-      metricsCache.set(cacheParams, data);
+      unifiedCache.set('search', cacheParams, data);
       return data;
     } catch (error) {
       console.error('Error searching:', error);
@@ -487,16 +526,33 @@ export const apiService = {
   async getFilterTypes(): Promise<ApiResponse<any>> {
     const startTime = Date.now();
     const cacheParams = { endpoint: 'filter-types' };
+    
+    // Verificar cache primeiro
+    const cachedData = unifiedCache.get('filterTypes', cacheParams);
+    if (cachedData) {
+      return cachedData;
+    }
+
     const cacheKey = `filter-types-${JSON.stringify(cacheParams)}`;
 
-    return requestCoordinator.coordinateRequest(
+    return unifiedCache.coordinateRequest(
+      'filterTypes',
       cacheKey,
       async () => {
         const response = await api.get('/api/filter-types');
         const responseTime = Date.now() - startTime;
 
         console.log(`📋 Filter types fetched in ${responseTime}ms`);
+        
+        // Armazenar no cache
+        unifiedCache.set('filterTypes', cacheParams, response.data);
+        
         return response.data;
+      },
+      {
+        debounceMs: 300,
+        throttleMs: 5000,
+        cacheMs: 600000, // 10 minutos de cache para tipos de filtro
       }
     );
   },
@@ -504,10 +560,7 @@ export const apiService = {
   // Clear all caches
   clearAllCaches(): void {
     console.log('🧹 Limpando todos os caches...');
-    metricsCache.clear();
-    systemStatusCache.clear();
-    technicianRankingCache.clear();
-    newTicketsCache.clear();
+    unifiedCache.clearAll();
     console.log('✅ Todos os caches foram limpos');
   },
 };

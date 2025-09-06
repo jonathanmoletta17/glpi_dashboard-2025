@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { AlertTriangle, RefreshCw, Clock, Wifi, Server, Settings } from 'lucide-react';
+import { AlertTriangle, RefreshCw, Clock, Wifi, Server, Settings, Lightbulb } from 'lucide-react';
 import { ApiErrorType, ApiErrorInfo } from '../../hooks/useApiErrorHandler';
 
 export interface TimeoutFallbackProps {
@@ -201,8 +201,9 @@ export const TimeoutFallback: React.FC<TimeoutFallbackProps> = ({
 
         {/* Sugestão de ação */}
         {errorInfo?.suggestedAction && (
-          <div className={`${colors.text} ${sizes.text} opacity-70 italic`}>
-            💡 {errorInfo.suggestedAction}
+          <div className={`${colors.text} ${sizes.text} opacity-70 italic flex items-center gap-2`}>
+            <Lightbulb className="w-4 h-4" />
+            {errorInfo.suggestedAction}
           </div>
         )}
 

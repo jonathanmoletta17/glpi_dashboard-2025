@@ -490,7 +490,7 @@ class GLPIMetricsCollector:
                 "gabriel silva machado",
                 "luciano de araujo silva",
                 "wagner mengue",
-                "paulo cesar pedo nunes",
+                "paulo césar pedó nunes",
                 "alexandre rovinski almoarqueg",
             ]
 

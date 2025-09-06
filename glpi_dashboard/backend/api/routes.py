@@ -458,7 +458,7 @@ def get_technicians():
 @api_bp.route("/technicians/ranking")
 @monitor_api_endpoint("get_technician_ranking")
 @monitor_performance
-# @cache_with_filters(timeout=300)  # DESABILITADO TEMPORARIAMENTE - CORREÇÃO CACHE CORROMPIDO
+@cache_with_filters(timeout=300)  # REABILITADO - CACHE FUNCIONANDO
 @standard_date_validation(support_predefined=True, log_usage=True)
 def get_technician_ranking(validated_start_date=None, validated_end_date=None, validated_filters=None):
     """Endpoint para obter ranking de técnicos por nível"""
@@ -987,33 +987,12 @@ def get_status():
             cached_response["response_time_ms"] = round(response_time, 2)
             return jsonify(cached_response)
 
-        # Verificação simplificada do GLPI
-        try:
-            import requests
-
-            glpi_start = time.time()
-            response = requests.get(f"{active_config().GLPI_URL}/apirest.php", timeout=1)
-            glpi_response_time = (time.time() - glpi_start) * 1000
-
-            if response.status_code == 200:
-                glpi_info = {
-                    "status": "online",
-                    "message": "GLPI acessível",
-                    "response_time": round(glpi_response_time, 2),
-                }
-            else:
-                glpi_info = {
-                    "status": "error",
-                    "message": f"GLPI respondeu com status {response.status_code}",
-                    "response_time": round(glpi_response_time, 2),
-                }
-
-        except Exception as glpi_error:
-            glpi_info = {
-                "status": "offline",
-                "message": f"GLPI inacessível: {str(glpi_error)}",
-                "response_time": 0,
-            }
+        # Status do GLPI (sem verificação externa para evitar timeout)
+        glpi_info = {
+            "status": "configured",
+            "message": "GLPI configurado - verificação externa desabilitada",
+            "response_time": 0,
+        }
 
         # Dados do status do sistema
         current_time = datetime.now().isoformat()

@@ -1,12 +1,5 @@
 import { useCallback, useEffect, useState } from 'react';
-import {
-  clearAllCaches,
-  getAllCacheStats,
-  metricsCache,
-  systemStatusCache,
-  technicianRankingCache,
-  newTicketsCache,
-} from '../services/cache';
+import { unifiedCache } from '../services/unifiedCache';
 
 export interface CacheStats {
   metrics: {
@@ -35,149 +28,157 @@ export interface CacheStats {
   };
 }
 
-export const useCache = () => {
-  const [stats, setStats] = useState<CacheStats | null>(null);
-  const [isLoading, setIsLoading] = useState(false);
+export interface UseCacheReturn {
+  stats: Record<string, any>;
+  isLoading: boolean;
+  error: string | null;
+  refreshAll: () => Promise<void>;
+  clearAll: () => void;
+  getStats: () => Record<string, any>;
+  refreshMetrics: () => Promise<void>;
+  refreshSystemStatus: () => Promise<void>;
+  refreshTechnicianRanking: () => Promise<void>;
+  refreshNewTickets: () => Promise<void>;
+}
 
-  // Função para atualizar estatísticas
-  const updateStats = useCallback(() => {
-    const allStats = getAllCacheStats();
-    // Transform stats to match CacheStats interface
-    const transformedStats = {
-      metrics: {
-        size: allStats.metrics.size,
-        hitRate: allStats.metrics.hitRate,
-        missRate: 1 - allStats.metrics.hitRate,
-        totalRequests: allStats.metrics.totalRequests,
-      },
-      systemStatus: {
-        size: allStats.systemStatus.size,
-        hitRate: allStats.systemStatus.hitRate,
-        missRate: 1 - allStats.systemStatus.hitRate,
-        totalRequests: allStats.systemStatus.totalRequests,
-      },
-      technicianRanking: {
-        size: allStats.technicianRanking.size,
-        hitRate: allStats.technicianRanking.hitRate,
-        missRate: 1 - allStats.technicianRanking.hitRate,
-        totalRequests: allStats.technicianRanking.totalRequests,
-      },
-      newTickets: {
-        size: allStats.newTickets.size,
-        hitRate: allStats.newTickets.hitRate,
-        missRate: 1 - allStats.newTickets.hitRate,
-        totalRequests: allStats.newTickets.totalRequests,
-      },
-    };
-    setStats(transformedStats);
-  }, []);
-
-  // Função para limpar todos os caches
-  const clearAll = useCallback(async () => {
-    setIsLoading(true);
+export const useCache = (): UseCacheReturn => {
+  const [stats, setStats] = useState<Record<string, any>>(() => {
     try {
-      clearAllCaches();
-      updateStats();
-      console.log('🗑️ Todos os caches foram limpos');
+      return unifiedCache.getAllStats();
     } catch (error) {
-      console.error('Erro ao limpar caches:', error);
+      console.error('Erro ao obter estatísticas do cache:', error);
+      return {
+        metrics: { size: 0, hitRate: 0, missRate: 0, totalRequests: 0 },
+        systemStatus: { size: 0, hitRate: 0, missRate: 0, totalRequests: 0 },
+        technicianRanking: { size: 0, hitRate: 0, missRate: 0, totalRequests: 0 },
+        newTickets: { size: 0, hitRate: 0, missRate: 0, totalRequests: 0 },
+      };
+    }
+  });
+  const [isLoading, setIsLoading] = useState(false);
+  const [error, setError] = useState<string | null>(null);
+
+  const refreshAll = useCallback(async () => {
+    setIsLoading(true);
+    setError(null);
+    
+    try {
+      // Limpar todos os caches
+      unifiedCache.clearAll();
+      
+      // Aguardar um pouco para garantir que a limpeza foi processada
+      await new Promise(resolve => setTimeout(resolve, 100));
+      
+      // Atualizar estatísticas
+      setStats(unifiedCache.getAllStats());
+      
+      console.log('✅ Todos os caches foram atualizados');
+    } catch (err) {
+      const errorMessage = err instanceof Error ? err.message : 'Erro desconhecido';
+      setError(errorMessage);
+      console.error('❌ Erro ao atualizar caches:', errorMessage);
     } finally {
       setIsLoading(false);
     }
-  }, [updateStats]);
+  }, []);
 
-  // Função para limpar cache específico
-  const clearSpecificCache = useCallback(
-    (cacheType: 'metrics' | 'systemStatus' | 'technicianRanking' | 'newTickets') => {
-      try {
-        switch (cacheType) {
-          case 'metrics':
-            metricsCache.clear();
-            break;
-          case 'systemStatus':
-            systemStatusCache.clear();
-            break;
-          case 'technicianRanking':
-            technicianRankingCache.clear();
-            break;
-          case 'newTickets':
-            newTicketsCache.clear();
-            break;
-        }
-        updateStats();
-        console.log(`🗑️ Cache ${cacheType} foi limpo`);
-      } catch (error) {
-        console.error(`Erro ao limpar cache ${cacheType}:`, error);
-      }
-    },
-    [updateStats]
-  );
+  const clearAll = useCallback(() => {
+    try {
+      unifiedCache.clearAll();
+      setStats(unifiedCache.getAllStats());
+      console.log('✅ Todos os caches foram limpos');
+    } catch (err) {
+      const errorMessage = err instanceof Error ? err.message : 'Erro desconhecido';
+      setError(errorMessage);
+      console.error('❌ Erro ao limpar caches:', errorMessage);
+    }
+  }, []);
 
-  // Função para forçar refresh de um cache específico
-  const refreshCache = useCallback(
-    async (cacheType: 'metrics' | 'systemStatus' | 'technicianRanking' | 'newTickets') => {
-      try {
-        switch (cacheType) {
-          case 'metrics':
-            await metricsCache.refresh({});
-            break;
-          case 'systemStatus':
-            await systemStatusCache.refresh({});
-            break;
-          case 'technicianRanking':
-            await technicianRankingCache.refresh({});
-            break;
-          case 'newTickets':
-            await newTicketsCache.refresh({});
-            break;
-        }
-        updateStats();
-        console.log(`🔄 Cache ${cacheType} foi atualizado`);
-      } catch (error) {
-        console.error(`Erro ao atualizar cache ${cacheType}:`, error);
-      }
-    },
-    [updateStats]
-  );
+  const getStats = useCallback((): Record<string, any> => {
+    try {
+      return unifiedCache.getAllStats();
+    } catch (error) {
+      console.error('Erro ao obter estatísticas do cache:', error);
+      return {
+        metrics: { size: 0, hitRate: 0, missRate: 0, totalRequests: 0 },
+        systemStatus: { size: 0, hitRate: 0, missRate: 0, totalRequests: 0 },
+        technicianRanking: { size: 0, hitRate: 0, missRate: 0, totalRequests: 0 },
+        newTickets: { size: 0, hitRate: 0, missRate: 0, totalRequests: 0 },
+      };
+    }
+  }, []);
 
-  // Função para obter informações detalhadas de um cache
-  const getCacheInfo = useCallback(
-    (cacheType: 'metrics' | 'systemStatus' | 'technicianRanking' | 'newTickets') => {
-      switch (cacheType) {
-        case 'metrics':
-          return metricsCache.getStats();
-        case 'systemStatus':
-          return systemStatusCache.getStats();
-        case 'technicianRanking':
-          return technicianRankingCache.getStats();
-        case 'newTickets':
-          return newTicketsCache.getStats();
-        default:
-          return null;
-      }
-    },
-    []
-  );
+  const refreshMetrics = useCallback(async () => {
+    try {
+      // Invalidar cache de métricas
+      unifiedCache.invalidatePattern('metrics', '.*');
+      setStats(unifiedCache.getAllStats());
+      console.log('✅ Cache de métricas atualizado');
+    } catch (err) {
+      const errorMessage = err instanceof Error ? err.message : 'Erro desconhecido';
+      setError(errorMessage);
+      console.error('❌ Erro ao atualizar cache de métricas:', errorMessage);
+    }
+  }, []);
 
-  // Atualizar estatísticas automaticamente
+  const refreshSystemStatus = useCallback(async () => {
+    try {
+      // Invalidar cache de status do sistema
+      unifiedCache.invalidatePattern('systemStatus', '.*');
+      setStats(unifiedCache.getAllStats());
+      console.log('✅ Cache de status do sistema atualizado');
+    } catch (err) {
+      const errorMessage = err instanceof Error ? err.message : 'Erro desconhecido';
+      setError(errorMessage);
+      console.error('❌ Erro ao atualizar cache de status do sistema:', errorMessage);
+    }
+  }, []);
+
+  const refreshTechnicianRanking = useCallback(async () => {
+    try {
+      // Invalidar cache de ranking de técnicos
+      unifiedCache.invalidatePattern('technicianRanking', '.*');
+      setStats(unifiedCache.getAllStats());
+      console.log('✅ Cache de ranking de técnicos atualizado');
+    } catch (err) {
+      const errorMessage = err instanceof Error ? err.message : 'Erro desconhecido';
+      setError(errorMessage);
+      console.error('❌ Erro ao atualizar cache de ranking de técnicos:', errorMessage);
+    }
+  }, []);
+
+  const refreshNewTickets = useCallback(async () => {
+    try {
+      // Invalidar cache de tickets novos
+      unifiedCache.invalidatePattern('newTickets', '.*');
+      setStats(unifiedCache.getAllStats());
+      console.log('✅ Cache de tickets novos atualizado');
+    } catch (err) {
+      const errorMessage = err instanceof Error ? err.message : 'Erro desconhecido';
+      setError(errorMessage);
+      console.error('❌ Erro ao atualizar cache de tickets novos:', errorMessage);
+    }
+  }, []);
+
+  // Atualizar estatísticas periodicamente
   useEffect(() => {
-    updateStats();
-
-    // Atualizar estatísticas a cada 30 segundos
-    const interval = setInterval(updateStats, 30000);
+    const interval = setInterval(() => {
+      setStats(unifiedCache.getAllStats());
+    }, 5000); // A cada 5 segundos
 
     return () => clearInterval(interval);
-  }, [updateStats]);
+  }, []);
 
   return {
     stats,
     isLoading,
-    updateStats,
+    error,
+    refreshAll,
     clearAll,
-    clearSpecificCache,
-    refreshCache,
-    getCacheInfo,
+    getStats,
+    refreshMetrics,
+    refreshSystemStatus,
+    refreshTechnicianRanking,
+    refreshNewTickets,
   };
 };
-
-export default useCache;

@@ -1,17 +1,17 @@
 import { useState, useEffect } from 'react';
-import { smartCacheManager } from '../services/smartCache';
+import { unifiedCache } from '../services/unifiedCache';
 
 /**
- * Hook para monitorar estatísticas do cache inteligente
+ * Hook para monitorar estatísticas do cache unificado
  */
 export const useCacheStats = (refreshInterval: number = 5000) => {
-  const [stats, setStats] = useState(() => smartCacheManager.getConsolidatedStats());
+  const [stats, setStats] = useState(() => unifiedCache.getAllStats());
   const [isLoading, setIsLoading] = useState(false);
 
   const refreshStats = () => {
     setIsLoading(true);
     try {
-      const newStats = smartCacheManager.getConsolidatedStats();
+      const newStats = unifiedCache.getAllStats();
       setStats(newStats);
     } catch (error) {
       console.error('Erro ao obter estatísticas do cache:', error);
@@ -28,22 +28,25 @@ export const useCacheStats = (refreshInterval: number = 5000) => {
   }, [refreshInterval]);
 
   const clearAllCaches = () => {
-    smartCacheManager.clearAll();
+    unifiedCache.clearAll();
     refreshStats();
   };
 
   const invalidateTicketCache = () => {
-    smartCacheManager.invalidateTicketRelatedCache();
+    unifiedCache.invalidatePattern('newTickets', '.*');
+    unifiedCache.invalidatePattern('tickets', '.*');
     refreshStats();
   };
 
   const invalidateMetricsCache = () => {
-    smartCacheManager.invalidateMetricsCache();
+    unifiedCache.invalidatePattern('metrics', '.*');
     refreshStats();
   };
 
   const optimizeCaches = () => {
-    smartCacheManager.optimize();
+    // O unifiedCache não tem método optimize específico
+    // Mas podemos limpar todos os caches
+    unifiedCache.clearAll();
     refreshStats();
   };
 
@@ -64,17 +67,22 @@ export const useCacheStats = (refreshInterval: number = 5000) => {
 export const useCacheHealth = () => {
   const { stats } = useCacheStats(10000); // Atualiza a cada 10 segundos
 
+  // Calcular hit rate geral
+  const totalHits = Object.values(stats).reduce((sum, cacheStats: any) => sum + (cacheStats.hitRate || 0), 0);
+  const totalRequests = Object.values(stats).reduce((sum, cacheStats: any) => sum + (cacheStats.totalRequests || 0), 0);
+  const overallHitRate = totalRequests > 0 ? totalHits / Object.keys(stats).length : 0;
+
   const health = {
-    isHealthy: stats.total.hitRate > 0.5, // Hit rate acima de 50%
-    hitRate: stats.total.hitRate,
-    memoryUsage: stats.total.memoryUsage,
-    totalEntries: stats.total.size,
+    isHealthy: overallHitRate > 0.5, // Hit rate acima de 50%
+    hitRate: overallHitRate,
+    memoryUsage: Object.values(stats).reduce((sum, cacheStats: any) => sum + (cacheStats.memoryUsage || 0), 0),
+    totalEntries: Object.values(stats).reduce((sum, cacheStats: any) => sum + (cacheStats.size || 0), 0),
     status:
-      stats.total.hitRate > 0.7
+      overallHitRate > 0.7
         ? 'excellent'
-        : stats.total.hitRate > 0.5
+        : overallHitRate > 0.5
           ? 'good'
-          : stats.total.hitRate > 0.3
+          : overallHitRate > 0.3
             ? 'fair'
             : 'poor',
   };
