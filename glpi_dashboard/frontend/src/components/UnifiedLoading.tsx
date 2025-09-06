@@ -267,7 +267,7 @@ export const UnifiedLoading: React.FC<UnifiedLoadingProps> = ({
 
   const renderLoadingContent = () => {
     switch (type) {
-      case 'skeleton':
+      case 'skeleton': {
         return (
           <UnifiedSkeleton
             type={skeletonType}
@@ -276,8 +276,9 @@ export const UnifiedLoading: React.FC<UnifiedLoadingProps> = ({
             className={className}
           />
         );
+      }
 
-      case 'progress':
+      case 'progress': {
         const currentProgress = progress !== undefined ? progress : calculatedProgress;
         return (
           <div className={`flex flex-col items-center justify-center space-y-4 ${sizeClasses[size].container} ${className}`}>
@@ -323,7 +324,7 @@ export const UnifiedLoading: React.FC<UnifiedLoadingProps> = ({
           </div>
         );
 
-      case 'overlay':
+      case 'overlay': {
         return (
           <div className='fixed inset-0 bg-black bg-opacity-50 z-50 flex items-center justify-center'>
             <div className='bg-white dark:bg-gray-800 rounded-lg shadow-xl p-8 max-w-md w-full mx-4'>
@@ -343,8 +344,9 @@ export const UnifiedLoading: React.FC<UnifiedLoadingProps> = ({
             </div>
           </div>
         );
+      }
 
-      default: // spinner
+      default: { // spinner
         const spinnerContent = (
           <div className={`flex flex-col items-center justify-center space-y-3 ${sizeClasses[size].container} ${className}`}>
             <Loader2 className={`${sizeClasses[size].spinner} text-blue-600 dark:text-blue-400 animate-spin`} />
@@ -365,6 +367,7 @@ export const UnifiedLoading: React.FC<UnifiedLoadingProps> = ({
         }
 
         return spinnerContent;
+      }
     }
   };
 

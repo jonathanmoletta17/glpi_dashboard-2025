@@ -209,7 +209,7 @@ export const useDashboard = (initialFilters: FilterParams = {}): UseDashboardRet
   // Load data on mount
   useEffect(() => {
     loadData();
-  }, []); // eslint-disable-line react-hooks/exhaustive-deps
+  }, []);
 
   // Smart refresh - coordenado e inteligente
   useSmartRefresh({

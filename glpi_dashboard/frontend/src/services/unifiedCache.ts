@@ -406,8 +406,6 @@ class UnifiedCacheManager {
       }
 
       return result;
-    } catch (error) {
-      throw error;
     } finally {
       this.pendingRequests.delete(key);
     }
