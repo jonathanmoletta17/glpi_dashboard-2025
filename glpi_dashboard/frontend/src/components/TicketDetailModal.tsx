@@ -4,99 +4,11 @@ import { X, ExternalLink, Clock, User, Tag, Paperclip, MessageSquare, Phone } fr
 import { formatDate, getStatusColor } from '../lib/utils';
 import { createCardClasses, createFlexClasses, TAILWIND_CLASSES } from '../design-system/utils';
 import { cn } from '../lib/utils';
+import { TicketDescriptionFormatter } from './TicketDescriptionFormatter';
 
-// Função para formatar a descrição estruturada
+// Função para formatar a descrição estruturada (mantida para compatibilidade)
 const formatDescription = (description: string): JSX.Element => {
-  if (!description) return <p className="text-gray-500">Nenhuma descrição disponível</p>;
-
-  // Verifica se é uma descrição estruturada (contém campos como LOCALIZAÇÃO, RAMAL, etc.)
-  const hasStructuredFields = /\b(LOCALIZAÇÃO|RAMAL|DESCRIÇÃO|DESCR)\s*:/i.test(description);
-
-  if (hasStructuredFields) {
-    // Remove HTML tags e divide a descrição em linhas
-    const cleanDescription = description.replace(/<[^>]*>/g, '').replace(/&nbsp;/g, ' ');
-    const lines = cleanDescription.split(/\r?\n/).filter(line => line.trim());
-    const formattedLines: JSX.Element[] = [];
-    let currentField = '';
-    let currentContent: string[] = [];
-
-    const processField = (fieldName: string, content: string[]) => {
-      if (!fieldName) return;
-
-      const getFieldIcon = (field: string) => {
-        switch (field.toUpperCase()) {
-          case 'LOCALIZAÇÃO': return '📍';
-          case 'RAMAL': return '📞';
-          case 'DESCRIÇÃO':
-          case 'DESCR': return '📝';
-          default: return '📋';
-        }
-      };
-
-      const joinedContent = content.join(' ').trim();
-      if (joinedContent) {
-        formattedLines.push(
-          <div key={`field-${fieldName}-${formattedLines.length}`} className="mb-4 p-3 bg-gray-50 rounded-lg border-l-4 border-blue-500">
-            <div className="flex items-center mb-2">
-              <span className="text-lg mr-2">{getFieldIcon(fieldName)}</span>
-              <span className="font-semibold text-gray-800 text-sm uppercase tracking-wide">
-                {fieldName}:
-              </span>
-            </div>
-            <div className="text-gray-700 ml-7 leading-relaxed">
-              {joinedContent}
-            </div>
-          </div>
-        );
-      }
-    };
-
-    lines.forEach((line, index) => {
-      const trimmedLine = line.trim();
-      if (!trimmedLine) return;
-
-      // Verifica se é um título de campo (LOCALIZAÇÃO:, RAMAL:, etc.)
-      const fieldMatch = trimmedLine.match(/^(\d+\)\s*)?(LOCALIZAÇÃO|RAMAL|DESCRIÇÃO|DESCR)\s*:?\s*(.*)$/i);
-
-      if (fieldMatch) {
-        // Processa o campo anterior se existir
-        if (currentField) {
-          processField(currentField, currentContent);
-        }
-
-        // Inicia novo campo
-        const [, , fieldName, fieldValue] = fieldMatch;
-        currentField = fieldName;
-        currentContent = fieldValue ? [fieldValue] : [];
-      } else {
-        // Adiciona conteúdo ao campo atual ou como linha independente
-        if (currentField) {
-          currentContent.push(trimmedLine);
-        } else {
-          // Linha independente (não pertence a nenhum campo)
-          formattedLines.push(
-            <p key={`line-${index}`} className="text-gray-700 mb-2 leading-relaxed">
-              {trimmedLine}
-            </p>
-          );
-        }
-      }
-    });
-
-    // Processa o último campo se existir
-    if (currentField) {
-      processField(currentField, currentContent);
-    }
-
-    return <div className="space-y-2">{formattedLines}</div>;
-  }
-
-  // Descrição não estruturada - exibe como texto normal com quebras de linha
-  return (
-    <div className="whitespace-pre-wrap text-gray-700 leading-relaxed p-3 bg-gray-50 rounded-lg">
-      {description}
-    </div>
-  );
+  return <TicketDescriptionFormatter description={description} />;
 };
 
 interface TicketDetailModalProps {
@@ -322,12 +234,12 @@ export const TicketDetailModal: React.FC<TicketDetailModalProps> = ({
                     </div>
                   )}
 
-                  {ticket.group && (
-                    <div>
-                      <label className="text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wide block mb-1">Grupo</label>
-                      <p className="text-sm text-gray-900 dark:text-white">{ticket.group.name}</p>
-                    </div>
-                  )}
+                  <div>
+                    <label className="text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wide block mb-1">Grupo</label>
+                    <p className="text-sm text-gray-900 dark:text-white">
+                      {ticket.group?.name || "Não atribuído"}
+                    </p>
+                  </div>
                 </div>
               </div>
 

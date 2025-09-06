@@ -1857,6 +1857,8 @@ class GLPIService:
             # Extrair dados básicos do ticket
             raw_description = ticket_data.get("content", "")
             clean_description = clean_html_content(raw_description)
+            
+            # Processamento da descrição
 
             # Extrair ramal da descrição original
             phone = self._extract_phone_from_description(raw_description)
@@ -3907,6 +3909,12 @@ class GLPIService:
             "forcedisplay[1]": 12,  # Status
             "range": "0-3000",  # Reduzido de 5000 para 3000 para melhor performance
         }
+        
+        # DEBUG ESPECÍFICO PARA SILVIO
+        if tecnico_id in ["696", "32", "141", "60", "69", "1032", "252", "721", "926", "1291", "185", "1331", "1404", "1088", "1263", "10", "53", "250", "1471"]:
+            self.logger.info(f"🔍 [DEBUG SILVIO] Buscando tickets para técnico ID: {tecnico_id}")
+            self.logger.info(f"🔍 [DEBUG SILVIO] URL: {url}")
+            self.logger.info(f"🔍 [DEBUG SILVIO] Params: {params}")
 
         try:
             # Timeout reduzido para 15 segundos
@@ -3914,6 +3922,9 @@ class GLPIService:
 
             if not response or response.status_code != 200:
                 self.logger.warning(f"Falha na requisição para técnico {tecnico_id}: {response.status_code if response else 'None'}")
+                # DEBUG ESPECÍFICO PARA SILVIO
+                if tecnico_id in ["696", "32", "141", "60", "69", "1032", "252", "721", "926", "1291", "185", "1331", "1404", "1088", "1263", "10", "53", "250", "1471"]:
+                    self.logger.error(f"❌ [DEBUG SILVIO] ERRO na requisição para técnico {tecnico_id}: Status {response.status_code if response else 'None'}")
                 return {
                     "total_tickets": 0,
                     "resolved_tickets": 0,
@@ -3923,6 +3934,14 @@ class GLPIService:
 
             data = response.json()
             tickets = data.get("data", [])
+            
+            # DEBUG ESPECÍFICO PARA SILVIO
+            if tecnico_id in ["696", "32", "141", "60", "69", "1032", "252", "721", "926", "1291", "185", "1331", "1404", "1088", "1263", "10", "53", "250", "1471"]:
+                self.logger.info(f"🔍 [DEBUG SILVIO] Resposta recebida para técnico {tecnico_id}: {len(tickets)} tickets")
+                if len(tickets) > 0:
+                    self.logger.info(f"🔍 [DEBUG SILVIO] Primeiro ticket: {tickets[0]}")
+                else:
+                    self.logger.warning(f"⚠️ [DEBUG SILVIO] NENHUM TICKET ENCONTRADO para técnico {tecnico_id}")
 
             total = len(tickets)
             resolvidos = 0
@@ -3995,7 +4014,6 @@ class GLPIService:
             # Buscar detalhes de todos os técnicos em paralelo
             technician_candidates = []
             import concurrent.futures
-            import threading
 
             def get_technician_data(tech_id):
                 try:
@@ -5194,10 +5212,18 @@ class GLPIService:
             self.logger.error(f"Erro ao converter prioridade {priority_id}: {e}")
             return "Média"
 
-    def _get_category_name_by_id(self, category_id: str) -> str:
+    def _get_category_name_by_id(self, category_id) -> str:
         """Converte ID de categoria do GLPI para nome legível"""
         if not category_id:
             return "Não categorizado"
+
+        # Se category_id for uma lista, pegar o primeiro elemento
+        if isinstance(category_id, list):
+            if not category_id:
+                return "Não categorizado"
+            category_id = str(category_id[0])
+        else:
+            category_id = str(category_id)
 
         try:
             # Verificar cache primeiro
@@ -5285,39 +5311,49 @@ class GLPIService:
             # Extrair campos principais usando regex
             import re
 
-            # Padrões para extrair informações
-            location_pattern = r'LOCALIZAÇÃO\s*:?\s*([^\n\r]+?)(?=\d+\)|$|RAMAL|DESCR)'
-            phone_pattern = r'RAMAL\s*:?\s*:?\s*([^\n\r]+?)(?=\d+\)|$|DESCR)'
-            description_pattern = r'DESCR[IÇ]?[ÃA]?O?\s*DO\s*PEDIDO\s*:?\s*([\s\S]+?)(?=$|\n\n|Dados|\d+\)\s*ARQUIVO)'
+            # Padrões mais robustos para extrair informações
+            location_pattern = r'LOCALIZAÇÃO\s*:?\s*([^\n\r]+?)(?=\d+\)|$|RAMAL|DESCR|ARQUIVO)'
+            phone_pattern = r'RAMAL\s*:?\s*:?\s*([^\n\r]+?)(?=\d+\)|$|DESCR|ARQUIVO)'
+            description_pattern = r'DESCR[IÇ]?[ÃA]?O?\s*DO\s*PEDIDO\s*:?\s*([\s\S]+?)(?=$|\n\n|Dados|\d+\)\s*ARQUIVO|ARQUIVO)'
+            file_pattern = r'ARQUIVO\s*:?\s*:?\s*([^\n\r]+?)(?=$|\d+\)|LOCALIZAÇÃO|RAMAL|DESCR)'
 
             location = re.search(location_pattern, description, re.IGNORECASE)
             phone = re.search(phone_pattern, description, re.IGNORECASE)
             desc_content = re.search(description_pattern, description, re.IGNORECASE)
+            file_content = re.search(file_pattern, description, re.IGNORECASE)
 
-            # Construir descrição formatada
+            # Construir descrição formatada com estrutura melhorada
             formatted_parts = []
 
             if location and location.group(1).strip():
-                formatted_parts.append(f"Localização: {location.group(1).strip()}")
+                location_clean = location.group(1).strip()
+                formatted_parts.append(f"LOCALIZAÇÃO: {location_clean}")
 
             if phone and phone.group(1).strip():
                 phone_clean = phone.group(1).strip().replace(':', '').strip()
                 if phone_clean:
-                    formatted_parts.append(f"Ramal: {phone_clean}")
+                    formatted_parts.append(f"RAMAL: {phone_clean}")
 
             if desc_content and desc_content.group(1).strip():
                 desc_text = desc_content.group(1).strip()
-                # Limitar descrição a 300 caracteres para manter legibilidade
-                if len(desc_text) > 300:
-                    desc_text = desc_text[:297] + "..."
-                formatted_parts.append(f"Descrição: {desc_text}")
+                # Limpar quebras de linha extras e espaços
+                desc_text = re.sub(r'\s+', ' ', desc_text)
+                # Limitar descrição a 500 caracteres para manter legibilidade
+                if len(desc_text) > 500:
+                    desc_text = desc_text[:497] + "..."
+                formatted_parts.append(f"DESCRIÇÃO: {desc_text}")
+
+            if file_content and file_content.group(1).strip():
+                file_clean = file_content.group(1).strip()
+                formatted_parts.append(f"ARQUIVO: {file_clean}")
 
             if formatted_parts:
-                return " | ".join(formatted_parts)
+                # Retornar com quebras de linha para melhor formatação
+                return "\n".join(formatted_parts)
             else:
                 # Se não conseguiu extrair campos, retornar descrição original limitada
-                if len(description) > 300:
-                    return description[:297] + "..."
+                if len(description) > 500:
+                    return description[:497] + "..."
                 return description
 
         except Exception as e:
@@ -6028,8 +6064,6 @@ class GLPIService:
             correlation_id: ID de correlação para logs
             entity_id: ID da entidade para filtrar técnicos
         """
-        start_time = time.time()  # Definir start_time no início para evitar NameError
-
         # Log simples para confirmar que o método está sendo chamado
         print(f"[DEBUG] get_technician_ranking_with_filters CHAMADO - start_date: {start_date}, end_date: {end_date}")
 
@@ -6855,3 +6889,51 @@ class GLPIService:
             metrics[level_name] = level_metrics
 
         return metrics
+
+    def debug_silvio_tickets(self, silvio_id: str = "696") -> Dict[str, Any]:
+        """Método específico para debugar tickets do Silvio"""
+        self.logger.info(f"🔍 [DEBUG SILVIO] Iniciando debug específico para Silvio ID: {silvio_id}")
+        
+        # Primeiro, verificar se o usuário existe
+        user_url = f"{self.glpi_url}/User/{silvio_id}"
+        user_response = self._make_authenticated_request("GET", user_url)
+        
+        if user_response and user_response.status_code == 200:
+            user_data = user_response.json()
+            self.logger.info(f"🔍 [DEBUG SILVIO] Usuário encontrado: {user_data.get('name', 'N/A')}")
+            self.logger.info(f"🔍 [DEBUG SILVIO] Firstname: {user_data.get('firstname', 'N/A')}")
+            self.logger.info(f"🔍 [DEBUG SILVIO] Realname: {user_data.get('realname', 'N/A')}")
+        else:
+            self.logger.error(f"❌ [DEBUG SILVIO] Usuário {silvio_id} não encontrado")
+            return {"error": "Usuário não encontrado"}
+        
+        # Testar diferentes campos para buscar tickets
+        test_fields = [5, 95, 4, 6]  # Diferentes campos que podem ser usados para técnico
+        
+        for field_id in test_fields:
+            self.logger.info(f"🔍 [DEBUG SILVIO] Testando campo {field_id} para técnico {silvio_id}")
+            
+            url = f"{self.glpi_url}/search/Ticket"
+            params = {
+                "criteria[0][field]": field_id,
+                "criteria[0][searchtype]": "equals",
+                "criteria[0][value]": silvio_id,
+                "forcedisplay[0]": 2,  # ID
+                "forcedisplay[1]": 12,  # Status
+                "range": "0-10",  # Apenas 10 tickets para teste
+            }
+            
+            try:
+                response = self._make_authenticated_request("GET", url, params=params, timeout=10)
+                if response and response.status_code == 200:
+                    data = response.json()
+                    tickets = data.get("data", [])
+                    self.logger.info(f"🔍 [DEBUG SILVIO] Campo {field_id}: {len(tickets)} tickets encontrados")
+                    if len(tickets) > 0:
+                        self.logger.info(f"🔍 [DEBUG SILVIO] Primeiro ticket do campo {field_id}: {tickets[0]}")
+                else:
+                    self.logger.warning(f"⚠️ [DEBUG SILVIO] Campo {field_id}: Erro {response.status_code if response else 'None'}")
+            except Exception as e:
+                self.logger.error(f"❌ [DEBUG SILVIO] Campo {field_id}: Erro {e}")
+        
+        return {"debug": "Concluído"}

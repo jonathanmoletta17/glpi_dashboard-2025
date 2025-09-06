@@ -98,15 +98,6 @@ const TicketItem = React.memo<{
       onClick={handleTicketClick}
     >
       <div className={cn('flex items-start justify-between gap-3')}>
-        {/* Badge de prioridade */}
-        <div className="flex-shrink-0">
-          <PriorityBadge
-            value={ticket.priority}
-            size="sm"
-            className={ticketSpacing.badge.margin}
-          />
-        </div>
-
         {/* Conteúdo do ticket */}
         <div className="flex-1 min-w-0 space-y-2">
           <div className="flex items-start justify-between gap-2">
@@ -117,13 +108,23 @@ const TicketItem = React.memo<{
                 size="sm"
               />
             </div>
-            <Button
-              variant="ghost"
-              size="icon"
-              className="h-6 w-6 flex-shrink-0 opacity-0 group-hover:opacity-100 transition-opacity"
-            >
-              <ExternalLink className="h-3 w-3" />
-            </Button>
+            <div className="flex items-center gap-2">
+              <Button
+                variant="ghost"
+                size="icon"
+                className="h-6 w-6 flex-shrink-0 opacity-0 group-hover:opacity-100 transition-opacity"
+              >
+                <ExternalLink className="h-3 w-3" />
+              </Button>
+              {/* Badge de prioridade movido para a direita */}
+              <div className="flex-shrink-0">
+                <PriorityBadge
+                  value={ticket.priority}
+                  size="sm"
+                  className={ticketSpacing.badge.margin}
+                />
+              </div>
+            </div>
           </div>
 
           <h4 className={cn(

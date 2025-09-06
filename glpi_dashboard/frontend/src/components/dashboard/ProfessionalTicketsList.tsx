@@ -124,16 +124,6 @@ const ProfessionalTicketItem = React.memo<{
     >
       <div className="p-3 rounded-md border border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-800 hover:bg-gray-50 dark:hover:bg-gray-700 hover:border-gray-300 dark:hover:border-gray-600 transition-colors duration-150 hover:shadow-sm">
         <div className="flex items-start justify-between gap-3">
-          {/* Badge de prioridade */}
-          <div className="flex-shrink-0">
-            <Badge
-              variant="outline"
-              className={`${priorityConfig.bgClass} ${priorityConfig.textClass} border text-xs px-2 py-1`}
-            >
-              {ticket.priority}
-            </Badge>
-          </div>
-
           {/* Conteúdo do ticket */}
           <div className="flex-1 min-w-0 space-y-2">
             <div className="flex items-start justify-between gap-2">
@@ -146,13 +136,24 @@ const ProfessionalTicketItem = React.memo<{
                   Novo
                 </Badge>
               </div>
-              <Button
-                variant="ghost"
-                size="icon"
-                className="h-6 w-6 flex-shrink-0 opacity-0 group-hover:opacity-100 transition-opacity"
-              >
-                <ExternalLink className="h-3 w-3" />
-              </Button>
+              <div className="flex items-center gap-2">
+                <Button
+                  variant="ghost"
+                  size="icon"
+                  className="h-6 w-6 flex-shrink-0 opacity-0 group-hover:opacity-100 transition-opacity"
+                >
+                  <ExternalLink className="h-3 w-3" />
+                </Button>
+                {/* Badge de prioridade movido para a direita */}
+                <div className="flex-shrink-0">
+                  <Badge
+                    variant="outline"
+                    className={`${priorityConfig.bgClass} ${priorityConfig.textClass} border text-xs px-2 py-1`}
+                  >
+                    {ticket.priority}
+                  </Badge>
+                </div>
+              </div>
             </div>
 
             <h4 className="text-sm font-semibold text-gray-900 dark:text-white line-clamp-2 leading-tight">

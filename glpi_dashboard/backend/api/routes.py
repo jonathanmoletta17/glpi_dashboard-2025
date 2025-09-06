@@ -95,6 +95,19 @@ def health_check():
         )
 
 
+@api_bp.route("/debug/silvio", methods=["GET"])
+@monitor_api_endpoint
+def debug_silvio():
+    """Debug específico para o técnico Silvio"""
+    try:
+        glpi_service = get_glpi_service()
+        result = glpi_service.debug_silvio_tickets()
+        return jsonify({"success": True, "debug_result": result})
+    except Exception as e:
+        logger.error(f"Erro no debug do Silvio: {e}")
+        return jsonify({"success": False, "error": str(e)}), 500
+
+
 @api_bp.route("/health/glpi")
 def glpi_health_check():
     """Health check da conexão GLPI"""
@@ -466,12 +479,6 @@ def get_technician_ranking(validated_start_date=None, validated_end_date=None, v
     correlation_id = api_logger.generate_correlation_id()
 
     try:
-        # LIMPAR CACHE FORÇADAMENTE - CORREÇÃO CRÍTICA
-        logger.info(f"[{correlation_id}] LIMPANDO CACHE DO RANKING FORÇADAMENTE")
-        _ranking_cache["data"] = None
-        _ranking_cache["timestamp"] = 0
-        _ranking_cache["filters_hash"] = None
-
         start_date = validated_start_date
         end_date = validated_end_date
         filters = validated_filters or {}
@@ -492,34 +499,21 @@ def get_technician_ranking(validated_start_date=None, validated_end_date=None, v
         current_time = time.time()
         filters_hash = hash(str(sorted(filters.items())) + str(start_date) + str(end_date) + str(limit) + str(entity_id))
 
-        # ADICIONAR LOGS DE DEBUG DO CACHE
-        logger.debug(f"[{correlation_id}] TESTE DEBUG - Verificando cache do ranking:")
-        logger.info(f"[{correlation_id}] Verificando cache do ranking:")
-        logger.debug(f"[{correlation_id}] Cache data exists: {_ranking_cache['data'] is not None}")
-        logger.info(f"[{correlation_id}] Cache data exists: {_ranking_cache['data'] is not None}")
-        logger.debug(f"[{correlation_id}] Cache timestamp: {_ranking_cache['timestamp']}")
-        logger.info(f"[{correlation_id}] Cache timestamp: {_ranking_cache['timestamp']}")
-        logger.debug(f"[{correlation_id}] Cache TTL: {_ranking_cache['ttl']}")
-        logger.info(f"[{correlation_id}] Cache TTL: {_ranking_cache['ttl']}")
-        logger.debug(f"[{correlation_id}] Cache age: {current_time - _ranking_cache['timestamp']}")
-        logger.info(f"[{correlation_id}] Cache age: {current_time - _ranking_cache['timestamp']}")
-        logger.debug(f"[{correlation_id}] Cache filters hash: {_ranking_cache['filters_hash']}")
-        logger.info(f"[{correlation_id}] Cache filters hash: {_ranking_cache['filters_hash']}")
-        logger.debug(f"[{correlation_id}] Current filters hash: {filters_hash}")
-        logger.info(f"[{correlation_id}] Current filters hash: {filters_hash}")
+        # Verificar cache com logs simplificados
+        logger.info(f"[{correlation_id}] Verificando cache do ranking - data_exists: {_ranking_cache['data'] is not None}, age: {current_time - _ranking_cache['timestamp']:.2f}s")
 
         if (
             _ranking_cache["data"] is not None
             and current_time - _ranking_cache["timestamp"] < _ranking_cache["ttl"]
             and _ranking_cache["filters_hash"] == filters_hash
         ):
-            logger.info(f"[{correlation_id}] RETORNANDO DADOS DO CACHE (PROBLEMA!)")
+            logger.info(f"[{correlation_id}] Retornando dados do cache")
             cached_data = _ranking_cache["data"].copy()
             cached_data["cached"] = True
             cached_data["correlation_id"] = correlation_id
             return jsonify(cached_data)
         else:
-            logger.info(f"[{correlation_id}] CACHE INVÁLIDO, PROCESSANDO DADOS REAIS")
+            logger.info(f"[{correlation_id}] Cache inválido, processando dados reais")
 
         # Log início do pipeline
         api_logger.log_operation_start(
@@ -562,11 +556,8 @@ def get_technician_ranking(validated_start_date=None, validated_end_date=None, v
                     "message": "Nenhum técnico encontrado com os filtros aplicados",
                     "correlation_id": correlation_id,
                     "filters_applied": {
-                        "start_date": start_date,
-                        "end_date": end_date,
-                        "level": level,
-                        "limit": limit,
-                        "entity_id": entity_id,
+                        "data_inicio": start_date,
+                        "data_fim": end_date,
                     },
                 }
             )
@@ -598,11 +589,8 @@ def get_technician_ranking(validated_start_date=None, validated_end_date=None, v
             "correlation_id": correlation_id,
             "cached": False,
             "filters_applied": {
-                "start_date": start_date,
-                "end_date": end_date,
-                "level": level,
-                "limit": limit,
-                "entity_id": entity_id,
+                "data_inicio": start_date,
+                "data_fim": end_date,
             },
         }
 
