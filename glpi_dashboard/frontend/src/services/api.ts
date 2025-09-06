@@ -4,7 +4,6 @@ import type { ApiResult, DashboardMetrics, FilterParams, PerformanceMetrics } fr
 import { isApiError, isApiResponse, transformLegacyData } from '../types/api';
 import { unifiedCache } from './unifiedCache';
 
-
 // Base URL for API (mantido para compatibilidade)
 const API_BASE_URL = API_CONFIG.BASE_URL;
 
@@ -101,40 +100,72 @@ export const apiService = {
               processedNiveis = {
                 n1: {
                   ...rawData.niveis.n1,
-                  total: (rawData.niveis.n1.novos || 0) + (rawData.niveis.n1.pendentes || 0) + (rawData.niveis.n1.progresso || 0) + (rawData.niveis.n1.resolvidos || 0)
+                  total:
+                    (rawData.niveis.n1.novos || 0) +
+                    (rawData.niveis.n1.pendentes || 0) +
+                    (rawData.niveis.n1.progresso || 0) +
+                    (rawData.niveis.n1.resolvidos || 0),
                 },
                 n2: {
                   ...rawData.niveis.n2,
-                  total: (rawData.niveis.n2.novos || 0) + (rawData.niveis.n2.pendentes || 0) + (rawData.niveis.n2.progresso || 0) + (rawData.niveis.n2.resolvidos || 0)
+                  total:
+                    (rawData.niveis.n2.novos || 0) +
+                    (rawData.niveis.n2.pendentes || 0) +
+                    (rawData.niveis.n2.progresso || 0) +
+                    (rawData.niveis.n2.resolvidos || 0),
                 },
                 n3: {
                   ...rawData.niveis.n3,
-                  total: (rawData.niveis.n3.novos || 0) + (rawData.niveis.n3.pendentes || 0) + (rawData.niveis.n3.progresso || 0) + (rawData.niveis.n3.resolvidos || 0)
+                  total:
+                    (rawData.niveis.n3.novos || 0) +
+                    (rawData.niveis.n3.pendentes || 0) +
+                    (rawData.niveis.n3.progresso || 0) +
+                    (rawData.niveis.n3.resolvidos || 0),
                 },
                 n4: {
                   ...rawData.niveis.n4,
-                  total: (rawData.niveis.n4.novos || 0) + (rawData.niveis.n4.pendentes || 0) + (rawData.niveis.n4.progresso || 0) + (rawData.niveis.n4.resolvidos || 0)
-                }
+                  total:
+                    (rawData.niveis.n4.novos || 0) +
+                    (rawData.niveis.n4.pendentes || 0) +
+                    (rawData.niveis.n4.progresso || 0) +
+                    (rawData.niveis.n4.resolvidos || 0),
+                },
               };
             } else if (rawData.levels) {
               // Caso os dados venham como 'levels' ao invés de 'niveis'
               processedNiveis = {
                 n1: {
                   ...rawData.levels.n1,
-                  total: (rawData.levels.n1.novos || 0) + (rawData.levels.n1.pendentes || 0) + (rawData.levels.n1.progresso || 0) + (rawData.levels.n1.resolvidos || 0)
+                  total:
+                    (rawData.levels.n1.novos || 0) +
+                    (rawData.levels.n1.pendentes || 0) +
+                    (rawData.levels.n1.progresso || 0) +
+                    (rawData.levels.n1.resolvidos || 0),
                 },
                 n2: {
                   ...rawData.levels.n2,
-                  total: (rawData.levels.n2.novos || 0) + (rawData.levels.n2.pendentes || 0) + (rawData.levels.n2.progresso || 0) + (rawData.levels.n2.resolvidos || 0)
+                  total:
+                    (rawData.levels.n2.novos || 0) +
+                    (rawData.levels.n2.pendentes || 0) +
+                    (rawData.levels.n2.progresso || 0) +
+                    (rawData.levels.n2.resolvidos || 0),
                 },
                 n3: {
                   ...rawData.levels.n3,
-                  total: (rawData.levels.n3.novos || 0) + (rawData.levels.n3.pendentes || 0) + (rawData.levels.n3.progresso || 0) + (rawData.levels.n3.resolvidos || 0)
+                  total:
+                    (rawData.levels.n3.novos || 0) +
+                    (rawData.levels.n3.pendentes || 0) +
+                    (rawData.levels.n3.progresso || 0) +
+                    (rawData.levels.n3.resolvidos || 0),
                 },
                 n4: {
                   ...rawData.levels.n4,
-                  total: (rawData.levels.n4.novos || 0) + (rawData.levels.n4.pendentes || 0) + (rawData.levels.n4.progresso || 0) + (rawData.levels.n4.resolvidos || 0)
-                }
+                  total:
+                    (rawData.levels.n4.novos || 0) +
+                    (rawData.levels.n4.pendentes || 0) +
+                    (rawData.levels.n4.progresso || 0) +
+                    (rawData.levels.n4.resolvidos || 0),
+                },
               };
             } else {
               // Fallback com zeros
@@ -177,7 +208,6 @@ export const apiService = {
               n3: { novos: 0, pendentes: 0, progresso: 0, resolvidos: 0, total: 0 },
               n4: { novos: 0, pendentes: 0, progresso: 0, resolvidos: 0, total: 0 },
             },
-
           };
           // Não cachear dados de fallback
           return fallbackData;
@@ -304,9 +334,7 @@ export const apiService = {
       // Usar timeout maior para ranking (5 minutos para casos complexos)
       const timeoutConfig = { timeout: 300000 }; // 5 minutos para ranking
 
-      console.log(
-        `⏱️ Usando timeout de 300 segundos para ranking de técnicos`
-      );
+      console.log(`⏱️ Usando timeout de 300 segundos para ranking de técnicos`);
       const response = await api.get<ApiResponse<any[]>>(url, {
         timeout: 300000, // 5 minutos para ranking
       });
@@ -321,7 +349,10 @@ export const apiService = {
       console.log('🔍 getTechnicianRanking - response.data:', response.data);
       console.log('🔍 getTechnicianRanking - response.data.success:', response.data.success);
       console.log('🔍 getTechnicianRanking - response.data.data:', response.data.data);
-      console.log('🔍 getTechnicianRanking - response.data.data length:', response.data.data?.length);
+      console.log(
+        '🔍 getTechnicianRanking - response.data.data length:',
+        response.data.data?.length
+      );
 
       if (response.data.success && response.data.data) {
         const data = response.data.data;
@@ -654,9 +685,7 @@ export const fetchDashboardMetrics = async (
       }
     }
 
-    url = queryParams.toString()
-      ? `/api/metrics?${queryParams.toString()}`
-      : `/api/metrics`;
+    url = queryParams.toString() ? `/api/metrics?${queryParams.toString()}` : `/api/metrics`;
 
     console.log('🔍 Filtros originais:', filters);
     console.log('🔍 Query params construídos:', queryParams.toString());

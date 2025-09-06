@@ -145,52 +145,43 @@ const environmentConfigs: EnvironmentConfig = {
   development: {
     minimumScore: 75,
     checkInterval: 15000,
-    enabledChecks: [
-      'api-health',
-      'data-integrity',
-      'visual-validation',
-      'performance-monitoring'
-    ],
+    enabledChecks: ['api-health', 'data-integrity', 'visual-validation', 'performance-monitoring'],
     alertThresholds: {
       responseTime: 2000,
       errorRate: 0.1,
-      memoryUsage: 80
+      memoryUsage: 80,
     },
     autoRecovery: true,
     notifications: {
       enabled: true,
       duration: 5000,
-      maxVisible: 5
+      maxVisible: 5,
     },
     logging: {
       level: 'debug',
-      enableConsole: true
-    }
+      enableConsole: true,
+    },
   },
   production: {
     minimumScore: 90,
     checkInterval: 60000,
-    enabledChecks: [
-      'api-health',
-      'data-integrity',
-      'performance-monitoring'
-    ],
+    enabledChecks: ['api-health', 'data-integrity', 'performance-monitoring'],
     alertThresholds: {
       responseTime: 1000,
       errorRate: 0.05,
-      memoryUsage: 70
+      memoryUsage: 70,
     },
     autoRecovery: false,
     notifications: {
       enabled: true,
       duration: 8000,
-      maxVisible: 3
+      maxVisible: 3,
     },
     logging: {
       level: 'warn',
-      enableConsole: false
-    }
-  }
+      enableConsole: false,
+    },
+  },
 };
 
 // Configuração de loading states
@@ -203,8 +194,8 @@ const loadingConfig: LoadingConfig = {
     initial: 'Carregando...',
     pending: 'Processando...',
     success: 'Concluído',
-    error: 'Erro ao carregar'
-  }
+    error: 'Erro ao carregar',
+  },
 };
 
 // Configuração do sistema de notificações
@@ -216,41 +207,41 @@ const notificationConfig: NotificationConfig = {
     critical: {
       duration: 0, // Persistente
       persistent: true,
-      sound: true
+      sound: true,
     },
     high: {
       duration: 10000,
       persistent: false,
-      sound: true
+      sound: true,
     },
     medium: {
       duration: 5000,
       persistent: false,
-      sound: false
+      sound: false,
     },
     low: {
       duration: 3000,
       persistent: false,
-      sound: false
-    }
+      sound: false,
+    },
   },
   types: {
     cache: {
       enabled: true,
       duration: 3000,
-      showIcon: true
+      showIcon: true,
     },
     system: {
       enabled: true,
       duration: 5000,
-      showIcon: true
+      showIcon: true,
     },
     user: {
       enabled: true,
       duration: 4000,
-      showIcon: false
-    }
-  }
+      showIcon: false,
+    },
+  },
 };
 
 // Configuração da API
@@ -263,8 +254,8 @@ const apiConfig: APIConfig = {
     dashboard: '/api/dashboard',
     ranking: '/api/ranking',
     metrics: '/api/metrics',
-    health: '/api/health'
-  }
+    health: '/api/health',
+  },
 };
 
 // Configuração do cache
@@ -275,17 +266,17 @@ const cacheConfig: CacheConfig = {
   strategies: {
     dashboard: {
       ttl: 180000, // 3 minutos
-      maxAge: 600000 // 10 minutos
+      maxAge: 600000, // 10 minutos
     },
     ranking: {
       ttl: 300000, // 5 minutos
-      maxAge: 900000 // 15 minutos
+      maxAge: 900000, // 15 minutos
     },
     metrics: {
       ttl: 120000, // 2 minutos
-      maxAge: 300000 // 5 minutos
-    }
-  }
+      maxAge: 300000, // 5 minutos
+    },
+  },
 };
 
 // Função para obter configuração do ambiente atual
@@ -320,7 +311,7 @@ export const appConfig = {
 
   getCacheTTL: (strategy: keyof CacheConfig['strategies'] = 'dashboard') => {
     return cacheConfig.strategies[strategy].ttl;
-  }
+  },
 };
 
 // Configurações específicas para componentes
@@ -332,7 +323,7 @@ export const componentConfigs = {
     enabledChecks: appConfig.environment.enabledChecks,
     alertThresholds: appConfig.environment.alertThresholds,
     autoRecovery: appConfig.environment.autoRecovery,
-    notifications: appConfig.environment.notifications
+    notifications: appConfig.environment.notifications,
   },
 
   unifiedLoading: {
@@ -342,21 +333,21 @@ export const componentConfigs = {
     messages: appConfig.loading.states,
     defaultType: 'spinner',
     defaultSize: 'md',
-    defaultVariant: 'default'
+    defaultVariant: 'default',
   },
 
   notificationSystem: {
     maxVisible: appConfig.notifications.maxVisible,
     position: appConfig.notifications.position,
     defaultDuration: appConfig.notifications.defaultDuration,
-    priorities: appConfig.notifications.priorities
+    priorities: appConfig.notifications.priorities,
   },
 
   cacheNotification: {
     enabled: appConfig.notifications.types.cache.enabled,
     autoCloseDelay: appConfig.notifications.types.cache.duration,
-    showIcon: appConfig.notifications.types.cache.showIcon
-  }
+    showIcon: appConfig.notifications.types.cache.showIcon,
+  },
 };
 
 export default appConfig;

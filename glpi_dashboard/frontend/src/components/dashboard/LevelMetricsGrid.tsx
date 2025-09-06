@@ -3,7 +3,11 @@ import { motion } from 'framer-motion';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 import { Users, Clock, AlertCircle, CheckCircle, TrendingUp, BarChart3 } from 'lucide-react';
-import { RESPONSIVE_GRID_CLASSES, RESPONSIVE_CONTAINER, RESPONSIVE_SPACING } from '../../utils/responsive';
+import {
+  RESPONSIVE_GRID_CLASSES,
+  RESPONSIVE_CONTAINER,
+  RESPONSIVE_SPACING,
+} from '../../utils/responsive';
 import { MetricsData } from '@/types';
 import { cn } from '@/lib/utils';
 
@@ -235,10 +239,17 @@ export const LevelMetricsGrid = React.memo<LevelMetricsGridProps>(function Level
   // Verificação de segurança para evitar erros
   if (!metrics || !metrics.niveis) {
     return (
-      <Card className={cn('bg-white/80 backdrop-blur-sm border border-white/90 dark:bg-white/5 dark:border-white/10 h-full shadow-none rounded-lg', className)}>
+      <Card
+        className={cn(
+          'bg-white/80 backdrop-blur-sm border border-white/90 dark:bg-white/5 dark:border-white/10 h-full shadow-none rounded-lg',
+          className
+        )}
+      >
         <CardContent className='flex items-center justify-center h-48'>
           <div className='text-center'>
-            <div className='text-sm text-gray-600 mb-2'><BarChart3 className='h-6 w-6 mx-auto' /></div>
+            <div className='text-sm text-gray-600 mb-2'>
+              <BarChart3 className='h-6 w-6 mx-auto' />
+            </div>
             <div className='text-sm text-gray-600'>Carregando métricas por nível...</div>
           </div>
         </CardContent>
@@ -253,7 +264,9 @@ export const LevelMetricsGrid = React.memo<LevelMetricsGridProps>(function Level
 
   return (
     <div className={cn('h-full flex flex-col overflow-hidden', className)}>
-      <div className={`${RESPONSIVE_GRID_CLASSES.levelMetrics} ${RESPONSIVE_SPACING.gap.lg} h-full overflow-hidden p-1`}>
+      <div
+        className={`${RESPONSIVE_GRID_CLASSES.levelMetrics} ${RESPONSIVE_SPACING.gap.lg} h-full overflow-hidden p-1`}
+      >
         {levelEntries.map(([levelKey, levelData]) => {
           const key = levelKey.toLowerCase() as keyof typeof levelConfig;
           const config = levelConfig[key] || levelConfig.n1;

@@ -12,14 +12,14 @@ export const RESPONSIVE_GRID_CLASSES = {
     3: 'grid-cols-1 md:grid-cols-2 lg:grid-cols-3',
     4: 'grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4',
     5: 'grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-5',
-    6: 'grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-6'
+    6: 'grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-6',
   },
 
   // Auto-fit responsive grid
   autoFit: {
     sm: 'grid-cols-[repeat(auto-fit,minmax(200px,1fr))]',
     md: 'grid-cols-[repeat(auto-fit,minmax(250px,1fr))]',
-    lg: 'grid-cols-[repeat(auto-fit,minmax(300px,1fr))]'
+    lg: 'grid-cols-[repeat(auto-fit,minmax(300px,1fr))]',
   },
 
   // Dashboard specific layouts
@@ -31,8 +31,8 @@ export const RESPONSIVE_GRID_CLASSES = {
     base: 'grid gap-4 sm:gap-6',
     mobile: 'grid-cols-1',
     tablet: 'grid-cols-2',
-    desktop: 'grid-cols-4'
-  }
+    desktop: 'grid-cols-4',
+  },
 };
 
 // Container classes for responsive layouts
@@ -55,11 +55,11 @@ export const RESPONSIVE_CONTAINER = {
     '5xl': 'max-w-5xl',
     '6xl': 'max-w-6xl',
     '7xl': 'max-w-7xl',
-    full: 'max-w-full'
+    full: 'max-w-full',
   },
 
   // Full container with padding
-  full: 'w-full mx-auto px-4 sm:px-6 lg:px-8'
+  full: 'w-full mx-auto px-4 sm:px-6 lg:px-8',
 };
 
 // Spacing classes for responsive layouts
@@ -70,7 +70,7 @@ export const RESPONSIVE_SPACING = {
     sm: 'gap-3 sm:gap-4',
     md: 'gap-4 sm:gap-6',
     lg: 'gap-6 sm:gap-8',
-    xl: 'gap-8 sm:gap-10'
+    xl: 'gap-8 sm:gap-10',
   },
 
   // Responsive margins
@@ -86,8 +86,8 @@ export const RESPONSIVE_SPACING = {
       sm: 'mb-3 sm:mb-4',
       md: 'mb-4 sm:mb-6',
       lg: 'mb-6 sm:mb-8',
-      xl: 'mb-8 sm:mb-10'
-    }
+      xl: 'mb-8 sm:mb-10',
+    },
   },
 
   // Responsive padding
@@ -96,8 +96,8 @@ export const RESPONSIVE_SPACING = {
     sm: 'p-3 sm:p-4',
     md: 'p-4 sm:p-6',
     lg: 'p-6 sm:p-8',
-    xl: 'p-8 sm:p-10'
-  }
+    xl: 'p-8 sm:p-10',
+  },
 };
 
 // Function to create responsive classes dynamically
@@ -108,7 +108,7 @@ export const createResponsiveClasses = ({
   base,
   mobile,
   tablet,
-  desktop
+  desktop,
 }: {
   cols?: 1 | 2 | 3 | 4 | 5 | 6;
   gap?: keyof typeof RESPONSIVE_SPACING.gap;
@@ -129,7 +129,7 @@ export const createResponsiveClasses = ({
       RESPONSIVE_GRID_CLASSES.grid,
       RESPONSIVE_GRID_CLASSES.cols[cols],
       RESPONSIVE_SPACING.gap[gap],
-      RESPONSIVE_SPACING.padding[padding]
+      RESPONSIVE_SPACING.padding[padding],
     ].join(' ');
   }
 
@@ -141,7 +141,7 @@ export const createSimpleGridClasses = ({
   base,
   mobile,
   tablet,
-  desktop
+  desktop,
 }: {
   base: string;
   mobile: string;
@@ -157,7 +157,7 @@ export const BREAKPOINTS = {
   md: '768px',
   lg: '1024px',
   xl: '1280px',
-  '2xl': '1536px'
+  '2xl': '1536px',
 };
 
 // Media query helpers
@@ -166,7 +166,7 @@ export const mediaQueries = {
   md: `@media (min-width: ${BREAKPOINTS.md})`,
   lg: `@media (min-width: ${BREAKPOINTS.lg})`,
   xl: `@media (min-width: ${BREAKPOINTS.xl})`,
-  '2xl': `@media (min-width: ${BREAKPOINTS['2xl']})`
+  '2xl': `@media (min-width: ${BREAKPOINTS['2xl']})`,
 };
 
 // Hook for responsive behavior
@@ -186,6 +186,6 @@ export const useResponsive = () => {
     screenSize: getScreenSize(),
     isMobile: getScreenSize() === 'xs' || getScreenSize() === 'sm',
     isTablet: getScreenSize() === 'md',
-    isDesktop: getScreenSize() === 'lg' || getScreenSize() === 'xl'
+    isDesktop: getScreenSize() === 'lg' || getScreenSize() === 'xl',
   };
 };

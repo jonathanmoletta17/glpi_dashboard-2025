@@ -164,7 +164,11 @@ export const Header: React.FC<HeaderProps> = ({
     (newTheme: Theme | 'professional') => {
       if (newTheme === 'professional') {
         setShowThemeSelector(false);
-        onNotification('Professional Dashboard', 'Modo Professional Dashboard ativado! 💼', 'success');
+        onNotification(
+          'Professional Dashboard',
+          'Modo Professional Dashboard ativado! 💼',
+          'success'
+        );
         return;
       }
 
@@ -230,7 +234,9 @@ export const Header: React.FC<HeaderProps> = ({
               <SimpleTechIcon size={24} className='group-hover:scale-110 transition-transform' />
             </div>
             <div className='min-w-0'>
-              <h1 className='text-2xl font-semibold text-gray-900 dark:text-gray-100 truncate'>Dashboard GLPI</h1>
+              <h1 className='text-2xl font-semibold text-gray-900 dark:text-gray-100 truncate'>
+                Dashboard GLPI
+              </h1>
               <p className='text-sm font-medium text-gray-600 dark:text-gray-300 truncate'>
                 Departamento de Tecnologia do Estado
               </p>
@@ -370,7 +376,6 @@ export const Header: React.FC<HeaderProps> = ({
 
           {/* ========== SEÇÃO DIREITA: CONTROLES + STATUS ========== */}
           <div className='flex items-center space-x-4 flex-shrink-0'>
-
             {/* Theme Selector */}
             <div className='relative' ref={themeRef}>
               <button
@@ -388,7 +393,9 @@ export const Header: React.FC<HeaderProps> = ({
                       key={themeOption.value}
                       onClick={() => handleThemeChange(themeOption.value)}
                       className={`w-full px-4 py-2 text-left hover:bg-gray-50 dark:hover:bg-gray-700 transition-colors flex items-center gap-3 ${
-                        theme === themeOption.value ? 'bg-blue-50 text-blue-600 dark:bg-blue-900/50 dark:text-blue-400' : 'text-gray-700 dark:text-gray-200'
+                        theme === themeOption.value
+                          ? 'bg-blue-50 text-blue-600 dark:bg-blue-900/50 dark:text-blue-400'
+                          : 'text-gray-700 dark:text-gray-200'
                       }`}
                     >
                       <span>{themeOption.icon}</span>

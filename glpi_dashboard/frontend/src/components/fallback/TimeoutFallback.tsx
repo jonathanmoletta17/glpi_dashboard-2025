@@ -78,15 +78,15 @@ export const TimeoutFallback: React.FC<TimeoutFallbackProps> = ({
   const getErrorIcon = () => {
     switch (effectiveErrorType) {
       case 'timeout':
-        return <Clock className="w-8 h-8 text-orange-500" />;
+        return <Clock className='w-8 h-8 text-orange-500' />;
       case 'connection':
-        return <Wifi className="w-8 h-8 text-red-500" />;
+        return <Wifi className='w-8 h-8 text-red-500' />;
       case 'network':
-        return <Wifi className="w-8 h-8 text-red-500" />;
+        return <Wifi className='w-8 h-8 text-red-500' />;
       case 'server':
-        return <Server className="w-8 h-8 text-red-600" />;
+        return <Server className='w-8 h-8 text-red-600' />;
       default:
-        return <AlertTriangle className="w-8 h-8 text-yellow-500" />;
+        return <AlertTriangle className='w-8 h-8 text-yellow-500' />;
     }
   };
 
@@ -179,11 +179,9 @@ export const TimeoutFallback: React.FC<TimeoutFallbackProps> = ({
         ${fullHeight ? 'min-h-full flex flex-col justify-center' : ''}
       `}
     >
-      <div className="flex flex-col items-center text-center space-y-4">
+      <div className='flex flex-col items-center text-center space-y-4'>
         {/* Ícone do erro */}
-        <div className="flex-shrink-0">
-          {getErrorIcon()}
-        </div>
+        <div className='flex-shrink-0'>{getErrorIcon()}</div>
 
         {/* Título */}
         <div>
@@ -192,29 +190,30 @@ export const TimeoutFallback: React.FC<TimeoutFallbackProps> = ({
             {effectiveErrorType === 'connection' && 'Falha de Conexão'}
             {effectiveErrorType === 'network' && 'Problema de Rede'}
             {effectiveErrorType === 'server' && 'Erro do Servidor'}
-            {!['timeout', 'connection', 'network', 'server'].includes(effectiveErrorType) && 'Erro Inesperado'}
+            {!['timeout', 'connection', 'network', 'server'].includes(effectiveErrorType) &&
+              'Erro Inesperado'}
           </h3>
-          <p className={`${colors.text} ${sizes.text} opacity-80`}>
-            {getErrorMessage()}
-          </p>
+          <p className={`${colors.text} ${sizes.text} opacity-80`}>{getErrorMessage()}</p>
         </div>
 
         {/* Sugestão de ação */}
         {errorInfo?.suggestedAction && (
           <div className={`${colors.text} ${sizes.text} opacity-70 italic flex items-center gap-2`}>
-            <Lightbulb className="w-4 h-4" />
+            <Lightbulb className='w-4 h-4' />
             {errorInfo.suggestedAction}
           </div>
         )}
 
         {/* Progresso de retry */}
         {showRetryProgress && (
-          <div className="w-full max-w-xs">
-            <div className="flex justify-between text-xs mb-1">
-              <span>Tentativa {retryCount} de {maxRetries}</span>
+          <div className='w-full max-w-xs'>
+            <div className='flex justify-between text-xs mb-1'>
+              <span>
+                Tentativa {retryCount} de {maxRetries}
+              </span>
               <span>{Math.round(retryPercentage)}%</span>
             </div>
-            <div className="w-full bg-gray-200 rounded-full h-2">
+            <div className='w-full bg-gray-200 rounded-full h-2'>
               <div
                 className={`h-2 rounded-full transition-all duration-300 ${
                   effectiveErrorType === 'timeout' ? 'bg-orange-500' : 'bg-red-500'
@@ -226,7 +225,7 @@ export const TimeoutFallback: React.FC<TimeoutFallbackProps> = ({
         )}
 
         {/* Botões de ação */}
-        <div className="flex flex-col sm:flex-row gap-3 w-full max-w-sm">
+        <div className='flex flex-col sm:flex-row gap-3 w-full max-w-sm'>
           {/* Botão de retry */}
           {showRetry && onRetry && (
             <button
@@ -251,16 +250,16 @@ export const TimeoutFallback: React.FC<TimeoutFallbackProps> = ({
           {offlineModeAvailable && onEnableOfflineMode && (
             <button
               onClick={onEnableOfflineMode}
-              className="
+              className='
                 bg-gray-600 hover:bg-gray-700 text-white
                 px-4 py-2 text-sm
                 rounded-md font-medium
                 flex items-center justify-center gap-2
                 transition-colors duration-200
                 flex-1
-              "
+              '
             >
-              <Settings className="w-4 h-4" />
+              <Settings className='w-4 h-4' />
               Modo Offline
             </button>
           )}
@@ -268,24 +267,34 @@ export const TimeoutFallback: React.FC<TimeoutFallbackProps> = ({
 
         {/* Detalhes técnicos */}
         {showTechnicalDetails && errorInfo && (
-          <div className="w-full">
+          <div className='w-full'>
             <button
               onClick={() => setShowDetails(!showDetails)}
-              className="text-xs underline opacity-60 hover:opacity-80"
+              className='text-xs underline opacity-60 hover:opacity-80'
             >
               {showDetails ? 'Ocultar' : 'Mostrar'} detalhes técnicos
             </button>
 
             {showDetails && (
-              <div className="mt-3 p-3 bg-gray-100 rounded text-xs font-mono text-left overflow-auto">
-                <div><strong>Tipo:</strong> {errorInfo.type}</div>
-                <div><strong>Timestamp:</strong> {new Date(errorInfo.timestamp).toLocaleString()}</div>
-                <div><strong>Tentativas:</strong> {errorInfo.retryCount}</div>
-                <div><strong>Retryable:</strong> {errorInfo.isRetryable ? 'Sim' : 'Não'}</div>
+              <div className='mt-3 p-3 bg-gray-100 rounded text-xs font-mono text-left overflow-auto'>
+                <div>
+                  <strong>Tipo:</strong> {errorInfo.type}
+                </div>
+                <div>
+                  <strong>Timestamp:</strong> {new Date(errorInfo.timestamp).toLocaleString()}
+                </div>
+                <div>
+                  <strong>Tentativas:</strong> {errorInfo.retryCount}
+                </div>
+                <div>
+                  <strong>Retryable:</strong> {errorInfo.isRetryable ? 'Sim' : 'Não'}
+                </div>
                 {errorInfo.originalError && (
-                  <div className="mt-2">
+                  <div className='mt-2'>
                     <strong>Erro original:</strong>
-                    <pre className="mt-1 text-xs">{errorInfo.originalError.stack || errorInfo.originalError.message}</pre>
+                    <pre className='mt-1 text-xs'>
+                      {errorInfo.originalError.stack || errorInfo.originalError.message}
+                    </pre>
                   </div>
                 )}
               </div>

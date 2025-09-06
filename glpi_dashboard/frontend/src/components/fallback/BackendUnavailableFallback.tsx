@@ -40,7 +40,9 @@ const BackendUnavailableFallback: React.FC<BackendUnavailableFallbackProps> = ({
           iconColor: 'text-yellow-600 dark:text-yellow-400',
           bgColor: 'bg-yellow-100 dark:bg-yellow-900/20',
           title: title || 'Tempo Limite Excedido',
-          message: message || 'A requisição demorou mais que o esperado. O servidor pode estar sobrecarregado.',
+          message:
+            message ||
+            'A requisição demorou mais que o esperado. O servidor pode estar sobrecarregado.',
         };
       case 'connection':
         return {
@@ -48,7 +50,8 @@ const BackendUnavailableFallback: React.FC<BackendUnavailableFallbackProps> = ({
           iconColor: 'text-red-600 dark:text-red-400',
           bgColor: 'bg-red-100 dark:bg-red-900/20',
           title: title || 'Sem Conexão com o Servidor',
-          message: message || 'Não foi possível conectar ao servidor. Verifique sua conexão de rede.',
+          message:
+            message || 'Não foi possível conectar ao servidor. Verifique sua conexão de rede.',
         };
       case 'server':
         return {
@@ -56,7 +59,8 @@ const BackendUnavailableFallback: React.FC<BackendUnavailableFallbackProps> = ({
           iconColor: 'text-orange-600 dark:text-orange-400',
           bgColor: 'bg-orange-100 dark:bg-orange-900/20',
           title: title || 'Erro do Servidor',
-          message: message || 'O servidor encontrou um erro interno. Tente novamente em alguns minutos.',
+          message:
+            message || 'O servidor encontrou um erro interno. Tente novamente em alguns minutos.',
         };
       default:
         return {
@@ -76,7 +80,12 @@ const BackendUnavailableFallback: React.FC<BackendUnavailableFallbackProps> = ({
     <Card className={cn('h-full', className)}>
       <CardHeader>
         <CardTitle className='flex items-center space-x-2'>
-          <div className={cn('w-10 h-10 rounded-full flex items-center justify-center', config.bgColor)}>
+          <div
+            className={cn(
+              'w-10 h-10 rounded-full flex items-center justify-center',
+              config.bgColor
+            )}
+          >
             <IconComponent className={cn('w-5 h-5', config.iconColor)} />
           </div>
           <span>{config.title}</span>
@@ -84,13 +93,13 @@ const BackendUnavailableFallback: React.FC<BackendUnavailableFallbackProps> = ({
       </CardHeader>
       <CardContent className='flex flex-col items-center justify-center space-y-6 py-8'>
         <div className='text-center space-y-3 max-w-md'>
-          <p className='text-gray-600 dark:text-gray-400 leading-relaxed'>
-            {config.message}
-          </p>
+          <p className='text-gray-600 dark:text-gray-400 leading-relaxed'>{config.message}</p>
 
           {type === 'timeout' && (
             <div className='text-sm text-gray-500 dark:text-gray-500 space-y-1'>
-              <p className="flex items-center gap-2"><Lightbulb className="w-4 h-4" /> <strong>Dicas:</strong></p>
+              <p className='flex items-center gap-2'>
+                <Lightbulb className='w-4 h-4' /> <strong>Dicas:</strong>
+              </p>
               <ul className='text-left space-y-1 ml-4'>
                 <li>• Tente reduzir o período de consulta</li>
                 <li>• Remova filtros complexos</li>
@@ -101,7 +110,9 @@ const BackendUnavailableFallback: React.FC<BackendUnavailableFallbackProps> = ({
 
           {type === 'connection' && (
             <div className='text-sm text-gray-500 dark:text-gray-500 space-y-1'>
-              <p className="flex items-center gap-2"><Lightbulb className="w-4 h-4" /> <strong>Possíveis causas:</strong></p>
+              <p className='flex items-center gap-2'>
+                <Lightbulb className='w-4 h-4' /> <strong>Possíveis causas:</strong>
+              </p>
               <ul className='text-left space-y-1 ml-4'>
                 <li>• Servidor backend não está rodando</li>
                 <li>• Problemas de rede</li>
@@ -146,14 +157,14 @@ const BackendUnavailableFallback: React.FC<BackendUnavailableFallbackProps> = ({
 export default BackendUnavailableFallback;
 
 // Componentes de conveniência para casos específicos
-export const TimeoutFallback: React.FC<Omit<BackendUnavailableFallbackProps, 'type'>> = (props) => (
-  <BackendUnavailableFallback {...props} type="timeout" />
+export const TimeoutFallback: React.FC<Omit<BackendUnavailableFallbackProps, 'type'>> = props => (
+  <BackendUnavailableFallback {...props} type='timeout' />
 );
 
-export const ConnectionFallback: React.FC<Omit<BackendUnavailableFallbackProps, 'type'>> = (props) => (
-  <BackendUnavailableFallback {...props} type="connection" />
-);
+export const ConnectionFallback: React.FC<
+  Omit<BackendUnavailableFallbackProps, 'type'>
+> = props => <BackendUnavailableFallback {...props} type='connection' />;
 
-export const ServerErrorFallback: React.FC<Omit<BackendUnavailableFallbackProps, 'type'>> = (props) => (
-  <BackendUnavailableFallback {...props} type="server" />
-);
+export const ServerErrorFallback: React.FC<
+  Omit<BackendUnavailableFallbackProps, 'type'>
+> = props => <BackendUnavailableFallback {...props} type='server' />;

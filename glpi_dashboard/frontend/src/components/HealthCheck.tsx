@@ -20,12 +20,12 @@ interface HealthStatus {
 export const HealthCheck: React.FC<HealthCheckProps> = ({
   interval = 30000, // 30 segundos por padrão
   onStatusChange,
-  showIndicator = true
+  showIndicator = true,
 }) => {
   const [healthStatus, setHealthStatus] = useState<HealthStatus>({
     isHealthy: false,
     lastCheck: new Date(),
-    responseTime: 0
+    responseTime: 0,
   });
   const [isChecking, setIsChecking] = useState(false);
 
@@ -45,13 +45,12 @@ export const HealthCheck: React.FC<HealthCheckProps> = ({
         isHealthy: true,
         lastCheck: new Date(),
         responseTime,
-        details: response
+        details: response,
       };
 
       console.log(`✅ HealthCheck - API saudável (${responseTime.toFixed(2)}ms)`, response);
       setHealthStatus(newStatus);
       onStatusChange?.(true, response);
-
     } catch (error) {
       const responseTime = performance.now() - startTime;
       const errorMessage = error instanceof Error ? error.message : 'Erro desconhecido';
@@ -61,7 +60,7 @@ export const HealthCheck: React.FC<HealthCheckProps> = ({
         lastCheck: new Date(),
         responseTime,
         error: errorMessage,
-        details: error
+        details: error,
       };
 
       console.error(`❌ HealthCheck - API não saudável (${responseTime.toFixed(2)}ms):`, error);
@@ -122,38 +121,46 @@ export const HealthCheck: React.FC<HealthCheckProps> = ({
   const getStatusIcon = () => {
     if (isChecking) {
       return (
-        <div className="animate-spin rounded-full h-3 w-3 border-2 border-white border-t-transparent"></div>
+        <div className='animate-spin rounded-full h-3 w-3 border-2 border-white border-t-transparent'></div>
       );
     }
-    return (
-      <div className={`w-3 h-3 rounded-full ${getStatusColor()}`}></div>
-    );
+    return <div className={`w-3 h-3 rounded-full ${getStatusColor()}`}></div>;
   };
 
   return (
-    <div className="fixed top-4 right-4 z-50">
-      <div className={cn(
-        "bg-white dark:bg-gray-800 rounded-lg shadow-lg border border-gray-200 dark:border-gray-700",
-        TAILWIND_CLASSES.padding.normal
-      )}>
+    <div className='fixed top-4 right-4 z-50'>
+      <div
+        className={cn(
+          'bg-white dark:bg-gray-800 rounded-lg shadow-lg border border-gray-200 dark:border-gray-700',
+          TAILWIND_CLASSES.padding.normal
+        )}
+      >
         <div className={createFlexClasses('row', 'center', 'start', 'small')}>
           {getStatusIcon()}
-          <span className="text-sm font-medium text-gray-700 dark:text-gray-300">
+          <span className='text-sm font-medium text-gray-700 dark:text-gray-300'>
             {getStatusText()}
           </span>
         </div>
 
         {healthStatus.lastCheck && (
-          <div className={cn("text-xs text-gray-500 dark:text-gray-400", TAILWIND_CLASSES.margin.small)}>
+          <div
+            className={cn(
+              'text-xs text-gray-500 dark:text-gray-400',
+              TAILWIND_CLASSES.margin.small
+            )}
+          >
             Última verificação: {healthStatus.lastCheck.toLocaleTimeString()}
           </div>
         )}
 
         {!healthStatus.isHealthy && healthStatus.error && (
-          <div className={cn(
-            "text-xs text-red-600 dark:text-red-400 max-w-xs truncate",
-            TAILWIND_CLASSES.margin.small
-          )} title={healthStatus.error}>
+          <div
+            className={cn(
+              'text-xs text-red-600 dark:text-red-400 max-w-xs truncate',
+              TAILWIND_CLASSES.margin.small
+            )}
+            title={healthStatus.error}
+          >
             {healthStatus.error}
           </div>
         )}

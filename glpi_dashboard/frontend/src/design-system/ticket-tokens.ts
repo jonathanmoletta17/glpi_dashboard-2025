@@ -22,7 +22,7 @@ export interface PriorityConfig {
 }
 
 export const priorityTokens: Record<string, PriorityConfig> = {
-  'Crítica': {
+  Crítica: {
     variant: 'danger',
     icon: AlertTriangle,
     color: 'rgb(239 68 68)', // red-500
@@ -44,7 +44,7 @@ export const priorityTokens: Record<string, PriorityConfig> = {
     darkTextColor: 'rgb(254 202 202)', // red-200
     darkBorderColor: 'rgb(185 28 28)', // red-700
   },
-  'Alta': {
+  Alta: {
     variant: 'warning',
     icon: AlertTriangle,
     color: 'rgb(245 158 11)', // amber-500
@@ -55,7 +55,7 @@ export const priorityTokens: Record<string, PriorityConfig> = {
     darkTextColor: 'rgb(252 211 77)', // amber-300
     darkBorderColor: 'rgb(180 83 9)', // amber-700
   },
-  'Média': {
+  Média: {
     variant: 'default',
     icon: Circle,
     color: 'rgb(59 130 246)', // blue-500
@@ -66,7 +66,7 @@ export const priorityTokens: Record<string, PriorityConfig> = {
     darkTextColor: 'rgb(147 197 253)', // blue-300
     darkBorderColor: 'rgb(29 78 216)', // blue-700
   },
-  'Normal': {
+  Normal: {
     variant: 'secondary',
     icon: Circle,
     color: 'rgb(107 114 128)', // gray-500
@@ -77,7 +77,7 @@ export const priorityTokens: Record<string, PriorityConfig> = {
     darkTextColor: 'rgb(209 213 219)', // gray-300
     darkBorderColor: 'rgb(75 85 99)', // gray-600
   },
-  'Baixa': {
+  Baixa: {
     variant: 'success',
     icon: CheckCircle,
     color: 'rgb(34 197 94)', // green-500
@@ -117,7 +117,7 @@ export interface StatusConfig {
 }
 
 export const statusTokens: Record<string, StatusConfig> = {
-  'novo': {
+  novo: {
     variant: 'default',
     icon: Circle,
     color: 'rgb(59 130 246)', // blue-500
@@ -128,7 +128,7 @@ export const statusTokens: Record<string, StatusConfig> = {
     darkTextColor: 'rgb(147 197 253)', // blue-300
     darkBorderColor: 'rgb(29 78 216)', // blue-700
   },
-  'em_progresso': {
+  em_progresso: {
     variant: 'warning',
     icon: Clock,
     color: 'rgb(245 158 11)', // amber-500
@@ -139,7 +139,7 @@ export const statusTokens: Record<string, StatusConfig> = {
     darkTextColor: 'rgb(252 211 77)', // amber-300
     darkBorderColor: 'rgb(180 83 9)', // amber-700
   },
-  'pendente': {
+  pendente: {
     variant: 'secondary',
     icon: Clock,
     color: 'rgb(107 114 128)', // gray-500
@@ -150,7 +150,7 @@ export const statusTokens: Record<string, StatusConfig> = {
     darkTextColor: 'rgb(209 213 219)', // gray-300
     darkBorderColor: 'rgb(75 85 99)', // gray-600
   },
-  'solucionado': {
+  solucionado: {
     variant: 'success',
     icon: CheckCircle,
     color: 'rgb(34 197 94)', // green-500
@@ -161,7 +161,7 @@ export const statusTokens: Record<string, StatusConfig> = {
     darkTextColor: 'rgb(134 239 172)', // green-300
     darkBorderColor: 'rgb(21 128 61)', // green-700
   },
-  'fechado': {
+  fechado: {
     variant: 'secondary',
     icon: XCircle,
     color: 'rgb(107 114 128)', // gray-500
@@ -241,17 +241,17 @@ export const ticketAnimations = {
       scale: 1,
       transition: {
         duration: 0.2,
-        ease: 'easeOut'
-      }
+        ease: 'easeOut',
+      },
     },
     hover: {
       scale: 1.01,
-      transition: { duration: 0.15 }
+      transition: { duration: 0.15 },
     },
     tap: {
       scale: 0.98,
-      transition: { duration: 0.1 }
-    }
+      transition: { duration: 0.1 },
+    },
   },
   container: {
     hidden: { opacity: 0 },
@@ -259,18 +259,18 @@ export const ticketAnimations = {
       opacity: 1,
       transition: {
         staggerChildren: 0.05,
-        delayChildren: 0.1
-      }
-    }
+        delayChildren: 0.1,
+      },
+    },
   },
   badge: {
     initial: { scale: 0.9, opacity: 0 },
     animate: {
       scale: 1,
       opacity: 1,
-      transition: { duration: 0.2 }
-    }
-  }
+      transition: { duration: 0.2 },
+    },
+  },
 } as const;
 
 /**
@@ -294,7 +294,8 @@ export const ticketClasses = {
   card: 'bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-lg shadow-sm hover:shadow-md transition-all duration-200',
   item: 'p-3 rounded-md border border-gray-100 dark:border-gray-700 bg-white dark:bg-gray-800 hover:bg-gray-50 dark:hover:bg-gray-700 cursor-pointer transition-all duration-200',
   itemActive: 'active:scale-[0.98] transition-transform',
-  badge: 'inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium transition-all duration-200',
+  badge:
+    'inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium transition-all duration-200',
   icon: 'flex-shrink-0 transition-colors duration-200',
   truncate: 'truncate overflow-hidden',
   lineClamp: 'line-clamp-2 overflow-hidden',

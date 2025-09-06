@@ -78,9 +78,7 @@ const StatusCard = React.memo<StatusCardProps>(
           <div>
             <p className='text-sm font-medium text-gray-600 mb-1'>{title}</p>
             <p className={`text-3xl font-bold ${color}`}>{formattedValue}</p>
-            {isClickable && (
-              <p className='text-xs text-gray-500 mt-1'>Clique para filtrar</p>
-            )}
+            {isClickable && <p className='text-xs text-gray-500 mt-1'>Clique para filtrar</p>}
           </div>
           <div className={`p-3 rounded-lg ${bgColor}`}>
             <Icon className={`w-6 h-6 ${color}`} />
@@ -338,10 +336,34 @@ export const ProfessionalDashboard: React.FC<ProfessionalDashboardProps> = ({
         <div className='grid grid-cols-1 lg:grid-cols-2 gap-6 mb-8'>
           {levelMetrics && (
             <>
-              <LevelSection level='N1' data={levelMetrics.n1 || metrics.niveis?.n1 || { novos: 0, progresso: 0, pendentes: 0, resolvidos: 0 }} />
-              <LevelSection level='N2' data={levelMetrics.n2 || metrics.niveis?.n2 || { novos: 0, progresso: 0, pendentes: 0, resolvidos: 0 }} />
-              <LevelSection level='N3' data={levelMetrics.n3 || metrics.niveis?.n3 || { novos: 0, progresso: 0, pendentes: 0, resolvidos: 0 }} />
-              <LevelSection level='N4' data={levelMetrics.n4 || metrics.niveis?.n4 || { novos: 0, progresso: 0, pendentes: 0, resolvidos: 0 }} />
+              <LevelSection
+                level='N1'
+                data={
+                  levelMetrics.n1 ||
+                  metrics.niveis?.n1 || { novos: 0, progresso: 0, pendentes: 0, resolvidos: 0 }
+                }
+              />
+              <LevelSection
+                level='N2'
+                data={
+                  levelMetrics.n2 ||
+                  metrics.niveis?.n2 || { novos: 0, progresso: 0, pendentes: 0, resolvidos: 0 }
+                }
+              />
+              <LevelSection
+                level='N3'
+                data={
+                  levelMetrics.n3 ||
+                  metrics.niveis?.n3 || { novos: 0, progresso: 0, pendentes: 0, resolvidos: 0 }
+                }
+              />
+              <LevelSection
+                level='N4'
+                data={
+                  levelMetrics.n4 ||
+                  metrics.niveis?.n4 || { novos: 0, progresso: 0, pendentes: 0, resolvidos: 0 }
+                }
+              />
             </>
           )}
         </div>
@@ -415,31 +437,34 @@ export const ProfessionalDashboard: React.FC<ProfessionalDashboardProps> = ({
                       <div
                         key={ticket.id}
                         className='p-3 bg-gray-50 rounded-lg hover:bg-gray-100 transition-colors cursor-pointer'
-                        onClick={() => onTicketClick && onTicketClick({
-                          id: ticket.id.toString(),
-                          title: ticket.title,
-                          description: ticket.description || '',
-                          status: 'novo',
-                          priority: ticket.priority.toLowerCase() as any,
-                          requester: {
-                            id: '1',
-                            name: ticket.requester,
-                            email: '',
-                          },
-                          technician: undefined,
-                          createdAt: ticket.date,
-                          updatedAt: ticket.date,
-                          category: 'Geral',
-                          urgency: 2,
-                          impact: 2,
-                          tags: [],
-                          attachments: [],
-                          comments: [],
-                          timeTracking: {
-                            totalTime: 0,
-                            entries: [],
-                          },
-                        })}
+                        onClick={() =>
+                          onTicketClick &&
+                          onTicketClick({
+                            id: ticket.id.toString(),
+                            title: ticket.title,
+                            description: ticket.description || '',
+                            status: 'novo',
+                            priority: ticket.priority.toLowerCase() as any,
+                            requester: {
+                              id: '1',
+                              name: ticket.requester,
+                              email: '',
+                            },
+                            technician: undefined,
+                            createdAt: ticket.date,
+                            updatedAt: ticket.date,
+                            category: 'Geral',
+                            urgency: 2,
+                            impact: 2,
+                            tags: [],
+                            attachments: [],
+                            comments: [],
+                            timeTracking: {
+                              totalTime: 0,
+                              entries: [],
+                            },
+                          })
+                        }
                       >
                         <div className='flex justify-between items-start mb-2'>
                           <div className='text-sm font-medium text-gray-900 truncate flex-1 mr-2'>

@@ -31,8 +31,12 @@ const LevelCard = React.memo<LevelCardProps>(({ level, data, resolucaoRate }) =>
   return (
     <Card className='col-span-3 md:col-span-6 lg:col-span-3'>
       <CardHeader className='flex flex-row items-center justify-between space-y-0 pb-2'>
-        <CardTitle className='text-lg font-medium text-gray-700 dark:text-gray-300'>Nível {level}</CardTitle>
-        <span className='text-xs text-green-600 dark:text-green-400'>{resolucaoRate}% Resolução</span>
+        <CardTitle className='text-lg font-medium text-gray-700 dark:text-gray-300'>
+          Nível {level}
+        </CardTitle>
+        <span className='text-xs text-green-600 dark:text-green-400'>
+          {resolucaoRate}% Resolução
+        </span>
       </CardHeader>
       <CardContent>
         {/* Metrics Grid */}
@@ -42,15 +46,21 @@ const LevelCard = React.memo<LevelCardProps>(({ level, data, resolucaoRate }) =>
             <div className='text-sm text-gray-600 dark:text-gray-400'>Novos</div>
           </div>
           <div className='text-center'>
-            <div className='text-2xl font-bold text-yellow-600 dark:text-yellow-400'>{data.progresso}</div>
+            <div className='text-2xl font-bold text-yellow-600 dark:text-yellow-400'>
+              {data.progresso}
+            </div>
             <div className='text-sm text-gray-600 dark:text-gray-400'>Progresso</div>
           </div>
           <div className='text-center'>
-            <div className='text-2xl font-bold text-orange-600 dark:text-orange-400'>{data.pendentes}</div>
+            <div className='text-2xl font-bold text-orange-600 dark:text-orange-400'>
+              {data.pendentes}
+            </div>
             <div className='text-sm text-gray-600 dark:text-gray-400'>Pendentes</div>
           </div>
           <div className='text-center'>
-            <div className='text-2xl font-bold text-green-600 dark:text-green-400'>{data.resolvidos}</div>
+            <div className='text-2xl font-bold text-green-600 dark:text-green-400'>
+              {data.resolvidos}
+            </div>
             <div className='text-sm text-gray-600 dark:text-gray-400'>Resolvidos</div>
           </div>
         </div>
@@ -91,7 +101,9 @@ export const LevelsSection = React.memo<LevelsSectionProps>(({ metrics }) => {
   return (
     <section className='w-full max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 mb-8'>
       <div className='col-span-12'>
-        <h2 className='text-2xl font-bold text-gray-900 dark:text-gray-100 mb-6'>Níveis de Atendimento</h2>
+        <h2 className='text-2xl font-bold text-gray-900 dark:text-gray-100 mb-6'>
+          Níveis de Atendimento
+        </h2>
         <div className='grid grid-cols-12 gap-4'>
           <LevelCard level='1' data={metrics.niveis.n1} resolucaoRate={resolutionRates.n1} />
           <LevelCard level='2' data={metrics.niveis.n2} resolucaoRate={resolutionRates.n2} />

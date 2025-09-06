@@ -26,7 +26,9 @@ export const Footer: React.FC<FooterProps> = ({ lastUpdated, isOnline }) => {
               <div
                 className={`w-2 h-2 rounded-full ${isOnline ? 'bg-green-500' : 'bg-red-500'}`}
               ></div>
-              <span className='text-xs text-gray-600 dark:text-gray-400'>{isOnline ? 'Online' : 'Offline'}</span>
+              <span className='text-xs text-gray-600 dark:text-gray-400'>
+                {isOnline ? 'Online' : 'Offline'}
+              </span>
             </div>
           </div>
         </div>

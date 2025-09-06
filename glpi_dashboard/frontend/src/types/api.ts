@@ -10,7 +10,6 @@ export interface LevelMetrics {
   abertos?: number;
   fechados?: number;
   atrasados?: number;
-
 }
 
 // Métricas de níveis
@@ -21,8 +20,6 @@ export interface NiveisMetrics {
   n4: LevelMetrics;
   // Removido geral: LevelMetrics; pois não existe nos dados do backend
 }
-
-
 
 // Métricas do dashboard
 export interface DashboardMetrics {
@@ -214,7 +211,6 @@ export interface UserPreferences {
   dashboard: {
     defaultView: 'cards' | 'table' | 'chart';
     autoRefresh: boolean;
-
   };
 }
 

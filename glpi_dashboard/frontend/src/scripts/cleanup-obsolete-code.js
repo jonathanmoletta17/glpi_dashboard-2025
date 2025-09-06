@@ -26,10 +26,7 @@ const OBSOLETE_PATTERNS = {
   hardcodedSpacing: /(?:p-|m-|px-|py-|mx-|my-|gap-|space-y-|space-x-)\d+/g,
 
   // Componentes duplicados
-  duplicateComponents: [
-    'TicketList.tsx',
-    'NewTicketsList.tsx'
-  ],
+  duplicateComponents: ['TicketList.tsx', 'NewTicketsList.tsx'],
 
   // Imports não utilizados
   unusedImports: /import.*from.*['"]\.\.\/.*['"];?\s*$/gm,
@@ -57,7 +54,7 @@ function analyzeFile(filePath) {
     issues.push({
       type: 'hardcoded-spacing',
       message: `Espaçamentos hardcoded encontrados: ${hardcodedSpacing.join(', ')}`,
-      suggestions: ['Use tokens do design system', 'Considere usar createCardClasses() ou similar']
+      suggestions: ['Use tokens do design system', 'Considere usar createCardClasses() ou similar'],
     });
   }
 
@@ -71,7 +68,7 @@ function analyzeFile(filePath) {
         issues.push({
           type: 'unused-import',
           message: `Import não encontrado: ${importLine.trim()}`,
-          suggestions: ['Remover import não utilizado', 'Verificar caminho do import']
+          suggestions: ['Remover import não utilizado', 'Verificar caminho do import'],
         });
       }
     }
@@ -109,7 +106,7 @@ function analyzeCSS() {
     issues.push({
       type: 'unused-css',
       message: `Classes CSS não utilizadas: ${unusedClasses.join(', ')}`,
-      suggestions: ['Remover classes não utilizadas do CSS', 'Limpar código obsoleto']
+      suggestions: ['Remover classes não utilizadas do CSS', 'Limpar código obsoleto'],
     });
   }
 
@@ -161,7 +158,7 @@ function main() {
     if (issues.length > 0) {
       allIssues.push({
         file: path.relative(PROJECT_ROOT, componentPath),
-        issues
+        issues,
       });
     }
   });
@@ -172,7 +169,7 @@ function main() {
   if (cssIssues.length > 0) {
     allIssues.push({
       file: 'index.css',
-      issues: cssIssues
+      issues: cssIssues,
     });
   }
 
@@ -200,7 +197,9 @@ function main() {
     console.log('\n' + '='.repeat(50));
     console.log(`\n📈 RESUMO:`);
     console.log(`   - ${allIssues.length} arquivo(s) com problemas`);
-    console.log(`   - ${allIssues.reduce((sum, { issues }) => sum + issues.length, 0)} problema(s) total`);
+    console.log(
+      `   - ${allIssues.reduce((sum, { issues }) => sum + issues.length, 0)} problema(s) total`
+    );
 
     console.log('\n🛠️  PRÓXIMOS PASSOS:');
     console.log('   1. Refatorar componentes usando design system');
@@ -211,7 +210,11 @@ function main() {
 }
 
 // Executar análise
-if (import.meta.url.startsWith('file:') && process.argv[1] && import.meta.url.includes(process.argv[1].replace(/\\/g, '/'))) {
+if (
+  import.meta.url.startsWith('file:') &&
+  process.argv[1] &&
+  import.meta.url.includes(process.argv[1].replace(/\\/g, '/'))
+) {
   main();
 } else {
   // Fallback: executar sempre quando chamado diretamente

@@ -12,47 +12,47 @@ import { SPACING, COMPONENT_SPACING } from './tokens';
 export const TAILWIND_CLASSES = {
   // Padding padronizado
   padding: {
-    xs: 'p-1',          // 4px - espaçamentos muito pequenos
-    small: 'p-4',       // 16px - componentes pequenos
-    card: 'p-6',        // 24px - padrão para cards
-    section: 'p-8',     // 32px - padrão para seções
+    xs: 'p-1', // 4px - espaçamentos muito pequenos
+    small: 'p-4', // 16px - componentes pequenos
+    card: 'p-6', // 24px - padrão para cards
+    section: 'p-8', // 32px - padrão para seções
     button: 'px-4 py-2', // 16px/8px - padrão para botões
-    modal: 'p-6',       // 24px - padrão para modais
+    modal: 'p-6', // 24px - padrão para modais
     badge: 'px-2 py-1', // 8px/4px - badges e tags
-    normal: 'p-4',      // 16px - padding normal
+    normal: 'p-4', // 16px - padding normal
   },
 
   // Gaps padronizados
   gap: {
-    xs: 'gap-1',        // 4px - gaps muito pequenos
-    card: 'gap-4',      // 16px - entre elementos de card
-    section: 'gap-6',   // 24px - entre seções
-    grid: 'gap-4',      // 16px - grids padrão
-    items: 'gap-2',     // 8px - entre itens pequenos
-    large: 'gap-8',     // 32px - espaçamentos grandes
-    normal: 'gap-4',    // 16px - gap normal
+    xs: 'gap-1', // 4px - gaps muito pequenos
+    card: 'gap-4', // 16px - entre elementos de card
+    section: 'gap-6', // 24px - entre seções
+    grid: 'gap-4', // 16px - grids padrão
+    items: 'gap-2', // 8px - entre itens pequenos
+    large: 'gap-8', // 32px - espaçamentos grandes
+    normal: 'gap-4', // 16px - gap normal
   },
 
   // Margins padronizados
   margin: {
-    xs: 'mb-1',         // 4px - margens muito pequenas
-    small: 'mb-2',      // 8px - espaçamentos pequenos
-    element: 'mb-4',    // 16px - entre elementos
-    card: 'mb-6',       // 24px - entre cards
-    section: 'mb-8',    // 32px - entre seções
-    md: 'mb-3',         // 12px - margem média
-    normal: 'mb-4',     // 16px - margem normal
+    xs: 'mb-1', // 4px - margens muito pequenas
+    small: 'mb-2', // 8px - espaçamentos pequenos
+    element: 'mb-4', // 16px - entre elementos
+    card: 'mb-6', // 24px - entre cards
+    section: 'mb-8', // 32px - entre seções
+    md: 'mb-3', // 12px - margem média
+    normal: 'mb-4', // 16px - margem normal
   },
 
   // Space-y padronizado
   spaceY: {
-    xs: 'space-y-1',    // 4px - espaçamentos muito pequenos
-    list: 'space-y-2',  // 8px - listas
-    card: 'space-y-4',  // 16px - dentro de cards
+    xs: 'space-y-1', // 4px - espaçamentos muito pequenos
+    list: 'space-y-2', // 8px - listas
+    card: 'space-y-4', // 16px - dentro de cards
     section: 'space-y-6', // 24px - dentro de seções
-    form: 'space-y-4',  // 16px - formulários
+    form: 'space-y-4', // 16px - formulários
     normal: 'space-y-4', // 16px - espaçamento normal
-    md: 'space-y-3',    // 12px - espaçamento médio
+    md: 'space-y-3', // 12px - espaçamento médio
   },
 } as const;
 
@@ -63,8 +63,10 @@ export function createCardClasses(variant: 'default' | 'elevated' | 'outlined' =
   const baseClasses = 'rounded-lg border transition-all duration-200';
 
   const variants = {
-    default: 'bg-white dark:bg-gray-800 border-gray-200 dark:border-gray-700 shadow-sm hover:shadow-md',
-    elevated: 'bg-white dark:bg-gray-800 border-gray-200 dark:border-gray-700 shadow-lg hover:shadow-xl',
+    default:
+      'bg-white dark:bg-gray-800 border-gray-200 dark:border-gray-700 shadow-sm hover:shadow-md',
+    elevated:
+      'bg-white dark:bg-gray-800 border-gray-200 dark:border-gray-700 shadow-lg hover:shadow-xl',
     outlined: 'bg-transparent border-2 border-gray-300 dark:border-gray-600 hover:border-gray-400',
   };
 
@@ -196,16 +198,14 @@ export function validateDesignSystemClasses(className: string): {
     const matches = className.match(pattern);
     if (matches) {
       issues.push(`Classes hardcoded encontradas: ${matches.join(', ')}`);
-      suggestions.push('Use utilitários do design system como createCardClasses() ou TAILWIND_CLASSES');
+      suggestions.push(
+        'Use utilitários do design system como createCardClasses() ou TAILWIND_CLASSES'
+      );
     }
   });
 
   // Verifica classes obsoletas
-  const obsoletePatterns = [
-    /\bfigma-\w+\b/g,
-    /\btext-h[0-9]\b/g,
-    /\bcard-base\b/g,
-  ];
+  const obsoletePatterns = [/\bfigma-\w+\b/g, /\btext-h[0-9]\b/g, /\bcard-base\b/g];
 
   obsoletePatterns.forEach(pattern => {
     const matches = className.match(pattern);

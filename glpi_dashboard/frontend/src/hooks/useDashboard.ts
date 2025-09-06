@@ -83,14 +83,14 @@ export const useDashboard = (initialFilters: FilterParams = {}): UseDashboardRet
         // Limpar cache quando filtros mudam para garantir dados atualizados
         const currentDateRange = filters.dateRange;
         const newDateRange = newFilters?.dateRange;
-        
+
         // Comparar filtros de data para detectar mudanças
-        const dateRangeChanged = 
-          (currentDateRange?.startDate !== newDateRange?.startDate) ||
-          (currentDateRange?.endDate !== newDateRange?.endDate) ||
+        const dateRangeChanged =
+          currentDateRange?.startDate !== newDateRange?.startDate ||
+          currentDateRange?.endDate !== newDateRange?.endDate ||
           (currentDateRange && !newDateRange) ||
           (!currentDateRange && newDateRange);
-        
+
         if (dateRangeChanged) {
           apiService.clearAllCaches();
         }
@@ -98,11 +98,15 @@ export const useDashboard = (initialFilters: FilterParams = {}): UseDashboardRet
         // Fazer chamadas paralelas para todos os endpoints
 
         const [metricsResult, systemStatusResult, technicianRankingResult] = await Promise.all([
-          apiService.getMetrics(filtersToUse.dateRange ? {
-            startDate: filtersToUse.dateRange.startDate,
-            endDate: filtersToUse.dateRange.endDate,
-            label: filtersToUse.dateRange.label || 'Período personalizado'
-          } : undefined),
+          apiService.getMetrics(
+            filtersToUse.dateRange
+              ? {
+                  startDate: filtersToUse.dateRange.startDate,
+                  endDate: filtersToUse.dateRange.endDate,
+                  label: filtersToUse.dateRange.label || 'Período personalizado',
+                }
+              : undefined
+          ),
           (async () => {
             return await apiService.getSystemStatus();
           })(),
@@ -110,7 +114,7 @@ export const useDashboard = (initialFilters: FilterParams = {}): UseDashboardRet
             // Preparar filtros para o ranking de técnicos
             // NOTA: Ranking de técnicos não deve ser filtrado por data pois pode não ter dados históricos
             const rankingFilters: any = {
-              limit: 50 // Aumentar limite para mostrar mais técnicos
+              limit: 50, // Aumentar limite para mostrar mais técnicos
             };
 
             // Aplicar filtros de data apenas se especificamente solicitado
@@ -122,7 +126,8 @@ export const useDashboard = (initialFilters: FilterParams = {}): UseDashboardRet
               const endDate = new Date(filtersToUse.dateRange.endDate);
               const daysDiff = (endDate.getTime() - startDate.getTime()) / (1000 * 60 * 60 * 24);
 
-              if (daysDiff >= 30) { // Só aplicar filtros se período for >= 30 dias
+              if (daysDiff >= 30) {
+                // Só aplicar filtros se período for >= 30 dias
                 rankingFilters.start_date = filtersToUse.dateRange.startDate;
                 rankingFilters.end_date = filtersToUse.dateRange.endDate;
               }
@@ -142,7 +147,7 @@ export const useDashboard = (initialFilters: FilterParams = {}): UseDashboardRet
               console.error('❌ useDashboard - Erro em getTechnicianRanking:', error);
               throw error;
             }
-          })()
+          })(),
         ]);
 
         console.log('✅ useDashboard - Todas as chamadas paralelas concluídas');
@@ -155,8 +160,14 @@ export const useDashboard = (initialFilters: FilterParams = {}): UseDashboardRet
         if (metricsResult) {
           // Debug logs para investigar o problema do ranking
           console.log('🔍 useDashboard - technicianRankingResult da API:', technicianRankingResult);
-          console.log('🔍 useDashboard - technicianRankingResult length:', technicianRankingResult?.length);
-          console.log('🔍 useDashboard - technicianRankingResult é array?', Array.isArray(technicianRankingResult));
+          console.log(
+            '🔍 useDashboard - technicianRankingResult length:',
+            technicianRankingResult?.length
+          );
+          console.log(
+            '🔍 useDashboard - technicianRankingResult é array?',
+            Array.isArray(technicianRankingResult)
+          );
 
           // Combinar todos os dados em um objeto DashboardMetrics
           const combinedData: DashboardMetrics = {
@@ -165,7 +176,10 @@ export const useDashboard = (initialFilters: FilterParams = {}): UseDashboardRet
             technicianRanking: technicianRankingResult || [],
           };
 
-          console.log('🔍 useDashboard - combinedData.technicianRanking:', combinedData.technicianRanking);
+          console.log(
+            '🔍 useDashboard - combinedData.technicianRanking:',
+            combinedData.technicianRanking
+          );
 
           console.log('✅ useDashboard - Definindo dados combinados no estado:', combinedData);
           console.log('✅ useDashboard - combinedData.niveis:', combinedData.niveis);

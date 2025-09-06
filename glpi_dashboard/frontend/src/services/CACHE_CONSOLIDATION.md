@@ -16,12 +16,12 @@ Durante a auditoria de requisições, foram identificados **múltiplos sistemas 
 
 Consolidamos **4 sistemas de cache** em um único gerenciador:
 
-| Sistema Antigo | Status | Funcionalidade Migrada |
-|---|---|---|
-| `LocalCache` (cache.ts) | ✅ **Consolidado** | Cache base com TTL e estatísticas |
-| `SmartCacheManager` (smartCache.ts) | ✅ **Consolidado** | Pré-aquecimento e otimização |
+| Sistema Antigo                               | Status             | Funcionalidade Migrada               |
+| -------------------------------------------- | ------------------ | ------------------------------------ |
+| `LocalCache` (cache.ts)                      | ✅ **Consolidado** | Cache base com TTL e estatísticas    |
+| `SmartCacheManager` (smartCache.ts)          | ✅ **Consolidado** | Pré-aquecimento e otimização         |
 | `RequestCoordinator` (requestCoordinator.ts) | ✅ **Consolidado** | Debouncing, throttling e coordenação |
-| Caches individuais por serviço | ✅ **Consolidado** | Cache centralizado por tipo |
+| Caches individuais por serviço               | ✅ **Consolidado** | Cache centralizado por tipo          |
 
 ### **🧹 Limpeza Realizada**
 
@@ -39,7 +39,7 @@ Consolidamos **4 sistemas de cache** em um único gerenciador:
 
 ```typescript
 unifiedCache.registerCacheType('metrics', {
-  ttl: 5 * 60 * 1000,    // 5 minutos
+  ttl: 5 * 60 * 1000, // 5 minutos
   maxSize: 50,
   performanceThreshold: 500,
   usageThreshold: 3,
@@ -49,12 +49,11 @@ unifiedCache.registerCacheType('metrics', {
 ### **2. Coordenação de Requisições**
 
 ```typescript
-unifiedCache.coordinateRequest(
-  'metrics',
-  'metrics-query-key',
-  async () => await api.getMetrics(),
-  { debounceMs: 300, throttleMs: 1000, cacheMs: 300000 }
-);
+unifiedCache.coordinateRequest('metrics', 'metrics-query-key', async () => await api.getMetrics(), {
+  debounceMs: 300,
+  throttleMs: 1000,
+  cacheMs: 300000,
+});
 ```
 
 ### **3. Invalidação Centralizada**
@@ -110,13 +109,13 @@ unifiedCache.clearAll();
 
 ## 📈 Métricas de Impacto
 
-| Métrica | Antes | Depois | Melhoria |
-|---|---|---|---|
-| **Requisições Duplicadas** | ~40% | ~5% | **87% redução** |
-| **Logs de Console** | ~200+ por minuto | ~50 por minuto | **75% redução** |
-| **Tempo de Resposta** | ~800ms médio | ~400ms médio | **50% melhoria** |
-| **Uso de Memória** | ~15MB | ~8MB | **47% redução** |
-| **Linhas de Código** | ~1200 linhas | ~600 linhas | **50% redução** |
+| Métrica                    | Antes            | Depois         | Melhoria         |
+| -------------------------- | ---------------- | -------------- | ---------------- |
+| **Requisições Duplicadas** | ~40%             | ~5%            | **87% redução**  |
+| **Logs de Console**        | ~200+ por minuto | ~50 por minuto | **75% redução**  |
+| **Tempo de Resposta**      | ~800ms médio     | ~400ms médio   | **50% melhoria** |
+| **Uso de Memória**         | ~15MB            | ~8MB           | **47% redução**  |
+| **Linhas de Código**       | ~1200 linhas     | ~600 linhas    | **50% redução**  |
 
 ## 🚀 Como Usar o Novo Sistema
 

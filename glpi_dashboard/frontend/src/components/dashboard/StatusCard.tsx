@@ -141,10 +141,7 @@ export const StatusCard = memo<StatusCardProps>(function StatusCard({
       whileHover='hover'
       className={cn('status-card status-card--animated', statusClass, className)}
     >
-      <Card
-        className='status-card__container'
-        onClick={handleCardClick}
-      >
+      <Card className='status-card__container' onClick={handleCardClick}>
         {/* Gradient Background */}
         <div className='status-card__gradient-bg' />
 
@@ -154,10 +151,7 @@ export const StatusCard = memo<StatusCardProps>(function StatusCard({
         <CardHeader className='status-card__header'>
           <CardTitle className='status-card__title'>{title}</CardTitle>
           {StatusIcon && (
-            <motion.div
-              variants={iconVariants}
-              className='status-card__icon'
-            >
+            <motion.div variants={iconVariants} className='status-card__icon'>
               <StatusIcon />
             </motion.div>
           )}
@@ -176,9 +170,7 @@ export const StatusCard = memo<StatusCardProps>(function StatusCard({
 
             {status && (
               <motion.div whileHover={{ scale: 1.05 }} transition={{ duration: 0.2 }}>
-                <Badge className='status-card__badge'>
-                  {status}
-                </Badge>
+                <Badge className='status-card__badge'>{status}</Badge>
               </motion.div>
             )}
           </div>

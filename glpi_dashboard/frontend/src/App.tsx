@@ -6,24 +6,16 @@ import { ModernDashboard } from './components/dashboard/ModernDashboard';
 import { TicketDetailModal } from './components/TicketDetailModal';
 
 import { Ticket } from './types/ticket';
-import {
-  UnifiedLoading,
-} from './components/UnifiedLoading';
-
+import { UnifiedLoading } from './components/UnifiedLoading';
 
 // Componentes lazy centralizados
-import {
-  DashboardSkeleton,
-} from './components/LazyComponents';
+import { DashboardSkeleton } from './components/LazyComponents';
 
 import { useDashboard } from './hooks/useDashboard';
 
-
 import { useCacheNotifications } from './hooks/useCacheNotifications';
 
-
 import { TicketStatus, Theme } from './types';
-
 
 function App() {
   const {
@@ -52,8 +44,6 @@ function App() {
     updateDateRange,
   } = useDashboard();
 
-
-
   const [selectedTicket, setSelectedTicket] = useState<Ticket | null>(null);
   const [isTicketModalOpen, setIsTicketModalOpen] = useState(false);
   const [isLoadingTicketDetails, setIsLoadingTicketDetails] = useState(false);
@@ -74,7 +64,7 @@ function App() {
         ...ticket,
         ...detailedTicket,
         // Ensure we keep the original ID format
-        id: ticket.id
+        id: ticket.id,
       };
 
       setSelectedTicket(enrichedTicket);
@@ -93,14 +83,6 @@ function App() {
     setIsTicketModalOpen(false);
     setSelectedTicket(null);
   };
-
-
-
-
-
-
-
-
 
   // Cache notifications
   const { notifications: cacheNotifications, removeNotification: removeCacheNotification } =
@@ -146,12 +128,7 @@ function App() {
   // Show loading state on initial load
   if (isLoading && !levelMetrics) {
     return (
-      <UnifiedLoading
-        isLoading={true}
-        type="skeleton"
-        text="Carregando dashboard..."
-        fullScreen
-      />
+      <UnifiedLoading isLoading={true} type='skeleton' text='Carregando dashboard...' fullScreen />
     );
   }
 
@@ -161,9 +138,9 @@ function App() {
       <div className='min-h-screen bg-gradient-to-br from-red-50 via-white to-orange-50 flex items-center justify-center'>
         <UnifiedLoading
           isLoading={true}
-          type="spinner"
+          type='spinner'
           text={error}
-          title="Erro ao Carregar Dashboard"
+          title='Erro ao Carregar Dashboard'
           fullScreen
         />
       </div>
@@ -198,50 +175,55 @@ function App() {
         }
         onDateRangeChange={updateDateRange}
         onFilterTypeChange={updateFilterType}
-
       />
 
       {/* Dashboard Principal */}
       <div className='flex-1 overflow-hidden'>
         {levelMetrics ? (
-            (() => {
-              const dashboardMetrics = {
-                novos: metrics?.novos || 0,
-                pendentes: metrics?.pendentes || 0,
-                progresso: metrics?.progresso || 0,
-                resolvidos: metrics?.resolvidos || 0,
-                total: (metrics?.novos || 0) + (metrics?.pendentes || 0) + (metrics?.progresso || 0) + (metrics?.resolvidos || 0),
-                niveis: metrics?.niveis || {
-                  n1: { novos: 0, progresso: 0, pendentes: 0, resolvidos: 0 },
-                  n2: { novos: 0, progresso: 0, pendentes: 0, resolvidos: 0 },
-                  n3: { novos: 0, progresso: 0, pendentes: 0, resolvidos: 0 },
-                  n4: { novos: 0, progresso: 0, pendentes: 0, resolvidos: 0 }
-                },
-
-              };
-              console.log(
-                  '🎯 App.tsx - Métricas sendo passadas para ModernDashboard:',
-                  dashboardMetrics
-                );
-              console.log('🔍 App.tsx - Objeto metrics completo:', metrics);
-              console.log('🔍 App.tsx - technicianRanking sendo passado:', technicianRanking);
-              console.log('🔍 App.tsx - technicianRanking length:', technicianRanking?.length);
-              console.log('🔍 App.tsx - technicianRanking tipo:', typeof technicianRanking);
-              console.log('🔍 App.tsx - technicianRanking é array?', Array.isArray(technicianRanking));
-              return (
-                <ModernDashboard
-                  metrics={dashboardMetrics}
-                  levelMetrics={levelMetrics}
-                  systemStatus={systemStatus}
-                  technicianRanking={technicianRanking}
-                  onFilterByStatus={handleFilterByStatus}
-                  onTicketClick={handleTicketClick}
-                  onRefresh={loadData}
-                  isLoading={isLoading}
-                  filters={filters}
-                />
-              );
-            })()
+          (() => {
+            const dashboardMetrics = {
+              novos: metrics?.novos || 0,
+              pendentes: metrics?.pendentes || 0,
+              progresso: metrics?.progresso || 0,
+              resolvidos: metrics?.resolvidos || 0,
+              total:
+                (metrics?.novos || 0) +
+                (metrics?.pendentes || 0) +
+                (metrics?.progresso || 0) +
+                (metrics?.resolvidos || 0),
+              niveis: metrics?.niveis || {
+                n1: { novos: 0, progresso: 0, pendentes: 0, resolvidos: 0 },
+                n2: { novos: 0, progresso: 0, pendentes: 0, resolvidos: 0 },
+                n3: { novos: 0, progresso: 0, pendentes: 0, resolvidos: 0 },
+                n4: { novos: 0, progresso: 0, pendentes: 0, resolvidos: 0 },
+              },
+            };
+            console.log(
+              '🎯 App.tsx - Métricas sendo passadas para ModernDashboard:',
+              dashboardMetrics
+            );
+            console.log('🔍 App.tsx - Objeto metrics completo:', metrics);
+            console.log('🔍 App.tsx - technicianRanking sendo passado:', technicianRanking);
+            console.log('🔍 App.tsx - technicianRanking length:', technicianRanking?.length);
+            console.log('🔍 App.tsx - technicianRanking tipo:', typeof technicianRanking);
+            console.log(
+              '🔍 App.tsx - technicianRanking é array?',
+              Array.isArray(technicianRanking)
+            );
+            return (
+              <ModernDashboard
+                metrics={dashboardMetrics}
+                levelMetrics={levelMetrics}
+                systemStatus={systemStatus}
+                technicianRanking={technicianRanking}
+                onFilterByStatus={handleFilterByStatus}
+                onTicketClick={handleTicketClick}
+                onRefresh={loadData}
+                isLoading={isLoading}
+                filters={filters}
+              />
+            );
+          })()
         ) : (
           // Fallback para quando não há dados
           <div className='h-full bg-gradient-to-br from-gray-50 via-white to-gray-100 flex items-center justify-center'>
@@ -297,10 +279,6 @@ function App() {
 
       {/* Notification System */}
       <NotificationSystem notifications={notifications} onRemoveNotification={removeNotification} />
-
-
-
-
 
       {/* Cache Notifications */}
       {cacheNotifications.map((notification, index) => (

@@ -46,26 +46,26 @@ const sizeClasses = {
     spinner: 'w-4 h-4',
     text: 'text-xs',
     container: 'p-2',
-    skeleton: 'h-3'
+    skeleton: 'h-3',
   },
   md: {
     spinner: 'w-6 h-6',
     text: 'text-sm',
     container: 'p-4',
-    skeleton: 'h-4'
+    skeleton: 'h-4',
   },
   lg: {
     spinner: 'w-8 h-8',
     text: 'text-base',
     container: 'p-6',
-    skeleton: 'h-5'
+    skeleton: 'h-5',
   },
   xl: {
     spinner: 'w-12 h-12',
     text: 'text-lg',
     container: 'p-8',
-    skeleton: 'h-6'
-  }
+    skeleton: 'h-6',
+  },
 };
 
 // Componente de Skeleton unificado
@@ -81,7 +81,9 @@ const UnifiedSkeleton: React.FC<{
     switch (type) {
       case 'card':
         return (
-          <div className={`bg-white dark:bg-gray-800 rounded-lg shadow-sm border border-gray-200 dark:border-gray-700 ${sizeClasses[size].container}`}>
+          <div
+            className={`bg-white dark:bg-gray-800 rounded-lg shadow-sm border border-gray-200 dark:border-gray-700 ${sizeClasses[size].container}`}
+          >
             <div className='animate-pulse'>
               <div className='flex items-center justify-between mb-4'>
                 <div className='w-10 h-10 bg-gray-200 dark:bg-gray-700 rounded-lg' />
@@ -129,7 +131,10 @@ const UnifiedSkeleton: React.FC<{
         return (
           <div className='grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6'>
             {Array.from({ length: count || 4 }).map((_, i) => (
-              <div key={i} className={`bg-white dark:bg-gray-800 rounded-lg shadow-sm border border-gray-200 dark:border-gray-700 ${sizeClasses[size].container}`}>
+              <div
+                key={i}
+                className={`bg-white dark:bg-gray-800 rounded-lg shadow-sm border border-gray-200 dark:border-gray-700 ${sizeClasses[size].container}`}
+              >
                 <div className='animate-pulse'>
                   <div className='flex items-center justify-between mb-4'>
                     <div className='w-10 h-10 bg-gray-200 dark:bg-gray-700 rounded-lg' />
@@ -157,7 +162,10 @@ const UnifiedSkeleton: React.FC<{
             </div>
             <div className='grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6'>
               {Array.from({ length: 4 }).map((_, i) => (
-                <div key={i} className={`bg-white dark:bg-gray-800 rounded-lg shadow-sm border border-gray-200 dark:border-gray-700 ${sizeClasses[size].container}`}>
+                <div
+                  key={i}
+                  className={`bg-white dark:bg-gray-800 rounded-lg shadow-sm border border-gray-200 dark:border-gray-700 ${sizeClasses[size].container}`}
+                >
                   <div className='animate-pulse'>
                     <div className='flex items-center justify-between mb-4'>
                       <div className='w-10 h-10 bg-gray-200 dark:bg-gray-700 rounded-lg' />
@@ -171,16 +179,16 @@ const UnifiedSkeleton: React.FC<{
                 </div>
               ))}
             </div>
-            <div className={`bg-white dark:bg-gray-800 rounded-lg shadow-sm border border-gray-200 dark:border-gray-700 h-48 ${sizeClasses[size].container}`}>
+            <div
+              className={`bg-white dark:bg-gray-800 rounded-lg shadow-sm border border-gray-200 dark:border-gray-700 h-48 ${sizeClasses[size].container}`}
+            >
               <div className='animate-pulse h-full bg-gray-200 dark:bg-gray-700 rounded' />
             </div>
           </div>
         );
 
       default:
-        return (
-          <div className={`${sizeClasses[size].skeleton} w-full ${skeletonClass}`} />
-        );
+        return <div className={`${sizeClasses[size].skeleton} w-full ${skeletonClass}`} />;
     }
   };
 
@@ -204,7 +212,7 @@ export const UnifiedLoading: React.FC<UnifiedLoadingProps> = ({
   estimatedTime = 30,
   showTimeEstimate = false,
   onTimeout,
-  timeoutDuration = 60
+  timeoutDuration = 60,
 }) => {
   const [elapsedTime, setElapsedTime] = useState(0);
   const [hasTimedOut, setHasTimedOut] = useState(false);
@@ -281,9 +289,13 @@ export const UnifiedLoading: React.FC<UnifiedLoadingProps> = ({
       case 'progress': {
         const currentProgress = progress !== undefined ? progress : calculatedProgress;
         return (
-          <div className={`flex flex-col items-center justify-center space-y-4 ${sizeClasses[size].container} ${className}`}>
+          <div
+            className={`flex flex-col items-center justify-center space-y-4 ${sizeClasses[size].container} ${className}`}
+          >
             {title && (
-              <h3 className={`font-semibold text-gray-900 dark:text-white ${sizeClasses[size].text}`}>
+              <h3
+                className={`font-semibold text-gray-900 dark:text-white ${sizeClasses[size].text}`}
+              >
                 {title}
               </h3>
             )}
@@ -330,14 +342,20 @@ export const UnifiedLoading: React.FC<UnifiedLoadingProps> = ({
           <div className='fixed inset-0 bg-black bg-opacity-50 z-50 flex items-center justify-center'>
             <div className='bg-white dark:bg-gray-800 rounded-lg shadow-xl p-8 max-w-md w-full mx-4'>
               <div className='flex flex-col items-center space-y-4'>
-                <Loader2 className={`${sizeClasses[size].spinner} text-blue-600 dark:text-blue-400 animate-spin`} />
+                <Loader2
+                  className={`${sizeClasses[size].spinner} text-blue-600 dark:text-blue-400 animate-spin`}
+                />
                 {title && (
-                  <h3 className={`font-semibold text-gray-900 dark:text-white ${sizeClasses[size].text}`}>
+                  <h3
+                    className={`font-semibold text-gray-900 dark:text-white ${sizeClasses[size].text}`}
+                  >
                     {title}
                   </h3>
                 )}
                 {text && (
-                  <p className={`text-gray-600 dark:text-gray-400 text-center ${sizeClasses[size].text}`}>
+                  <p
+                    className={`text-gray-600 dark:text-gray-400 text-center ${sizeClasses[size].text}`}
+                  >
                     {text}
                   </p>
                 )}
@@ -347,12 +365,19 @@ export const UnifiedLoading: React.FC<UnifiedLoadingProps> = ({
         );
       }
 
-      default: { // spinner
+      default: {
+        // spinner
         const spinnerContent = (
-          <div className={`flex flex-col items-center justify-center space-y-3 ${sizeClasses[size].container} ${className}`}>
-            <Loader2 className={`${sizeClasses[size].spinner} text-blue-600 dark:text-blue-400 animate-spin`} />
+          <div
+            className={`flex flex-col items-center justify-center space-y-3 ${sizeClasses[size].container} ${className}`}
+          >
+            <Loader2
+              className={`${sizeClasses[size].spinner} text-blue-600 dark:text-blue-400 animate-spin`}
+            />
             {text && (
-              <p className={`text-gray-600 dark:text-gray-400 font-medium ${sizeClasses[size].text}`}>
+              <p
+                className={`text-gray-600 dark:text-gray-400 font-medium ${sizeClasses[size].text}`}
+              >
                 {text}
               </p>
             )}
@@ -389,31 +414,31 @@ export const UnifiedLoading: React.FC<UnifiedLoadingProps> = ({
 };
 
 // Componentes de conveniência para casos específicos
-export const LoadingSpinner: React.FC<Omit<UnifiedLoadingProps, 'type'>> = (props) => (
-  <UnifiedLoading {...props} type="spinner" />
+export const LoadingSpinner: React.FC<Omit<UnifiedLoadingProps, 'type'>> = props => (
+  <UnifiedLoading {...props} type='spinner' />
 );
 
-export const LoadingSkeleton: React.FC<Omit<UnifiedLoadingProps, 'type'>> = (props) => (
-  <UnifiedLoading {...props} type="skeleton" />
+export const LoadingSkeleton: React.FC<Omit<UnifiedLoadingProps, 'type'>> = props => (
+  <UnifiedLoading {...props} type='skeleton' />
 );
 
-export const LoadingProgress: React.FC<Omit<UnifiedLoadingProps, 'type'>> = (props) => (
-  <UnifiedLoading {...props} type="progress" />
+export const LoadingProgress: React.FC<Omit<UnifiedLoadingProps, 'type'>> = props => (
+  <UnifiedLoading {...props} type='progress' />
 );
 
-export const LoadingOverlay: React.FC<Omit<UnifiedLoadingProps, 'type'>> = (props) => (
-  <UnifiedLoading {...props} type="overlay" />
+export const LoadingOverlay: React.FC<Omit<UnifiedLoadingProps, 'type'>> = props => (
+  <UnifiedLoading {...props} type='overlay' />
 );
 
 // Componentes específicos para compatibilidade
 export const SkeletonCard: React.FC<{ className?: string }> = ({ className }) => (
-  <LoadingSkeleton skeletonType="card" className={className} isLoading={true} />
+  <LoadingSkeleton skeletonType='card' className={className} isLoading={true} />
 );
 
 // SkeletonMetricsGrid removido - MetricsGrid foi removido do sistema
 
 export const SkeletonLevelsSection: React.FC = () => (
-  <LoadingSkeleton skeletonType="levels" isLoading={true} />
+  <LoadingSkeleton skeletonType='levels' isLoading={true} />
 );
 
 // Error state component (mantido do arquivo original)
@@ -428,22 +453,26 @@ export const ErrorState: React.FC<ErrorStateProps> = ({
   title = 'Erro ao carregar dados',
   message = 'Ocorreu um erro inesperado. Tente novamente.',
   onRetry,
-  className = ''
+  className = '',
 }) => {
   return (
-    <div className={cn(
-      createFlexClasses('col', 'center', 'center', 'normal'),
-      TAILWIND_CLASSES.padding.section,
-      className
-    )}>
-      <div className={cn(
-        "w-16 h-16 bg-red-100 dark:bg-red-900/20 rounded-full",
-        createFlexClasses('row', 'center', 'center')
-      )}>
+    <div
+      className={cn(
+        createFlexClasses('col', 'center', 'center', 'normal'),
+        TAILWIND_CLASSES.padding.section,
+        className
+      )}
+    >
+      <div
+        className={cn(
+          'w-16 h-16 bg-red-100 dark:bg-red-900/20 rounded-full',
+          createFlexClasses('row', 'center', 'center')
+        )}
+      >
         <AlertCircle className='w-8 h-8 text-red-600 dark:text-red-400' />
       </div>
 
-      <div className={cn("text-center", TAILWIND_CLASSES.spaceY.list)}>
+      <div className={cn('text-center', TAILWIND_CLASSES.spaceY.list)}>
         <h3 className='text-lg font-semibold text-gray-900 dark:text-white'>{title}</h3>
         <p className='text-gray-600 dark:text-gray-400 max-w-md'>{message}</p>
       </div>
@@ -453,7 +482,7 @@ export const ErrorState: React.FC<ErrorStateProps> = ({
           onClick={onRetry}
           className={cn(
             createFlexClasses('row', 'center', 'start', 'small'),
-            "font-semibold rounded-xl bg-gradient-to-r from-blue-500 to-blue-700 hover:from-blue-600 hover:to-blue-800 text-white shadow-lg hover:shadow-xl transform hover:-translate-y-0.5 transition-all duration-300",
+            'font-semibold rounded-xl bg-gradient-to-r from-blue-500 to-blue-700 hover:from-blue-600 hover:to-blue-800 text-white shadow-lg hover:shadow-xl transform hover:-translate-y-0.5 transition-all duration-300',
             TAILWIND_CLASSES.padding.button
           )}
         >

@@ -86,10 +86,7 @@ class UnifiedCacheManager {
   /**
    * Registra um novo tipo de cache
    */
-  registerCacheType(
-    type: string,
-    config: Partial<CacheConfig> = {}
-  ): void {
+  registerCacheType(type: string, config: Partial<CacheConfig> = {}): void {
     const finalConfig = { ...this.defaultConfig, ...config };
     this.configs.set(type, finalConfig);
     this.caches.set(type, new Map());
@@ -133,8 +130,9 @@ class UnifiedCacheManager {
     const requestCount = this.requestCounts.get(type) || 0;
     const avgResponseTime = this.getAverageResponseTime(type);
 
-    return avgResponseTime >= config.performanceThreshold! ||
-           requestCount >= config.usageThreshold!;
+    return (
+      avgResponseTime >= config.performanceThreshold! || requestCount >= config.usageThreshold!
+    );
   }
 
   /**

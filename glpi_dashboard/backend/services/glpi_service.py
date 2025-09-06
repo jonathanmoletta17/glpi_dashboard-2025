@@ -1857,7 +1857,7 @@ class GLPIService:
             # Extrair dados básicos do ticket
             raw_description = ticket_data.get("content", "")
             clean_description = clean_html_content(raw_description)
-            
+
             # Processamento da descrição
 
             # Extrair ramal da descrição original
@@ -3909,7 +3909,7 @@ class GLPIService:
             "forcedisplay[1]": 12,  # Status
             "range": "0-3000",  # Reduzido de 5000 para 3000 para melhor performance
         }
-        
+
         # DEBUG ESPECÍFICO PARA SILVIO
         if tecnico_id in ["696", "32", "141", "60", "69", "1032", "252", "721", "926", "1291", "185", "1331", "1404", "1088", "1263", "10", "53", "250", "1471"]:
             self.logger.info(f"🔍 [DEBUG SILVIO] Buscando tickets para técnico ID: {tecnico_id}")
@@ -3934,7 +3934,7 @@ class GLPIService:
 
             data = response.json()
             tickets = data.get("data", [])
-            
+
             # DEBUG ESPECÍFICO PARA SILVIO
             if tecnico_id in ["696", "32", "141", "60", "69", "1032", "252", "721", "926", "1291", "185", "1331", "1404", "1088", "1263", "10", "53", "250", "1471"]:
                 self.logger.info(f"🔍 [DEBUG SILVIO] Resposta recebida para técnico {tecnico_id}: {len(tickets)} tickets")
@@ -6893,11 +6893,11 @@ class GLPIService:
     def debug_silvio_tickets(self, silvio_id: str = "696") -> Dict[str, Any]:
         """Método específico para debugar tickets do Silvio"""
         self.logger.info(f"🔍 [DEBUG SILVIO] Iniciando debug específico para Silvio ID: {silvio_id}")
-        
+
         # Primeiro, verificar se o usuário existe
         user_url = f"{self.glpi_url}/User/{silvio_id}"
         user_response = self._make_authenticated_request("GET", user_url)
-        
+
         if user_response and user_response.status_code == 200:
             user_data = user_response.json()
             self.logger.info(f"🔍 [DEBUG SILVIO] Usuário encontrado: {user_data.get('name', 'N/A')}")
@@ -6906,13 +6906,13 @@ class GLPIService:
         else:
             self.logger.error(f"❌ [DEBUG SILVIO] Usuário {silvio_id} não encontrado")
             return {"error": "Usuário não encontrado"}
-        
+
         # Testar diferentes campos para buscar tickets
         test_fields = [5, 95, 4, 6]  # Diferentes campos que podem ser usados para técnico
-        
+
         for field_id in test_fields:
             self.logger.info(f"🔍 [DEBUG SILVIO] Testando campo {field_id} para técnico {silvio_id}")
-            
+
             url = f"{self.glpi_url}/search/Ticket"
             params = {
                 "criteria[0][field]": field_id,
@@ -6922,7 +6922,7 @@ class GLPIService:
                 "forcedisplay[1]": 12,  # Status
                 "range": "0-10",  # Apenas 10 tickets para teste
             }
-            
+
             try:
                 response = self._make_authenticated_request("GET", url, params=params, timeout=10)
                 if response and response.status_code == 200:
@@ -6935,5 +6935,5 @@ class GLPIService:
                     self.logger.warning(f"⚠️ [DEBUG SILVIO] Campo {field_id}: Erro {response.status_code if response else 'None'}")
             except Exception as e:
                 self.logger.error(f"❌ [DEBUG SILVIO] Campo {field_id}: Erro {e}")
-        
+
         return {"debug": "Concluído"}

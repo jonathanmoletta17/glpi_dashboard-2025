@@ -1,14 +1,6 @@
 import React from 'react';
 import { motion } from 'framer-motion';
-import {
-  Clock,
-  User,
-  AlertCircle,
-  CheckCircle,
-  XCircle,
-  Calendar,
-  Tag,
-} from 'lucide-react';
+import { Clock, User, AlertCircle, CheckCircle, XCircle, Calendar, Tag } from 'lucide-react';
 import { Ticket } from '../types/ticket';
 import { cn } from '@/lib/utils';
 
@@ -25,13 +17,13 @@ interface TicketCardProps {
 const getStatusIcon = (status: string) => {
   switch (status) {
     case 'open':
-      return <AlertCircle className="h-4 w-4" />;
+      return <AlertCircle className='h-4 w-4' />;
     case 'closed':
-      return <CheckCircle className="h-4 w-4" />;
+      return <CheckCircle className='h-4 w-4' />;
     case 'in_progress':
-      return <Clock className="h-4 w-4" />;
+      return <Clock className='h-4 w-4' />;
     default:
-      return <XCircle className="h-4 w-4" />;
+      return <XCircle className='h-4 w-4' />;
   }
 };
 
@@ -115,8 +107,11 @@ export const TicketCard: React.FC<TicketCardProps> = ({
 
   if (loading) {
     return (
-      <div className="p-4 border rounded-lg bg-white shadow-sm">
-        <div data-testid="loading-spinner" className="animate-spin h-6 w-6 border-2 border-blue-500 border-t-transparent rounded-full mx-auto"></div>
+      <div className='p-4 border rounded-lg bg-white shadow-sm'>
+        <div
+          data-testid='loading-spinner'
+          className='animate-spin h-6 w-6 border-2 border-blue-500 border-t-transparent rounded-full mx-auto'
+        ></div>
       </div>
     );
   }
@@ -129,18 +124,18 @@ export const TicketCard: React.FC<TicketCardProps> = ({
         selected && 'selected border-blue-500 bg-blue-50'
       )}
       onClick={handleClick}
-      data-testid="ticket-card"
-      role="article"
+      data-testid='ticket-card'
+      role='article'
       aria-labelledby={`ticket-title-${ticket.id}`}
       whileHover={{ scale: 1.02 }}
       whileTap={{ scale: 0.98 }}
     >
       {/* Header */}
-      <div className="flex justify-between items-start mb-3">
-        <h3 id={`ticket-title-${ticket.id}`} className="font-semibold text-lg text-gray-900">
+      <div className='flex justify-between items-start mb-3'>
+        <h3 id={`ticket-title-${ticket.id}`} className='font-semibold text-lg text-gray-900'>
           {ticket.title}
         </h3>
-        <div className="flex items-center gap-2">
+        <div className='flex items-center gap-2'>
           <span
             className={cn(
               'inline-flex items-center gap-1 px-2 py-1 rounded-full text-xs font-medium',
@@ -157,36 +152,36 @@ export const TicketCard: React.FC<TicketCardProps> = ({
       </div>
 
       {/* Description */}
-      <div className="mb-3">
+      <div className='mb-3'>
         <p className={cn('text-gray-700 text-sm', compact && 'truncated')}>
           {formatHtmlContent(ticket.description)}
         </p>
       </div>
 
       {/* Metadata */}
-      <div className="grid grid-cols-2 gap-4 text-sm text-gray-600 mb-3">
-        <div className="flex items-center gap-1">
-          <User className="h-4 w-4" />
+      <div className='grid grid-cols-2 gap-4 text-sm text-gray-600 mb-3'>
+        <div className='flex items-center gap-1'>
+          <User className='h-4 w-4' />
           <span>{ticket.requester.name}</span>
         </div>
-        <div className="flex items-center gap-1">
-          <User className="h-4 w-4" />
+        <div className='flex items-center gap-1'>
+          <User className='h-4 w-4' />
           <span>{ticket.technician?.name || 'Não atribuído'}</span>
         </div>
-        <div className="flex items-center gap-1">
-          <Calendar className="h-4 w-4" />
+        <div className='flex items-center gap-1'>
+          <Calendar className='h-4 w-4' />
           <span>{formatDate(ticket.createdAt)}</span>
         </div>
         {ticket.dueDate && (
-          <div className="flex items-center gap-1">
-            <Clock className="h-4 w-4" />
+          <div className='flex items-center gap-1'>
+            <Clock className='h-4 w-4' />
             <span>Vence: {formatDate(ticket.dueDate)}</span>
           </div>
         )}
       </div>
 
       {/* Priority and Category */}
-      <div className="flex justify-between items-center mb-3">
+      <div className='flex justify-between items-center mb-3'>
         <span
           className={cn(
             'px-2 py-1 rounded text-xs font-medium',
@@ -194,22 +189,22 @@ export const TicketCard: React.FC<TicketCardProps> = ({
             ticket.priority === 'normal' && 'bg-yellow-100 text-yellow-800',
             ticket.priority === 'baixa' && 'bg-green-100 text-green-800'
           )}
-          data-testid="ticket-priority"
+          data-testid='ticket-priority'
         >
           {getPriorityText(ticket.priority)}
         </span>
-        <span className="text-sm text-gray-600">{ticket.category}</span>
+        <span className='text-sm text-gray-600'>{ticket.category}</span>
       </div>
 
       {/* Tags */}
       {ticket.tags && ticket.tags.length > 0 && (
-        <div className="flex flex-wrap gap-1 mb-3">
+        <div className='flex flex-wrap gap-1 mb-3'>
           {ticket.tags.map((tag, index) => (
             <span
               key={index}
-              className="inline-flex items-center gap-1 px-2 py-1 bg-gray-100 text-gray-700 rounded text-xs"
+              className='inline-flex items-center gap-1 px-2 py-1 bg-gray-100 text-gray-700 rounded text-xs'
             >
-              <Tag className="h-3 w-3" />
+              <Tag className='h-3 w-3' />
               {tag}
             </span>
           ))}
@@ -217,7 +212,7 @@ export const TicketCard: React.FC<TicketCardProps> = ({
       )}
 
       {/* Footer */}
-      <div className="flex justify-between items-center text-xs text-gray-500">
+      <div className='flex justify-between items-center text-xs text-gray-500'>
         <span>{ticket.comments?.length || 0} comentários</span>
         <span>{ticket.attachments?.length || 0} anexos</span>
       </div>

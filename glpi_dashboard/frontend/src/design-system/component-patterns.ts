@@ -10,7 +10,8 @@ import { cn } from '@/lib/utils';
  */
 export const cardPattern = {
   base: 'bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-lg shadow-sm',
-  hover: 'hover:shadow-md hover:border-gray-300 dark:hover:border-gray-600 transition-all duration-200',
+  hover:
+    'hover:shadow-md hover:border-gray-300 dark:hover:border-gray-600 transition-all duration-200',
   padding: 'p-4',
   spacing: 'space-y-3',
 } as const;
@@ -76,8 +77,10 @@ export const createCardClasses = (className?: string) =>
 export const createListItemClasses = (className?: string) =>
   cn(listPattern.item, listPattern.itemHover, listPattern.itemActive, className);
 
-export const createBadgeClasses = (variant: keyof typeof badgePattern.variants = 'default', className?: string) =>
-  cn(badgePattern.base, badgePattern.variants[variant], className);
+export const createBadgeClasses = (
+  variant: keyof typeof badgePattern.variants = 'default',
+  className?: string
+) => cn(badgePattern.base, badgePattern.variants[variant], className);
 
 export const createButtonClasses = (
   variant: keyof typeof buttonPattern.variants = 'default',
@@ -85,5 +88,4 @@ export const createButtonClasses = (
   className?: string
 ) => cn(buttonPattern.base, buttonPattern.variants[variant], buttonPattern.sizes[size], className);
 
-export const createInputClasses = (className?: string) =>
-  cn(inputPattern.base, className);
+export const createInputClasses = (className?: string) => cn(inputPattern.base, className);

@@ -68,15 +68,27 @@ export const useCacheHealth = () => {
   const { stats } = useCacheStats(10000); // Atualiza a cada 10 segundos
 
   // Calcular hit rate geral
-  const totalHits = Object.values(stats).reduce((sum, cacheStats: any) => sum + (cacheStats.hitRate || 0), 0);
-  const totalRequests = Object.values(stats).reduce((sum, cacheStats: any) => sum + (cacheStats.totalRequests || 0), 0);
+  const totalHits = Object.values(stats).reduce(
+    (sum, cacheStats: any) => sum + (cacheStats.hitRate || 0),
+    0
+  );
+  const totalRequests = Object.values(stats).reduce(
+    (sum, cacheStats: any) => sum + (cacheStats.totalRequests || 0),
+    0
+  );
   const overallHitRate = totalRequests > 0 ? totalHits / Object.keys(stats).length : 0;
 
   const health = {
     isHealthy: overallHitRate > 0.5, // Hit rate acima de 50%
     hitRate: overallHitRate,
-    memoryUsage: Object.values(stats).reduce((sum, cacheStats: any) => sum + (cacheStats.memoryUsage || 0), 0),
-    totalEntries: Object.values(stats).reduce((sum, cacheStats: any) => sum + (cacheStats.size || 0), 0),
+    memoryUsage: Object.values(stats).reduce(
+      (sum, cacheStats: any) => sum + (cacheStats.memoryUsage || 0),
+      0
+    ),
+    totalEntries: Object.values(stats).reduce(
+      (sum, cacheStats: any) => sum + (cacheStats.size || 0),
+      0
+    ),
     status:
       overallHitRate > 0.7
         ? 'excellent'

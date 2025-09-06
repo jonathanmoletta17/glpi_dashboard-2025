@@ -2,7 +2,11 @@ import React, { useMemo, useCallback } from 'react';
 import { motion } from 'framer-motion';
 import { AlertTriangle, Activity, Clock, CheckCircle } from 'lucide-react';
 import { MetricsData, TicketStatus } from '../../types';
-import { RESPONSIVE_GRID_CLASSES, createResponsiveClasses, createSimpleGridClasses } from '@/utils/responsive';
+import {
+  RESPONSIVE_GRID_CLASSES,
+  createResponsiveClasses,
+  createSimpleGridClasses,
+} from '@/utils/responsive';
 
 interface MetricsGridProps {
   metrics: MetricsData;
@@ -78,47 +82,50 @@ const itemVariants = {
 
 export const MetricsGrid = React.memo<MetricsGridProps>(
   ({ metrics, onFilterByStatus, isLoading = false, className = '' }) => {
-    const cardsData = useMemo(() => [
-       {
-         title: 'Novos',
-         value: metrics?.novos || 0,
-         status: 'novo' as TicketStatus,
-         icon: AlertTriangle,
-         className: 'metrics-card-new status-new',
-         onClick: () => onFilterByStatus?.('novo')
-       },
-       {
-         title: 'Em Progresso',
-         value: metrics?.progresso || 0,
-         status: 'progresso' as TicketStatus,
-         icon: Activity,
-         className: 'metrics-card-progress status-progress',
-         onClick: () => onFilterByStatus?.('progresso')
-       },
-       {
-         title: 'Pendentes',
-         value: metrics?.pendentes || 0,
-         status: 'pendente' as TicketStatus,
-         icon: Clock,
-         className: 'metrics-card-pending status-pending',
-         onClick: () => onFilterByStatus?.('pendente')
-       },
-       {
-         title: 'Resolvidos',
-         value: metrics?.resolvidos || 0,
-         status: 'resolvido' as TicketStatus,
-         icon: CheckCircle,
-         className: 'metrics-card-resolved status-resolved',
-         onClick: () => onFilterByStatus?.('resolvido')
-       }
-     ], [metrics, onFilterByStatus]);
+    const cardsData = useMemo(
+      () => [
+        {
+          title: 'Novos',
+          value: metrics?.novos || 0,
+          status: 'novo' as TicketStatus,
+          icon: AlertTriangle,
+          className: 'metrics-card-new status-new',
+          onClick: () => onFilterByStatus?.('novo'),
+        },
+        {
+          title: 'Em Progresso',
+          value: metrics?.progresso || 0,
+          status: 'progresso' as TicketStatus,
+          icon: Activity,
+          className: 'metrics-card-progress status-progress',
+          onClick: () => onFilterByStatus?.('progresso'),
+        },
+        {
+          title: 'Pendentes',
+          value: metrics?.pendentes || 0,
+          status: 'pendente' as TicketStatus,
+          icon: Clock,
+          className: 'metrics-card-pending status-pending',
+          onClick: () => onFilterByStatus?.('pendente'),
+        },
+        {
+          title: 'Resolvidos',
+          value: metrics?.resolvidos || 0,
+          status: 'resolvido' as TicketStatus,
+          icon: CheckCircle,
+          className: 'metrics-card-resolved status-resolved',
+          onClick: () => onFilterByStatus?.('resolvido'),
+        },
+      ],
+      [metrics, onFilterByStatus]
+    );
 
     if (isLoading) {
       const gridClasses = createResponsiveClasses({
         base: RESPONSIVE_GRID_CLASSES.metricsCards.base,
         mobile: 'grid-cols-1',
         tablet: 'grid-cols-2',
-        desktop: 'grid-cols-4'
+        desktop: 'grid-cols-4',
       });
 
       return (
@@ -147,7 +154,7 @@ export const MetricsGrid = React.memo<MetricsGridProps>(
       base: RESPONSIVE_GRID_CLASSES.metricsCards.base,
       mobile: 'grid-cols-1',
       tablet: 'grid-cols-2',
-      desktop: 'grid-cols-4'
+      desktop: 'grid-cols-4',
     });
 
     return (
@@ -157,7 +164,7 @@ export const MetricsGrid = React.memo<MetricsGridProps>(
         initial='hidden'
         animate='visible'
       >
-        {cardsData.map((card) => (
+        {cardsData.map(card => (
           <motion.div key={`metrics-${card.status}`} variants={itemVariants}>
             <StatusCard
               title={card.title}

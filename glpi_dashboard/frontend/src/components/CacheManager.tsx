@@ -8,7 +8,16 @@ interface CacheManagerProps {
 }
 
 const CacheManager: React.FC<CacheManagerProps> = ({ className = '' }) => {
-  const { stats, isLoading, clearAll, refreshAll, refreshMetrics, refreshSystemStatus, refreshTechnicianRanking, refreshNewTickets } = useCache();
+  const {
+    stats,
+    isLoading,
+    clearAll,
+    refreshAll,
+    refreshMetrics,
+    refreshSystemStatus,
+    refreshTechnicianRanking,
+    refreshNewTickets,
+  } = useCache();
 
   const formatHitRate = useCallback((hitRate: number) => {
     return `${(hitRate * 100).toFixed(1)}%`;
@@ -18,29 +27,35 @@ const CacheManager: React.FC<CacheManagerProps> = ({ className = '' }) => {
     return `${size} ${size === 1 ? 'item' : 'itens'}`;
   }, []);
 
-  const handleRefreshCache = useCallback((cacheType: string) => {
-    switch (cacheType) {
-      case 'metrics':
-        refreshMetrics();
-        break;
-      case 'systemStatus':
-        refreshSystemStatus();
-        break;
-      case 'technicianRanking':
-        refreshTechnicianRanking();
-        break;
-      case 'newTickets':
-        refreshNewTickets();
-        break;
-      default:
-        refreshAll();
-    }
-  }, [refreshMetrics, refreshSystemStatus, refreshTechnicianRanking, refreshNewTickets, refreshAll]);
+  const handleRefreshCache = useCallback(
+    (cacheType: string) => {
+      switch (cacheType) {
+        case 'metrics':
+          refreshMetrics();
+          break;
+        case 'systemStatus':
+          refreshSystemStatus();
+          break;
+        case 'technicianRanking':
+          refreshTechnicianRanking();
+          break;
+        case 'newTickets':
+          refreshNewTickets();
+          break;
+        default:
+          refreshAll();
+      }
+    },
+    [refreshMetrics, refreshSystemStatus, refreshTechnicianRanking, refreshNewTickets, refreshAll]
+  );
 
-  const handleClearCache = useCallback((cacheType: string) => {
-    // Para simplificar, vamos limpar todos os caches
-    clearAll();
-  }, [clearAll]);
+  const handleClearCache = useCallback(
+    (cacheType: string) => {
+      // Para simplificar, vamos limpar todos os caches
+      clearAll();
+    },
+    [clearAll]
+  );
 
   const cacheTypeLabels = useMemo(
     () => ({

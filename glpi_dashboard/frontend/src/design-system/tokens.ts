@@ -6,39 +6,39 @@
 // ===== SPACING TOKENS =====
 export const SPACING = {
   // Base scale (múltiplos de 4px)
-  xs: '0.25rem',    // 4px
-  sm: '0.5rem',     // 8px
-  md: '0.75rem',    // 12px
-  lg: '1rem',       // 16px
-  xl: '1.25rem',    // 20px
-  '2xl': '1.5rem',  // 24px
-  '3xl': '2rem',    // 32px
-  '4xl': '2.5rem',  // 40px
-  '5xl': '3rem',    // 48px
-  '6xl': '4rem',    // 64px
+  xs: '0.25rem', // 4px
+  sm: '0.5rem', // 8px
+  md: '0.75rem', // 12px
+  lg: '1rem', // 16px
+  xl: '1.25rem', // 20px
+  '2xl': '1.5rem', // 24px
+  '3xl': '2rem', // 32px
+  '4xl': '2.5rem', // 40px
+  '5xl': '3rem', // 48px
+  '6xl': '4rem', // 64px
 } as const;
 
 // Semantic spacing para componentes
 export const COMPONENT_SPACING = {
   card: {
-    padding: SPACING['2xl'],     // 24px
-    gap: SPACING.lg,             // 16px
-    margin: SPACING['2xl'],      // 24px
+    padding: SPACING['2xl'], // 24px
+    gap: SPACING.lg, // 16px
+    margin: SPACING['2xl'], // 24px
   },
   section: {
-    padding: SPACING['3xl'],     // 32px
-    gap: SPACING['3xl'],         // 32px
-    margin: SPACING['5xl'],      // 48px
+    padding: SPACING['3xl'], // 32px
+    gap: SPACING['3xl'], // 32px
+    margin: SPACING['5xl'], // 48px
   },
   grid: {
-    gap: SPACING.lg,             // 16px
-    columnGap: SPACING.lg,       // 16px
-    rowGap: SPACING['2xl'],      // 24px
+    gap: SPACING.lg, // 16px
+    columnGap: SPACING.lg, // 16px
+    rowGap: SPACING['2xl'], // 24px
   },
   button: {
-    paddingX: SPACING.lg,        // 16px
-    paddingY: SPACING.sm,        // 8px
-    gap: SPACING.sm,             // 8px
+    paddingX: SPACING.lg, // 16px
+    paddingY: SPACING.sm, // 8px
+    gap: SPACING.sm, // 8px
   },
 } as const;
 
@@ -126,14 +126,14 @@ export const TYPOGRAPHY = {
   },
 
   fontSize: {
-    xs: ['0.75rem', { lineHeight: '1rem' }],      // 12px
-    sm: ['0.875rem', { lineHeight: '1.25rem' }],  // 14px
-    base: ['1rem', { lineHeight: '1.5rem' }],     // 16px
-    lg: ['1.125rem', { lineHeight: '1.75rem' }],  // 18px
-    xl: ['1.25rem', { lineHeight: '1.75rem' }],   // 20px
-    '2xl': ['1.5rem', { lineHeight: '2rem' }],    // 24px
+    xs: ['0.75rem', { lineHeight: '1rem' }], // 12px
+    sm: ['0.875rem', { lineHeight: '1.25rem' }], // 14px
+    base: ['1rem', { lineHeight: '1.5rem' }], // 16px
+    lg: ['1.125rem', { lineHeight: '1.75rem' }], // 18px
+    xl: ['1.25rem', { lineHeight: '1.75rem' }], // 20px
+    '2xl': ['1.5rem', { lineHeight: '2rem' }], // 24px
     '3xl': ['1.875rem', { lineHeight: '2.25rem' }], // 30px
-    '4xl': ['2.25rem', { lineHeight: '2.5rem' }],   // 36px
+    '4xl': ['2.25rem', { lineHeight: '2.5rem' }], // 36px
   },
 
   fontWeight: {
@@ -178,20 +178,20 @@ export const SHADOWS = {
 // ===== BORDER RADIUS TOKENS =====
 export const BORDER_RADIUS = {
   none: '0',
-  xs: '0.125rem',   // 2px
-  sm: '0.25rem',    // 4px
-  md: '0.375rem',   // 6px
-  lg: '0.5rem',     // 8px
-  xl: '0.75rem',    // 12px
-  '2xl': '1rem',    // 16px
-  '3xl': '1.5rem',  // 24px
+  xs: '0.125rem', // 2px
+  sm: '0.25rem', // 4px
+  md: '0.375rem', // 6px
+  lg: '0.5rem', // 8px
+  xl: '0.75rem', // 12px
+  '2xl': '1rem', // 16px
+  '3xl': '1.5rem', // 24px
   full: '9999px',
 
   // Component specific
-  card: '0.75rem',     // 12px
-  button: '0.5rem',    // 8px
-  badge: '9999px',     // full
-  input: '0.375rem',   // 6px
+  card: '0.75rem', // 12px
+  button: '0.5rem', // 8px
+  badge: '9999px', // full
+  input: '0.375rem', // 6px
 } as const;
 
 // ===== ANIMATION TOKENS =====

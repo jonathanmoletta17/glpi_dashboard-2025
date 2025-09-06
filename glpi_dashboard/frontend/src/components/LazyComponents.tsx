@@ -5,21 +5,14 @@
 
 import { lazy } from 'react';
 
-
-
-
 // Componentes de dashboard que podem ser carregados sob demanda
 export const LazyTicketChart = lazy(() =>
   import('./dashboard/TicketChart').then(module => ({ default: module.TicketChart }))
 );
 
-export const LazyNewTicketsList = lazy(() =>
-  import('./dashboard/NewTicketsList')
-);
+export const LazyNewTicketsList = lazy(() => import('./dashboard/NewTicketsList'));
 
-export const LazyRankingTable = lazy(() =>
-  import('./dashboard/RankingTable')
-);
+export const LazyRankingTable = lazy(() => import('./dashboard/RankingTable'));
 
 // Componentes de relatórios e análises
 export const LazyProfessionalDashboard = lazy(() =>

@@ -10,7 +10,6 @@ export interface MetricsData {
     n3: LevelMetrics;
     n4: LevelMetrics;
   };
-
 }
 
 export interface LevelMetrics {

@@ -117,31 +117,30 @@ const TechnicianCard = React.memo<{
   };
 
   return (
-    <motion.div
-      variants={cardVariants}
-      whileHover='hover'
-      className='flex-shrink-0 w-48 h-full'
-    >
+    <motion.div variants={cardVariants} whileHover='hover' className='flex-shrink-0 w-48 h-full'>
       <div className='bg-white/90 backdrop-blur-sm border border-white/90 shadow-lg rounded-xl p-4 h-full flex flex-col justify-between hover:shadow-xl transition-all duration-300 dark:bg-white/10 dark:border-white/20'>
         {/* Header com posição e nível */}
         <div className='flex items-center justify-between mb-3'>
-          <div className={cn(
-            'flex items-center justify-center w-6 h-6 rounded-full text-white text-xs font-bold',
-            getPositionColor()
-          )}>
+          <div
+            className={cn(
+              'flex items-center justify-center w-6 h-6 rounded-full text-white text-xs font-bold',
+              getPositionColor()
+            )}
+          >
             {getPositionIcon()}
           </div>
           <div className='flex items-center gap-1'>
-            <div className={cn(
-              'p-1 rounded-full',
-              levelStyle.iconBg
-            )}>
-              {levelStyle.icon && <levelStyle.icon className={cn('h-3 w-3', levelStyle.iconColor)} />}
+            <div className={cn('p-1 rounded-full', levelStyle.iconBg)}>
+              {levelStyle.icon && (
+                <levelStyle.icon className={cn('h-3 w-3', levelStyle.iconColor)} />
+              )}
             </div>
-            <Badge className={cn(
-              'text-xs font-medium text-white border-0 px-2 py-0.5',
-              levelStyle.accentColor
-            )}>
+            <Badge
+              className={cn(
+                'text-xs font-medium text-white border-0 px-2 py-0.5',
+                levelStyle.accentColor
+              )}
+            >
               {technician.level}
             </Badge>
           </div>
@@ -159,9 +158,7 @@ const TechnicianCard = React.memo<{
           <div className='text-2xl font-bold text-gray-900 dark:text-white mb-1'>
             {formatNumber(technician.total_tickets || 0)}
           </div>
-          <div className='text-xs text-gray-600 dark:text-gray-400 mb-2'>
-            tickets resolvidos
-          </div>
+          <div className='text-xs text-gray-600 dark:text-gray-400 mb-2'>tickets resolvidos</div>
 
           {/* Indicadores de performance */}
           <div className='flex justify-center gap-1'>
@@ -284,11 +281,13 @@ export const RankingTable = React.memo<RankingTableProps>(function RankingTable(
   );
 
   return (
-    <Card className={cn(
-      'bg-white/80 backdrop-blur-sm border border-white/90 shadow-sm dark:bg-white/5 dark:border-white/10',
-      'h-full flex flex-col',
-      className
-    )}>
+    <Card
+      className={cn(
+        'bg-white/80 backdrop-blur-sm border border-white/90 shadow-sm dark:bg-white/5 dark:border-white/10',
+        'h-full flex flex-col',
+        className
+      )}
+    >
       <CardHeader className='pb-3'>
         <div className='flex items-center justify-between'>
           <div className='flex flex-col gap-2'>
@@ -340,18 +339,27 @@ export const RankingTable = React.memo<RankingTableProps>(function RankingTable(
 
       <CardContent className='px-4 pb-4 pt-0 flex-1 flex flex-col'>
         {isLoading ? (
-          <div className="flex flex-col items-center justify-center p-8 space-y-4">
-            <div className="relative">
-              <div className="animate-spin rounded-full h-12 w-12 border-4 border-blue-200"></div>
-              <div className="animate-spin rounded-full h-12 w-12 border-4 border-blue-600 border-t-transparent absolute top-0 left-0"></div>
+          <div className='flex flex-col items-center justify-center p-8 space-y-4'>
+            <div className='relative'>
+              <div className='animate-spin rounded-full h-12 w-12 border-4 border-blue-200'></div>
+              <div className='animate-spin rounded-full h-12 w-12 border-4 border-blue-600 border-t-transparent absolute top-0 left-0'></div>
             </div>
-            <div className="text-center">
-              <h3 className="text-lg font-semibold text-gray-900 dark:text-white mb-2">Carregando Ranking de Técnicos</h3>
-              <p className="text-sm text-gray-600 dark:text-gray-400 mb-2">Processando dados do GLPI...</p>
-              <p className="text-xs text-gray-500 dark:text-gray-500">Isso pode levar até 2 minutos na primeira vez</p>
+            <div className='text-center'>
+              <h3 className='text-lg font-semibold text-gray-900 dark:text-white mb-2'>
+                Carregando Ranking de Técnicos
+              </h3>
+              <p className='text-sm text-gray-600 dark:text-gray-400 mb-2'>
+                Processando dados do GLPI...
+              </p>
+              <p className='text-xs text-gray-500 dark:text-gray-500'>
+                Isso pode levar até 2 minutos na primeira vez
+              </p>
             </div>
-            <div className="w-full max-w-xs bg-gray-200 dark:bg-gray-700 rounded-full h-2">
-              <div className="bg-blue-600 h-2 rounded-full animate-pulse" style={{width: '60%'}}></div>
+            <div className='w-full max-w-xs bg-gray-200 dark:bg-gray-700 rounded-full h-2'>
+              <div
+                className='bg-blue-600 h-2 rounded-full animate-pulse'
+                style={{ width: '60%' }}
+              ></div>
             </div>
           </div>
         ) : (

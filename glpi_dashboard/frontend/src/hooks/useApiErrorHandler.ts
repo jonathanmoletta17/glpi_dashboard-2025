@@ -3,13 +3,7 @@ import { useState, useCallback, useRef } from 'react';
 /**
  * Tipos de erro que podem ocorrer nas requisições de API
  */
-export type ApiErrorType =
-  | 'timeout'
-  | 'connection'
-  | 'server'
-  | 'network'
-  | 'abort'
-  | 'unknown';
+export type ApiErrorType = 'timeout' | 'connection' | 'server' | 'network' | 'abort' | 'unknown';
 
 /**
  * Informações detalhadas sobre um erro de API
@@ -251,7 +245,8 @@ export function useApiErrorHandler(config: ApiErrorHandlerConfig = {}) {
             lastError = new Error(error);
           } else if (error && typeof error === 'object') {
             // Handle object errors safely
-            const message = (error as any).message || error.toString?.() || 'Unknown error occurred';
+            const message =
+              (error as any).message || error.toString?.() || 'Unknown error occurred';
             lastError = new Error(message);
           } else {
             lastError = new Error('Unknown error occurred');
@@ -281,7 +276,7 @@ export function useApiErrorHandler(config: ApiErrorHandlerConfig = {}) {
           // Aguardar antes da próxima tentativa
           if (attempt < effectiveMaxRetries) {
             const delay = calculateRetryDelay(attempt);
-            await new Promise((resolve) => {
+            await new Promise(resolve => {
               retryTimeoutRef.current = setTimeout(resolve, delay);
             });
           }
