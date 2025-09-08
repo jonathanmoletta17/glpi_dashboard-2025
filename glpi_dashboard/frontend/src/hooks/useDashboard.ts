@@ -150,16 +150,16 @@ export const useDashboard = (initialFilters: FilterParams = {}): UseDashboardRet
           })(),
         ]);
 
-        console.log('✅ useDashboard - Todas as chamadas paralelas concluídas');
+        // console.log('✅ useDashboard - Todas as chamadas paralelas concluídas');
 
         // Performance metrics tracking removed for now
 
-        console.log('🔍 useDashboard - metricsResult recebido:', metricsResult);
-        console.log('🔍 useDashboard - metricsResult.niveis:', metricsResult?.niveis);
+        // console.log('🔍 useDashboard - metricsResult recebido:', metricsResult);
+        // console.log('🔍 useDashboard - metricsResult.niveis:', metricsResult?.niveis);
 
         if (metricsResult) {
           // Debug logs para investigar o problema do ranking
-          console.log('🔍 useDashboard - technicianRankingResult da API:', technicianRankingResult);
+          // console.log('🔍 useDashboard - technicianRankingResult da API:', technicianRankingResult);
           console.log(
             '🔍 useDashboard - technicianRankingResult length:',
             technicianRankingResult?.length
@@ -181,8 +181,8 @@ export const useDashboard = (initialFilters: FilterParams = {}): UseDashboardRet
             combinedData.technicianRanking
           );
 
-          console.log('✅ useDashboard - Definindo dados combinados no estado:', combinedData);
-          console.log('✅ useDashboard - combinedData.niveis:', combinedData.niveis);
+          // console.log('✅ useDashboard - Definindo dados combinados no estado:', combinedData);
+          // console.log('✅ useDashboard - combinedData.niveis:', combinedData.niveis);
           setData(combinedData);
           setError(null);
         } else {

@@ -238,13 +238,11 @@ export const apiService = {
       cacheKey,
       async () => {
         const startTime = Date.now();
-        console.log('🔍 Buscando status do sistema');
 
         const response = await api.get<ApiResponse<SystemStatus>>('/api/status');
 
         // Monitora performance
         const responseTime = Date.now() - startTime;
-        console.log(`⏱️ Status do sistema obtido em ${responseTime}ms`);
         unifiedCache.recordRequestTime('systemStatus', cacheKey, responseTime);
 
         if (response.data.success && response.data.data) {
@@ -308,7 +306,7 @@ export const apiService = {
     // Verificar cache primeiro
     const cachedData = unifiedCache.get('technicianRanking', cacheParams);
     if (cachedData) {
-      console.log('📦 Retornando dados do cache para ranking de técnicos');
+      // console.log('📦 Retornando dados do cache para ranking de técnicos');
       return cachedData;
     }
 
@@ -329,7 +327,7 @@ export const apiService = {
         }
       }
 
-      console.log('🔍 Buscando ranking de técnicos:', url);
+      // console.log('🔍 Buscando ranking de técnicos:', url);
 
       // Usar timeout maior para ranking (5 minutos para casos complexos)
       const timeoutConfig = { timeout: 300000 }; // 5 minutos para ranking
@@ -345,10 +343,10 @@ export const apiService = {
       unifiedCache.recordRequestTime('technicianRanking', cacheKey, responseTime);
 
       // Debug logs para investigar o problema do ranking
-      console.log('🔍 getTechnicianRanking - response completo:', response);
-      console.log('🔍 getTechnicianRanking - response.data:', response.data);
-      console.log('🔍 getTechnicianRanking - response.data.success:', response.data.success);
-      console.log('🔍 getTechnicianRanking - response.data.data:', response.data.data);
+      // console.log('🔍 getTechnicianRanking - response completo:', response);
+      // console.log('🔍 getTechnicianRanking - response.data:', response.data);
+      // console.log('🔍 getTechnicianRanking - response.data.success:', response.data.success);
+      // console.log('🔍 getTechnicianRanking - response.data.data:', response.data.data);
       console.log(
         '🔍 getTechnicianRanking - response.data.data length:',
         response.data.data?.length
@@ -358,8 +356,8 @@ export const apiService = {
         const data = response.data.data;
         // Armazenar no cache
         unifiedCache.set('technicianRanking', cacheParams, data);
-        console.log('✅ Ranking de técnicos obtido com sucesso:', data.length, 'técnicos');
-        console.log('🔍 getTechnicianRanking - primeiro técnico dos dados:', data[0]);
+        // console.log('✅ Ranking de técnicos obtido com sucesso:', data.length, 'técnicos');
+        // console.log('🔍 getTechnicianRanking - primeiro técnico dos dados:', data[0]);
         return data;
       } else {
         console.error('API returned unsuccessful response:', response.data);
@@ -379,7 +377,7 @@ export const apiService = {
     // Verificar cache primeiro
     const cachedData = unifiedCache.get('newTickets', cacheParams);
     if (cachedData) {
-      console.log('📦 Retornando dados do cache para novos tickets');
+      // console.log('📦 Retornando dados do cache para novos tickets');
       return cachedData;
     }
 
@@ -460,7 +458,7 @@ export const apiService = {
     // Verificar cache primeiro
     const cachedData = unifiedCache.get('search', cacheParams);
     if (cachedData) {
-      console.log('📦 Retornando dados do cache para busca');
+      // console.log('📦 Retornando dados do cache para busca');
       return cachedData;
     }
 
@@ -511,7 +509,7 @@ export const apiService = {
 
       if (response.data.success && response.data.data) {
         const data = response.data.data;
-        console.log('✅ Detalhes do ticket obtidos com sucesso:', ticketId);
+        // console.log('✅ Detalhes do ticket obtidos com sucesso:', ticketId);
         return data;
       } else {
         console.error('API returned unsuccessful response for ticket:', ticketId, response.data);
@@ -590,9 +588,7 @@ export const apiService = {
 
   // Clear all caches
   clearAllCaches(): void {
-    console.log('🧹 Limpando todos os caches...');
     unifiedCache.clearAll();
-    console.log('✅ Todos os caches foram limpos');
   },
 };
 
@@ -663,9 +659,9 @@ export const fetchDashboardMetrics = async (
 
     // Processar dateRange se presente
     if (filters.dateRange && filters.dateRange.startDate && filters.dateRange.endDate) {
-      console.log('📅 Processando dateRange:', filters.dateRange);
-      console.log('📅 Start date:', filters.dateRange.startDate);
-      console.log('📅 End date:', filters.dateRange.endDate);
+      // console.log('📅 Processando dateRange:', filters.dateRange);
+      // console.log('📅 Start date:', filters.dateRange.startDate);
+      // console.log('📅 End date:', filters.dateRange.endDate);
       queryParams.append('start_date', filters.dateRange.startDate);
       queryParams.append('end_date', filters.dateRange.endDate);
     } else {
@@ -687,9 +683,9 @@ export const fetchDashboardMetrics = async (
 
     url = queryParams.toString() ? `/api/metrics?${queryParams.toString()}` : `/api/metrics`;
 
-    console.log('🔍 Filtros originais:', filters);
-    console.log('🔍 Query params construídos:', queryParams.toString());
-    console.log('🔍 Fazendo requisição para:', url);
+    // console.log('🔍 Filtros originais:', filters);
+    // console.log('🔍 Query params construídos:', queryParams.toString());
+    // console.log('🔍 Fazendo requisição para:', url);
     console.log('🌐 URL final da requisição:', url);
 
     const startTime = performance.now();
@@ -702,7 +698,7 @@ export const fetchDashboardMetrics = async (
     const responseTime = endTime - startTime;
 
     const result: ApiResult<DashboardMetrics> = response.data;
-    console.log('Resposta da API recebida:', result);
+    // Debug: console.log('Resposta da API recebida:', result);
 
     // Log de performance
     const perfMetrics: PerformanceMetrics = {
@@ -711,7 +707,7 @@ export const fetchDashboardMetrics = async (
       timestamp: new Date(),
       endpoint: '/api/metrics',
     };
-    console.log('Métricas de performance:', perfMetrics);
+    // Debug: console.log('Métricas de performance:', perfMetrics);
 
     // Verificar se a resposta é um erro
     if (isApiError(result)) {
@@ -721,13 +717,13 @@ export const fetchDashboardMetrics = async (
 
     // Verificar se é uma resposta de sucesso
     if (isApiResponse(result)) {
-      console.log('🔍 API - result.data antes da transformação:', result.data);
-      console.log('🔍 API - result.data.niveis:', result.data?.niveis);
+      // console.log('🔍 API - result.data antes da transformação:', result.data);
+      // console.log('🔍 API - result.data.niveis:', result.data?.niveis);
 
       // Processar dados para garantir estrutura consistente
       const processedData = transformLegacyData(result.data);
-      console.log('🔍 API - Dados processados após transformação:', processedData);
-      console.log('🔍 API - processedData.niveis:', processedData?.niveis);
+      // console.log('🔍 API - Dados processados após transformação:', processedData);
+      // console.log('🔍 API - processedData.niveis:', processedData?.niveis);
 
       return processedData;
     }

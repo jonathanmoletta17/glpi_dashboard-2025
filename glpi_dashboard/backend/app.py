@@ -19,6 +19,7 @@ parent_dir = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 sys.path.insert(0, parent_dir)
 
 from api.routes import api_bp
+from api.hybrid_routes import hybrid_bp
 
 from config.settings import active_config
 from utils.observability_middleware import setup_observability
@@ -166,6 +167,7 @@ def create_app(config=None) -> Flask:
 
     # Registra blueprints
     app.register_blueprint(api_bp, url_prefix="/api")
+    app.register_blueprint(hybrid_bp)
 
     # Log configuração completa
     system_logger.log_operation_end(

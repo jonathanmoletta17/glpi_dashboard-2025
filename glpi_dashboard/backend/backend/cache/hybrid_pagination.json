@@ -1,0 +1,1398 @@
+{
+  "technicians": {
+    "tech_001": {
+      "name": "João Silva",
+      "history": [
+        {
+          "timestamp": 1757179055.4896011,
+          "range_used": "0-1500",
+          "ticket_count": 150,
+          "fallback_triggered": false
+        },
+        {
+          "timestamp": 1757179055.5908394,
+          "range_used": "0-1500",
+          "ticket_count": 200,
+          "fallback_triggered": false
+        },
+        {
+          "timestamp": 1757179055.6920767,
+          "range_used": "0-500",
+          "ticket_count": 180,
+          "fallback_triggered": false
+        }
+      ],
+      "last_updated": 1757179055.6920767,
+      "last_range": "0-500",
+      "last_count": 180,
+      "fallback_triggered": false,
+      "optimal_range": "0-500"
+    },
+    "tech_002": {
+      "name": "Maria Santos",
+      "history": [
+        {
+          "timestamp": 1757179055.7938364,
+          "range_used": "0-1500",
+          "ticket_count": 300,
+          "fallback_triggered": false
+        },
+        {
+          "timestamp": 1757179055.8962848,
+          "range_used": "0-1500",
+          "ticket_count": 450,
+          "fallback_triggered": false
+        },
+        {
+          "timestamp": 1757179055.9976404,
+          "range_used": "0-500",
+          "ticket_count": 420,
+          "fallback_triggered": false
+        }
+      ],
+      "last_updated": 1757179055.9976404,
+      "last_range": "0-500",
+      "last_count": 420,
+      "fallback_triggered": false,
+      "optimal_range": "0-500"
+    },
+    "tech_003": {
+      "name": "Pedro Costa",
+      "history": [
+        {
+          "timestamp": 1757179056.1016448,
+          "range_used": "0-1500",
+          "ticket_count": 800,
+          "fallback_triggered": false
+        },
+        {
+          "timestamp": 1757179056.2049654,
+          "range_used": "0-1500",
+          "ticket_count": 950,
+          "fallback_triggered": false
+        },
+        {
+          "timestamp": 1757179056.3068175,
+          "range_used": "0-750",
+          "ticket_count": 1100,
+          "fallback_triggered": true
+        }
+      ],
+      "last_updated": 1757179056.3068175,
+      "last_range": "0-750",
+      "last_count": 1100,
+      "fallback_triggered": true,
+      "optimal_range": "0-1500"
+    },
+    "tech_004": {
+      "name": "Ana Oliveira",
+      "history": [
+        {
+          "timestamp": 1757179056.411723,
+          "range_used": "0-1500",
+          "ticket_count": 1200,
+          "fallback_triggered": false
+        },
+        {
+          "timestamp": 1757179056.5139935,
+          "range_used": "0-1500",
+          "ticket_count": 1350,
+          "fallback_triggered": false
+        },
+        {
+          "timestamp": 1757179056.6161642,
+          "range_used": "0-2250",
+          "ticket_count": 1400,
+          "fallback_triggered": true
+        }
+      ],
+      "last_updated": 1757179056.6161642,
+      "last_range": "0-2250",
+      "last_count": 1400,
+      "fallback_triggered": true,
+      "optimal_range": "0-1500"
+    },
+    "tech_005": {
+      "name": "Carlos Ferreira",
+      "history": [
+        {
+          "timestamp": 1757179056.7176702,
+          "range_used": "0-2250",
+          "ticket_count": 2100,
+          "fallback_triggered": true
+        },
+        {
+          "timestamp": 1757179056.8190653,
+          "range_used": "0-2250",
+          "ticket_count": 2300,
+          "fallback_triggered": true
+        },
+        {
+          "timestamp": 1757179056.9208705,
+          "range_used": "0-2250",
+          "ticket_count": 2500,
+          "fallback_triggered": true
+        }
+      ],
+      "last_updated": 1757179056.9208705,
+      "last_range": "0-2250",
+      "last_count": 2500,
+      "fallback_triggered": true,
+      "optimal_range": "0-3000"
+    },
+    "anderson_123": {
+      "name": "Anderson Silva",
+      "history": [
+        {
+          "timestamp": 1757179057.0225973,
+          "range_used": "0-3000",
+          "ticket_count": 2650,
+          "fallback_triggered": false
+        },
+        {
+          "timestamp": 1757179057.1243322,
+          "range_used": "0-2250",
+          "ticket_count": 2700,
+          "fallback_triggered": true
+        },
+        {
+          "timestamp": 1757179057.2262073,
+          "range_used": "0-4500",
+          "ticket_count": 2750,
+          "fallback_triggered": true
+        }
+      ],
+      "last_updated": 1757179057.2262073,
+      "last_range": "0-4500",
+      "last_count": 2750,
+      "fallback_triggered": true,
+      "optimal_range": "0-3000"
+    },
+    "tech_006": {
+      "name": "Roberto Lima",
+      "history": [
+        {
+          "timestamp": 1757179057.3281772,
+          "range_used": "0-1500",
+          "ticket_count": 1100,
+          "fallback_triggered": false
+        },
+        {
+          "timestamp": 1757179057.4307067,
+          "range_used": "0-1500",
+          "ticket_count": 1250,
+          "fallback_triggered": false
+        },
+        {
+          "timestamp": 1757179057.5351949,
+          "range_used": "0-1500",
+          "ticket_count": 1300,
+          "fallback_triggered": false
+        }
+      ],
+      "last_updated": 1757179057.5351949,
+      "last_range": "0-1500",
+      "last_count": 1300,
+      "fallback_triggered": false,
+      "optimal_range": "0-1500"
+    },
+    "tech_007": {
+      "name": "Fernanda Souza",
+      "history": [
+        {
+          "timestamp": 1757179057.6382902,
+          "range_used": "0-1500",
+          "ticket_count": 1050,
+          "fallback_triggered": false
+        },
+        {
+          "timestamp": 1757179057.7410252,
+          "range_used": "0-1500",
+          "ticket_count": 1150,
+          "fallback_triggered": false
+        },
+        {
+          "timestamp": 1757179057.8463004,
+          "range_used": "0-1500",
+          "ticket_count": 1200,
+          "fallback_triggered": false
+        }
+      ],
+      "last_updated": 1757179057.8463004,
+      "last_range": "0-1500",
+      "last_count": 1200,
+      "fallback_triggered": false,
+      "optimal_range": "0-1500"
+    },
+    "tech_008": {
+      "name": "Lucas Pereira",
+      "history": [
+        {
+          "timestamp": 1757179057.951529,
+          "range_used": "0-1500",
+          "ticket_count": 1300,
+          "fallback_triggered": false
+        },
+        {
+          "timestamp": 1757179058.0573237,
+          "range_used": "0-2250",
+          "ticket_count": 1400,
+          "fallback_triggered": true
+        },
+        {
+          "timestamp": 1757179058.1623335,
+          "range_used": "0-2250",
+          "ticket_count": 1500,
+          "fallback_triggered": true
+        }
+      ],
+      "last_updated": 1757179058.1623335,
+      "last_range": "0-2250",
+      "last_count": 1500,
+      "fallback_triggered": true,
+      "optimal_range": "0-1500"
+    },
+    "tech_009": {
+      "name": "Juliana Alves",
+      "history": [
+        {
+          "timestamp": 1757179058.2675486,
+          "range_used": "0-1500",
+          "ticket_count": 1000,
+          "fallback_triggered": false
+        },
+        {
+          "timestamp": 1757179058.369395,
+          "range_used": "0-1500",
+          "ticket_count": 1100,
+          "fallback_triggered": false
+        },
+        {
+          "timestamp": 1757179058.471119,
+          "range_used": "0-1500",
+          "ticket_count": 1150,
+          "fallback_triggered": false
+        }
+      ],
+      "last_updated": 1757179058.471119,
+      "last_range": "0-1500",
+      "last_count": 1150,
+      "fallback_triggered": false,
+      "optimal_range": "0-1500"
+    },
+    "252": {
+      "name": "Alessandro Carbonera Vieira",
+      "history": [
+        {
+          "timestamp": 1757182293.6395545,
+          "range_used": "0-1500",
+          "ticket_count": 568,
+          "fallback_triggered": false
+        },
+        {
+          "timestamp": 1757183242.3181522,
+          "range_used": "0-1500",
+          "ticket_count": 568,
+          "fallback_triggered": false
+        }
+      ],
+      "last_updated": 1757183242.3181522,
+      "last_range": "0-1500",
+      "last_count": 568,
+      "fallback_triggered": false,
+      "optimal_range": "0-500"
+    },
+    "1291": {
+      "name": "Gabriel Silva Machado",
+      "history": [
+        {
+          "timestamp": 1757185580.0052533,
+          "range_used": "0-500",
+          "ticket_count": 263,
+          "fallback_triggered": false
+        },
+        {
+          "timestamp": 1757186477.606037,
+          "range_used": "0-500",
+          "ticket_count": 263,
+          "fallback_triggered": false
+        },
+        {
+          "timestamp": 1757187384.0193202,
+          "range_used": "0-500",
+          "ticket_count": 263,
+          "fallback_triggered": false
+        },
+        {
+          "timestamp": 1757188031.8227713,
+          "range_used": "0-500",
+          "ticket_count": 263,
+          "fallback_triggered": false
+        },
+        {
+          "timestamp": 1757188861.85059,
+          "range_used": "0-500",
+          "ticket_count": 263,
+          "fallback_triggered": false
+        },
+        {
+          "timestamp": 1757189063.0097644,
+          "range_used": "0-500",
+          "ticket_count": 263,
+          "fallback_triggered": false
+        },
+        {
+          "timestamp": 1757189282.1541202,
+          "range_used": "0-500",
+          "ticket_count": 263,
+          "fallback_triggered": false
+        },
+        {
+          "timestamp": 1757189293.3951435,
+          "range_used": "0-500",
+          "ticket_count": 263,
+          "fallback_triggered": false
+        },
+        {
+          "timestamp": 1757189577.8193212,
+          "range_used": "0-500",
+          "ticket_count": 263,
+          "fallback_triggered": false
+        },
+        {
+          "timestamp": 1757189661.0314562,
+          "range_used": "0-500",
+          "ticket_count": 263,
+          "fallback_triggered": false
+        }
+      ],
+      "last_updated": 1757189661.0314562,
+      "last_range": "0-500",
+      "last_count": 263,
+      "fallback_triggered": false,
+      "optimal_range": "0-500"
+    },
+    "721": {
+      "name": "Thales Vinicius Paz Leite",
+      "history": [
+        {
+          "timestamp": 1757182298.2319288,
+          "range_used": "0-1500",
+          "ticket_count": 570,
+          "fallback_triggered": false
+        },
+        {
+          "timestamp": 1757183242.5986419,
+          "range_used": "0-1500",
+          "ticket_count": 570,
+          "fallback_triggered": false
+        }
+      ],
+      "last_updated": 1757183242.5986419,
+      "last_range": "0-1500",
+      "last_count": 570,
+      "fallback_triggered": false,
+      "optimal_range": "0-500"
+    },
+    "1331": {
+      "name": "Luciano Marcelino da Silva",
+      "history": [
+        {
+          "timestamp": 1757185581.2659419,
+          "range_used": "0-500",
+          "ticket_count": 133,
+          "fallback_triggered": false
+        },
+        {
+          "timestamp": 1757186481.6650362,
+          "range_used": "0-500",
+          "ticket_count": 133,
+          "fallback_triggered": false
+        },
+        {
+          "timestamp": 1757187382.4376116,
+          "range_used": "0-500",
+          "ticket_count": 133,
+          "fallback_triggered": false
+        },
+        {
+          "timestamp": 1757188034.6187437,
+          "range_used": "0-500",
+          "ticket_count": 133,
+          "fallback_triggered": false
+        },
+        {
+          "timestamp": 1757188867.1956403,
+          "range_used": "0-500",
+          "ticket_count": 133,
+          "fallback_triggered": false
+        },
+        {
+          "timestamp": 1757189060.2308354,
+          "range_used": "0-500",
+          "ticket_count": 133,
+          "fallback_triggered": false
+        },
+        {
+          "timestamp": 1757189282.9987917,
+          "range_used": "0-500",
+          "ticket_count": 133,
+          "fallback_triggered": false
+        },
+        {
+          "timestamp": 1757189296.6515958,
+          "range_used": "0-500",
+          "ticket_count": 133,
+          "fallback_triggered": false
+        },
+        {
+          "timestamp": 1757189578.6882768,
+          "range_used": "0-500",
+          "ticket_count": 133,
+          "fallback_triggered": false
+        },
+        {
+          "timestamp": 1757189662.6322954,
+          "range_used": "0-500",
+          "ticket_count": 133,
+          "fallback_triggered": false
+        }
+      ],
+      "last_updated": 1757189662.6322954,
+      "last_range": "0-500",
+      "last_count": 133,
+      "fallback_triggered": false,
+      "optimal_range": "0-500"
+    },
+    "60": {
+      "name": "Pablo Hebling Guimaraes",
+      "history": [
+        {
+          "timestamp": 1757185574.0870912,
+          "range_used": "0-1500",
+          "ticket_count": 1330,
+          "fallback_triggered": false
+        },
+        {
+          "timestamp": 1757186474.1861267,
+          "range_used": "0-1500",
+          "ticket_count": 1330,
+          "fallback_triggered": false
+        },
+        {
+          "timestamp": 1757187377.4642491,
+          "range_used": "0-1500",
+          "ticket_count": 1330,
+          "fallback_triggered": false
+        },
+        {
+          "timestamp": 1757188026.2374554,
+          "range_used": "0-1500",
+          "ticket_count": 1330,
+          "fallback_triggered": false
+        },
+        {
+          "timestamp": 1757188857.4760048,
+          "range_used": "0-3000",
+          "ticket_count": 1330,
+          "fallback_triggered": false
+        },
+        {
+          "timestamp": 1757189056.5879786,
+          "range_used": "0-3000",
+          "ticket_count": 1330,
+          "fallback_triggered": false
+        },
+        {
+          "timestamp": 1757189278.2793021,
+          "range_used": "0-3000",
+          "ticket_count": 1330,
+          "fallback_triggered": false
+        },
+        {
+          "timestamp": 1757189289.03506,
+          "range_used": "0-3000",
+          "ticket_count": 1330,
+          "fallback_triggered": false
+        },
+        {
+          "timestamp": 1757189582.5758796,
+          "range_used": "0-3000",
+          "ticket_count": 1330,
+          "fallback_triggered": false
+        },
+        {
+          "timestamp": 1757189657.02021,
+          "range_used": "0-3000",
+          "ticket_count": 1330,
+          "fallback_triggered": false
+        }
+      ],
+      "last_updated": 1757189657.02021,
+      "last_range": "0-3000",
+      "last_count": 1330,
+      "fallback_triggered": false,
+      "optimal_range": "0-1500"
+    },
+    "1088": {
+      "name": "Luciano de Araujo Silva",
+      "history": [
+        {
+          "timestamp": 1757185581.2659419,
+          "range_used": "0-500",
+          "ticket_count": 50,
+          "fallback_triggered": false
+        },
+        {
+          "timestamp": 1757186480.529409,
+          "range_used": "0-500",
+          "ticket_count": 50,
+          "fallback_triggered": false
+        },
+        {
+          "timestamp": 1757187383.3390064,
+          "range_used": "0-500",
+          "ticket_count": 50,
+          "fallback_triggered": false
+        },
+        {
+          "timestamp": 1757188036.0022993,
+          "range_used": "0-500",
+          "ticket_count": 50,
+          "fallback_triggered": false
+        },
+        {
+          "timestamp": 1757188867.796979,
+          "range_used": "0-500",
+          "ticket_count": 50,
+          "fallback_triggered": false
+        },
+        {
+          "timestamp": 1757189060.8710196,
+          "range_used": "0-500",
+          "ticket_count": 50,
+          "fallback_triggered": false
+        },
+        {
+          "timestamp": 1757189283.6571171,
+          "range_used": "0-500",
+          "ticket_count": 50,
+          "fallback_triggered": false
+        },
+        {
+          "timestamp": 1757189297.1450171,
+          "range_used": "0-500",
+          "ticket_count": 50,
+          "fallback_triggered": false
+        },
+        {
+          "timestamp": 1757189584.2552676,
+          "range_used": "0-500",
+          "ticket_count": 50,
+          "fallback_triggered": false
+        },
+        {
+          "timestamp": 1757189661.804193,
+          "range_used": "0-500",
+          "ticket_count": 50,
+          "fallback_triggered": false
+        }
+      ],
+      "last_updated": 1757189661.804193,
+      "last_range": "0-500",
+      "last_count": 50,
+      "fallback_triggered": false,
+      "optimal_range": "0-500"
+    },
+    "1404": {
+      "name": "Gabriel Andrade da Conceicao",
+      "history": [
+        {
+          "timestamp": 1757185580.891979,
+          "range_used": "0-500",
+          "ticket_count": 62,
+          "fallback_triggered": false
+        },
+        {
+          "timestamp": 1757186478.3598015,
+          "range_used": "0-500",
+          "ticket_count": 62,
+          "fallback_triggered": false
+        },
+        {
+          "timestamp": 1757187382.8718965,
+          "range_used": "0-500",
+          "ticket_count": 62,
+          "fallback_triggered": false
+        },
+        {
+          "timestamp": 1757188035.538719,
+          "range_used": "0-500",
+          "ticket_count": 62,
+          "fallback_triggered": false
+        },
+        {
+          "timestamp": 1757188868.278115,
+          "range_used": "0-500",
+          "ticket_count": 62,
+          "fallback_triggered": false
+        },
+        {
+          "timestamp": 1757189061.2845008,
+          "range_used": "0-500",
+          "ticket_count": 62,
+          "fallback_triggered": false
+        },
+        {
+          "timestamp": 1757189282.9883847,
+          "range_used": "0-500",
+          "ticket_count": 62,
+          "fallback_triggered": false
+        },
+        {
+          "timestamp": 1757189296.8471994,
+          "range_used": "0-500",
+          "ticket_count": 62,
+          "fallback_triggered": false
+        },
+        {
+          "timestamp": 1757189584.377673,
+          "range_used": "0-500",
+          "ticket_count": 62,
+          "fallback_triggered": false
+        },
+        {
+          "timestamp": 1757189661.2397923,
+          "range_used": "0-500",
+          "ticket_count": 62,
+          "fallback_triggered": false
+        }
+      ],
+      "last_updated": 1757189661.2397923,
+      "last_range": "0-500",
+      "last_count": 62,
+      "fallback_triggered": false,
+      "optimal_range": "0-500"
+    },
+    "1032": {
+      "name": "Jonathan Nascimento Moletta",
+      "history": [
+        {
+          "timestamp": 1757182300.4883118,
+          "range_used": "0-1500",
+          "ticket_count": 582,
+          "fallback_triggered": false
+        },
+        {
+          "timestamp": 1757183239.9259763,
+          "range_used": "0-1500",
+          "ticket_count": 582,
+          "fallback_triggered": false
+        }
+      ],
+      "last_updated": 1757183239.9259763,
+      "last_range": "0-1500",
+      "last_count": 582,
+      "fallback_triggered": false,
+      "optimal_range": "0-500"
+    },
+    "10": {
+      "name": "Wagner Mengue",
+      "history": [
+        {
+          "timestamp": 1757185581.6572707,
+          "range_used": "0-500",
+          "ticket_count": 9,
+          "fallback_triggered": false
+        },
+        {
+          "timestamp": 1757186482.2152715,
+          "range_used": "0-500",
+          "ticket_count": 9,
+          "fallback_triggered": false
+        },
+        {
+          "timestamp": 1757187384.388848,
+          "range_used": "0-500",
+          "ticket_count": 9,
+          "fallback_triggered": false
+        },
+        {
+          "timestamp": 1757188036.256906,
+          "range_used": "0-500",
+          "ticket_count": 9,
+          "fallback_triggered": false
+        },
+        {
+          "timestamp": 1757188868.9256253,
+          "range_used": "0-500",
+          "ticket_count": 9,
+          "fallback_triggered": false
+        },
+        {
+          "timestamp": 1757189062.059263,
+          "range_used": "0-500",
+          "ticket_count": 9,
+          "fallback_triggered": false
+        },
+        {
+          "timestamp": 1757189283.2375386,
+          "range_used": "0-500",
+          "ticket_count": 9,
+          "fallback_triggered": false
+        },
+        {
+          "timestamp": 1757189297.2714028,
+          "range_used": "0-500",
+          "ticket_count": 9,
+          "fallback_triggered": false
+        },
+        {
+          "timestamp": 1757189583.498542,
+          "range_used": "0-500",
+          "ticket_count": 9,
+          "fallback_triggered": false
+        },
+        {
+          "timestamp": 1757189662.188947,
+          "range_used": "0-500",
+          "ticket_count": 9,
+          "fallback_triggered": false
+        }
+      ],
+      "last_updated": 1757189662.188947,
+      "last_range": "0-500",
+      "last_count": 9,
+      "fallback_triggered": false,
+      "optimal_range": "0-500"
+    },
+    "250": {
+      "name": "Alexandre Rovinski Almoarqueg",
+      "history": [
+        {
+          "timestamp": 1757185581.8855386,
+          "range_used": "0-500",
+          "ticket_count": 5,
+          "fallback_triggered": false
+        },
+        {
+          "timestamp": 1757186481.808083,
+          "range_used": "0-500",
+          "ticket_count": 5,
+          "fallback_triggered": false
+        },
+        {
+          "timestamp": 1757187384.1159043,
+          "range_used": "0-500",
+          "ticket_count": 5,
+          "fallback_triggered": false
+        },
+        {
+          "timestamp": 1757188037.0195417,
+          "range_used": "0-500",
+          "ticket_count": 5,
+          "fallback_triggered": false
+        },
+        {
+          "timestamp": 1757188870.3367465,
+          "range_used": "0-500",
+          "ticket_count": 5,
+          "fallback_triggered": false
+        },
+        {
+          "timestamp": 1757189062.2484329,
+          "range_used": "0-500",
+          "ticket_count": 5,
+          "fallback_triggered": false
+        },
+        {
+          "timestamp": 1757189284.0221117,
+          "range_used": "0-500",
+          "ticket_count": 5,
+          "fallback_triggered": false
+        },
+        {
+          "timestamp": 1757189297.7173765,
+          "range_used": "0-500",
+          "ticket_count": 5,
+          "fallback_triggered": false
+        },
+        {
+          "timestamp": 1757189584.627653,
+          "range_used": "0-500",
+          "ticket_count": 5,
+          "fallback_triggered": false
+        },
+        {
+          "timestamp": 1757189662.2375607,
+          "range_used": "0-500",
+          "ticket_count": 5,
+          "fallback_triggered": false
+        }
+      ],
+      "last_updated": 1757189662.2375607,
+      "last_range": "0-500",
+      "last_count": 5,
+      "fallback_triggered": false,
+      "optimal_range": "0-500"
+    },
+    "185": {
+      "name": "Edson Joel dos Santos Silva",
+      "history": [
+        {
+          "timestamp": 1757185580.4402423,
+          "range_used": "0-500",
+          "ticket_count": 251,
+          "fallback_triggered": false
+        },
+        {
+          "timestamp": 1757186482.2422311,
+          "range_used": "0-500",
+          "ticket_count": 251,
+          "fallback_triggered": false
+        },
+        {
+          "timestamp": 1757187382.9256408,
+          "range_used": "0-500",
+          "ticket_count": 251,
+          "fallback_triggered": false
+        },
+        {
+          "timestamp": 1757188038.1165807,
+          "range_used": "0-500",
+          "ticket_count": 251,
+          "fallback_triggered": false
+        },
+        {
+          "timestamp": 1757188870.4310715,
+          "range_used": "0-500",
+          "ticket_count": 251,
+          "fallback_triggered": false
+        },
+        {
+          "timestamp": 1757189059.6429899,
+          "range_used": "0-500",
+          "ticket_count": 251,
+          "fallback_triggered": false
+        },
+        {
+          "timestamp": 1757189282.6197171,
+          "range_used": "0-500",
+          "ticket_count": 251,
+          "fallback_triggered": false
+        },
+        {
+          "timestamp": 1757189296.6515958,
+          "range_used": "0-500",
+          "ticket_count": 251,
+          "fallback_triggered": false
+        },
+        {
+          "timestamp": 1757189583.0576024,
+          "range_used": "0-500",
+          "ticket_count": 251,
+          "fallback_triggered": false
+        },
+        {
+          "timestamp": 1757189660.7994244,
+          "range_used": "0-500",
+          "ticket_count": 251,
+          "fallback_triggered": false
+        }
+      ],
+      "last_updated": 1757189660.7994244,
+      "last_range": "0-500",
+      "last_count": 251,
+      "fallback_triggered": false,
+      "optimal_range": "0-500"
+    },
+    "1263": {
+      "name": "Nicolas Fernando Muniz Nunez",
+      "history": [
+        {
+          "timestamp": 1757185581.675057,
+          "range_used": "0-500",
+          "ticket_count": 27,
+          "fallback_triggered": false
+        },
+        {
+          "timestamp": 1757186480.6736856,
+          "range_used": "0-500",
+          "ticket_count": 27,
+          "fallback_triggered": false
+        },
+        {
+          "timestamp": 1757187383.603459,
+          "range_used": "0-500",
+          "ticket_count": 27,
+          "fallback_triggered": false
+        },
+        {
+          "timestamp": 1757188036.0814211,
+          "range_used": "0-500",
+          "ticket_count": 27,
+          "fallback_triggered": false
+        },
+        {
+          "timestamp": 1757188868.5943093,
+          "range_used": "0-500",
+          "ticket_count": 27,
+          "fallback_triggered": false
+        },
+        {
+          "timestamp": 1757189061.869972,
+          "range_used": "0-500",
+          "ticket_count": 27,
+          "fallback_triggered": false
+        },
+        {
+          "timestamp": 1757189284.2452693,
+          "range_used": "0-500",
+          "ticket_count": 27,
+          "fallback_triggered": false
+        },
+        {
+          "timestamp": 1757189297.2243526,
+          "range_used": "0-500",
+          "ticket_count": 27,
+          "fallback_triggered": false
+        },
+        {
+          "timestamp": 1757189581.2038226,
+          "range_used": "0-500",
+          "ticket_count": 27,
+          "fallback_triggered": false
+        },
+        {
+          "timestamp": 1757189661.5848148,
+          "range_used": "0-500",
+          "ticket_count": 27,
+          "fallback_triggered": false
+        }
+      ],
+      "last_updated": 1757189661.5848148,
+      "last_range": "0-500",
+      "last_count": 27,
+      "fallback_triggered": false,
+      "optimal_range": "0-500"
+    },
+    "53": {
+      "name": "Paulo César Pedó Nunes",
+      "history": [
+        {
+          "timestamp": 1757185581.674058,
+          "range_used": "0-500",
+          "ticket_count": 8,
+          "fallback_triggered": false
+        },
+        {
+          "timestamp": 1757186480.9295661,
+          "range_used": "0-500",
+          "ticket_count": 8,
+          "fallback_triggered": false
+        },
+        {
+          "timestamp": 1757187383.5575058,
+          "range_used": "0-500",
+          "ticket_count": 8,
+          "fallback_triggered": false
+        },
+        {
+          "timestamp": 1757188037.0295422,
+          "range_used": "0-500",
+          "ticket_count": 8,
+          "fallback_triggered": false
+        },
+        {
+          "timestamp": 1757188869.7271807,
+          "range_used": "0-500",
+          "ticket_count": 8,
+          "fallback_triggered": false
+        },
+        {
+          "timestamp": 1757189062.1022532,
+          "range_used": "0-500",
+          "ticket_count": 8,
+          "fallback_triggered": false
+        },
+        {
+          "timestamp": 1757189284.0857463,
+          "range_used": "0-500",
+          "ticket_count": 8,
+          "fallback_triggered": false
+        },
+        {
+          "timestamp": 1757189297.495185,
+          "range_used": "0-500",
+          "ticket_count": 8,
+          "fallback_triggered": false
+        },
+        {
+          "timestamp": 1757189583.9119074,
+          "range_used": "0-500",
+          "ticket_count": 8,
+          "fallback_triggered": false
+        },
+        {
+          "timestamp": 1757189662.010739,
+          "range_used": "0-500",
+          "ticket_count": 8,
+          "fallback_triggered": false
+        }
+      ],
+      "last_updated": 1757189662.010739,
+      "last_range": "0-500",
+      "last_count": 8,
+      "fallback_triggered": false,
+      "optimal_range": "0-500"
+    },
+    "1471": {
+      "name": "Joao Pedro Wilson Dias",
+      "history": [
+        {
+          "timestamp": 1757185582.0189486,
+          "range_used": "0-500",
+          "ticket_count": 1,
+          "fallback_triggered": false
+        },
+        {
+          "timestamp": 1757186481.4016628,
+          "range_used": "0-500",
+          "ticket_count": 1,
+          "fallback_triggered": false
+        },
+        {
+          "timestamp": 1757187384.5576205,
+          "range_used": "0-500",
+          "ticket_count": 1,
+          "fallback_triggered": false
+        },
+        {
+          "timestamp": 1757188037.8309054,
+          "range_used": "0-500",
+          "ticket_count": 1,
+          "fallback_triggered": false
+        },
+        {
+          "timestamp": 1757188870.3481839,
+          "range_used": "0-500",
+          "ticket_count": 1,
+          "fallback_triggered": false
+        },
+        {
+          "timestamp": 1757189062.42597,
+          "range_used": "0-500",
+          "ticket_count": 1,
+          "fallback_triggered": false
+        },
+        {
+          "timestamp": 1757189283.8582034,
+          "range_used": "0-500",
+          "ticket_count": 1,
+          "fallback_triggered": false
+        },
+        {
+          "timestamp": 1757189297.6692224,
+          "range_used": "0-500",
+          "ticket_count": 1,
+          "fallback_triggered": false
+        },
+        {
+          "timestamp": 1757189583.9668624,
+          "range_used": "0-500",
+          "ticket_count": 1,
+          "fallback_triggered": false
+        },
+        {
+          "timestamp": 1757189662.130016,
+          "range_used": "0-500",
+          "ticket_count": 1,
+          "fallback_triggered": false
+        }
+      ],
+      "last_updated": 1757189662.130016,
+      "last_range": "0-500",
+      "last_count": 1,
+      "fallback_triggered": false,
+      "optimal_range": "0-500"
+    },
+    "926": {
+      "name": "Leonardo Trojan Repiso Riela",
+      "history": [
+        {
+          "timestamp": 1757185581.3952231,
+          "range_used": "0-500",
+          "ticket_count": 424,
+          "fallback_triggered": false
+        },
+        {
+          "timestamp": 1757186480.197227,
+          "range_used": "0-500",
+          "ticket_count": 424,
+          "fallback_triggered": false
+        },
+        {
+          "timestamp": 1757187380.3985324,
+          "range_used": "0-500",
+          "ticket_count": 424,
+          "fallback_triggered": false
+        },
+        {
+          "timestamp": 1757188035.1367316,
+          "range_used": "0-500",
+          "ticket_count": 424,
+          "fallback_triggered": false
+        },
+        {
+          "timestamp": 1757188867.1834948,
+          "range_used": "0-500",
+          "ticket_count": 424,
+          "fallback_triggered": false
+        },
+        {
+          "timestamp": 1757189061.8396492,
+          "range_used": "0-500",
+          "ticket_count": 424,
+          "fallback_triggered": false
+        },
+        {
+          "timestamp": 1757189286.207205,
+          "range_used": "0-500",
+          "ticket_count": 424,
+          "fallback_triggered": false
+        },
+        {
+          "timestamp": 1757189296.558361,
+          "range_used": "0-500",
+          "ticket_count": 424,
+          "fallback_triggered": false
+        },
+        {
+          "timestamp": 1757189583.7469754,
+          "range_used": "0-500",
+          "ticket_count": 424,
+          "fallback_triggered": false
+        },
+        {
+          "timestamp": 1757189661.9267364,
+          "range_used": "0-500",
+          "ticket_count": 424,
+          "fallback_triggered": false
+        }
+      ],
+      "last_updated": 1757189661.9267364,
+      "last_range": "0-500",
+      "last_count": 424,
+      "fallback_triggered": false,
+      "optimal_range": "0-500"
+    },
+    "69": {
+      "name": "Miguelangelo Ferreira",
+      "history": [
+        {
+          "timestamp": 1757184787.101205,
+          "range_used": "0-1500",
+          "ticket_count": 1256,
+          "fallback_triggered": false
+        },
+        {
+          "timestamp": 1757185578.1946187,
+          "range_used": "0-1500",
+          "ticket_count": 1256,
+          "fallback_triggered": false
+        },
+        {
+          "timestamp": 1757186478.5778253,
+          "range_used": "0-1500",
+          "ticket_count": 1256,
+          "fallback_triggered": false
+        },
+        {
+          "timestamp": 1757187377.2914236,
+          "range_used": "0-1500",
+          "ticket_count": 1256,
+          "fallback_triggered": false
+        },
+        {
+          "timestamp": 1757188860.6543798,
+          "range_used": "0-3000",
+          "ticket_count": 1256,
+          "fallback_triggered": false
+        },
+        {
+          "timestamp": 1757189062.3991866,
+          "range_used": "0-3000",
+          "ticket_count": 1256,
+          "fallback_triggered": false
+        },
+        {
+          "timestamp": 1757189283.388274,
+          "range_used": "0-3000",
+          "ticket_count": 1256,
+          "fallback_triggered": false
+        },
+        {
+          "timestamp": 1757189296.022171,
+          "range_used": "0-3000",
+          "ticket_count": 1256,
+          "fallback_triggered": false
+        },
+        {
+          "timestamp": 1757189577.5865886,
+          "range_used": "0-3000",
+          "ticket_count": 1256,
+          "fallback_triggered": false
+        },
+        {
+          "timestamp": 1757189659.3495667,
+          "range_used": "0-3000",
+          "ticket_count": 1256,
+          "fallback_triggered": false
+        }
+      ],
+      "last_updated": 1757189659.3495667,
+      "last_range": "0-3000",
+      "last_count": 1256,
+      "fallback_triggered": false,
+      "optimal_range": "0-1500"
+    },
+    "696": {
+      "name": "Anderson da Silva Morim de Oliveira",
+      "history": [
+        {
+          "timestamp": 1757188860.5880768,
+          "range_used": "0-3000",
+          "ticket_count": 2707,
+          "fallback_triggered": false
+        },
+        {
+          "timestamp": 1757189054.4485035,
+          "range_used": "0-3000",
+          "ticket_count": 2707,
+          "fallback_triggered": false
+        },
+        {
+          "timestamp": 1757189277.0761728,
+          "range_used": "0-3000",
+          "ticket_count": 2707,
+          "fallback_triggered": false
+        },
+        {
+          "timestamp": 1757189296.2650344,
+          "range_used": "0-3000",
+          "ticket_count": 2707,
+          "fallback_triggered": false
+        },
+        {
+          "timestamp": 1757189576.9755003,
+          "range_used": "0-3000",
+          "ticket_count": 2707,
+          "fallback_triggered": false
+        },
+        {
+          "timestamp": 1757189655.4053931,
+          "range_used": "0-3000",
+          "ticket_count": 2707,
+          "fallback_triggered": false
+        }
+      ],
+      "last_updated": 1757189655.4053931,
+      "last_range": "0-3000",
+      "last_count": 2707,
+      "fallback_triggered": false,
+      "optimal_range": "0-3000"
+    },
+    "141": {
+      "name": "Jorge Antonio Vicente Júnior",
+      "history": [
+        {
+          "timestamp": 1757188865.4020429,
+          "range_used": "0-3000",
+          "ticket_count": 1779,
+          "fallback_triggered": false
+        },
+        {
+          "timestamp": 1757189052.6740983,
+          "range_used": "0-3000",
+          "ticket_count": 1779,
+          "fallback_triggered": false
+        },
+        {
+          "timestamp": 1757189276.2597942,
+          "range_used": "0-3000",
+          "ticket_count": 1779,
+          "fallback_triggered": false
+        },
+        {
+          "timestamp": 1757189289.6756997,
+          "range_used": "0-3000",
+          "ticket_count": 1779,
+          "fallback_triggered": false
+        },
+        {
+          "timestamp": 1757189580.9916406,
+          "range_used": "0-3000",
+          "ticket_count": 1779,
+          "fallback_triggered": false
+        },
+        {
+          "timestamp": 1757189658.723642,
+          "range_used": "0-3000",
+          "ticket_count": 1779,
+          "fallback_triggered": false
+        }
+      ],
+      "last_updated": 1757189658.723642,
+      "last_range": "0-3000",
+      "last_count": 1779,
+      "fallback_triggered": false,
+      "optimal_range": "0-1500"
+    },
+    "32": {
+      "name": "Silvio Godinho Valim",
+      "history": [
+        {
+          "timestamp": 1757189056.2537456,
+          "range_used": "0-3000",
+          "ticket_count": 1798,
+          "fallback_triggered": false
+        },
+        {
+          "timestamp": 1757189280.610787,
+          "range_used": "0-3000",
+          "ticket_count": 1798,
+          "fallback_triggered": false
+        },
+        {
+          "timestamp": 1757189292.1821275,
+          "range_used": "0-3000",
+          "ticket_count": 1798,
+          "fallback_triggered": false
+        },
+        {
+          "timestamp": 1757189586.0482507,
+          "range_used": "0-3000",
+          "ticket_count": 1798,
+          "fallback_triggered": false
+        },
+        {
+          "timestamp": 1757189655.7314613,
+          "range_used": "0-3000",
+          "ticket_count": 1798,
+          "fallback_triggered": false
+        }
+      ],
+      "last_updated": 1757189655.7314613,
+      "last_range": "0-3000",
+      "last_count": 1798,
+      "fallback_triggered": false,
+      "optimal_range": "0-1500"
+    }
+  },
+  "global_stats": {
+    "total_queries": 233,
+    "fallback_triggers": 9,
+    "cache_hits": 241,
+    "last_cleanup": 1757179055.4886076
+  }
+}

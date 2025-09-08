@@ -115,7 +115,7 @@ export const Header: React.FC<HeaderProps> = ({
         endDate: endStr,
         label: range?.label || 'Período personalizado',
       };
-      console.log('📅 Header - Enviando dateRange:', newDateRange);
+      // console.log('📅 Header - Enviando dateRange:', newDateRange);
       onDateRangeChange?.(newDateRange);
       setShowDatePicker(false);
 
@@ -132,7 +132,7 @@ export const Header: React.FC<HeaderProps> = ({
         endDate: customEndDate,
         label: 'Período personalizado',
       };
-      console.log('📅 Header - Enviando período personalizado:', customDateRange);
+      // console.log('📅 Header - Enviando período personalizado:', customDateRange);
       onDateRangeChange(customDateRange);
       setShowDatePicker(false);
       onNotification('Período Personalizado', 'Período customizado aplicado', 'success');

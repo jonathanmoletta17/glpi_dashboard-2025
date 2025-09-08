@@ -110,7 +110,7 @@ class SmartRefreshManager {
 
     this.activeRefreshers.set(refreshKey, intervalId);
 
-    console.log(`🔄 Smart refresh registrado: ${refreshKey} (${intervalMs / 1000}s)`);
+    // console.log(`🔄 Smart refresh registrado: ${refreshKey} (${intervalMs / 1000}s)`);
 
     // Retornar função de cleanup
     return () => this.unregisterRefresher(refreshKey);
@@ -123,20 +123,20 @@ class SmartRefreshManager {
   ): Promise<void> {
     // Verificar se auto-refresh está habilitado
     if (!this.isAutoRefreshEnabled()) {
-      console.log(`⏸️ Auto-refresh desabilitado para ${refreshKey}`);
+      // console.log(`⏸️ Auto-refresh desabilitado para ${refreshKey}`);
       return;
     }
 
     // Verificar se usuário está idle
     if (!this.isUserIdle(minIdleTimeMs)) {
-      console.log(`⏸️ Usuário ativo, pausando refresh de ${refreshKey}`);
+      // console.log(`⏸️ Usuário ativo, pausando refresh de ${refreshKey}`);
       return;
     }
 
     try {
-      console.log(`🔄 Executando smart refresh: ${refreshKey}`);
+      // console.log(`🔄 Executando smart refresh: ${refreshKey}`);
       await refreshFn();
-      console.log(`✅ Smart refresh concluído: ${refreshKey}`);
+      // console.log(`✅ Smart refresh concluído: ${refreshKey}`);
     } catch (error) {
       console.error(`❌ Erro no smart refresh ${refreshKey}:`, error);
     }
@@ -147,7 +147,7 @@ class SmartRefreshManager {
     if (intervalId) {
       clearInterval(intervalId);
       this.activeRefreshers.delete(refreshKey);
-      console.log(`🛑 Smart refresh removido: ${refreshKey}`);
+      // console.log(`🛑 Smart refresh removido: ${refreshKey}`);
     }
   }
 
@@ -157,12 +157,12 @@ class SmartRefreshManager {
 
   pauseAllRefreshers(): void {
     localStorage.setItem('autoRefreshEnabled', 'false');
-    console.log('⏸️ Todos os auto-refreshers pausados');
+    // console.log('⏸️ Todos os auto-refreshers pausados');
   }
 
   resumeAllRefreshers(): void {
     localStorage.setItem('autoRefreshEnabled', 'true');
-    console.log('▶️ Todos os auto-refreshers retomados');
+    // console.log('▶️ Todos os auto-refreshers retomados');
   }
 
   addInteractionListener(listener: () => void): () => void {

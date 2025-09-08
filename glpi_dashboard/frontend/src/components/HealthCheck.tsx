@@ -36,7 +36,7 @@ export const HealthCheck: React.FC<HealthCheckProps> = ({
     const startTime = performance.now();
 
     try {
-      console.log('🏥 HealthCheck - Verificando saúde da API...');
+      // console.log('🏥 HealthCheck - Verificando saúde da API...');
 
       const response = await apiService.healthCheck();
       const responseTime = performance.now() - startTime;
@@ -48,7 +48,7 @@ export const HealthCheck: React.FC<HealthCheckProps> = ({
         details: response,
       };
 
-      console.log(`✅ HealthCheck - API saudável (${responseTime.toFixed(2)}ms)`, response);
+      // console.log(`✅ HealthCheck - API saudável (${responseTime.toFixed(2)}ms)`, response);
       setHealthStatus(newStatus);
       onStatusChange?.(true, response);
     } catch (error) {
@@ -90,7 +90,7 @@ export const HealthCheck: React.FC<HealthCheckProps> = ({
   useEffect(() => {
     const handleVisibilityChange = () => {
       if (!document.hidden) {
-        console.log('🔄 HealthCheck - Aba voltou ao foco, verificando saúde da API...');
+        // console.log('🔄 HealthCheck - Aba voltou ao foco, verificando saúde da API...');
         performHealthCheck();
       }
     };

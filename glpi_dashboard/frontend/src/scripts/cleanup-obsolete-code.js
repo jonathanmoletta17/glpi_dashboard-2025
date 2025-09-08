@@ -134,24 +134,24 @@ function getAllFiles(dir, extensions) {
 
 // Função principal
 function main() {
-  console.log('🔍 Analisando código obsoleto...\n');
+  // console.log('🔍 Analisando código obsoleto...\n');
 
   const allIssues = [];
 
   // Debug: verificar caminhos
-  console.log('DEBUG - PROJECT_ROOT:', PROJECT_ROOT);
-  console.log('DEBUG - COMPONENTS_DIR:', COMPONENTS_DIR);
-  console.log('DEBUG - CSS_FILE:', CSS_FILE);
+  // // console.log('DEBUG - PROJECT_ROOT:', PROJECT_ROOT);
+  // // console.log('DEBUG - COMPONENTS_DIR:', COMPONENTS_DIR);
+  // // console.log('DEBUG - CSS_FILE:', CSS_FILE);
 
   // Analisar componentes
   const componentsDir = path.join(PROJECT_ROOT, 'components');
-  console.log('DEBUG - componentsDir:', componentsDir);
-  console.log('DEBUG - Diretório existe?', fs.existsSync(componentsDir));
+  // // console.log('DEBUG - componentsDir:', componentsDir);
+  // // console.log('DEBUG - Diretório existe?', fs.existsSync(componentsDir));
 
   const components = getAllFiles(componentsDir, ['.tsx', '.ts']);
 
-  console.log(`📁 Analisando ${components.length} componentes...`);
-  console.log('DEBUG - Componentes encontrados:', components);
+  // console.log(`📁 Analisando ${components.length} componentes...`);
+  // // console.log('DEBUG - Componentes encontrados:', components);
 
   components.forEach(componentPath => {
     const issues = analyzeFile(componentPath);
@@ -164,7 +164,7 @@ function main() {
   });
 
   // Analisar CSS
-  console.log('🎨 Analisando CSS...');
+  // console.log('🎨 Analisando CSS...');
   const cssIssues = analyzeCSS();
   if (cssIssues.length > 0) {
     allIssues.push({
@@ -174,38 +174,38 @@ function main() {
   }
 
   // Relatório
-  console.log('\n📊 RELATÓRIO DE ANÁLISE\n');
-  console.log('='.repeat(50));
+  // console.log('\n📊 RELATÓRIO DE ANÁLISE\n');
+  // console.log('='.repeat(50));
 
   if (allIssues.length === 0) {
-    console.log('✅ Nenhum problema encontrado! Código está limpo.');
+    // console.log('✅ Nenhum problema encontrado! Código está limpo.');
   } else {
     allIssues.forEach(({ file, issues }) => {
-      console.log(`\n📄 ${file}`);
-      console.log('-'.repeat(file.length + 3));
+      // console.log(`\n📄 ${file}`);
+      // console.log('-'.repeat(file.length + 3));
 
       issues.forEach((issue, index) => {
-        console.log(`\n${index + 1}. ${issue.type.toUpperCase()}`);
-        console.log(`   ${issue.message}`);
-        console.log(`   💡 Sugestões:`);
+        // console.log(`\n${index + 1}. ${issue.type.toUpperCase()}`);
+        // console.log(`   ${issue.message}`);
+        // console.log(`   💡 Sugestões:`);
         issue.suggestions.forEach(suggestion => {
-          console.log(`      - ${suggestion}`);
+          // console.log(`      - ${suggestion}`);
         });
       });
     });
 
-    console.log('\n' + '='.repeat(50));
-    console.log(`\n📈 RESUMO:`);
-    console.log(`   - ${allIssues.length} arquivo(s) com problemas`);
-    console.log(
+    // console.log('\n' + '='.repeat(50));
+    // console.log(`\n📈 RESUMO:`);
+    // console.log(`   - ${allIssues.length} arquivo(s) com problemas`);
+    // console.log(
       `   - ${allIssues.reduce((sum, { issues }) => sum + issues.length, 0)} problema(s) total`
     );
 
-    console.log('\n🛠️  PRÓXIMOS PASSOS:');
-    console.log('   1. Refatorar componentes usando design system');
-    console.log('   2. Remover classes CSS não utilizadas');
-    console.log('   3. Substituir espaçamentos hardcoded por tokens');
-    console.log('   4. Consolidar componentes duplicados');
+    // console.log('\n🛠️  PRÓXIMOS PASSOS:');
+    // console.log('   1. Refatorar componentes usando design system');
+    // console.log('   2. Remover classes CSS não utilizadas');
+    // console.log('   3. Substituir espaçamentos hardcoded por tokens');
+    // console.log('   4. Consolidar componentes duplicados');
   }
 }
 

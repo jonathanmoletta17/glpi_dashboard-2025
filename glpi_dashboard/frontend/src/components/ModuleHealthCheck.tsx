@@ -86,13 +86,13 @@ const ModuleHealthCheck: React.FC<ModuleHealthCheckProps> = ({
         onStatusChange({ healthy, modules: results });
       }
 
-      // Log para desenvolvimento
-      if (import.meta.env.MODE === 'development') {
-        console.log('🔍 Module Health Check:', {
-          healthy,
-          modules: results,
-        });
-      }
+      // Debug logs removidos para produção
+      // if (import.meta.env.MODE === 'development') {
+      //   console.log('🔍 Module Health Check:', {
+      //     healthy,
+      //     modules: results,
+      //   });
+      // }
     } catch (error) {
       console.error('Erro durante health check de módulos:', error);
       setIsHealthy(false);

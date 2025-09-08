@@ -72,11 +72,12 @@ httpClient.interceptors.request.use(
     const showApiCalls = getEnvVar('VITE_SHOW_API_CALLS') === 'true';
 
     if (showApiCalls || logLevel === 'debug') {
-      console.log(`🚀 ${config.method?.toUpperCase()} ${config.url}`, {
-        headers: config.headers,
-        params: config.params,
-        data: config.data,
-      });
+      // Debug logs removidos para produção
+      // console.log(`🚀 ${config.method?.toUpperCase()} ${config.url}`, {
+      //   headers: config.headers,
+      //   params: config.params,
+      //   data: config.data,
+      // });
     }
 
     return config;
@@ -94,14 +95,15 @@ httpClient.interceptors.response.use(
     const showApiCalls = getEnvVar('VITE_SHOW_API_CALLS') === 'true';
 
     if (showApiCalls || logLevel === 'debug') {
-      console.log(
-        `✅ ${response.config.method?.toUpperCase()} ${response.config.url} - ${response.status}`,
-        {
-          status: response.status,
-          statusText: response.statusText,
-          data: response.data,
-        }
-      );
+      // Debug logs removidos para produção
+      // console.log(
+      //   `✅ ${response.config.method?.toUpperCase()} ${response.config.url} - ${response.status}`,
+      //   {
+      //     status: response.status,
+      //     statusText: response.statusText,
+      //     data: response.data,
+      //   }
+      // );
     }
 
     return response;
@@ -170,10 +172,11 @@ async function retryRequest(error: AxiosError): Promise<AxiosResponse> {
 
   const delay = API_CONFIG.RETRY_DELAY * Math.pow(2, config.__retryCount - 1);
 
-  console.log(
-    `🔄 Retrying request (${config.__retryCount}/${API_CONFIG.RETRY_ATTEMPTS}) in ${delay}ms:`,
-    config.url
-  );
+  // Debug logs removidos para produção
+  // console.log(
+  //   `🔄 Retrying request (${config.__retryCount}/${API_CONFIG.RETRY_ATTEMPTS}) in ${delay}ms:`,
+  //   config.url
+  // );
 
   await new Promise(resolve => setTimeout(resolve, delay));
 

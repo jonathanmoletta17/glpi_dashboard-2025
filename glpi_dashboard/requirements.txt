@@ -20,7 +20,7 @@ uvicorn==0.24.0
 asgiref==3.7.2
 
 # Database support (optional)
-psycopg2-binary==2.9.7
+# psycopg2-binary==2.9.7  # Commented out - requires Visual C++ Build Tools
 
 # Development dependencies
 werkzeug==2.3.7

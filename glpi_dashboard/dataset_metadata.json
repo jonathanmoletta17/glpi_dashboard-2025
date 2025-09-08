@@ -1,0 +1,128 @@
+{
+  "dataset_info": {
+    "name": "GLPI Dashboard Dataset",
+    "version": "1.0",
+    "description": "Dataset completo do sistema GLPI com tickets, usuários, técnicos e solicitantes",
+    "created_at": "2025-09-06T17:06:58.896184",
+    "source": "GLPI API Extraction",
+    "total_records": 11307,
+    "encoding": "utf-8"
+  },
+  "tables": {
+    "tickets": {
+      "description": "Chamados/tickets do sistema GLPI",
+      "primary_key": "id",
+      "record_count": 10142,
+      "key_fields": [
+        "id",
+        "name",
+        "content",
+        "status_desc",
+        "priority_desc"
+      ],
+      "searchable_fields": [
+        "name",
+        "content",
+        "entities_id",
+        "status_desc",
+        "priority_desc"
+      ],
+      "date_fields": [
+        "date",
+        "date_creation",
+        "date_mod",
+        "closedate",
+        "solvedate"
+      ]
+    },
+    "technicians": {
+      "description": "Técnicos ativos do sistema GLPI",
+      "primary_key": "id",
+      "record_count": 19,
+      "key_fields": [
+        "id",
+        "nome_completo",
+        "name",
+        "grupo_principal"
+      ],
+      "searchable_fields": [
+        "nome_completo",
+        "name",
+        "comment",
+        "grupo_principal"
+      ],
+      "date_fields": [
+        "date_creation",
+        "date_mod",
+        "last_login"
+      ]
+    },
+    "requesters": {
+      "description": "Solicitantes/usuários do sistema GLPI",
+      "primary_key": "id",
+      "record_count": 600,
+      "key_fields": [
+        "id",
+        "nome_completo",
+        "name",
+        "setor"
+      ],
+      "searchable_fields": [
+        "nome_completo",
+        "name",
+        "comment",
+        "setor"
+      ],
+      "date_fields": [
+        "date_creation",
+        "date_mod"
+      ]
+    },
+    "users": {
+      "description": "Todos os usuários do sistema GLPI",
+      "primary_key": "id",
+      "record_count": 1165,
+      "key_fields": [
+        "id",
+        "nome_completo",
+        "name",
+        "status_ativo"
+      ],
+      "searchable_fields": [
+        "nome_completo",
+        "name",
+        "comment"
+      ],
+      "date_fields": [
+        "date_creation",
+        "date_mod",
+        "last_login"
+      ]
+    }
+  },
+  "relationships": {
+    "ticket_to_technician": "tickets.users_id_lastupdater -> technicians.id",
+    "ticket_to_requester": "tickets.users_id_recipient -> requesters.id",
+    "user_hierarchy": "users.entities_id defines organizational structure"
+  },
+  "business_rules": {
+    "status_mapping": {
+      "1": "Novo",
+      "2": "Em andamento (atribuído)",
+      "3": "Em andamento (planejado)",
+      "4": "Pendente",
+      "5": "Solucionado",
+      "6": "Fechado"
+    },
+    "priority_mapping": {
+      "1": "Muito baixa",
+      "2": "Baixa",
+      "3": "Média",
+      "4": "Alta",
+      "5": "Muito alta",
+      "6": "Crítica"
+    },
+    "active_technicians": "19 técnicos ativos identificados",
+    "data_quality": "Dados limpos e normalizados para consulta por IA"
+  }
+}

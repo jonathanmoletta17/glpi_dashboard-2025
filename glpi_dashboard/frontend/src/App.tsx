@@ -198,18 +198,19 @@ function App() {
                 n4: { novos: 0, progresso: 0, pendentes: 0, resolvidos: 0 },
               },
             };
-            console.log(
-              '🎯 App.tsx - Métricas sendo passadas para ModernDashboard:',
-              dashboardMetrics
-            );
-            console.log('🔍 App.tsx - Objeto metrics completo:', metrics);
-            console.log('🔍 App.tsx - technicianRanking sendo passado:', technicianRanking);
-            console.log('🔍 App.tsx - technicianRanking length:', technicianRanking?.length);
-            console.log('🔍 App.tsx - technicianRanking tipo:', typeof technicianRanking);
-            console.log(
-              '🔍 App.tsx - technicianRanking é array?',
-              Array.isArray(technicianRanking)
-            );
+            // Debug logs removidos para produção
+            // console.log(
+            //   '🎯 App.tsx - Métricas sendo passadas para ModernDashboard:',
+            //   dashboardMetrics
+            // );
+            // console.log('🔍 App.tsx - Objeto metrics completo:', metrics);
+            // console.log('🔍 App.tsx - technicianRanking sendo passado:', technicianRanking);
+            // console.log('🔍 App.tsx - technicianRanking length:', technicianRanking?.length);
+            // console.log('🔍 App.tsx - technicianRanking tipo:', typeof technicianRanking);
+            // console.log(
+            //   '🔍 App.tsx - technicianRanking é array?',
+            //   Array.isArray(technicianRanking)
+            // );
             return (
               <ModernDashboard
                 metrics={dashboardMetrics}

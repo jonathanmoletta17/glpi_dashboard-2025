@@ -28,9 +28,11 @@ class GLPIService:
             config_obj = active_config()
             if not hasattr(config_obj, "GLPI_URL") or not config_obj.GLPI_URL:
                 raise ValueError("GLPI_URL não está configurado")
-            if not hasattr(config_obj, "GLPI_APP_TOKEN") or not config_obj.GLPI_APP_TOKEN:
+            if (not hasattr(config_obj, "GLPI_APP_TOKEN") or
+                    not config_obj.GLPI_APP_TOKEN):
                 raise ValueError("GLPI_APP_TOKEN não está configurado")
-            if not hasattr(config_obj, "GLPI_USER_TOKEN") or not config_obj.GLPI_USER_TOKEN:
+            if (not hasattr(config_obj, "GLPI_USER_TOKEN") or
+                    not config_obj.GLPI_USER_TOKEN):
                 raise ValueError("GLPI_USER_TOKEN não está configurado")
 
             self.glpi_url = config_obj.GLPI_URL.rstrip("/")  # Remove trailing slash
@@ -40,11 +42,16 @@ class GLPIService:
 
             # Validar formato da URL
             if not self.glpi_url.startswith(("http://", "https://")):
-                raise ValueError(f"GLPI_URL deve começar com http:// ou https://, " f"recebido: {self.glpi_url}")
+                raise ValueError(
+                    f"GLPI_URL deve começar com http:// ou https://, "
+                    f"recebido: {self.glpi_url}"
+                )
 
             # Inicializar loggers com tratamento de erro
             try:
-                self.structured_logger = create_glpi_logger(getattr(config_obj, "LOG_LEVEL", "INFO"))
+                self.structured_logger = create_glpi_logger(
+                    getattr(config_obj, "LOG_LEVEL", "INFO")
+                )
             except Exception as e:
                 # Fallback para logger padrão se structured_logger falhar
                 self.structured_logger = None
@@ -388,7 +395,7 @@ class GLPIService:
             response = requests.get(
                 auth_url,
                 headers=session_headers,
-                timeout=15,  # Timeout mais generoso para autenticação
+                timeout=8,  # Timeout mais generoso para autenticação
             )
 
             # Verificar status code
@@ -554,19 +561,13 @@ class GLPIService:
                     start_time = time.time()
 
                     # Log detalhado antes da requisição
-                    self.logger.debug(f"[DEBUG] Fazendo requisição {method} para {url}")
-                    self.logger.debug(f"[DEBUG] Headers: {headers}")
-                    self.logger.debug(f"[DEBUG] Kwargs: {kwargs}")
+            # Debug logs removidos para produção
 
                     response = requests.request(method, url, **kwargs)
                     response_time = time.time() - start_time
 
                     # Log detalhado da resposta
-                    self.logger.debug(f"[DEBUG] Response status: {response.status_code}")
-                    self.logger.debug(f"[DEBUG] Response headers: {dict(response.headers)}")
-                    self.logger.debug(f"[DEBUG] Response text (primeiros 200 chars): {response.text[:200]}")
-                    self.logger.debug(f"[DEBUG] Response OK: {response.ok}")
-                    self.logger.debug(f"[DEBUG] Response type: {type(response)}")
+            # Debug detalhado removido para produção
 
                     # Requisição processada com sucesso
 
@@ -3392,18 +3393,18 @@ class GLPIService:
                     if not isinstance(tendencias, dict):
                         self.logger.warning(f"Tendências inválidas: {type(tendencias)}, usando valores padrão")
                         tendencias = {
-                            "novos": "0%",
-                            "pendentes": "0%",
-                            "progresso": "0%",
-                            "resolvidos": "0%",
+                            "novos": 0.0,
+                            "pendentes": 0.0,
+                            "progresso": 0.0,
+                            "resolvidos": 0.0,
                         }
                 except Exception as e:
                     self.logger.error(f"Erro ao calcular tendências: {e}")
                     tendencias = {
-                        "novos": "0%",
-                        "pendentes": "0%",
-                        "progresso": "0%",
-                        "resolvidos": "0%",
+                        "novos": 0.0,
+                        "pendentes": 0.0,
+                        "progresso": 0.0,
+                        "resolvidos": 0.0,
                     }
 
                 result = {
@@ -3556,17 +3557,12 @@ class GLPIService:
             )
 
             # Calcular percentuais de variação
-            def calculate_percentage_change(current: int, previous: int) -> str:
+            def calculate_percentage_change(current: int, previous: int) -> float:
                 if previous == 0:
-                    return "+100%" if current > 0 else "0%"
+                    return 100.0 if current > 0 else 0.0
 
                 change = ((current - previous) / previous) * 100
-                if change > 0:
-                    return f"+{change:.1f}%"
-                elif change < 0:
-                    return f"{change:.1f}%"
-                else:
-                    return "0%"
+                return round(change, 1)
 
             trends = {
                 "novos": calculate_percentage_change(current_novos, previous_novos),
@@ -3583,10 +3579,10 @@ class GLPIService:
             self.logger.error(f"Stack trace: {traceback.format_exc()}")
             # Retornar valores padrão em caso de erro
             return {
-                "novos": "0%",
-                "pendentes": "0%",
-                "progresso": "0%",
-                "resolvidos": "0%",
+                "novos": 0.0,
+                "pendentes": 0.0,
+                "progresso": 0.0,
+                "resolvidos": 0.0,
             }
 
     def get_technician_ranking(self, limit: int = None) -> list:
@@ -3900,6 +3896,18 @@ class GLPIService:
 
         url = f"{self.glpi_url}/search/Ticket"
 
+        # OTIMIZAÇÃO EXTREMA: Usar range fixo máximo para todos os técnicos
+        # Isso evita consultas múltiplas e garante que nenhum técnico seja zerado
+        adaptive_range = "0-3000"  # Range fixo máximo para performance
+        self.logger.debug(f"Usando range fixo máximo para técnico {tecnico_id}: {adaptive_range}")
+
+        # CACHE AGRESSIVO: Verificar se já temos dados em cache
+        cache_key = f"technician_metrics_{tecnico_id}"
+        cached_metrics = self._get_cache_data(cache_key)
+        if cached_metrics:
+            self.logger.debug(f"Cache hit para técnico {tecnico_id}")
+            return cached_metrics
+
         # Buscar todos os tickets atribuídos ao técnico com timeout reduzido
         params = {
             "criteria[0][field]": 5,  # Campo técnico atribuído (FIXO)
@@ -3907,24 +3915,22 @@ class GLPIService:
             "criteria[0][value]": tecnico_id,
             "forcedisplay[0]": 2,  # ID
             "forcedisplay[1]": 12,  # Status
-            "range": "0-3000",  # Reduzido de 5000 para 3000 para melhor performance
+            "range": adaptive_range,  # Range híbrido adaptativo
         }
 
-        # DEBUG ESPECÍFICO PARA SILVIO
-        if tecnico_id in ["696", "32", "141", "60", "69", "1032", "252", "721", "926", "1291", "185", "1331", "1404", "1088", "1263", "10", "53", "250", "1471"]:
-            self.logger.info(f"🔍 [DEBUG SILVIO] Buscando tickets para técnico ID: {tecnico_id}")
-            self.logger.info(f"🔍 [DEBUG SILVIO] URL: {url}")
-            self.logger.info(f"🔍 [DEBUG SILVIO] Params: {params}")
+        # Debug específico removido para produção
+        if False:  # Debug removido para performance
+            pass  # Debug logs removidos
 
         try:
             # Timeout reduzido para 15 segundos
-            response = self._make_authenticated_request("GET", url, params=params, timeout=15)
+            response = self._make_authenticated_request("GET", url, params=params, timeout=8)
 
             if not response or response.status_code != 200:
                 self.logger.warning(f"Falha na requisição para técnico {tecnico_id}: {response.status_code if response else 'None'}")
-                # DEBUG ESPECÍFICO PARA SILVIO
-                if tecnico_id in ["696", "32", "141", "60", "69", "1032", "252", "721", "926", "1291", "185", "1331", "1404", "1088", "1263", "10", "53", "250", "1471"]:
-                    self.logger.error(f"❌ [DEBUG SILVIO] ERRO na requisição para técnico {tecnico_id}: Status {response.status_code if response else 'None'}")
+                # Debug específico removido para produção
+                if False:  # Debug removido para performance
+                    pass  # Debug logs removidos
                 return {
                     "total_tickets": 0,
                     "resolved_tickets": 0,
@@ -3934,14 +3940,38 @@ class GLPIService:
 
             data = response.json()
             tickets = data.get("data", [])
+            initial_count = len(tickets)
 
-            # DEBUG ESPECÍFICO PARA SILVIO
-            if tecnico_id in ["696", "32", "141", "60", "69", "1032", "252", "721", "926", "1291", "185", "1331", "1404", "1088", "1263", "10", "53", "250", "1471"]:
-                self.logger.info(f"🔍 [DEBUG SILVIO] Resposta recebida para técnico {tecnico_id}: {len(tickets)} tickets")
-                if len(tickets) > 0:
-                    self.logger.info(f"🔍 [DEBUG SILVIO] Primeiro ticket: {tickets[0]}")
-                else:
-                    self.logger.warning(f"⚠️ [DEBUG SILVIO] NENHUM TICKET ENCONTRADO para técnico {tecnico_id}")
+            # FASE 2: Verificação de completude e fallback automático
+            # TEMPORARIAMENTE DESABILITADO PARA MELHORAR PERFORMANCE
+            fallback_triggered = False
+            # try:
+            #     if hybrid_pagination.is_range_potentially_insufficient(tickets, adaptive_range):
+            #         self.logger.warning(f"Range insuficiente detectado para {tech_name}: {initial_count} tickets")
+            #
+            #         # Calcular range estendido
+            #         extended_range = hybrid_pagination.calculate_extended_range(adaptive_range)
+            #         self.logger.info(f"Tentando fallback com range estendido: {extended_range}")
+            #
+            #         # Nova consulta com range estendido
+            #         params["range"] = extended_range
+            #         extended_response = self._make_authenticated_request("GET", url, params=params, timeout=8)
+            #
+            #         if extended_response and extended_response.status_code == 200:
+            #             extended_data = extended_response.json()
+            #             extended_tickets = extended_data.get("data", [])
+            #
+            #             if len(extended_tickets) > initial_count:
+            #                 self.logger.info(f"Fallback bem-sucedido: {initial_count} → {len(extended_tickets)} tickets")
+            #                 tickets = extended_tickets
+            #                 adaptive_range = extended_range  # Atualizar range usado
+            #                 fallback_triggered = True
+            #             else:
+            #                 self.logger.debug("Fallback não trouxe tickets adicionais")
+            #         else:
+            #             self.logger.warning("Falha na consulta de fallback")
+            # except Exception as e:
+            #     self.logger.error(f"Erro no fallback híbrido: {e}")
 
             total = len(tickets)
             resolvidos = 0
@@ -3960,12 +3990,30 @@ class GLPIService:
 
             self.logger.debug(f"Técnico {tecnico_id}: {total} tickets ({resolvidos} resolvidos, {pendentes} pendentes)")
 
-            return {
+            # Atualizar cache do sistema híbrido
+            try:
+                hybrid_pagination.update_technician_cache(
+                    tecnico_id,
+                    tech_name or f"Técnico {tecnico_id}",
+                    adaptive_range,
+                    total,
+                    fallback_triggered
+                )
+            except Exception as e:
+                self.logger.debug(f"Erro ao atualizar stats de paginação: {e}")
+
+            result = {
                 "total_tickets": total,
                 "resolved_tickets": resolvidos,
                 "pending_tickets": pendentes,
                 "avg_resolution_time": 0.0,
             }
+
+            # CACHE AGRESSIVO: Salvar resultado em cache por 1 hora
+            self._set_cache_data(cache_key, result, ttl=3600)
+            self.logger.debug(f"Cache salvo para técnico {tecnico_id}")
+
+            return result
 
         except Exception as e:
             self.logger.error(f"Erro ao buscar métricas do técnico {tecnico_id}: {e}")
@@ -4029,8 +4077,8 @@ class GLPIService:
                     self.logger.error(f"❌ Erro ao processar técnico {tech_id}: {e}")
                 return None
 
-            # Processar técnicos em paralelo (máximo 5 threads para não sobrecarregar o GLPI)
-            with concurrent.futures.ThreadPoolExecutor(max_workers=5) as executor:
+            # Processar técnicos em paralelo (aumentado para 10 threads para melhor performance)
+            with concurrent.futures.ThreadPoolExecutor(max_workers=10) as executor:
                 future_to_tech = {executor.submit(get_technician_data, tech_id): tech_id for tech_id in technician_ids}
 
                 for future in concurrent.futures.as_completed(future_to_tech):
@@ -4058,8 +4106,14 @@ class GLPIService:
                 try:
                     tech_id = tech["id"]
                     # Buscar métricas e nível em paralelo
-                    metricas = self._get_technician_metrics_corrected(tech_id)
-                    tech_level = self._get_technician_level_by_name_fallback(tech_id)
+                    with concurrent.futures.ThreadPoolExecutor(max_workers=3) as executor:
+                        # Submeter tarefas em paralelo
+                        metrics_future = executor.submit(self._get_technician_metrics_corrected, tech_id)
+                        level_future = executor.submit(self._get_technician_level_by_name_fallback, tech_id)
+
+                        # Aguardar resultados
+                        metricas = metrics_future.result(timeout=30)
+                        tech_level = level_future.result(timeout=30)
 
                     return {
                         "id": tech_id,
@@ -5762,7 +5816,7 @@ class GLPIService:
             batch_size = 25  # Reduzido para evitar erro 414
             all_ticket_counts = {tech_id: 0 for tech_id in technician_ids}
 
-            print(f"[DEBUG] Processando {len(technician_ids)} técnicos em lotes " f"otimizados de {batch_size}")
+            # print(f"[DEBUG] Processando {len(technician_ids)} técnicos em lotes " f"otimizados de {batch_size}")
 
             for i in range(0, len(technician_ids), batch_size):
                 batch_tech_ids = technician_ids[i : i + batch_size]
@@ -5825,7 +5879,7 @@ class GLPIService:
 
             url = f"{self.glpi_url}/search/Ticket"
 
-            print(f"[DEBUG] Processando batch de {len(tech_ids)} técnicos - URL: {url}")
+            # print(f"[DEBUG] Processando batch de {len(tech_ids)} técnicos - URL: {url}")
             self.logger.info(f"Processando batch de {len(tech_ids)} técnicos")
 
             response = self._make_authenticated_request("GET", url, params=search_params)
@@ -5843,13 +5897,13 @@ class GLPIService:
                         ticket_counts[tech_id] += 1
 
             elapsed_time = time.time() - start_time
-            print(f"[DEBUG] Batch processado em {elapsed_time:.2f}s: " f"{sum(ticket_counts.values())} tickets encontrados")
+            # print(f"[DEBUG] Batch processado em {elapsed_time:.2f}s: " f"{sum(ticket_counts.values())} tickets encontrados")
             self.logger.info(f"Batch processado: {sum(ticket_counts.values())} tickets encontrados")
             return ticket_counts
 
         except Exception as e:
             elapsed_time = time.time() - start_time
-            print(f"[DEBUG] Erro no batch após {elapsed_time:.2f}s: {e}")
+            # print(f"[DEBUG] Erro no batch após {elapsed_time:.2f}s: {e}")
             self.logger.error(f"Erro no processamento do batch: {e}")
             return {tech_id: 0 for tech_id in tech_ids}
 
@@ -6065,7 +6119,7 @@ class GLPIService:
             entity_id: ID da entidade para filtrar técnicos
         """
         # Log simples para confirmar que o método está sendo chamado
-        print(f"[DEBUG] get_technician_ranking_with_filters CHAMADO - start_date: {start_date}, end_date: {end_date}")
+        # print(f"[DEBUG] get_technician_ranking_with_filters CHAMADO - start_date: {start_date}, end_date: {end_date}")
 
         if not correlation_id:
             obs_logger = glpi_logger
@@ -6106,16 +6160,16 @@ class GLPIService:
                 )
                 return []
 
-            print(f"[DEBUG] tech_field_id descoberto: {tech_field_id}")
+            # print(f"[DEBUG] tech_field_id descoberto: {tech_field_id}")
 
             # Obter todos os técnicos ativos dinamicamente com nomes otimizados
-            print(f"[DEBUG] [{correlation_id}] Buscando técnicos ativos com entity_id: {entity_id}")
+            # print(f"[DEBUG] [{correlation_id}] Buscando técnicos ativos com entity_id: {entity_id}")
             (
                 technician_ids,
                 technician_names,
             ) = self._get_all_technician_ids_and_names(entity_id=entity_id)
-            print(f"[DEBUG] [{correlation_id}] Encontrados {len(technician_ids) if technician_ids else 0} técnicos")
-            print(f"[DEBUG] [{correlation_id}] Técnicos encontrados: {technician_ids[:5] if technician_ids else 'Nenhum'}")
+            # print(f"[DEBUG] [{correlation_id}] Encontrados {len(technician_ids) if technician_ids else 0} técnicos")
+            # print(f"[DEBUG] [{correlation_id}] Técnicos encontrados: {technician_ids[:5] if technician_ids else 'Nenhum'}")
 
             if not technician_ids:
                 obs_logger.log_pipeline_step(
@@ -6892,7 +6946,7 @@ class GLPIService:
 
     def debug_silvio_tickets(self, silvio_id: str = "696") -> Dict[str, Any]:
         """Método específico para debugar tickets do Silvio"""
-        self.logger.info(f"🔍 [DEBUG SILVIO] Iniciando debug específico para Silvio ID: {silvio_id}")
+        # self.logger.info(f"🔍 [DEBUG SILVIO] Iniciando debug específico para Silvio ID: {silvio_id}")
 
         # Primeiro, verificar se o usuário existe
         user_url = f"{self.glpi_url}/User/{silvio_id}"
@@ -6900,9 +6954,9 @@ class GLPIService:
 
         if user_response and user_response.status_code == 200:
             user_data = user_response.json()
-            self.logger.info(f"🔍 [DEBUG SILVIO] Usuário encontrado: {user_data.get('name', 'N/A')}")
-            self.logger.info(f"🔍 [DEBUG SILVIO] Firstname: {user_data.get('firstname', 'N/A')}")
-            self.logger.info(f"🔍 [DEBUG SILVIO] Realname: {user_data.get('realname', 'N/A')}")
+            # self.logger.info(f"🔍 [DEBUG SILVIO] Usuário encontrado: {user_data.get('name', 'N/A')}")
+            # self.logger.info(f"🔍 [DEBUG SILVIO] Firstname: {user_data.get('firstname', 'N/A')}")
+            # self.logger.info(f"🔍 [DEBUG SILVIO] Realname: {user_data.get('realname', 'N/A')}")
         else:
             self.logger.error(f"❌ [DEBUG SILVIO] Usuário {silvio_id} não encontrado")
             return {"error": "Usuário não encontrado"}
@@ -6911,7 +6965,7 @@ class GLPIService:
         test_fields = [5, 95, 4, 6]  # Diferentes campos que podem ser usados para técnico
 
         for field_id in test_fields:
-            self.logger.info(f"🔍 [DEBUG SILVIO] Testando campo {field_id} para técnico {silvio_id}")
+            # self.logger.info(f"🔍 [DEBUG SILVIO] Testando campo {field_id} para técnico {silvio_id}")
 
             url = f"{self.glpi_url}/search/Ticket"
             params = {
@@ -6928,9 +6982,9 @@ class GLPIService:
                 if response and response.status_code == 200:
                     data = response.json()
                     tickets = data.get("data", [])
-                    self.logger.info(f"🔍 [DEBUG SILVIO] Campo {field_id}: {len(tickets)} tickets encontrados")
+                    # Debug logs removidos para produção
                     if len(tickets) > 0:
-                        self.logger.info(f"🔍 [DEBUG SILVIO] Primeiro ticket do campo {field_id}: {tickets[0]}")
+                        pass  # Debug removido
                 else:
                     self.logger.warning(f"⚠️ [DEBUG SILVIO] Campo {field_id}: Erro {response.status_code if response else 'None'}")
             except Exception as e:

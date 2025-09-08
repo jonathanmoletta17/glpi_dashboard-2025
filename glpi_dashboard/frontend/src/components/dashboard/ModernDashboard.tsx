@@ -94,9 +94,10 @@ export const ModernDashboard = React.memo<ModernDashboardProps>(function ModernD
   filters,
 }) {
   // Debug logs para investigar o problema do ranking zerado
-  console.log('🔍 ModernDashboard - technicianRanking recebido:', technicianRanking);
-  console.log('🔍 ModernDashboard - technicianRanking length:', technicianRanking?.length);
-  console.log('🔍 ModernDashboard - primeiro técnico:', technicianRanking?.[0]);
+  // Debug logs removidos para produção
+  // console.log('🔍 ModernDashboard - technicianRanking recebido:', technicianRanking);
+  // console.log('🔍 ModernDashboard - technicianRanking length:', technicianRanking?.length);
+  // console.log('🔍 ModernDashboard - primeiro técnico:', technicianRanking?.[0]);
 
   // Memoizar dados do ranking processados
   const processedRankingData = useMemo(() => {
@@ -120,11 +121,11 @@ export const ModernDashboard = React.memo<ModernDashboardProps>(function ModernD
         avg_resolution_time: tech.avg_resolution_time || 0,
         rank: tech.rank || 0,
       };
-      console.log('🔍 ModernDashboard - processando técnico:', tech, '-> resultado:', processed);
+      // console.log('🔍 ModernDashboard - processando técnico:', tech, '-> resultado:', processed);
       return processed;
     });
 
-    console.log('✅ ModernDashboard - processedRankingData final:', result);
+    // console.log('✅ ModernDashboard - processedRankingData final:', result);
     return result;
   }, [technicianRanking]);
 

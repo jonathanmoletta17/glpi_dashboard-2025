@@ -11,11 +11,11 @@ window.addEventListener('error', event => {
 
 // Handle connection status
 window.addEventListener('online', () => {
-  console.log('Conexão restabelecida');
+  // console.log('Conexão restabelecida');
 });
 
 window.addEventListener('offline', () => {
-  console.log('Conexão perdida. Trabalhando offline.');
+  // console.log('Conexão perdida. Trabalhando offline.');
 });
 
 // Performance monitoring
@@ -23,7 +23,7 @@ if ('performance' in window) {
   window.addEventListener('load', () => {
     setTimeout(() => {
       const perfData = performance.getEntriesByType('navigation')[0] as PerformanceNavigationTiming;
-      console.log('Page load time:', perfData.loadEventEnd - perfData.loadEventStart, 'ms');
+      // console.log('Page load time:', perfData.loadEventEnd - perfData.loadEventStart, 'ms');
     }, 0);
   });
 }

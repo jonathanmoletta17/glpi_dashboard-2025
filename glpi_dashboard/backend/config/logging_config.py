@@ -8,10 +8,13 @@ import logging.config
 import os
 from typing import Any, Dict, Optional
 
-from utils.structured_logger import JSONFormatter
+# from utils.structured_logger import JSONFormatter  # Não utilizado
 
 
-def get_logging_config(log_level: str = "INFO", log_file: Optional[str] = None) -> Dict[str, Any]:
+def get_logging_config(
+    log_level: str = "INFO",
+    log_file: Optional[str] = None
+) -> Dict[str, Any]:
     """
     Retorna configuração de logging estruturado.
 
@@ -28,7 +31,10 @@ def get_logging_config(log_level: str = "INFO", log_file: Optional[str] = None) 
     # Validar log_level
     valid_levels = ["DEBUG", "INFO", "WARNING", "ERROR", "CRITICAL"]
     if log_level.upper() not in valid_levels:
-        raise ValueError(f"log_level deve ser um dos: {valid_levels}. Recebido: {log_level}")
+        raise ValueError(
+            f"log_level deve ser um dos: {valid_levels}. "
+            f"Recebido: {log_level}"
+        )
 
     log_level = log_level.upper()
 
@@ -40,7 +46,9 @@ def get_logging_config(log_level: str = "INFO", log_file: Optional[str] = None) 
                 "()": "utils.structured_logger.JSONFormatter",
                 "include_extra_fields": True,
             },
-            "standard": {"format": "%(asctime)s [%(levelname)s] %(name)s: %(message)s"},
+            "standard": {
+                "format": "%(asctime)s [%(levelname)s] %(name)s: %(message)s"
+            },
         },
         "handlers": {
             "console": {
@@ -50,23 +58,17 @@ def get_logging_config(log_level: str = "INFO", log_file: Optional[str] = None) 
                 "stream": "ext://sys.stdout",
             },
             "debug_ranking_file": {
-                "class": "logging.handlers.RotatingFileHandler",
+                "class": "logging.FileHandler",
                 "level": "DEBUG",
                 "formatter": "json",
                 "filename": "debug_ranking.log",
-                "maxBytes": 10485760,  # 10MB
-                "backupCount": 5,
+                "mode": "a",
                 "encoding": "utf-8",
             },
         },
         "loggers": {
             "glpi_service": {
                 "level": "DEBUG",
-                "handlers": ["console"],
-                "propagate": False,
-            },
-            "api_service": {
-                "level": log_level,
                 "handlers": ["console"],
                 "propagate": False,
             },
@@ -98,17 +100,19 @@ def get_logging_config(log_level: str = "INFO", log_file: Optional[str] = None) 
 
         except (OSError, PermissionError) as e:
             # Log de fallback para console se não conseguir criar arquivo
-            print(f"Aviso: Não foi possível configurar log em arquivo {log_file}: {e}")
+            print(
+                f"Aviso: Não foi possível configurar log em arquivo "
+                f"{log_file}: {e}"
+            )
             print("Continuando apenas com log no console.")
             return config
 
         config["handlers"]["file"] = {
-            "class": "logging.handlers.RotatingFileHandler",
+            "class": "logging.FileHandler",
             "level": log_level,
             "formatter": "json",
             "filename": log_file,
-            "maxBytes": 10485760,  # 10MB
-            "backupCount": 5,
+            "mode": "a",
             "encoding": "utf-8",
         }
 
@@ -120,7 +124,10 @@ def get_logging_config(log_level: str = "INFO", log_file: Optional[str] = None) 
     return config
 
 
-def configure_structured_logging(log_level: str = "INFO", log_file: Optional[str] = None) -> None:
+def configure_structured_logging(
+    log_level: str = "INFO",
+    log_file: Optional[str] = None
+) -> None:
     """
     Configura o sistema de logging estruturado.
 
@@ -138,7 +145,9 @@ def configure_structured_logging(log_level: str = "INFO", log_file: Optional[str
 
         # Testar se o logging está funcionando
         logger = logging.getLogger("logging_config")
-        logger.info(f"Sistema de logging configurado com sucesso. Nível: {log_level}")
+        logger.info(
+            f"Sistema de logging configurado com sucesso. Nível: {log_level}"
+        )
 
     except Exception as e:
         # Fallback para configuração básica
@@ -165,9 +174,13 @@ class LoggingConfig:
                 "log_file": "logs/glpi_dashboard_dev.log",
                 "console_output": True,
             }
-        except Exception as e:
+        except Exception:
             # Fallback para configuração mínima
-            return {"log_level": "INFO", "log_file": None, "console_output": True}
+            return {
+                "log_level": "INFO",
+                "log_file": None,
+                "console_output": True
+            }
 
     @staticmethod
     def production() -> Dict[str, Any]:
@@ -178,18 +191,30 @@ class LoggingConfig:
                 "log_file": "logs/glpi_dashboard_prod.log",
                 "console_output": False,
             }
-        except Exception as e:
+        except Exception:
             # Fallback para configuração mínima
-            return {"log_level": "WARNING", "log_file": None, "console_output": True}
+            return {
+                "log_level": "WARNING",
+                "log_file": None,
+                "console_output": True
+            }
 
     @staticmethod
     def testing() -> Dict[str, Any]:
         """Configuração para ambiente de testes."""
         try:
-            return {"log_level": "WARNING", "log_file": None, "console_output": True}
-        except Exception as e:
+            return {
+                "log_level": "WARNING",
+                "log_file": None,
+                "console_output": True
+            }
+        except Exception:
             # Fallback para configuração mínima
-            return {"log_level": "ERROR", "log_file": None, "console_output": True}
+            return {
+                "log_level": "ERROR",
+                "log_file": None,
+                "console_output": True
+            }
 
 
 # Configurações para integração com serviços de monitoramento
@@ -199,7 +224,8 @@ class MonitoringIntegration:
     @staticmethod
     def elk_stack_config() -> Dict[str, Any]:
         """
-        Configuração para integração com ELK Stack (Elasticsearch, Logstash, Kibana).
+        Configuração para integração com ELK Stack
+        (Elasticsearch, Logstash, Kibana).
 
         Returns:
             Dicionário com configurações recomendadas
@@ -228,7 +254,7 @@ class MonitoringIntegration:
                 },
                 "index_pattern": "glpi-dashboard-*",
             }
-        except Exception as e:
+        except Exception:
             # Fallback para configuração básica
             return {
                 "log_format": "json",
@@ -237,7 +263,11 @@ class MonitoringIntegration:
                     "environment": "development",
                     "version": "1.0.0",
                 },
-                "logstash": {"host": "localhost", "port": 5044, "protocol": "tcp"},
+                "logstash": {
+                    "host": "localhost",
+                    "port": 5044,
+                    "protocol": "tcp"
+                },
                 "index_pattern": "glpi-dashboard-*",
             }
 
@@ -263,9 +293,12 @@ class MonitoringIntegration:
                     "level": "${level}",
                     "logger": "${logger_name}",
                 },
-                "loki": {"url": loki_url, "push_endpoint": "/loki/api/v1/push"},
+                "loki": {
+                    "url": loki_url,
+                    "push_endpoint": "/loki/api/v1/push"
+                },
             }
-        except Exception as e:
+        except Exception:
             # Fallback para configuração básica
             return {
                 "log_format": "json",
@@ -291,7 +324,10 @@ class MonitoringIntegration:
         """
         try:
             # Validar URL do Prometheus Gateway
-            gateway_url = os.getenv("PROMETHEUS_GATEWAY_URL", "http://localhost:9091")
+            gateway_url = os.getenv(
+                "PROMETHEUS_GATEWAY_URL",
+                "http://localhost:9091"
+            )
             if not gateway_url.startswith(("http://", "https://")):
                 gateway_url = "http://localhost:9091"  # Fallback
 
@@ -319,7 +355,7 @@ class MonitoringIntegration:
                     "job_name": "glpi_dashboard",
                 },
             }
-        except Exception as e:
+        except Exception:
             # Fallback para configuração básica
             return {
                 "metrics": {

@@ -72,7 +72,7 @@ export const useCache = (): UseCacheReturn => {
       // Atualizar estatísticas
       setStats(unifiedCache.getAllStats());
 
-      console.log('✅ Todos os caches foram atualizados');
+      // console.log('✅ Todos os caches foram atualizados');
     } catch (err) {
       const errorMessage = err instanceof Error ? err.message : 'Erro desconhecido';
       setError(errorMessage);
@@ -86,7 +86,7 @@ export const useCache = (): UseCacheReturn => {
     try {
       unifiedCache.clearAll();
       setStats(unifiedCache.getAllStats());
-      console.log('✅ Todos os caches foram limpos');
+      // console.log('✅ Todos os caches foram limpos');
     } catch (err) {
       const errorMessage = err instanceof Error ? err.message : 'Erro desconhecido';
       setError(errorMessage);
@@ -113,7 +113,7 @@ export const useCache = (): UseCacheReturn => {
       // Invalidar cache de métricas
       unifiedCache.invalidatePattern('metrics', '.*');
       setStats(unifiedCache.getAllStats());
-      console.log('✅ Cache de métricas atualizado');
+      // console.log('✅ Cache de métricas atualizado');
     } catch (err) {
       const errorMessage = err instanceof Error ? err.message : 'Erro desconhecido';
       setError(errorMessage);
@@ -126,7 +126,7 @@ export const useCache = (): UseCacheReturn => {
       // Invalidar cache de status do sistema
       unifiedCache.invalidatePattern('systemStatus', '.*');
       setStats(unifiedCache.getAllStats());
-      console.log('✅ Cache de status do sistema atualizado');
+      // console.log('✅ Cache de status do sistema atualizado');
     } catch (err) {
       const errorMessage = err instanceof Error ? err.message : 'Erro desconhecido';
       setError(errorMessage);
@@ -139,7 +139,7 @@ export const useCache = (): UseCacheReturn => {
       // Invalidar cache de ranking de técnicos
       unifiedCache.invalidatePattern('technicianRanking', '.*');
       setStats(unifiedCache.getAllStats());
-      console.log('✅ Cache de ranking de técnicos atualizado');
+      // console.log('✅ Cache de ranking de técnicos atualizado');
     } catch (err) {
       const errorMessage = err instanceof Error ? err.message : 'Erro desconhecido';
       setError(errorMessage);
@@ -152,7 +152,7 @@ export const useCache = (): UseCacheReturn => {
       // Invalidar cache de tickets novos
       unifiedCache.invalidatePattern('newTickets', '.*');
       setStats(unifiedCache.getAllStats());
-      console.log('✅ Cache de tickets novos atualizado');
+      // console.log('✅ Cache de tickets novos atualizado');
     } catch (err) {
       const errorMessage = err instanceof Error ? err.message : 'Erro desconhecido';
       setError(errorMessage);
