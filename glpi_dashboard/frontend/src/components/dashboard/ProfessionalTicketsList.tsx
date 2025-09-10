@@ -221,7 +221,7 @@ const ProfessionalLoadingSkeleton = () => (
 
 // Componente de estado vazio profissional
 const ProfessionalEmptyState = ({ error }: { error?: string }) => (
-  <div className='flex flex-col items-center justify-center p-8 text-center'>
+  <div className='flex flex-col items-center justify-center p-8 text-center flex-1'>
     <div className='p-3 rounded-full bg-gray-100 dark:bg-gray-800 mb-4'>
       <AlertCircle className='h-6 w-6 text-gray-400 dark:text-gray-500' />
     </div>
@@ -285,8 +285,8 @@ export const ProfessionalTicketsList = React.memo<ProfessionalTicketsListProps>(
     );
 
     return (
-      <Card className={cn('h-full bg-transparent border-0 shadow-none', className)}>
-        <CardHeader className='pb-2 px-4 pt-4'>
+      <Card className={cn('h-full bg-transparent border-0 shadow-none flex flex-col', className)}>
+        <CardHeader className='pb-2 px-4 pt-4 flex-shrink-0'>
           <div className='flex items-center justify-between'>
             <CardTitle className='text-base font-semibold flex items-center gap-2 text-gray-900 dark:text-white'>
               <div className='p-1.5 rounded-md bg-white dark:bg-gray-700 shadow-sm border border-gray-200 dark:border-gray-600'>
@@ -322,7 +322,10 @@ export const ProfessionalTicketsList = React.memo<ProfessionalTicketsListProps>(
           )}
         </CardHeader>
 
-        <CardContent className='px-4 pb-4 pt-0'>
+        <CardContent
+          className='px-4 pb-4 pt-0 flex-1 flex flex-col overflow-hidden'
+          style={{ maxHeight: '400px' }}
+        >
           {isLoading ? (
             <ProfessionalLoadingSkeleton />
           ) : error ? (
@@ -330,10 +333,14 @@ export const ProfessionalTicketsList = React.memo<ProfessionalTicketsListProps>(
           ) : hasTickets ? (
             <div
               className={cn(
-                'space-y-2',
+                'space-y-2 flex-1 flex flex-col',
                 tickets.length > 3 &&
-                  'max-h-80 overflow-y-auto pr-2 scrollbar-thin scrollbar-thumb-gray-300 scrollbar-track-gray-100 dark:scrollbar-thumb-gray-600 dark:scrollbar-track-gray-800'
+                  'overflow-y-auto pr-2 scrollbar-thin scrollbar-thumb-gray-300 scrollbar-track-gray-100 dark:scrollbar-thumb-gray-600 dark:scrollbar-track-gray-800'
               )}
+              style={{
+                maxHeight: '320px',
+                minHeight: tickets.length > 3 ? '320px' : 'auto'
+              }}
             >
               <motion.div
                 className='space-y-2'
@@ -351,7 +358,9 @@ export const ProfessionalTicketsList = React.memo<ProfessionalTicketsListProps>(
               </motion.div>
             </div>
           ) : (
-            <ProfessionalEmptyState />
+            <div className='flex-1 flex flex-col'>
+              <ProfessionalEmptyState />
+            </div>
           )}
         </CardContent>
       </Card>

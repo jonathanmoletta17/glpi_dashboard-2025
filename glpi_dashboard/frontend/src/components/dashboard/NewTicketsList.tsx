@@ -269,9 +269,13 @@ export const NewTicketsList = React.memo<NewTicketsListProps>(
       [lastUpdate]
     );
 
+    // Determinar se deve mostrar scroll (mais de 3 tickets)
+    const shouldShowScroll = tickets.length > 3;
+    // Altura fixa de 350px aplicada via style inline para garantir funcionamento
+
     return (
-      <Card className={cn(createCardClasses(), className)}>
-        <CardHeader className='pb-3'>
+      <Card className={cn(createCardClasses(), 'h-full flex flex-col', className)}>
+        <CardHeader className='pb-3 flex-shrink-0'>
           <div className='flex items-center justify-between'>
             <CardTitle className='flex items-center gap-2'>
               <div className='h-8 w-8 bg-blue-500 rounded-lg flex items-center justify-center'>
@@ -304,14 +308,24 @@ export const NewTicketsList = React.memo<NewTicketsListProps>(
           )}
         </CardHeader>
 
-        <CardContent className='pt-0'>
+        <CardContent
+          className='pt-0 flex-1 flex flex-col overflow-hidden'
+          style={{ maxHeight: '400px' }}
+        >
           {isLoading ? (
             <LoadingSkeleton />
           ) : error ? (
             <EmptyState error={error} />
           ) : hasTickets ? (
             <motion.div
-              className={ticketSpacing.card.gap}
+              className={cn(
+                ticketSpacing.card.gap,
+                shouldShowScroll ? 'overflow-y-auto' : 'overflow-hidden'
+              )}
+              style={{
+                maxHeight: '320px',
+                minHeight: shouldShowScroll ? '320px' : 'auto'
+              }}
               variants={ticketAnimations.container}
               initial='hidden'
               animate='visible'
@@ -321,7 +335,9 @@ export const NewTicketsList = React.memo<NewTicketsListProps>(
               ))}
             </motion.div>
           ) : (
-            <EmptyState />
+            <div className='flex-1 flex flex-col'>
+              <EmptyState />
+            </div>
           )}
         </CardContent>
       </Card>

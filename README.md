@@ -1,78 +1,155 @@
-# GLPI Dashboard - Versão Estável
+# GLPI Dashboard - Sistema de Monitoramento e Análise
 
-## 🎯 Visão Geral
+![Status](https://img.shields.io/badge/status-funcional-brightgreen)
+![Versão](https://img.shields.io/badge/versão-1.0.0-blue)
+![Checkpoint](https://img.shields.io/badge/checkpoint-14e24c3-orange)
 
-Este é o repositório estável do **GLPI Dashboard**, um sistema de dashboard moderno e responsivo para visualização de métricas e dados do GLPI. Esta versão representa um checkpoint funcional e estável, pronto para produção.
+Sistema completo de dashboard para monitoramento e análise de tickets do GLPI, com interface moderna e responsiva.
 
-## ✨ Características Principais
+## 🚀 Características Principais
 
-- **🎨 Interface Moderna**: Design responsivo com sistema de cores dinâmico
-- **🌙 Modo Escuro**: Suporte completo ao tema escuro
-- **📊 Dashboard Interativo**: Métricas em tempo real e visualizações dinâmicas
-- **👥 Ranking de Técnicos**: Sistema de ranking e métricas por nível
-- **🔧 API REST**: Backend robusto com Flask e cache inteligente
-- **📱 Responsivo**: Funciona perfeitamente em desktop, tablet e mobile
+- **Interface Moderna**: Design responsivo com modo escuro/claro
+- **Dashboard Interativo**: Métricas em tempo real com gráficos dinâmicos
+- **Ranking de Técnicos**: Sistema de performance e estatísticas
+- **API REST**: Backend robusto com cache inteligente
+- **Sistema de Cores Dinâmico**: Indicadores visuais por nível de prioridade
+- **Responsividade**: Otimizado para desktop, tablet e mobile
 
-## 🚀 Início Rápido
+## 🏗️ Arquitetura
+
+### Stack Tecnológica
+
+**Frontend**
+- React 18 com TypeScript
+- Vite para build e desenvolvimento
+- Tailwind CSS para estilização
+- Hooks customizados para gerenciamento de estado
+
+**Backend**
+- Flask 2.3.3 com Python 3.11+
+- Cache inteligente (SimpleCache/Redis)
+- Logging estruturado para observabilidade
+- APIs REST para integração
+
+**DevOps**
+- Docker para containerização
+- Scripts automatizados de deploy
+- GitHub Actions para CI/CD
+
+### Padrão de Arquitetura
+- **Microservices + SPA**: Backend API + Frontend separado
+- **Cache Híbrido**: Sistema inteligente de cache com fallback
+- **Logging Estruturado**: Observabilidade completa do sistema
+
+## 📁 Estrutura do Projeto
+
+```
+glpi_dashboard_funcional/
+├── glpi_dashboard/           # Aplicação principal
+│   ├── backend/              # Backend Flask
+│   │   ├── api/              # Endpoints da API
+│   │   ├── config/           # Configurações centralizadas
+│   │   ├── schemas/          # Schemas de validação
+│   │   ├── services/         # Serviços de integração
+│   │   └── utils/            # Utilitários
+│   ├── frontend/             # Frontend React + TypeScript
+│   │   ├── src/              # Código fonte
+│   │   │   ├── components/   # Componentes React
+│   │   │   ├── hooks/        # Hooks customizados
+│   │   │   ├── services/     # Serviços do frontend
+│   │   │   ├── types/        # Definições TypeScript
+│   │   │   └── utils/        # Utilitários
+│   │   ├── package.json      # Dependências Node.js
+│   │   └── vite.config.ts    # Configuração Vite
+│   ├── docs/                 # Documentação técnica
+│   └── scripts/              # Scripts auxiliares
+├── docs/                     # Documentação geral
+├── scripts/                  # Scripts de automação
+└── README.md                 # Este arquivo
+```
+
+## ⚡ Início Rápido
 
 ### Pré-requisitos
-
-- **Node.js 18+** (para frontend)
-- **Python 3.12+** (para backend)
-- **GLPI** configurado e acessível
+- Python 3.11+
+- Node.js 16+
+- npm ou yarn
+- Acesso ao GLPI com tokens de API
 
 ### Instalação Automática
 
-#### Windows
+**Windows:**
 ```bash
-setup.bat
+.\install.bat
 ```
 
-#### Linux/macOS
+**Linux/macOS:**
 ```bash
-chmod +x setup.sh
-./setup.sh
+./install.sh
 ```
 
 ### Instalação Manual
 
-#### 1. Frontend
+#### 1. Clone e Configuração Inicial
 ```bash
-cd glpi_dashboard/frontend
-npm install
-npm run build
+git clone <repository-url>
+cd glpi_dashboard_funcional
+cp .env.example .env
 ```
 
-#### 2. Backend
+#### 2. Backend (Flask)
 ```bash
-cd glpi_dashboard/backend
-pip install -r ../requirements.txt
+# Criar ambiente virtual
+python -m venv venv
+
+# Ativar ambiente virtual
+# Windows
+.\venv\Scripts\Activate.ps1
+# Linux/Mac
+source venv/bin/activate
+
+# Instalar dependências
+cd glpi_dashboard
+pip install -r requirements.txt
+
+# Executar backend
 python app.py
 ```
 
-#### 3. Configuração
+#### 3. Frontend (React)
 ```bash
-# Copie o arquivo de exemplo
-cp env.example .env
-
-# Configure as variáveis necessárias
-# Edite o arquivo .env com suas configurações do GLPI
+# Em novo terminal
+cd glpi_dashboard/frontend
+npm install
+npm run dev
 ```
 
 ## ⚙️ Configuração
 
 ### Variáveis de Ambiente
 
-Configure as seguintes variáveis no arquivo `.env`:
-
+**Arquivo raiz `.env`:**
 ```bash
 # GLPI Configuration
-GLPI_URL=http://your-glpi-server/glpi
+GLPI_URL=http://your-glpi-server/glpi/apirest.php
 GLPI_USER_TOKEN=your-user-token
 GLPI_APP_TOKEN=your-app-token
 
-# API Configuration
-VITE_API_URL=http://localhost:8000
+# Flask Configuration
+FLASK_ENV=dev
+SECRET_KEY=your-secret-key
+FLASK_DEBUG=true
+HOST=0.0.0.0
+PORT=5000
+
+# Logging
+LOG_LEVEL=INFO
+```
+
+**Frontend `.env` (glpi_dashboard/frontend/.env):**
+```bash
+VITE_API_BASE_URL=http://localhost:5000/api
+VITE_LOG_LEVEL=info
 ```
 
 ### Configuração do GLPI
@@ -81,27 +158,6 @@ VITE_API_URL=http://localhost:8000
 2. Vá em **Configuração > API**
 3. Gere um **User Token** e **App Token**
 4. Configure as URLs e tokens no arquivo `.env`
-
-## 🏗️ Arquitetura
-
-### Frontend
-- **React 18** com TypeScript
-- **Vite** para build e desenvolvimento
-- **Tailwind CSS** para estilização
-- **Hooks customizados** para gerenciamento de estado
-
-### Backend
-- **Flask 2.3.3** com Python
-- **Cache inteligente** (SimpleCache/Redis)
-- **Logging estruturado** para observabilidade
-- **APIs REST** para integração
-
-## 📚 Documentação
-
-- **[Checkpoint Funcional](CHECKPOINT_FUNCIONAL_DOCUMENTATION.md)** - Detalhes do checkpoint estável
-- **[Arquitetura Frontend](FRONTEND_ARCHITECTURE_DOCUMENTATION.md)** - Documentação completa do frontend
-- **[Arquitetura Backend](BACKEND_ARCHITECTURE_DOCUMENTATION.md)** - Documentação completa do backend
-- **[Configuração e Deploy](CONFIGURATION_DOCUMENTATION.md)** - Guias de configuração e deploy
 
 ## 🚀 Deploy
 
@@ -117,36 +173,44 @@ cd glpi_dashboard/frontend
 npm run build
 
 # Backend
-cd glpi_dashboard/backend
-gunicorn -w 4 -b 0.0.0.0:8000 app:app
+cd glpi_dashboard
+gunicorn -w 4 -b 0.0.0.0:5000 app:app
 ```
 
 ## 🔧 Desenvolvimento
 
 ### Scripts Disponíveis
 
+**Frontend:**
 ```bash
-# Frontend
 npm run dev          # Servidor de desenvolvimento
 npm run build        # Build de produção
 npm run preview      # Preview do build
+npm run test         # Executar testes
+```
 
-# Backend
+**Backend:**
+```bash
 python app.py        # Servidor de desenvolvimento
 pytest              # Executar testes
+python run_scripts.py # Scripts auxiliares
 ```
 
-### Estrutura do Projeto
+### Scripts Auxiliares
 
-```
-glpi-dashboard-stable/
-├── glpi_dashboard/
-│   ├── frontend/          # Aplicação React
-│   ├── backend/           # API Flask
-│   └── requirements.txt   # Dependências Python
-├── docs/                  # Documentação
-├── scripts/               # Scripts de automação
-└── README.md             # Este arquivo
+O projeto inclui scripts organizados para debug, testes e validação:
+
+```bash
+# Listar scripts disponíveis
+python run_scripts.py
+
+# Scripts de debug
+python run_scripts.py debug metrics
+python run_scripts.py debug trends
+
+# Scripts de validação
+python run_scripts.py validation frontend_trends
+python run_scripts.py validation trends_math
 ```
 
 ## 📊 Funcionalidades
@@ -168,6 +232,21 @@ glpi-dashboard-stable/
 - **Persistência**: Lembra a preferência do usuário
 - **Transições Suaves**: Animações fluidas entre temas
 
+## 🌐 Endpoints da API
+
+### Principais Endpoints
+
+```
+GET /api/metrics     # Métricas do dashboard
+GET /api/status      # Status do sistema
+GET /api/health      # Health check
+```
+
+**Acesso à Documentação:**
+- **Frontend**: `http://localhost:3001`
+- **Backend API**: `http://localhost:5000`
+- **API Status**: `http://localhost:5000/api/status`
+
 ## 🧪 Testes
 
 ```bash
@@ -176,7 +255,7 @@ cd glpi_dashboard/frontend
 npm run test
 
 # Backend
-cd glpi_dashboard/backend
+cd glpi_dashboard
 pytest
 ```
 
@@ -184,7 +263,7 @@ pytest
 
 ### Health Check
 ```bash
-curl http://localhost:8000/api/health
+curl http://localhost:5000/api/health
 ```
 
 ### Métricas
@@ -210,7 +289,7 @@ curl http://localhost:8000/api/health
 3. Verifique as variáveis de ambiente
 
 #### Backend não responde
-1. Verifique se a porta 8000 está livre
+1. Verifique se a porta 5000 está livre
 2. Verifique a conexão com GLPI
 3. Verifique os logs: `tail -f logs/app.log`
 
@@ -218,6 +297,14 @@ curl http://localhost:8000/api/health
 1. Verifique se Redis está rodando (opcional)
 2. O sistema usa SimpleCache como fallback
 3. Verifique a configuração de TTL
+
+## 📚 Documentação
+
+- **[Checkpoint Funcional](CHECKPOINT_FUNCIONAL_DOCUMENTATION.md)** - Detalhes do checkpoint estável
+- **[Arquitetura Frontend](FRONTEND_ARCHITECTURE_DOCUMENTATION.md)** - Documentação completa do frontend
+- **[Arquitetura Backend](BACKEND_ARCHITECTURE_DOCUMENTATION.md)** - Documentação completa do backend
+- **[Configuração e Deploy](CONFIGURATION_DOCUMENTATION.md)** - Guias de configuração e deploy
+- **[BYTEROVER Handbook](BYTEROVER.md)** - Guia técnico completo
 
 ## 🤝 Contribuição
 
@@ -229,9 +316,9 @@ Este projeto está sob a licença MIT. Veja o arquivo `LICENSE` para mais detalh
 
 ## 🏷️ Versão
 
-**Versão Estável**: 1.0.0  
-**Checkpoint**: `14e24c3`  
-**Data**: 02/09/2025  
+**Versão Estável**: 1.0.0
+**Checkpoint**: `14e24c3`
+**Data**: 02/09/2025
 
 ## 📞 Suporte
 
