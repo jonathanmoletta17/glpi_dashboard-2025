@@ -4,7 +4,6 @@
  */
 
 import { cn } from '@/lib/utils';
-import { SPACING, COMPONENT_SPACING } from './tokens';
 
 /**
  * Mapeamento de classes Tailwind para tokens do design system

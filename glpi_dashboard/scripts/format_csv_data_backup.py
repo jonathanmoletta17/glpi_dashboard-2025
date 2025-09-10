@@ -25,7 +25,7 @@ def format_tickets_csv():
     try:
         logging.info("Formatando tickets.csv...")
         df = pd.read_csv('tickets.csv')
-        
+
         # Campos essenciais para tickets
         essential_fields = [
             'id', 'name', 'content', 'status', 'priority', 'urgency',
@@ -34,19 +34,19 @@ def format_tickets_csv():
             'users_id_recipient', 'users_id_lastupdater', 'type',
             'actiontime', 'solve_delay_stat', 'close_delay_stat'
         ]
-        
+
         # Filtrar apenas campos que existem no DataFrame
         available_fields = [field for field in essential_fields if field in df.columns]
         df_formatted = df[available_fields].copy()
-        
+
         # Limpar e formatar dados
         if 'content' in df_formatted.columns:
             df_formatted['content'] = df_formatted['content'].astype(str).str.replace('\n', ' ').str.replace('\r', ' ')
             df_formatted['content'] = df_formatted['content'].str.strip()
-        
+
         if 'name' in df_formatted.columns:
             df_formatted['name'] = df_formatted['name'].astype(str).str.strip()
-        
+
         # Mapear status
         status_map = {
             1: 'Novo',
@@ -56,29 +56,29 @@ def format_tickets_csv():
             5: 'Solucionado',
             6: 'Fechado'
         }
-        
+
         if 'status' in df_formatted.columns:
             df_formatted['status_desc'] = df_formatted['status'].map(status_map)
-        
+
         # Mapear prioridade
         priority_map = {
             1: 'Muito baixa',
-            2: 'Baixa', 
+            2: 'Baixa',
             3: 'Média',
             4: 'Alta',
             5: 'Muito alta',
             6: 'Crítica'
         }
-        
+
         if 'priority' in df_formatted.columns:
             df_formatted['priority_desc'] = df_formatted['priority'].map(priority_map)
-        
+
         # Salvar arquivo formatado
         df_formatted.to_csv('tickets_formatted.csv', index=False, encoding='utf-8')
         logging.info(f"Tickets formatados salvos: {len(df_formatted)} registros")
-        
+
         return len(df_formatted)
-        
+
     except Exception as e:
         logging.error(f"Erro ao formatar tickets: {e}")
         return 0
@@ -88,7 +88,7 @@ def format_users_csv():
     try:
         logging.info("Formatando usuarios.csv...")
         df = pd.read_csv('usuarios.csv')
-        
+
         # Campos essenciais para usuários
         essential_fields = [
             'id', 'firstname', 'realname', 'name', 'comment',
@@ -97,32 +97,32 @@ def format_users_csv():
             'phone', 'phone2', 'mobile', 'registration_number',
             'user_dn', 'usercategories_id', 'authtype'
         ]
-        
+
         # Filtrar apenas campos que existem no DataFrame
         available_fields = [field for field in essential_fields if field in df.columns]
         df_formatted = df[available_fields].copy()
-        
+
         # Limpar e formatar dados
         text_fields = ['firstname', 'realname', 'name', 'comment']
         for field in text_fields:
             if field in df_formatted.columns:
                 df_formatted[field] = df_formatted[field].astype(str).str.strip()
-        
+
         # Criar nome completo
         if 'firstname' in df_formatted.columns and 'realname' in df_formatted.columns:
-            df_formatted['nome_completo'] = (df_formatted['firstname'].astype(str) + ' ' + 
+            df_formatted['nome_completo'] = (df_formatted['firstname'].astype(str) + ' ' +
                                            df_formatted['realname'].astype(str)).str.strip()
-        
+
         # Mapear status ativo
         if 'is_active' in df_formatted.columns:
             df_formatted['status_ativo'] = df_formatted['is_active'].map({1: 'Ativo', 0: 'Inativo'})
-        
+
         # Salvar arquivo formatado
         df_formatted.to_csv('usuarios_formatted.csv', index=False, encoding='utf-8')
         logging.info(f"Usuários formatados salvos: {len(df_formatted)} registros")
-        
+
         return len(df_formatted)
-        
+
     except Exception as e:
         logging.error(f"Erro ao formatar usuários: {e}")
         return 0
@@ -132,7 +132,7 @@ def format_technicians_csv():
     try:
         logging.info("Formatando tecnicos.csv...")
         df = pd.read_csv('tecnicos.csv')
-        
+
         # Campos essenciais para técnicos
         essential_fields = [
             'id', 'firstname', 'realname', 'name', 'comment',
@@ -140,32 +140,32 @@ def format_technicians_csv():
             'date_creation', 'date_mod', 'last_login',
             'phone', 'phone2', 'mobile', 'registration_number'
         ]
-        
+
         # Filtrar apenas campos que existem no DataFrame
         available_fields = [field for field in essential_fields if field in df.columns]
         df_formatted = df[available_fields].copy()
-        
+
         # Limpar e formatar dados
         text_fields = ['firstname', 'realname', 'name', 'comment']
         for field in text_fields:
             if field in df_formatted.columns:
                 df_formatted[field] = df_formatted[field].astype(str).str.strip()
-        
+
         # Criar nome completo
         if 'firstname' in df_formatted.columns and 'realname' in df_formatted.columns:
-            df_formatted['nome_completo'] = (df_formatted['firstname'].astype(str) + ' ' + 
+            df_formatted['nome_completo'] = (df_formatted['firstname'].astype(str) + ' ' +
                                            df_formatted['realname'].astype(str)).str.strip()
-        
+
         # Extrair grupo principal do campo comment
         if 'comment' in df_formatted.columns:
             df_formatted['grupo_principal'] = df_formatted['comment'].str.extract(r'(CC-[^,\s]+)')
-        
+
         # Salvar arquivo formatado
         df_formatted.to_csv('tecnicos_formatted.csv', index=False, encoding='utf-8')
         logging.info(f"Técnicos formatados salvos: {len(df_formatted)} registros")
-        
+
         return len(df_formatted)
-        
+
     except Exception as e:
         logging.error(f"Erro ao formatar técnicos: {e}")
         return 0
@@ -175,39 +175,39 @@ def format_requesters_csv():
     try:
         logging.info("Formatando solicitantes.csv...")
         df = pd.read_csv('solicitantes.csv')
-        
+
         # Campos essenciais para solicitantes
         essential_fields = [
             'id', 'firstname', 'realname', 'name', 'comment',
             'entities_id', 'is_active', 'date_creation', 'date_mod',
             'phone', 'phone2', 'mobile', 'registration_number'
         ]
-        
+
         # Filtrar apenas campos que existem no DataFrame
         available_fields = [field for field in essential_fields if field in df.columns]
         df_formatted = df[available_fields].copy()
-        
+
         # Limpar e formatar dados
         text_fields = ['firstname', 'realname', 'name', 'comment']
         for field in text_fields:
             if field in df_formatted.columns:
                 df_formatted[field] = df_formatted[field].astype(str).str.strip()
-        
+
         # Criar nome completo
         if 'firstname' in df_formatted.columns and 'realname' in df_formatted.columns:
-            df_formatted['nome_completo'] = (df_formatted['firstname'].astype(str) + ' ' + 
+            df_formatted['nome_completo'] = (df_formatted['firstname'].astype(str) + ' ' +
                                            df_formatted['realname'].astype(str)).str.strip()
-        
+
         # Extrair setor do campo comment
         if 'comment' in df_formatted.columns:
             df_formatted['setor'] = df_formatted['comment'].str.extract(r'(CC-[^,\s]+)')
-        
+
         # Salvar arquivo formatado
         df_formatted.to_csv('solicitantes_formatted.csv', index=False, encoding='utf-8')
         logging.info(f"Solicitantes formatados salvos: {len(df_formatted)} registros")
-        
+
         return len(df_formatted)
-        
+
     except Exception as e:
         logging.error(f"Erro ao formatar solicitantes: {e}")
         return 0
@@ -216,15 +216,15 @@ def main():
     """Função principal para formatar todos os arquivos CSV"""
     start_time = datetime.now()
     logging.info("Iniciando formatação de arquivos CSV...")
-    
+
     # Verificar se os arquivos existem
     required_files = ['tickets.csv', 'usuarios.csv', 'tecnicos.csv', 'solicitantes.csv']
     missing_files = [f for f in required_files if not os.path.exists(f)]
-    
+
     if missing_files:
         logging.error(f"Arquivos não encontrados: {missing_files}")
         return
-    
+
     # Formatar cada arquivo
     results = {
         'tickets': format_tickets_csv(),
@@ -232,10 +232,10 @@ def main():
         'tecnicos': format_technicians_csv(),
         'solicitantes': format_requesters_csv()
     }
-    
+
     end_time = datetime.now()
     duration = end_time - start_time
-    
+
     # Relatório final
     print("\n" + "="*60)
     print("FORMATAÇÃO DE DADOS CSV CONCLUÍDA")

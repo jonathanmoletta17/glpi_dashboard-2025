@@ -1,6 +1,6 @@
 # 🚀 BYTEROVER HANDBOOK - GLPI Dashboard
 
-> **Comprehensive AI Agent Navigation Guide**  
+> **Comprehensive AI Agent Navigation Guide**
 > Sistema de dashboard profissional para análise de performance de técnicos GLPI
 
 ---

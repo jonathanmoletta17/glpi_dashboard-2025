@@ -32,11 +32,11 @@ export interface DashboardMetrics {
   // Estrutura por níveis
   niveis: NiveisMetrics;
 
-  filtros_aplicados?: any;
+  filtros_aplicados?: Record<string, unknown>;
   tempo_execucao?: number;
   timestamp?: string;
-  systemStatus?: any;
-  technicianRanking?: any[];
+  systemStatus?: SystemStatus;
+  technicianRanking?: TechnicianRanking[];
 }
 
 // Status do sistema
@@ -87,7 +87,7 @@ export interface FilterParams {
 }
 
 // Resposta da API
-export interface ApiResponse<T = any> {
+export interface ApiResponse<T = unknown> {
   success: true;
   data: T;
   message?: string;
@@ -99,13 +99,13 @@ export interface ApiResponse<T = any> {
 export interface ApiError {
   success: false;
   error: string;
-  details?: any;
+  details?: Record<string, unknown>;
   timestamp?: string;
   code?: string | number;
 }
 
 // Resultado da API (união de sucesso e erro)
-export type ApiResult<T = any> = ApiResponse<T> | ApiError;
+export type ApiResult<T = unknown> = ApiResponse<T> | ApiError;
 
 export interface LoadingState {
   isLoading: boolean;
@@ -222,7 +222,7 @@ export interface UserPreferences {
 }
 
 // Validação de formulário
-export interface ValidationResult<T = any> {
+export interface ValidationResult<T = unknown> {
   isValid: boolean;
   errors: string[];
   data?: T;
@@ -242,7 +242,7 @@ export interface ActionHistory {
   action: string;
   timestamp: Date;
   user?: string;
-  details?: Record<string, any>;
+  details?: Record<string, unknown>;
 }
 
 // Type guards para verificação de tipos em runtime
@@ -250,9 +250,10 @@ export const isApiError = (response: ApiResult): response is ApiError => {
   return response.success === false;
 };
 
-export const isApiResponse = (response: any): response is ApiResponse<any> => {
+export const isApiResponse = (response: unknown): response is ApiResponse<unknown> => {
+  const obj = response as any;
   const isValid =
-    typeof response === 'object' && response !== null && typeof response.success === 'boolean';
+    typeof response === 'object' && response !== null && typeof obj.success === 'boolean';
 
   // Debug logs removidos para produção
   // if (!isValid) {
@@ -274,18 +275,33 @@ export const isApiResponse = (response: any): response is ApiResponse<any> => {
   return isValid;
 };
 
-export const isValidLevelMetrics = (data: any): data is LevelMetrics => {
+export const isValidLevelMetrics = (data: unknown): data is LevelMetrics => {
+  const obj = data as any;
   return (
     typeof data === 'object' &&
-    typeof data.novos === 'number' &&
-    typeof data.pendentes === 'number' &&
-    typeof data.progresso === 'number' &&
-    typeof data.resolvidos === 'number' &&
-    typeof data.total === 'number'
+    data !== null &&
+    typeof obj.novos === 'number' &&
+    typeof obj.pendentes === 'number' &&
+    typeof obj.progresso === 'number' &&
+    typeof obj.resolvidos === 'number' &&
+    typeof obj.total === 'number'
   );
 };
 
-export const isValidNiveisMetrics = (data: any): data is NiveisMetrics => {
+export const isDashboardMetrics = (data: unknown): data is DashboardMetrics => {
+  const obj = data as any;
+  return (
+    typeof data === 'object' &&
+    data !== null &&
+    typeof obj.novos === 'number' &&
+    typeof obj.pendentes === 'number' &&
+    typeof obj.progresso === 'number' &&
+    typeof obj.resolvidos === 'number' &&
+    typeof obj.total === 'number'
+  );
+};
+
+export const isValidNiveisMetrics = (data: unknown): data is NiveisMetrics => {
   // Debug logs removidos para produção
   // console.log('🔍 [isValidNiveisMetrics] Validating data:', data);
   // console.log('🔍 [isValidNiveisMetrics] data.n1:', data?.n1);
@@ -293,13 +309,14 @@ export const isValidNiveisMetrics = (data: any): data is NiveisMetrics => {
   // console.log('🔍 [isValidNiveisMetrics] data.n3:', data?.n3);
   // console.log('🔍 [isValidNiveisMetrics] data.n4:', data?.n4);
 
+  const obj = data as any;
   const isValid =
     typeof data === 'object' &&
     data !== null &&
-    isValidLevelMetrics(data.n1) &&
-    isValidLevelMetrics(data.n2) &&
-    isValidLevelMetrics(data.n3) &&
-    isValidLevelMetrics(data.n4);
+    isValidLevelMetrics(obj.n1) &&
+    isValidLevelMetrics(obj.n2) &&
+    isValidLevelMetrics(obj.n3) &&
+    isValidLevelMetrics(obj.n4);
   // Removido data.geral pois não existe nos dados do backend
 
   // console.log('🔍 [isValidNiveisMetrics] Validation result:', isValid);
@@ -307,7 +324,7 @@ export const isValidNiveisMetrics = (data: any): data is NiveisMetrics => {
 };
 
 // Utilitários de transformação
-export const transformLegacyData = (legacyData: any): DashboardMetrics => {
+export const transformLegacyData = (legacyData: unknown): DashboardMetrics => {
   // Debug logs removidos para produção
   // console.log('🔍 [transformLegacyData] Input data:', legacyData);
   // console.log('🔍 [transformLegacyData] legacyData?.niveis:', legacyData?.niveis);
@@ -322,28 +339,29 @@ export const transformLegacyData = (legacyData: any): DashboardMetrics => {
   };
 
   // Se os dados já vêm na estrutura correta da API
-  if (legacyData?.niveis) {
+  const apiData = legacyData as any;
+  if (apiData?.niveis) {
     // console.log('🔍 [transformLegacyData] Using niveis structure');
     const result = {
       // Incluir os valores totais diretamente dos dados da API
-      novos: legacyData.novos || 0,
-      pendentes: legacyData.pendentes || 0,
-      progresso: legacyData.progresso || 0,
-      resolvidos: legacyData.resolvidos || 0,
-      total: legacyData.total || 0,
+      novos: apiData.novos || 0,
+      pendentes: apiData.pendentes || 0,
+      progresso: apiData.progresso || 0,
+      resolvidos: apiData.resolvidos || 0,
+      total: apiData.total || 0,
       niveis: {
-        n1: legacyData.niveis.n1 || defaultLevel,
-        n2: legacyData.niveis.n2 || defaultLevel,
-        n3: legacyData.niveis.n3 || defaultLevel,
-        n4: legacyData.niveis.n4 || defaultLevel,
+        n1: apiData.niveis.n1 || defaultLevel,
+        n2: apiData.niveis.n2 || defaultLevel,
+        n3: apiData.niveis.n3 || defaultLevel,
+        n4: apiData.niveis.n4 || defaultLevel,
         // Removido geral: não existe nos dados do backend
       },
 
-      filtros_aplicados: legacyData?.filtros_aplicados,
-      tempo_execucao: legacyData?.tempo_execucao,
-      timestamp: legacyData?.timestamp,
-      systemStatus: legacyData?.systemStatus,
-      technicianRanking: legacyData?.technicianRanking,
+      filtros_aplicados: apiData?.filtros_aplicados,
+      tempo_execucao: apiData?.tempo_execucao,
+      timestamp: apiData?.timestamp,
+      systemStatus: apiData?.systemStatus,
+      technicianRanking: apiData?.technicianRanking,
     };
     // console.log('🔍 [transformLegacyData] Result with niveis:', result);
     return result;
@@ -351,26 +369,27 @@ export const transformLegacyData = (legacyData: any): DashboardMetrics => {
 
   // Fallback para dados legados
   // console.log('🔍 [transformLegacyData] Using fallback structure');
+  const fallbackData = legacyData as any;
   const fallbackResult = {
     // Incluir os valores totais diretamente dos dados da API
-    novos: legacyData?.novos || 0,
-    pendentes: legacyData?.pendentes || 0,
-    progresso: legacyData?.progresso || 0,
-    resolvidos: legacyData?.resolvidos || 0,
-    total: legacyData?.total || 0,
+    novos: fallbackData?.novos || 0,
+    pendentes: fallbackData?.pendentes || 0,
+    progresso: fallbackData?.progresso || 0,
+    resolvidos: fallbackData?.resolvidos || 0,
+    total: fallbackData?.total || 0,
     niveis: {
-      n1: legacyData?.n1 || defaultLevel,
-      n2: legacyData?.n2 || defaultLevel,
-      n3: legacyData?.n3 || defaultLevel,
-      n4: legacyData?.n4 || defaultLevel,
+      n1: fallbackData?.n1 || defaultLevel,
+      n2: fallbackData?.n2 || defaultLevel,
+      n3: fallbackData?.n3 || defaultLevel,
+      n4: fallbackData?.n4 || defaultLevel,
       // Removido geral: não existe nos dados do backend
     },
 
-    filtros_aplicados: legacyData?.filtros_aplicados,
-    tempo_execucao: legacyData?.tempo_execucao,
-    timestamp: legacyData?.timestamp,
-    systemStatus: legacyData?.systemStatus,
-    technicianRanking: legacyData?.technicianRanking,
+    filtros_aplicados: fallbackData?.filtros_aplicados,
+    tempo_execucao: fallbackData?.tempo_execucao,
+    timestamp: fallbackData?.timestamp,
+    systemStatus: fallbackData?.systemStatus,
+    technicianRanking: fallbackData?.technicianRanking,
   };
   // console.log('🔍 [transformLegacyData] Fallback result:', fallbackResult);
   return fallbackResult;

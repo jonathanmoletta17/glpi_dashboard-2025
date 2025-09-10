@@ -1,0 +1,260 @@
+{
+  "external_documentation": {
+    "name": "GLPI Dashboard External References",
+    "description": "Configuração de documentos externos e referências técnicas para o projeto",
+    "version": "1.0.0"
+  },
+  "documentation_sources": {
+    "official_docs": {
+      "react": {
+        "name": "React Documentation",
+        "url": "https://react.dev",
+        "priority": "high",
+        "sections": [
+          "hooks",
+          "components",
+          "typescript",
+          "performance"
+        ],
+        "local_cache": true
+      },
+      "typescript": {
+        "name": "TypeScript Handbook",
+        "url": "https://www.typescriptlang.org/docs",
+        "priority": "high",
+        "sections": [
+          "interfaces",
+          "types",
+          "generics",
+          "modules"
+        ],
+        "local_cache": true
+      },
+      "flask": {
+        "name": "Flask Documentation",
+        "url": "https://flask.palletsprojects.com",
+        "priority": "high",
+        "sections": [
+          "blueprints",
+          "api",
+          "database",
+          "testing"
+        ],
+        "local_cache": true
+      },
+      "tailwind": {
+        "name": "Tailwind CSS Documentation",
+        "url": "https://tailwindcss.com/docs",
+        "priority": "medium",
+        "sections": [
+          "utilities",
+          "components",
+          "responsive",
+          "customization"
+        ],
+        "local_cache": false
+      },
+      "shadcn": {
+        "name": "shadcn/ui Documentation",
+        "url": "https://ui.shadcn.com",
+        "priority": "medium",
+        "sections": [
+          "components",
+          "installation",
+          "theming",
+          "examples"
+        ],
+        "local_cache": false
+      }
+    },
+    "glpi_specific": {
+      "glpi_official": {
+        "name": "GLPI Official Documentation",
+        "url": "https://glpi-project.org/documentation",
+        "priority": "high",
+        "sections": [
+          "database-schema",
+          "api",
+          "plugins",
+          "configuration"
+        ],
+        "local_cache": true
+      },
+      "glpi_api": {
+        "name": "GLPI REST API",
+        "url": "https://github.com/glpi-project/glpi/blob/main/apirest.md",
+        "priority": "high",
+        "sections": [
+          "authentication",
+          "endpoints",
+          "search",
+          "crud-operations"
+        ],
+        "local_cache": true
+      },
+      "glpi_database": {
+        "name": "GLPI Database Schema",
+        "url": "https://forge.glpi-project.org/projects/glpi/wiki/DatabaseSchema",
+        "priority": "high",
+        "sections": [
+          "tickets",
+          "users",
+          "categories",
+          "relationships"
+        ],
+        "local_cache": true
+      }
+    },
+    "development_tools": {
+      "vite": {
+        "name": "Vite Documentation",
+        "url": "https://vitejs.dev",
+        "priority": "medium",
+        "sections": [
+          "config",
+          "plugins",
+          "build",
+          "dev-server"
+        ],
+        "local_cache": false
+      },
+      "docker": {
+        "name": "Docker Documentation",
+        "url": "https://docs.docker.com",
+        "priority": "medium",
+        "sections": [
+          "dockerfile",
+          "compose",
+          "networking",
+          "volumes"
+        ],
+        "local_cache": false
+      },
+      "prometheus": {
+        "name": "Prometheus Documentation",
+        "url": "https://prometheus.io/docs",
+        "priority": "low",
+        "sections": [
+          "configuration",
+          "querying",
+          "alerting",
+          "exporters"
+        ],
+        "local_cache": false
+      }
+    }
+  },
+  "context_integration": {
+    "auto_reference": {
+      "enabled": true,
+      "triggers": {
+        "react_questions": {
+          "keywords": ["react", "component", "hook", "jsx", "tsx"],
+          "docs": ["react", "typescript"]
+        },
+        "flask_questions": {
+          "keywords": ["flask", "api", "blueprint", "route", "python"],
+          "docs": ["flask"]
+        },
+        "glpi_questions": {
+          "keywords": ["glpi", "ticket", "técnico", "categoria", "status"],
+          "docs": ["glpi_official", "glpi_api", "glpi_database"]
+        },
+        "styling_questions": {
+          "keywords": ["css", "style", "tailwind", "shadcn", "ui"],
+          "docs": ["tailwind", "shadcn"]
+        }
+      }
+    },
+    "smart_suggestions": {
+      "enabled": true,
+      "confidence_threshold": 0.7,
+      "max_suggestions": 3
+    }
+  },
+  "caching_strategy": {
+    "local_storage": {
+      "enabled": true,
+      "path": ".trae/cache/docs",
+      "max_size": "500MB",
+      "ttl": "7d"
+    },
+    "update_frequency": {
+      "high_priority": "1d",
+      "medium_priority": "3d",
+      "low_priority": "7d"
+    },
+    "compression": {
+      "enabled": true,
+      "algorithm": "gzip"
+    }
+  },
+  "search_configuration": {
+    "indexing": {
+      "full_text": true,
+      "semantic": true,
+      "code_examples": true
+    },
+    "ranking": {
+      "relevance_weight": 0.6,
+      "recency_weight": 0.2,
+      "popularity_weight": 0.2
+    },
+    "filters": {
+      "by_source": true,
+      "by_section": true,
+      "by_language": true,
+      "by_difficulty": true
+    }
+  },
+  "quality_assurance": {
+    "content_validation": {
+      "enabled": true,
+      "check_links": true,
+      "verify_examples": true,
+      "language_detection": true
+    },
+    "freshness_monitoring": {
+      "enabled": true,
+      "alert_threshold": "30d",
+      "auto_update": false
+    }
+  },
+  "usage_analytics": {
+    "track_queries": true,
+    "track_results": true,
+    "track_user_feedback": true,
+    "privacy_mode": true
+  },
+  "local_documentation": {
+    "project_docs": {
+      "path": "docs/",
+      "priority": "highest",
+      "auto_index": true,
+      "formats": ["md", "rst", "txt"]
+    },
+    "api_docs": {
+      "path": "docs/api/",
+      "priority": "high",
+      "auto_generate": true,
+      "formats": ["openapi", "swagger", "md"]
+    },
+    "code_comments": {
+      "extract_docstrings": true,
+      "extract_jsdoc": true,
+      "extract_inline_comments": false
+    }
+  },
+  "integration_settings": {
+    "ide_integration": {
+      "hover_documentation": true,
+      "inline_suggestions": true,
+      "quick_reference": true
+    },
+    "ai_assistant": {
+      "context_aware_responses": true,
+      "cite_sources": true,
+      "provide_examples": true
+    }
+  }
+}

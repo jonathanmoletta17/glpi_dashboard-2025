@@ -316,12 +316,9 @@ class UnifiedCacheManager {
     if (!cache) return;
 
     const regex = new RegExp(pattern);
-    let deletedCount = 0;
-
     for (const [key] of cache.entries()) {
       if (regex.test(key)) {
         cache.delete(key);
-        deletedCount++;
       }
     }
   }
@@ -418,12 +415,6 @@ class UnifiedCacheManager {
     const stats = this.stats.get(type);
 
     if (!cache || !config || !stats) return null;
-
-    const entries = Array.from(cache.entries()).map(([key, entry]) => ({
-      key,
-      timestamp: entry.timestamp,
-      expiresAt: entry.expiresAt,
-    }));
 
     return {
       ...stats,

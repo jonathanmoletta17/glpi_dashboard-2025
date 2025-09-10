@@ -1,7 +1,6 @@
 import { clsx, type ClassValue } from 'clsx';
 import { twMerge } from 'tailwind-merge';
 import { Minus, AlertCircle, CheckCircle, Clock, XCircle, type LucideIcon } from 'lucide-react';
-import type { LevelMetrics, PerformanceMetrics } from '../types/api';
 
 export function cn(...inputs: ClassValue[]) {
   return twMerge(clsx(inputs));

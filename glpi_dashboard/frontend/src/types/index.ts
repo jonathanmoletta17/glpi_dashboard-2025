@@ -98,11 +98,10 @@ export interface DashboardState {
   dateRange?: DateRange;
 
   technicianRanking: TechnicianRanking[];
-  dataIntegrityReport: any | null; // Será tipado adequadamente quando importado
-  monitoringAlerts: any[];
+  dataIntegrityReport: Record<string, unknown> | null;
+  monitoringAlerts: Record<string, unknown>[];
 }
 
 // Export all types
 export * from './api';
-export * from './contract';
 export * from './ticket';

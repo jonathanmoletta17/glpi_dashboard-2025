@@ -1,20 +1,11 @@
-import React, { useEffect, useMemo, Suspense, useState } from 'react';
+import React, { useMemo } from 'react';
 import { motion } from 'framer-motion';
 import { MetricsGrid } from './MetricsGrid';
-import { LevelMetricsGrid } from './LevelMetricsGrid';
 import { PremiumLevelCard } from './PremiumLevelCard';
 import { ProfessionalTicketsList } from './ProfessionalTicketsList';
 import { ProfessionalRankingTable } from './ProfessionalRankingTable';
 
 // Componentes lazy centralizados
-import {
-  LazyNewTicketsList,
-  LazyRankingTable,
-  ListSkeleton,
-  TableSkeleton,
-} from '../LazyComponents';
-
-import { RESPONSIVE_GRID_CLASSES, RESPONSIVE_SPACING } from '../../utils/responsive';
 
 import { Card, CardContent, CardHeader } from '@/components/ui/card';
 

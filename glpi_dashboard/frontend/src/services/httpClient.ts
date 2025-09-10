@@ -4,7 +4,6 @@ import type {
   AxiosError,
   AxiosRequestConfig,
   AxiosResponse,
-  AxiosHeaders,
 } from 'axios';
 
 // Função auxiliar para acessar variáveis de ambiente

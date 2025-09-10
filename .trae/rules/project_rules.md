@@ -248,6 +248,184 @@ Based on user request, you **MUST** follow these sequences of tool calls
 11. After that, you **MUST** start the planning workflow even if the user does not explicitly ask so. **DO NOT** start modifying the code right away. **STRICTLY FOLLOW** the planning workflow as above.
 12. You are **STRICTLY REQUIRED** to follow these workflows with the exact tool sequences. Make sure you **ALWAYS** fully utilize the context-rich tool list provided to make well-thought decisions in your implementations.
 
+# Project Rules - GLPI Dashboard
+
+## Projeto Overview
+
+### Descrição
+Sistema de dashboard para visualização de métricas e dados do GLPI (Gestão Livre de Parque de Informática), desenvolvido com arquitetura fullstack moderna.
+
+### Arquitetura
+- **Frontend**: React + TypeScript + Vite + Tailwind CSS + shadcn/ui
+- **Backend**: Flask + Python + SQLAlchemy
+- **Database**: MySQL (GLPI existente)
+- **Cache**: Redis
+- **Monitoramento**: Prometheus + Grafana
+- **Containerização**: Docker + docker-compose
+
+## Regras de Desenvolvimento
+
+### Padrões de Código
+
+#### Frontend (React/TypeScript)
+- **Estrutura de Componentes**: Usar padrão de componentes funcionais com hooks
+- **Naming Convention**: camelCase para variáveis e funções, PascalCase para componentes
+- **Imports**: Usar imports absolutos com alias `@/` para src
+- **Styling**: Priorizar Tailwind CSS, usar shadcn/ui para componentes base
+- **State Management**: Context API para estado global, useState/useReducer para local
+- **Types**: Definir interfaces TypeScript para todas as props e dados
+
+#### Backend (Flask/Python)
+- **Estrutura**: Seguir padrão Blueprint para organização de rotas
+- **Naming Convention**: snake_case para variáveis, funções e arquivos
+- **API Design**: RESTful APIs com versionamento (/api/v1/)
+- **Validation**: Usar schemas Marshmallow para validação de dados
+- **Error Handling**: Tratamento consistente de erros com códigos HTTP apropriados
+- **Database**: SQLAlchemy ORM com migrations Alembic
+
+### Estrutura de Pastas
+
+```
+glpi_dashboard/
+├── frontend/
+│   ├── src/
+│   │   ├── components/     # Componentes reutilizáveis
+│   │   ├── pages/         # Páginas da aplicação
+│   │   ├── hooks/         # Custom hooks
+│   │   ├── services/      # Serviços de API
+│   │   ├── types/         # Definições TypeScript
+│   │   ├── utils/         # Utilitários
+│   │   └── styles/        # Estilos globais
+│   ├── public/           # Arquivos estáticos
+│   └── tests/            # Testes frontend
+├── backend/
+│   ├── api/              # Blueprints e rotas
+│   ├── models/           # Modelos SQLAlchemy
+│   ├── schemas/          # Schemas Marshmallow
+│   ├── services/         # Lógica de negócio
+│   ├── utils/            # Utilitários
+│   └── tests/            # Testes backend
+└── monitoring/           # Configurações Prometheus/Grafana
+```
+
+### Regras Específicas do GLPI
+
+#### Terminologia
+- **Tickets**: Chamados/solicitações de suporte
+- **Técnicos**: Usuários responsáveis por resolver tickets
+- **Solicitantes**: Usuários que abrem tickets
+- **Categorias**: Classificação de tipos de tickets
+- **Status**: Estado atual do ticket (novo, em andamento, resolvido, fechado)
+- **Prioridade**: Nível de urgência (baixa, normal, alta, muito alta)
+
+#### Métricas Importantes
+- **SLA**: Acordo de Nível de Serviço
+- **MTTR**: Tempo Médio de Resolução
+- **Volume de Tickets**: Quantidade por período
+- **Distribuição por Técnico**: Carga de trabalho
+- **Satisfação do Cliente**: Avaliações pós-resolução
+
+### Integração com GLPI
+
+#### Conexão com Database
+- **Modo Read-Only**: Nunca modificar dados do GLPI diretamente
+- **Views Específicas**: Criar views para consultas complexas
+- **Cache Strategy**: Implementar cache Redis para consultas frequentes
+- **Performance**: Otimizar queries para grandes volumes de dados
+
+#### Sincronização de Dados
+- **Real-time**: WebSockets para atualizações em tempo real
+- **Batch Processing**: Jobs para processamento de grandes volumes
+- **Data Validation**: Validar integridade dos dados importados
+
+### Segurança
+
+#### Autenticação e Autorização
+- **JWT Tokens**: Para autenticação de API
+- **RBAC**: Controle de acesso baseado em roles
+- **CORS**: Configuração adequada para frontend
+- **Rate Limiting**: Proteção contra abuso de API
+
+#### Dados Sensíveis
+- **Environment Variables**: Usar .env para configurações sensíveis
+- **Encryption**: Criptografar dados sensíveis em trânsito e repouso
+- **Audit Logs**: Registrar acessos e modificações importantes
+
+### Performance
+
+#### Frontend
+- **Code Splitting**: Lazy loading de componentes
+- **Memoization**: React.memo e useMemo para otimização
+- **Bundle Size**: Monitorar e otimizar tamanho do bundle
+- **Caching**: Implementar cache de requisições
+
+#### Backend
+- **Database Indexing**: Índices apropriados para queries frequentes
+- **Connection Pooling**: Pool de conexões para database
+- **Async Processing**: Celery para tarefas assíncronas
+- **Monitoring**: Métricas de performance com Prometheus
+
+### Testes
+
+#### Frontend
+- **Unit Tests**: Vitest para testes unitários
+- **Component Tests**: Testing Library para componentes React
+- **E2E Tests**: Playwright para testes end-to-end
+- **Coverage**: Mínimo 80% de cobertura
+
+#### Backend
+- **Unit Tests**: pytest para testes unitários
+- **Integration Tests**: Testes de integração com database
+- **API Tests**: Testes de endpoints com pytest-flask
+- **Load Tests**: Testes de carga com locust
+
+### Deployment
+
+#### Containerização
+- **Multi-stage Builds**: Otimizar imagens Docker
+- **Health Checks**: Implementar health checks em containers
+- **Environment Configs**: Configurações específicas por ambiente
+- **Secrets Management**: Usar Docker secrets para dados sensíveis
+
+#### CI/CD
+- **Pre-commit Hooks**: Linting e formatação automática
+- **Automated Tests**: Executar testes em pipeline
+- **Security Scans**: Verificação de vulnerabilidades
+- **Deployment Strategy**: Blue-green ou rolling updates
+
+## Byterover MCP Server Integration
+
+### Required Tools Usage
+You MUST use the following Byterover MCP Server tools for all development tasks:
+
+1. **byterover-retrieve-knowledge** - Always retrieve relevant context before starting any task
+2. **byterover-store-knowledge** - Store critical programming knowledge after successful implementations
+3. **byterover-save-implementation-plan** - Save detailed plans before starting complex implementations
+4. **byterover-update-plan-progress** - Track progress during implementation
+5. **byterover-list-modules** and **byterover-search-module** - Understand project structure
+6. **byterover-store-module** and **byterover-update-module** - Document project modules
+
+### Mandatory Workflows
+
+#### Onboarding Workflow
+1. Check handbook existence with **byterover-check-handbook-existence**
+2. Create or update handbook using **byterover-create-handbook** or **byterover-update-handbook**
+3. List and manage modules with module tools
+
+#### Planning Workflow
+1. Retrieve active plans if continuing work
+2. Use module tools to understand project structure
+3. Create detailed implementation plans
+4. Save plans immediately after user approval
+5. Track progress during implementation
+6. Store knowledge after completion
+
+### Knowledge Management
+- Always prefix responses with "According to Byterover memory layer" when using retrieved knowledge
+- Store critical insights, patterns, and solutions for future reference
+- Update module information when making significant changes
+- Use reflection tools to assess context completeness
+
 [byterover-mcp]
 
 [byterover-mcp]

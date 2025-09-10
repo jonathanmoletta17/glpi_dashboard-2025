@@ -1,8 +1,8 @@
 import React, { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { Loader2, Clock, AlertCircle, CheckCircle2 } from 'lucide-react';
+import { Loader2, AlertCircle } from 'lucide-react';
 import { componentConfigs } from '../config/appConfig';
-import { createCardClasses, createFlexClasses, TAILWIND_CLASSES } from '../design-system/utils';
+import { createFlexClasses, TAILWIND_CLASSES } from '../design-system/utils';
 import { cn } from '../lib/utils';
 
 // Tipos unificados para loading

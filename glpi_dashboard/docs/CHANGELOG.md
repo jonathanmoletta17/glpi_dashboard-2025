@@ -5,6 +5,31 @@ Todas as mudanças notáveis neste projeto serão documentadas neste arquivo.
 O formato é baseado em [Keep a Changelog](https://keepachangelog.com/pt-BR/1.0.0/),
 e este projeto adere ao [Versionamento Semântico](https://semver.org/lang/pt-BR/).
 
+## [1.0.1] - 2025-01-22
+
+### Corrigido
+- **Componentes UI Faltantes**
+  - Criado componente `Card` com variantes (CardHeader, CardTitle, CardDescription, CardContent, CardFooter)
+  - Criado componente `Badge` com sistema de variantes usando class-variance-authority
+  - Criado componente `Button` com múltiplas variantes e tamanhos
+  - Resolvidos imports faltantes no dashboard principal
+
+- **Correções TypeScript**
+  - Criado arquivo `vite-env.d.ts` para definições de tipos do Vite
+  - Resolvidos erros de `import.meta.env` em múltiplos arquivos
+  - Corrigidos erros de propriedade 'env' inexistente em ImportMeta
+
+- **Qualidade de Código**
+  - Type-check executado com sucesso (0 erros)
+  - Servidor de desenvolvimento funcionando corretamente na porta 3002
+  - Todos os imports de componentes UI funcionando adequadamente
+
+### Técnico
+- **Dependências Verificadas**: class-variance-authority e @radix-ui/react-slot confirmadas
+- **Build Status**: ✅ Compilação bem-sucedida
+- **Dev Server**: ✅ Rodando em http://localhost:3002
+- **Componentes**: ✅ Todos os imports resolvidos
+
 ## [1.0.0] - 2025-09-09
 
 ### Adicionado

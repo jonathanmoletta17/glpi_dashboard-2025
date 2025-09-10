@@ -3,7 +3,7 @@ import { Search, X, Clock, Calendar, ChevronDown } from 'lucide-react';
 import { Theme, SearchResult } from '../types';
 import { SimpleTechIcon } from './SimpleTechIcon';
 import { useDebouncedCallback } from '../hooks/useDebounce';
-import { useKeyboardNavigation, useListNavigation } from '../hooks/useKeyboardNavigation';
+import { useListNavigation } from '../hooks/useKeyboardNavigation';
 import { useScreenReaderAnnouncement } from '../components/accessibility/VisuallyHidden';
 
 interface HeaderProps {

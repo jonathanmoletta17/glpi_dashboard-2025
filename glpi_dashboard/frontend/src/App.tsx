@@ -1,4 +1,4 @@
-import { useState, useEffect, Suspense } from 'react';
+import { useState, useEffect } from 'react';
 import { Header } from './components/Header';
 import { NotificationSystem } from './components/NotificationSystem';
 import CacheNotification from './components/CacheNotification';
@@ -10,7 +10,6 @@ import { Ticket } from './types/ticket';
 import { UnifiedLoading } from './components/UnifiedLoading';
 
 // Componentes lazy centralizados
-import { DashboardSkeleton } from './components/LazyComponents';
 
 import { useDashboard } from './hooks/useDashboard';
 

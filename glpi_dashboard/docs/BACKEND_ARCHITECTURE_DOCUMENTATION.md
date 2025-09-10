@@ -169,16 +169,16 @@ class Config:
     # Flask
     SECRET_KEY = os.getenv('SECRET_KEY', 'dev-secret-key')
     DEBUG = os.getenv('DEBUG', 'False').lower() == 'true'
-    
+
     # GLPI
     GLPI_URL = os.getenv('GLPI_URL', 'http://localhost/glpi')
     GLPI_USER_TOKEN = os.getenv('GLPI_USER_TOKEN')
     GLPI_APP_TOKEN = os.getenv('GLPI_APP_TOKEN')
-    
+
     # Cache
     CACHE_TYPE = os.getenv('CACHE_TYPE', 'SimpleCache')
     CACHE_DEFAULT_TIMEOUT = int(os.getenv('CACHE_TIMEOUT', '300'))
-    
+
     # Redis (opcional)
     REDIS_URL = os.getenv('REDIS_URL', 'redis://localhost:6379/0')
 ```

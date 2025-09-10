@@ -3,7 +3,7 @@ import { motion } from 'framer-motion';
 import { Badge } from '@/components/ui/badge';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { cn, formatNumber } from '@/lib/utils';
-import { Trophy, Medal, Award, Star, Users, BarChart3 } from 'lucide-react';
+import { Trophy, Medal, Award, Star, BarChart3 } from 'lucide-react';
 import { TechnicianRanking } from '@/types';
 
 interface ProfessionalRankingTableProps {

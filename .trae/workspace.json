@@ -1,0 +1,213 @@
+{
+  "workspace": {
+    "name": "GLPI Dashboard Workspace",
+    "description": "Configuração de workspace otimizada para desenvolvimento do GLPI Dashboard",
+    "version": "1.0.0"
+  },
+  "indexing": {
+    "strategy": "intelligent",
+    "max_file_size": "10MB",
+    "max_files_per_context": 50,
+    "update_frequency": "on_change",
+    "cache_duration": "1h",
+    "parallel_processing": true
+  },
+  "file_priorities": {
+    "critical": {
+      "weight": 10,
+      "patterns": [
+        "glpi_dashboard/frontend/src/**/*.{ts,tsx,js,jsx}",
+        "glpi_dashboard/backend/**/*.py",
+        "glpi_dashboard/frontend/package.json",
+        "glpi_dashboard/requirements.txt",
+        "docs/BYTEROVER.md",
+        ".trae/**/*"
+      ]
+    },
+    "high": {
+      "weight": 8,
+      "patterns": [
+        "glpi_dashboard/docker-compose.yml",
+        "glpi_dashboard/frontend/tailwind.config.js",
+        "glpi_dashboard/frontend/vite.config.ts",
+        "glpi_dashboard/frontend/tsconfig.json",
+        "glpi_dashboard/backend/config/**/*.py",
+        "docs/**/*.md"
+      ]
+    },
+    "medium": {
+      "weight": 5,
+      "patterns": [
+        "glpi_dashboard/monitoring/**/*.yml",
+        "glpi_dashboard/scripts/**/*.{py,sh,bat}",
+        "*.dockerfile",
+        ".env.example",
+        "docker.env"
+      ]
+    },
+    "low": {
+      "weight": 2,
+      "patterns": [
+        "glpi_dashboard/data/**/*",
+        "*.md",
+        "*.txt",
+        "*.json"
+      ]
+    }
+  },
+  "context_rules": {
+    "auto_include": {
+      "on_frontend_mention": [
+        "glpi_dashboard/frontend/src/**/*.{ts,tsx}",
+        "glpi_dashboard/frontend/package.json",
+        "glpi_dashboard/frontend/tailwind.config.js",
+        "glpi_dashboard/frontend/vite.config.ts"
+      ],
+      "on_backend_mention": [
+        "glpi_dashboard/backend/**/*.py",
+        "glpi_dashboard/requirements.txt",
+        "glpi_dashboard/backend/config/**/*"
+      ],
+      "on_component_mention": [
+        "glpi_dashboard/frontend/src/components/**/*.{ts,tsx}",
+        "glpi_dashboard/frontend/src/types/**/*.ts"
+      ],
+      "on_api_mention": [
+        "glpi_dashboard/backend/api/**/*.py",
+        "glpi_dashboard/backend/schemas/**/*.py",
+        "docs/api/**/*.md"
+      ]
+    },
+    "dependency_tracking": {
+      "react_components": {
+        "include_types": true,
+        "include_hooks": true,
+        "include_styles": true
+      },
+      "flask_apis": {
+        "include_schemas": true,
+        "include_services": true,
+        "include_tests": true
+      }
+    }
+  },
+  "performance_optimization": {
+    "incremental_indexing": true,
+    "smart_caching": {
+      "enabled": true,
+      "cache_similar_contexts": true,
+      "invalidate_on_change": true
+    },
+    "parallel_processing": {
+      "enabled": true,
+      "max_workers": 4
+    },
+    "memory_management": {
+      "max_memory_usage": "2GB",
+      "cleanup_frequency": "30m"
+    }
+  },
+  "search_optimization": {
+    "fuzzy_matching": {
+      "enabled": true,
+      "threshold": 0.8
+    },
+    "semantic_search": {
+      "enabled": true,
+      "model": "code-search-net"
+    },
+    "keyword_boosting": {
+      "glpi_terms": {
+        "weight": 2.0,
+        "terms": ["ticket", "técnico", "solicitante", "categoria", "status", "prioridade", "sla", "mttr"]
+      },
+      "tech_terms": {
+        "weight": 1.5,
+        "terms": ["react", "typescript", "flask", "python", "tailwind", "shadcn", "api", "component"]
+      }
+    }
+  },
+  "language_support": {
+    "primary_language": "pt-BR",
+    "fallback_language": "en",
+    "code_languages": [
+      "typescript",
+      "javascript",
+      "python",
+      "json",
+      "yaml",
+      "dockerfile",
+      "sql",
+      "css",
+      "html"
+    ]
+  },
+  "integration": {
+    "git": {
+      "track_changes": true,
+      "ignore_patterns": [
+        "*.log",
+        "node_modules/**",
+        "__pycache__/**",
+        "dist/**",
+        "build/**"
+      ]
+    },
+    "lsp": {
+      "typescript": {
+        "enabled": true,
+        "include_definitions": true,
+        "include_references": true
+      },
+      "python": {
+        "enabled": true,
+        "include_docstrings": true,
+        "include_type_hints": true
+      }
+    }
+  },
+  "security": {
+    "sensitive_patterns": [
+      "password",
+      "secret",
+      "token",
+      "key",
+      "credential",
+      "api_key",
+      "database_url"
+    ],
+    "exclude_sensitive_files": [
+      ".env",
+      "*.key",
+      "*.pem",
+      "secrets/**",
+      "credentials/**"
+    ],
+    "anonymize_data": {
+      "enabled": true,
+      "patterns": [
+        "email",
+        "phone",
+        "cpf",
+        "cnpj"
+      ]
+    }
+  },
+  "monitoring": {
+    "performance_metrics": {
+      "enabled": true,
+      "track_indexing_time": true,
+      "track_search_time": true,
+      "track_memory_usage": true
+    },
+    "health_checks": {
+      "enabled": true,
+      "frequency": "5m",
+      "alerts": {
+        "high_memory_usage": "90%",
+        "slow_indexing": "30s",
+        "failed_searches": "5%"
+      }
+    }
+  }
+}

@@ -1,0 +1,193 @@
+# Trae AI Ignore File
+# Arquivos e pastas que devem ser excluídos da indexação
+
+# === ARQUIVOS DE BUILD E DISTRIBUIÇÃO ===
+# Frontend
+glpi_dashboard/frontend/dist/
+glpi_dashboard/frontend/build/
+glpi_dashboard/frontend/.vite/
+glpi_dashboard/frontend/coverage/
+
+# Backend
+glpi_dashboard/backend/__pycache__/
+glpi_dashboard/backend/*.pyc
+glpi_dashboard/backend/*.pyo
+glpi_dashboard/backend/*.pyd
+glpi_dashboard/backend/.pytest_cache/
+glpi_dashboard/backend/htmlcov/
+
+# === NODE_MODULES E DEPENDÊNCIAS ===
+node_modules/
+glpi_dashboard/frontend/node_modules/
+.pnpm-store/
+yarn.lock
+package-lock.json
+
+# Python packages
+glpi_dashboard/backend/venv/
+glpi_dashboard/backend/.venv/
+glpi_dashboard/backend/env/
+*.egg-info/
+
+# === ARQUIVOS DE AMBIENTE E CONFIGURAÇÃO SENSÍVEL ===
+.env
+.env.local
+.env.production
+.env.development
+*.key
+*.pem
+*.crt
+secrets/
+credentials/
+
+# === LOGS E ARQUIVOS TEMPORÁRIOS ===
+*.log
+logs/
+glpi_dashboard/backend/logs/
+glpi_dashboard/frontend/logs/
+*.tmp
+*.temp
+.cache/
+.temp/
+
+# === ARQUIVOS DE SISTEMA ===
+.DS_Store
+Thumbs.db
+*.swp
+*.swo
+*~
+.vscode/settings.json
+.idea/
+
+# === DADOS E BACKUPS ===
+glpi_dashboard/data/backups/
+glpi_dashboard/data/exports/
+glpi_dashboard/data/imports/
+*.sql
+*.dump
+*.backup
+
+# === ARQUIVOS GERADOS AUTOMATICAMENTE ===
+# TypeScript
+*.d.ts.map
+*.js.map
+
+# Python
+*.pyc
+*.pyo
+*.pyd
+__pycache__/
+
+# CSS/SCSS gerados
+*.css.map
+*.scss.map
+
+# === TESTES E COVERAGE ===
+coverage/
+.nyc_output/
+.coverage
+htmlcov/
+test-results/
+junit.xml
+
+# === DOCKER E CONTAINERS ===
+.docker/
+docker-compose.override.yml
+*.dockerfile.local
+
+# === ARQUIVOS GRANDES E BINÁRIOS ===
+*.zip
+*.tar.gz
+*.rar
+*.7z
+*.pdf
+*.doc
+*.docx
+*.xls
+*.xlsx
+*.ppt
+*.pptx
+*.jpg
+*.jpeg
+*.png
+*.gif
+*.bmp
+*.ico
+*.svg
+*.mp4
+*.avi
+*.mov
+*.wmv
+*.mp3
+*.wav
+*.flac
+
+# === ARQUIVOS DE MONITORAMENTO ===
+glpi_dashboard/monitoring/data/
+glpi_dashboard/monitoring/logs/
+prometheus_data/
+grafana_data/
+
+# === ARQUIVOS DE DESENVOLVIMENTO ===
+.eslintcache
+.stylelintcache
+.parcel-cache/
+.next/
+.nuxt/
+.output/
+.vercel/
+.netlify/
+
+# === ARQUIVOS DE EDITOR ===
+*.sublime-project
+*.sublime-workspace
+.vscode/launch.json
+.vscode/tasks.json
+.vscode/extensions.json
+
+# === ARQUIVOS DE TESTE E MOCK ===
+__mocks__/
+*.mock.js
+*.mock.ts
+*.test.js.snap
+*.test.ts.snap
+
+# === ARQUIVOS DE DOCUMENTAÇÃO GERADOS ===
+docs/build/
+docs/_build/
+docs/.doctrees/
+site/
+
+# === ARQUIVOS ESPECÍFICOS DO PROJETO ===
+# Dados de exemplo grandes
+glpi_dashboard/data/samples/large_datasets/
+
+# Scripts de migração executados
+glpi_dashboard/backend/migrations/executed/
+
+# Arquivos de configuração local
+local.config.js
+local.config.ts
+local.settings.json
+
+# === PADRÕES GLOBAIS ===
+# Qualquer arquivo que comece com 'temp_'
+temp_*
+
+# Qualquer arquivo que termine com '.local'
+*.local
+
+# Qualquer pasta que comece com 'tmp_'
+tmp_*/
+
+# Arquivos de backup automático
+*.bak
+*.backup
+*.old
+
+# === ARQUIVOS DE ANÁLISE E PROFILING ===
+*.prof
+*.profile
+profile_*
+perf_*
+benchmark_*

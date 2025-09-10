@@ -2,7 +2,6 @@ import React from 'react';
 import { Ticket } from '../types/ticket';
 import { X, ExternalLink, Clock, User, Tag, Paperclip, MessageSquare, Phone } from 'lucide-react';
 import { formatDate, getStatusColor } from '../lib/utils';
-import { createCardClasses, createFlexClasses, TAILWIND_CLASSES } from '../design-system/utils';
 import { cn } from '../lib/utils';
 import { TicketDescriptionFormatter } from './TicketDescriptionFormatter';
 

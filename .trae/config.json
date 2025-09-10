@@ -1,0 +1,90 @@
+{
+  "project": {
+    "name": "GLPI Dashboard",
+    "description": "Sistema de visualização de métricas e dados do GLPI com frontend React e backend Flask",
+    "type": "fullstack-web-app",
+    "version": "1.0.0",
+    "repository": {
+      "type": "git",
+      "structure": "monorepo"
+    }
+  },
+  "architecture": {
+    "frontend": {
+      "framework": "React",
+      "language": "TypeScript",
+      "bundler": "Vite",
+      "styling": "Tailwind CSS",
+      "ui_library": "shadcn/ui",
+      "path": "glpi_dashboard/frontend"
+    },
+    "backend": {
+      "framework": "Flask",
+      "language": "Python",
+      "database": "MySQL (GLPI)",
+      "cache": "Redis",
+      "path": "glpi_dashboard/backend"
+    },
+    "monitoring": {
+      "metrics": "Prometheus",
+      "path": "glpi_dashboard/monitoring"
+    }
+  },
+  "ai_behavior": {
+    "code_style": {
+      "typescript": {
+        "quotes": "single",
+        "semicolons": true,
+        "indentation": 2,
+        "naming": "camelCase"
+      },
+      "python": {
+        "style_guide": "PEP 8",
+        "line_length": 88,
+        "quotes": "double",
+        "naming": "snake_case"
+      }
+    },
+    "preferences": {
+      "language": "Portuguese (Brazil)",
+      "explanation_level": "detailed",
+      "include_comments": true,
+      "security_first": true,
+      "performance_aware": true
+    },
+    "frameworks_priority": [
+      "React with TypeScript",
+      "Flask with Python",
+      "Tailwind CSS",
+      "shadcn/ui components"
+    ]
+  },
+  "development": {
+    "package_managers": {
+      "frontend": "npm",
+      "backend": "pip"
+    },
+    "testing": {
+      "frontend": "Vitest",
+      "backend": "pytest"
+    },
+    "linting": {
+      "frontend": "ESLint + Prettier",
+      "backend": "flake8 + black"
+    },
+    "pre_commit_hooks": true
+  },
+  "deployment": {
+    "containerization": "Docker",
+    "orchestration": "docker-compose",
+    "environment_files": [
+      ".env.example",
+      "docker.env"
+    ]
+  },
+  "documentation": {
+    "main_docs": "docs/",
+    "api_docs": "docs/api/",
+    "architecture": "docs/BYTEROVER.md"
+  }
+}
