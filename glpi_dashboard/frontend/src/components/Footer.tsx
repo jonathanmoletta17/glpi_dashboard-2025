@@ -22,9 +22,16 @@ export const Footer: React.FC<FooterProps> = ({ lastUpdated, isOnline }) => {
                 Última atualização: {lastUpdated.toLocaleTimeString('pt-BR')}
               </span>
             )}
-            <div className='flex items-center space-x-2'>
+            <div
+              className='flex items-center space-x-2'
+              role='status'
+              aria-live='polite'
+              aria-label={`Status da conexão: ${isOnline ? 'Online' : 'Offline'}`}
+            >
               <div
                 className={`w-2 h-2 rounded-full ${isOnline ? 'bg-green-500' : 'bg-red-500'}`}
+                role='img'
+                aria-hidden='true'
               ></div>
               <span className='text-xs text-gray-600 dark:text-gray-400'>
                 {isOnline ? 'Online' : 'Offline'}

@@ -24,9 +24,12 @@ from api.hybrid_routes import hybrid_bp
 from config.settings import active_config
 from utils.observability_middleware import setup_observability
 from utils.structured_logging import system_logger
+from services.cache_warming import create_cache_warming
 
-# Instância global do cache
+# Instâncias globais
 cache = Cache()
+redis_client = None
+cache_warming_service = None
 
 
 def _load_app_config(config_obj) -> Dict[str, Any]:
@@ -56,29 +59,64 @@ def _load_app_config(config_obj) -> Dict[str, Any]:
 
 
 def _setup_cache(app: Flask) -> Dict[str, Any]:
-    """Configura cache com Redis e fallback para SimpleCache"""
+    """Configura o sistema de cache da aplicação"""
+    global redis_client, cache_warming_service
+
     try:
-        # Tenta conectar ao Redis
-        redis_url = app.config.get("REDIS_URL", "redis://localhost:6379/0")
-        redis_client = redis.from_url(redis_url)
-        redis_client.ping()  # Testa conexão
+        # Configuração do cache baseada no ambiente
+        if app.config.get("CACHE_TYPE") == "RedisCache":
+            # Inicializa cliente Redis
+            redis_url = app.config.get("REDIS_URL", "redis://localhost:6379/0")
+            redis_client = redis.from_url(
+                redis_url,
+                decode_responses=True,
+                socket_connect_timeout=5,
+                socket_timeout=5,
+                retry_on_timeout=True
+            )
 
-        cache_config = {
-            "CACHE_TYPE": "RedisCache",
-            "CACHE_REDIS_URL": app.config.get("CACHE_REDIS_URL", "redis://localhost:6379/0"),
-            "CACHE_DEFAULT_TIMEOUT": app.config.get("CACHE_DEFAULT_TIMEOUT", 300),
-            "CACHE_KEY_PREFIX": app.config.get("CACHE_KEY_PREFIX", "glpi_dashboard:"),
-        }
+            # Testa conexão Redis
+            redis_client.ping()
+            system_logger.log_operation_end(
+                "redis_connection",
+                success=True,
+                redis_url=redis_url,
+            )
 
-        system_logger.log_operation_end(
-            "redis_connection",
-            success=True,
-            redis_url=redis_url,
-        )
+            cache_config = {
+                "CACHE_TYPE": "RedisCache",
+                "CACHE_REDIS_URL": app.config.get("CACHE_REDIS_URL", "redis://localhost:6379/0"),
+                "CACHE_DEFAULT_TIMEOUT": app.config.get("CACHE_DEFAULT_TIMEOUT", 300),
+                "CACHE_KEY_PREFIX": app.config.get("CACHE_KEY_PREFIX", "glpi_dashboard:"),
+            }
+
+            # Configurar smart cache com Redis
+            from services.smart_cache import smart_cache
+            smart_cache.redis_client = redis_client
+
+            # Inicializa serviço de cache warming
+            cache_warming_service = create_cache_warming()
+            cache_warming_service.start()
+            system_logger.log_operation_end(
+                "cache_warming_started",
+                success=True,
+            )
+
+        else:
+            cache_config = {
+                "CACHE_TYPE": "SimpleCache",
+                "CACHE_DEFAULT_TIMEOUT": app.config.get("CACHE_DEFAULT_TIMEOUT", 300),
+            }
+            system_logger.log_operation_end(
+                "simple_cache_configured",
+                success=True,
+            )
+
         return cache_config
 
     except Exception as e:
         # Fallback para cache simples em caso de erro no Redis
+        redis_client = None
         cache_config = {
             "CACHE_TYPE": "SimpleCache",
             "CACHE_DEFAULT_TIMEOUT": app.config.get("CACHE_DEFAULT_TIMEOUT", 300),
@@ -107,6 +145,7 @@ def _setup_cors(app: Flask) -> None:
                 ],
                 "methods": ["GET", "POST", "PUT", "DELETE", "OPTIONS"],
                 "allow_headers": ["Content-Type", "Authorization"],
+                "supports_credentials": True,
             }
         },
     )

@@ -23,12 +23,12 @@ logger = logging.getLogger("glpi.api")
 @monitor_performance
 def get_hybrid_pagination_stats():
     """Endpoint para monitorar estatísticas da paginação híbrida"""
-    
+
     try:
         from utils.hybrid_pagination import hybrid_pagination
-        
+
         stats = hybrid_pagination.get_stats()
-        
+
         return jsonify({
             "success": True,
             "data": stats,
@@ -48,20 +48,20 @@ def get_hybrid_pagination_stats():
 @monitor_performance
 def get_technician_pagination_info(technician_id):
     """Endpoint para obter informações de paginação de um técnico específico"""
-    
+
     try:
         from utils.hybrid_pagination import hybrid_pagination
-        
+
         # Buscar dados do técnico no cache
         tech_data = hybrid_pagination.cache_data["technicians"].get(technician_id)
-        
+
         if not tech_data:
             return jsonify({
                 "success": False,
                 "message": f"Técnico {technician_id} não encontrado no cache",
                 "data": None
             }), 404
-        
+
         return jsonify({
             "success": True,
             "data": {
@@ -90,16 +90,16 @@ def get_technician_pagination_info(technician_id):
 @monitor_performance
 def cleanup_hybrid_pagination():
     """Endpoint para limpar entradas antigas do cache"""
-    
+
     try:
         from utils.hybrid_pagination import hybrid_pagination
-        
+
         before_count = len(hybrid_pagination.cache_data["technicians"])
         hybrid_pagination.cleanup_old_entries()
         after_count = len(hybrid_pagination.cache_data["technicians"])
-        
+
         removed_count = before_count - after_count
-        
+
         return jsonify({
             "success": True,
             "data": {

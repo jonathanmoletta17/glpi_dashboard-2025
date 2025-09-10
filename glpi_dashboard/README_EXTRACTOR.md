@@ -45,12 +45,12 @@ GLPI_APP_TOKEN=seu-app-token-aqui
 
 ### Execução Simples
 ```bash
-python glpi_complete_extractor.py
+python scripts/glpi_complete_extractor.py
 ```
 
 ### Execução com Log Detalhado
 ```bash
-python glpi_complete_extractor.py 2>&1 | tee extraction.log
+python scripts/glpi_complete_extractor.py 2>&1 | tee extraction.log
 ```
 
 ## 📊 Arquivos Gerados

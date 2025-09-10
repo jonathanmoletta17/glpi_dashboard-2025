@@ -1,8 +1,11 @@
-import React from 'react';
+import React, { useMemo, useCallback } from 'react';
 import { motion } from 'framer-motion';
 import { Clock, User, AlertCircle, CheckCircle, XCircle, Calendar, Tag } from 'lucide-react';
 import { Ticket } from '../types/ticket';
 import { cn } from '@/lib/utils';
+import { useKeyboardNavigation } from '../hooks/useKeyboardNavigation';
+import { VisuallyHidden } from './accessibility/VisuallyHidden';
+import { ariaUtils } from '../utils/accessibility';
 
 interface TicketCardProps {
   ticket: Ticket;
@@ -99,11 +102,38 @@ export const TicketCard: React.FC<TicketCardProps> = ({
   selected = false,
   loading = false,
 }) => {
-  const handleClick = () => {
-    if (onClick) {
+  const handleClick = useCallback(() => {
+    if (onClick && !loading) {
       onClick(ticket);
     }
-  };
+  }, [onClick, ticket, loading]);
+
+  const handleKeyDown = useCallback(
+    (event: React.KeyboardEvent) => {
+      if ((event.key === 'Enter' || event.key === ' ') && onClick && !loading) {
+        event.preventDefault();
+        onClick(ticket);
+      }
+    },
+    [onClick, ticket, loading]
+  );
+
+  // Navegação por teclado aprimorada
+  const { elementRef } = useKeyboardNavigation({
+    onEnter: handleClick,
+    onSpace: handleClick,
+    disabled: loading || !onClick,
+  });
+
+  // ARIA labels descritivos
+  const ariaLabel = useMemo(() => {
+    const statusText = getStatusText(ticket.status);
+    const priorityText = getPriorityText(ticket.priority);
+
+    return `Ticket ${ticket.id}: ${ticket.title}. Status: ${statusText}. Prioridade: ${priorityText}. Criado em ${formatDate(ticket.createdAt)}.`;
+  }, [ticket]);
+
+  const descriptionId = useMemo(() => `ticket-${ticket.id}-description`, [ticket.id]);
 
   if (loading) {
     return (
@@ -118,21 +148,30 @@ export const TicketCard: React.FC<TicketCardProps> = ({
 
   return (
     <motion.article
+      ref={elementRef}
       className={cn(
-        'p-4 border rounded-lg bg-white shadow-sm hover:shadow-md transition-shadow cursor-pointer',
+        'p-4 border rounded-lg bg-white shadow-sm hover:shadow-md transition-shadow focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2',
+        'focus-visible:ring-2 focus-visible:ring-blue-500 focus-visible:ring-offset-2',
         compact && 'compact',
-        selected && 'selected border-blue-500 bg-blue-50'
+        selected && 'selected border-blue-500 bg-blue-50',
+        onClick && !loading && 'cursor-pointer'
       )}
       onClick={handleClick}
+      onKeyDown={handleKeyDown}
       data-testid='ticket-card'
-      role='article'
-      aria-labelledby={`ticket-title-${ticket.id}`}
-      whileHover={{ scale: 1.02 }}
-      whileTap={{ scale: 0.98 }}
+      role={onClick ? 'button' : 'article'}
+      tabIndex={onClick && !loading ? 0 : -1}
+      aria-label={ariaLabel}
+      aria-describedby={descriptionId}
+      aria-pressed={selected}
+      aria-disabled={loading}
+      whileHover={onClick && !loading ? { scale: 1.02 } : {}}
+      whileTap={onClick && !loading ? { scale: 0.98 } : {}}
     >
       {/* Header */}
       <div className='flex justify-between items-start mb-3'>
         <h3 id={`ticket-title-${ticket.id}`} className='font-semibold text-lg text-gray-900'>
+          <VisuallyHidden>Título do ticket: </VisuallyHidden>
           {ticket.title}
         </h3>
         <div className='flex items-center gap-2'>
@@ -143,9 +182,9 @@ export const TicketCard: React.FC<TicketCardProps> = ({
               ticket.status === 'fechado' && 'bg-green-100 text-green-800',
               ticket.status === 'progresso' && 'bg-yellow-100 text-yellow-800'
             )}
-            aria-label={`Status: ${ticket.status}`}
+            aria-label={`Status: ${getStatusText(ticket.status)}`}
           >
-            {getStatusIcon(ticket.status)}
+            <span aria-hidden='true'>{getStatusIcon(ticket.status)}</span>
             {getStatusText(ticket.status)}
           </span>
         </div>
@@ -153,29 +192,48 @@ export const TicketCard: React.FC<TicketCardProps> = ({
 
       {/* Description */}
       <div className='mb-3'>
-        <p className={cn('text-gray-700 text-sm', compact && 'truncated')}>
+        <p
+          id={descriptionId}
+          className={cn('text-gray-700 text-sm', compact && 'truncated')}
+          aria-label={`Descrição: ${formatHtmlContent(ticket.description).substring(0, 100)}...`}
+        >
           {formatHtmlContent(ticket.description)}
         </p>
       </div>
 
       {/* Metadata */}
-      <div className='grid grid-cols-2 gap-4 text-sm text-gray-600 mb-3'>
+      <div
+        id={`ticket-meta-${ticket.id}`}
+        className='grid grid-cols-2 gap-4 text-sm text-gray-600 mb-3'
+      >
         <div className='flex items-center gap-1'>
-          <User className='h-4 w-4' />
-          <span>{ticket.requester.name}</span>
+          <User className='h-4 w-4' aria-hidden='true' />
+          <span>
+            <VisuallyHidden>Solicitante: </VisuallyHidden>
+            {ticket.requester.name}
+          </span>
         </div>
         <div className='flex items-center gap-1'>
-          <User className='h-4 w-4' />
-          <span>{ticket.technician?.name || 'Não atribuído'}</span>
+          <User className='h-4 w-4' aria-hidden='true' />
+          <span>
+            <VisuallyHidden>Técnico: </VisuallyHidden>
+            {ticket.technician?.name || 'Não atribuído'}
+          </span>
         </div>
         <div className='flex items-center gap-1'>
-          <Calendar className='h-4 w-4' />
-          <span>{formatDate(ticket.createdAt)}</span>
+          <Calendar className='h-4 w-4' aria-hidden='true' />
+          <span>
+            <VisuallyHidden>Criado em: </VisuallyHidden>
+            {formatDate(ticket.createdAt)}
+          </span>
         </div>
         {ticket.dueDate && (
           <div className='flex items-center gap-1'>
-            <Clock className='h-4 w-4' />
-            <span>Vence: {formatDate(ticket.dueDate)}</span>
+            <Clock className='h-4 w-4' aria-hidden='true' />
+            <span>
+              <VisuallyHidden>Vence em: </VisuallyHidden>
+              Vence: {formatDate(ticket.dueDate)}
+            </span>
           </div>
         )}
       </div>
@@ -190,10 +248,14 @@ export const TicketCard: React.FC<TicketCardProps> = ({
             ticket.priority === 'baixa' && 'bg-green-100 text-green-800'
           )}
           data-testid='ticket-priority'
+          aria-label={`Prioridade: ${getPriorityText(ticket.priority)}`}
         >
           {getPriorityText(ticket.priority)}
         </span>
-        <span className='text-sm text-gray-600'>{ticket.category}</span>
+        <span className='text-sm text-gray-600'>
+          <VisuallyHidden>Categoria: </VisuallyHidden>
+          {ticket.category}
+        </span>
       </div>
 
       {/* Tags */}
@@ -203,8 +265,9 @@ export const TicketCard: React.FC<TicketCardProps> = ({
             <span
               key={index}
               className='inline-flex items-center gap-1 px-2 py-1 bg-gray-100 text-gray-700 rounded text-xs'
+              aria-label={`Tag: ${tag}`}
             >
-              <Tag className='h-3 w-3' />
+              <Tag className='h-3 w-3' aria-hidden='true' />
               {tag}
             </span>
           ))}

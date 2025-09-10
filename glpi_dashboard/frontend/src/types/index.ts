@@ -1,3 +1,5 @@
+import type { LevelMetrics, SystemStatus } from './api';
+
 export interface MetricsData {
   novos: number;
   pendentes: number;
@@ -10,26 +12,6 @@ export interface MetricsData {
     n3: LevelMetrics;
     n4: LevelMetrics;
   };
-}
-
-export interface LevelMetrics {
-  novos: number;
-  progresso: number;
-  pendentes: number;
-  resolvidos: number;
-}
-
-export interface SystemStatus {
-  api: string;
-  glpi: string;
-  glpi_message: string;
-  glpi_response_time: number;
-  last_update: string;
-  version: string;
-  // Campos de compatibilidade
-  status?: 'online' | 'offline' | 'maintenance';
-  sistema_ativo?: boolean;
-  ultima_atualizacao?: string;
 }
 
 export interface SearchResult {
@@ -122,7 +104,5 @@ export interface DashboardState {
 
 // Export all types
 export * from './api';
-export * from './mock';
-export * from './test';
 export * from './contract';
 export * from './ticket';

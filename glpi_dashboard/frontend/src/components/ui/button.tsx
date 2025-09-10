@@ -89,6 +89,9 @@ const Button = React.forwardRef<HTMLButtonElement, ButtonProps>(
         className={cn(buttonVariants({ variant, size, loading, className }))}
         ref={ref}
         disabled={isDisabled}
+        aria-disabled={isDisabled}
+        aria-busy={loading}
+        aria-label={loading ? loadingText || 'Carregando...' : undefined}
         {...props}
       >
         {loading && (
@@ -97,6 +100,8 @@ const Button = React.forwardRef<HTMLButtonElement, ButtonProps>(
             xmlns='http://www.w3.org/2000/svg'
             fill='none'
             viewBox='0 0 24 24'
+            role='img'
+            aria-label='Carregando'
           >
             <circle
               className='opacity-25'

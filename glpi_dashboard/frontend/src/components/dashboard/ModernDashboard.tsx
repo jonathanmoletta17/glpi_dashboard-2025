@@ -20,6 +20,7 @@ import { Card, CardContent, CardHeader } from '@/components/ui/card';
 
 import { MetricsData, TicketStatus, SystemStatus, TechnicianRanking, Ticket } from '@/types';
 import { cn } from '@/lib/utils';
+import { SkipLink } from '../accessibility/VisuallyHidden';
 
 interface ModernDashboardProps {
   metrics: MetricsData;
@@ -132,7 +133,14 @@ export const ModernDashboard = React.memo<ModernDashboardProps>(function ModernD
   // Loading state
   if (isLoading) {
     return (
-      <div className='space-y-6 p-6 min-h-screen'>
+      <main
+        className='space-y-6 p-6 min-h-screen'
+        role='main'
+        aria-label='Carregando dashboard GLPI'
+        aria-busy='true'
+      >
+        <SkipLink href='#main-content'>Pular para conteúdo principal</SkipLink>
+
         {/* Header skeleton */}
         <div className='flex flex-col lg:flex-row lg:items-center lg:justify-between gap-4'>
           <div className='space-y-2'>
@@ -146,51 +154,89 @@ export const ModernDashboard = React.memo<ModernDashboardProps>(function ModernD
         </div>
 
         {/* Metrics skeleton */}
-        <div className='grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4'>
-          {[...Array(4)].map((_, i) => (
-            <SkeletonCard key={i} />
-          ))}
-        </div>
-
-        {/* Charts skeleton */}
-        <div className='grid grid-cols-1 xl:grid-cols-3 gap-6'>
-          <div className='xl:col-span-2'>
-            <Card className='bg-white/80 backdrop-blur-sm border border-white/90 shadow-sm dark:bg-white/5 dark:border-white/10 shadow-none'>
-              <CardHeader>
-                <div className='h-6 bg-gray-200 dark:bg-gray-700 rounded animate-pulse w-40' />
-              </CardHeader>
-              <CardContent>
-                <div className='h-64 bg-gray-200 dark:bg-gray-700 rounded animate-pulse' />
-              </CardContent>
-            </Card>
-          </div>
-          <div className='space-y-4'>
-            {[...Array(3)].map((_, i) => (
+        <section aria-label='Carregando métricas gerais'>
+          <div className='grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4'>
+            {[...Array(4)].map((_, i) => (
               <SkeletonCard key={i} />
             ))}
           </div>
-        </div>
-      </div>
+        </section>
+
+        {/* Charts skeleton */}
+        <section aria-label='Carregando gráficos e dados'>
+          <div className='grid grid-cols-1 xl:grid-cols-3 gap-6'>
+            <div className='xl:col-span-2'>
+              <Card className='bg-white/80 backdrop-blur-sm border border-white/90 shadow-sm dark:bg-white/5 dark:border-white/10 shadow-none'>
+                <CardHeader>
+                  <div className='h-6 bg-gray-200 dark:bg-gray-700 rounded animate-pulse w-40' />
+                </CardHeader>
+                <CardContent>
+                  <div className='h-64 bg-gray-200 dark:bg-gray-700 rounded animate-pulse' />
+                </CardContent>
+              </Card>
+            </div>
+            <div className='space-y-4'>
+              {[...Array(3)].map((_, i) => (
+                <SkeletonCard key={i} />
+              ))}
+            </div>
+          </div>
+        </section>
+      </main>
     );
   }
 
   return (
-    <motion.div
+    <motion.main
       variants={containerVariants}
       initial='hidden'
       animate='visible'
       className={cn('dashboard-fullscreen-container px-6', className)}
+      role='main'
+      aria-label='Dashboard GLPI'
+      id='main-content'
     >
+      <SkipLink href='#metrics-section'>Pular para métricas</SkipLink>
+      <SkipLink href='#levels-section'>Pular para níveis</SkipLink>
+      <SkipLink href='#ranking-section'>Pular para ranking</SkipLink>
+
+      <h1 className='sr-only'>Dashboard de Tickets GLPI</h1>
+
       {/* Cards de métricas gerais no topo - OTIMIZADO */}
-      <motion.div variants={itemVariants} className='w-full mt-4 mb-4'>
+      <motion.section
+        variants={itemVariants}
+        className='w-full mt-4 mb-4'
+        id='metrics-section'
+        data-dashboard-section='metrics'
+        aria-labelledby='metrics-heading'
+      >
+        <h2 id='metrics-heading' className='sr-only'>
+          Métricas Gerais de Tickets
+        </h2>
         <MetricsGrid metrics={metrics} onFilterByStatus={onFilterByStatus} isLoading={isLoading} />
-      </motion.div>
+      </motion.section>
 
       {/* Layout principal com métricas por nível e tickets novos - ESTRUTURA PREMIUM OTIMIZADA */}
-      <div className='glpi-grid-levels glpi-animate-fade-up mb-4'>
+      <section
+        className='glpi-grid-levels glpi-animate-fade-up mb-4'
+        id='levels-section'
+        data-dashboard-section='levels'
+        aria-labelledby='levels-heading'
+      >
+        <h2 id='levels-heading' className='sr-only'>
+          Métricas por Nível de Suporte
+        </h2>
+
         {/* Coluna 1 - N1 e N3 */}
         <div className='space-y-4 glpi-animate-slide-right' style={{ animationDelay: '100ms' }}>
-          <div className='glpi-card-premium glpi-glass-premium glpi-hover-lift'>
+          <div
+            className='glpi-card-premium glpi-glass-premium glpi-hover-lift'
+            role='region'
+            aria-labelledby='n1-heading'
+          >
+            <h3 id='n1-heading' className='sr-only'>
+              Métricas Nível N1
+            </h3>
             <PremiumLevelCard
               title='Nível N1'
               totalTickets={levelMetrics?.n1?.total || 0}
@@ -223,7 +269,14 @@ export const ModernDashboard = React.memo<ModernDashboardProps>(function ModernD
             />
           </div>
 
-          <div className='glpi-card-premium glpi-glass-premium glpi-hover-lift'>
+          <div
+            className='glpi-card-premium glpi-glass-premium glpi-hover-lift'
+            role='region'
+            aria-labelledby='n3-heading'
+          >
+            <h3 id='n3-heading' className='sr-only'>
+              Métricas Nível N3
+            </h3>
             <PremiumLevelCard
               title='Nível N3'
               totalTickets={levelMetrics?.n3?.total || 0}
@@ -259,7 +312,14 @@ export const ModernDashboard = React.memo<ModernDashboardProps>(function ModernD
 
         {/* Coluna 2 - N2 e N4 */}
         <div className='space-y-4 glpi-animate-slide-right' style={{ animationDelay: '200ms' }}>
-          <div className='glpi-card-premium glpi-glass-premium glpi-hover-lift'>
+          <div
+            className='glpi-card-premium glpi-glass-premium glpi-hover-lift'
+            role='region'
+            aria-labelledby='n2-heading'
+          >
+            <h3 id='n2-heading' className='sr-only'>
+              Métricas Nível N2
+            </h3>
             <PremiumLevelCard
               title='Nível N2'
               totalTickets={levelMetrics?.n2?.total || 0}
@@ -292,7 +352,14 @@ export const ModernDashboard = React.memo<ModernDashboardProps>(function ModernD
             />
           </div>
 
-          <div className='glpi-card-premium glpi-glass-premium glpi-hover-lift'>
+          <div
+            className='glpi-card-premium glpi-glass-premium glpi-hover-lift'
+            role='region'
+            aria-labelledby='n4-heading'
+          >
+            <h3 id='n4-heading' className='sr-only'>
+              Métricas Nível N4
+            </h3>
             <PremiumLevelCard
               title='Nível N4'
               totalTickets={levelMetrics?.n4?.total || 0}
@@ -328,17 +395,36 @@ export const ModernDashboard = React.memo<ModernDashboardProps>(function ModernD
 
         {/* Coluna 3 - TicketsCard */}
         <div className='glpi-animate-slide-right' style={{ animationDelay: '300ms' }}>
-          <div className='glpi-card-premium glpi-glass-premium glpi-hover-lift h-full'>
+          <div
+            className='glpi-card-premium glpi-glass-premium glpi-hover-lift h-full'
+            role='region'
+            aria-labelledby='tickets-heading'
+          >
+            <h3 id='tickets-heading' className='sr-only'>
+              Lista de Tickets Recentes
+            </h3>
             <ProfessionalTicketsList className='h-full' limit={6} onTicketClick={onTicketClick} />
           </div>
         </div>
-      </div>
+      </section>
 
       {/* Layout inferior com ranking */}
-      <div className='grid grid-cols-1 gap-4'>
+      <section
+        className='grid grid-cols-1 gap-4'
+        id='ranking-section'
+        data-dashboard-section='ranking'
+        aria-labelledby='ranking-heading'
+      >
         {/* Ranking de técnicos */}
         <motion.div variants={itemVariants} className='w-full'>
-          <div className='glpi-card-premium glpi-glass-premium glpi-hover-lift h-full'>
+          <div
+            className='glpi-card-premium glpi-glass-premium glpi-hover-lift h-full'
+            role='region'
+            aria-labelledby='ranking-heading'
+          >
+            <h2 id='ranking-heading' className='sr-only'>
+              Ranking de Técnicos
+            </h2>
             <ProfessionalRankingTable
               data={processedRankingData}
               title='Ranking de Técnicos'
@@ -347,7 +433,7 @@ export const ModernDashboard = React.memo<ModernDashboardProps>(function ModernD
             />
           </div>
         </motion.div>
-      </div>
-    </motion.div>
+      </section>
+    </motion.main>
   );
 });

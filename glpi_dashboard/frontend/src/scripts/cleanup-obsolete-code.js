@@ -25,8 +25,8 @@ const OBSOLETE_PATTERNS = {
   // Classes hardcoded que deveriam usar tokens
   hardcodedSpacing: /(?:p-|m-|px-|py-|mx-|my-|gap-|space-y-|space-x-)\d+/g,
 
-  // Componentes duplicados
-  duplicateComponents: ['TicketList.tsx', 'NewTicketsList.tsx'],
+  // Componentes duplicados (removidos: TicketList.tsx, TicketsPage.tsx)
+  duplicateComponents: [],
 
   // Imports não utilizados
   unusedImports: /import.*from.*['"]\.\.\/.*['"];?\s*$/gm,
@@ -198,8 +198,8 @@ function main() {
     // console.log(`\n📈 RESUMO:`);
     // console.log(`   - ${allIssues.length} arquivo(s) com problemas`);
     // console.log(
-      `   - ${allIssues.reduce((sum, { issues }) => sum + issues.length, 0)} problema(s) total`
-    );
+    //   `   - ${allIssues.reduce((sum, { issues }) => sum + issues.length, 0)} problema(s) total`
+    // );
 
     // console.log('\n🛠️  PRÓXIMOS PASSOS:');
     // console.log('   1. Refatorar componentes usando design system');

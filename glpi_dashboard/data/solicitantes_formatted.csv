@@ -1,0 +1,601 @@
+id,firstname,realname,name,comment,entities_id,is_active,date_creation,date_mod,phone,phone2,mobile,registration_number,nome_completo,setor
+9,Yasmine,Iensen de Freitas,yasmine-freitas,CC-Orcamentos,Entidade raiz,1,2023-03-18 14:51:41,2025-07-15 11:45:57,,,,,Yasmine Iensen de Freitas,CC-Orcamentos
+11,Wagner,Santos de Araujo,wagner-araujo,CC-Juridico,Entidade raiz,1,2023-03-18 14:51:41,2025-07-31 09:06:29,,5132104239,51999968948.0,,Wagner Santos de Araujo,CC-Juridico
+15,Vinicius,Ramos Viacava,vinicius-viacava,CC-Subchefia do Interior,Entidade raiz,1,2023-03-18 14:51:41,2023-03-18 14:51:41,,,,4595025.0,Vinicius Ramos Viacava,CC-Subchefia
+16,Vinicius,Minuzzi Gazoni,vinicius-gazoni,CC-Subchefia Geral,Entidade raiz,1,2023-03-18 14:51:41,2025-07-16 14:46:30,,,,,Vinicius Minuzzi Gazoni,CC-Subchefia
+18,Vera,Lucia dos Santos Machado,vera-machado,CC-Conservacao,Entidade raiz,1,2023-03-18 14:51:41,2025-07-14 10:37:42,,,,,Vera Lucia dos Santos Machado,CC-Conservacao
+21,Vanessa,Giombelli Morais,vanessa-morais,CC-Parlamentar,Entidade raiz,1,2023-03-18 14:51:41,2023-08-16 13:16:26,,,,,Vanessa Giombelli Morais,CC-Parlamentar
+22,Vanessa,Pedroso Konrath,vanessa-konrath,CC-DPO,Entidade raiz,1,2023-03-18 14:51:41,2025-07-10 11:19:09,,,,,Vanessa Pedroso Konrath,CC-DPO
+25,Thiago,Lorenzom,thiago-lorenzom,CC-Parlamentar,Entidade raiz,1,2023-03-18 14:51:41,2023-03-18 14:51:41,,,,2741210.0,Thiago Lorenzom,CC-Parlamentar
+27,Thais,Sant Anna Difini,thais-difini,CC-Orcamentos,Entidade raiz,1,2023-03-18 14:51:41,2025-08-08 10:13:32,,,,,Thais Sant Anna Difini,CC-Orcamentos
+33,Silvoneide,Gomes Leopoldino,silvia-leopoldino,CC-DRH,Entidade raiz,1,2023-03-18 14:51:41,2025-09-04 16:43:24,,,,,Silvoneide Gomes Leopoldino,CC-DRH
+35,Silvana,Martins de Oliveira,silvana-oliveira,CC-Parlamentar,Entidade raiz,1,2023-03-18 14:51:41,2023-03-18 14:51:41,,,,,Silvana Martins de Oliveira,CC-Parlamentar
+36,Sergio,Luiz Schmidt,sergio-schmidt,CC-Parlamentar,Entidade raiz,1,2023-03-18 14:51:41,2023-03-18 14:51:41,,,,,Sergio Luiz Schmidt,CC-Parlamentar
+37,Rose,Mari Minho dos Santos,rose-santos,CC-Subchefia do Interior,Entidade raiz,1,2023-03-18 14:51:41,2025-07-07 11:27:57,,,,,Rose Mari Minho dos Santos,CC-Subchefia
+39,Roque,Alexandre Lucas da Cunha,roque-cunha,CC-Parlamentar,Entidade raiz,1,2023-03-18 14:51:41,2023-03-18 14:51:41,,,,,Roque Alexandre Lucas da Cunha,CC-Parlamentar
+41,Rodrigo,Ludmann Pias,rodrigo-pias,CC-Conservacao,Entidade raiz,1,2023-03-18 14:51:41,2025-07-14 10:36:36,,,,,Rodrigo Ludmann Pias,CC-Conservacao
+44,Roberta,Barbosa Rodrigues Jacinto,roberta-jacinto,CC-Subchefia do Interior,Entidade raiz,1,2023-03-18 14:51:41,2025-08-12 14:43:30,,,,,Roberta Barbosa Rodrigues Jacinto,CC-Subchefia
+45,Rita,de Cassia Muller,rita-muller,CC-Orcamentos,Entidade raiz,1,2023-03-18 14:51:41,2025-05-21 15:46:20,,,,,Rita de Cassia Muller,CC-Orcamentos
+47,Renato,Mendes da Costa,renato-costa,CC-Orcamentos,Entidade raiz,1,2023-03-18 14:51:41,2025-05-15 10:50:37,,,,,Renato Mendes da Costa,CC-Orcamentos
+49,Rejane,Conceicao Farias,rejane-farias,CC-Mecanografia,Entidade raiz,1,2023-03-18 14:51:41,2024-11-07 15:15:16,,,,,Rejane Conceicao Farias,CC-Mecanografia
+52,Paulo,Roberto Dias Pereira,paulo-dpereira,CC-Gabinete,Entidade raiz,1,2023-03-18 14:51:41,2025-07-03 09:48:55,,,,,Paulo Roberto Dias Pereira,CC-Gabinete
+56,Patricia,Aubin de Souza,patricia-aubin,CC-Juridico,Entidade raiz,1,2023-03-18 14:51:41,2025-08-11 09:32:45,,,,,Patricia Aubin de Souza,CC-Juridico
+61,Odete,Maria Rama Baptista,odete-baptista,CC-Biblioteca,Entidade raiz,1,2023-03-18 14:51:41,2023-10-02 10:34:04,,,,,Odete Maria Rama Baptista,CC-Biblioteca
+63,Noeli,Silveira Dos Santos Lima,noeli-lima,CC-DRH,Entidade raiz,1,2023-03-18 14:51:41,2025-07-03 15:17:12,,,,,Noeli Silveira Dos Santos Lima,CC-DRH
+71,Michelle,da Silva Lucas,michelle-lucas,CC-Mecanografia,Entidade raiz,1,2023-03-18 14:51:41,2025-04-04 10:25:55,,,,,Michelle da Silva Lucas,CC-Mecanografia
+73,Melissa,Machado Costa,melissa-costa,CC-Gabinete dos Prefeitos,Entidade raiz,1,2023-03-18 14:51:41,2025-08-12 11:50:30,,,,,Melissa Machado Costa,CC-Gabinete
+74,Melina,Vogt da Rosa Barão de Andrade,melina-andrade,CC-Manutencao,Entidade raiz,1,2023-03-18 14:51:41,2025-08-13 14:06:51,,,,,Melina Vogt da Rosa Barão de Andrade,CC-Manutencao
+75,Mauricio,Nunes Santos,mauricio-santos,CC-Parlamentar,Entidade raiz,1,2023-03-18 14:51:41,2023-06-01 14:27:51,,,,,Mauricio Nunes Santos,CC-Parlamentar
+79,Marlus,da Silva Abbadi,marlus-abbadi,CC-Parlamentar,Entidade raiz,1,2023-03-18 14:51:41,2023-03-18 14:51:41,,,,3473821.0,Marlus da Silva Abbadi,CC-Parlamentar
+80,Marivete,de Lima e Souza,marivete-souza,CC-Subchefia do Interior,Entidade raiz,1,2023-03-18 14:51:41,2025-08-28 15:18:00,,,,,Marivete de Lima e Souza,CC-Subchefia
+82,Maristela,Lazzaretti Kaminski,maristela-kaminski,CC-Protocolo,Entidade raiz,1,2023-03-18 14:51:41,2025-09-02 16:44:51,,,,,Maristela Lazzaretti Kaminski,CC-Protocolo
+83,Mario,Antonio Fleck,mario-fleck,CC-Compras,Entidade raiz,1,2023-03-18 14:51:41,2025-06-03 08:37:52,,,,,Mario Antonio Fleck,CC-Compras
+85,Marilis,Ferreira Quadros,marilis-quadros,CC-Patrimonio,Entidade raiz,1,2023-03-18 14:51:41,2025-09-01 15:17:24,,,,,Marilis Ferreira Quadros,CC-Patrimonio
+86,Marilia,Machado de Castro,marilia-castro,CC-Protocolo,Entidade raiz,1,2023-03-18 14:51:41,2025-08-12 08:30:18,,,,,Marilia Machado de Castro,CC-Protocolo
+89,Mariele,Malta da Silva,mariele-silva,CC - Conservação-Terceirizada,Entidade raiz,1,2023-03-18 14:51:41,2023-06-14 11:11:35,,,,,Mariele Malta da Silva,
+90,Maria,Patricia Mollmann,maria-mollmann,CC-Juridico,Entidade raiz,1,2023-03-18 14:51:41,2025-03-26 11:58:53,,,,,Maria Patricia Mollmann,CC-Juridico
+92,Maria,Eugenia Fasolo,maria-fasolo,CC-Gabinete,Entidade raiz,1,2023-03-18 14:51:41,2023-03-18 14:51:41,,,,4671570.0,Maria Eugenia Fasolo,CC-Gabinete
+93,Maria,Betania Braun,maria-braun,CC-Gabinete SA,Entidade raiz > PIRATINI > CENTRAL DE ATENDIMENTOS > CASA CIVIL,1,2023-03-18 14:51:41,2024-06-05 15:31:58,,,,,Maria Betania Braun,CC-Gabinete
+95,Mareli,Lerner Vogel,mareli-vogel,CC-Parlamentar,Entidade raiz,1,2023-03-18 14:51:41,2025-04-02 12:43:51,,,,,Mareli Lerner Vogel,CC-Parlamentar
+97,Marco,Antonio Canto Silva,marco-canto,CC-Biblioteca,Entidade raiz,1,2023-03-18 14:51:41,2023-08-28 09:49:42,,,,,Marco Antonio Canto Silva,CC-Biblioteca
+99,Marcio,Luciano Pias,marcio-pias,CC-Compras,Entidade raiz,1,2023-03-18 14:51:41,2025-04-29 10:15:38,,,,,Marcio Luciano Pias,CC-Compras
+100,Marcio,Maciel Benites,marcio-benites,CC-DAAP,Entidade raiz,1,2023-03-18 14:51:41,2025-08-14 13:50:18,,,,,Marcio Maciel Benites,CC-DAAP
+103,Marcia,Von Hoonholtz Laitano,marcia-laitano,CC-Juridico,Entidade raiz,1,2023-03-18 14:51:41,2023-09-08 09:45:16,,,,,Marcia Von Hoonholtz Laitano,CC-Juridico
+105,Marcia,Carolina Maia de Abreu,marcia-abreu,CC-DAAP,Entidade raiz,1,2023-03-18 14:51:41,2025-08-28 11:40:38,,,,,Marcia Carolina Maia de Abreu,CC-DAAP
+106,Marcelo,De Araújo Silva,marcelo-silva,CC-DGAP,Entidade raiz,1,2023-03-18 14:51:41,2025-07-10 15:49:17,,,,175112302.0,Marcelo De Araújo Silva,CC-DGAP
+108,Marcelo,Egidio Flach,marcelo-flach,CC - Comunicação Social,Entidade raiz,1,2023-03-18 14:51:41,2023-03-18 14:51:41,,,,4548086.0,Marcelo Egidio Flach,
+110,Magali,D'Avila Pereira,magali-pereira,CC-Orcamentos,Entidade raiz,1,2023-03-18 14:51:41,2025-07-28 08:07:49,,,,,Magali D'Avila Pereira,CC-Orcamentos
+113,Luiz,Cezar Moreira de Campos,luiz-campos,CC-Subchefia Geral,Entidade raiz,1,2023-03-18 14:51:41,2025-07-28 14:14:37,,,,,Luiz Cezar Moreira de Campos,CC-Subchefia
+114,Luisa,Barbosa Maestri,luisa-maestri,GG-Servicos Residenciais,Entidade raiz,1,2023-03-18 14:51:41,2025-08-26 14:11:55,,,,,Luisa Barbosa Maestri,
+119,Lucas,Henrique Alves da Silva,lucas-silva,CC-Biblioteca,Entidade raiz > PIRATINI > CENTRAL DE ATENDIMENTOS > CASA CIVIL > Secretaria-Executiva > Subchefia Juridica,1,2023-03-18 14:51:41,2025-05-07 10:14:32,,,,,Lucas Henrique Alves da Silva,CC-Biblioteca
+121,Luana,Rodrigues da Gama,luana-gama,CC-Canela,Entidade raiz,1,2023-03-18 14:51:41,2023-06-30 13:13:22,,,,,Luana Rodrigues da Gama,CC-Canela
+129,Lauro,Strogulski Júnior,lauro-junior,CC-Manutencao,Entidade raiz,1,2023-03-18 14:51:41,2023-03-18 14:51:41,,,,4444710.0,Lauro Strogulski Júnior,CC-Manutencao
+131,Laura,Iahnke Garbin,laura-garbin,CC-Jurídico,Entidade raiz,1,2023-03-18 14:51:41,2025-07-29 14:38:35,,,,,Laura Iahnke Garbin,CC-Jurídico
+139,Josiane,Machado de Freitas,josiane-freitas,CC-Compras,Entidade raiz,1,2023-03-18 14:51:41,2025-01-16 17:01:26,,,,,Josiane Machado de Freitas,CC-Compras
+142,Jorge,Fernando Sari,jorge-sari,CC-Patrimonio,Entidade raiz,1,2023-03-18 14:51:41,2025-09-03 16:15:08,,,,,Jorge Fernando Sari,CC-Patrimonio
+144,Joao,Homero Barnasque Severiano,joao-severiano,CC-Conservacao,Entidade raiz,1,2023-03-18 14:51:41,2025-05-02 14:55:40,,,,,Joao Homero Barnasque Severiano,CC-Conservacao
+150,Jesse,Pereira Ribeiro,jesse-ribeiro,CC - Conservacao,Entidade raiz,1,2023-03-18 14:51:41,2025-03-25 11:14:30,,,,,Jesse Pereira Ribeiro,
+151,Jean,Rasche Goulart,jean-goulart,CC-Mecanografia,Entidade raiz,1,2023-03-18 14:51:41,2025-08-22 15:45:20,,,,,Jean Rasche Goulart,CC-Mecanografia
+153,Jairo,Alexandre Duarte,jairo-duarte,CC-Gabinete,Entidade raiz,1,2023-03-18 14:51:41,2023-03-18 14:51:41,,,,,Jairo Alexandre Duarte,CC-Gabinete
+155,Ivana,Maria Genro Flores,ivana-flores,CC-Subchefia Geral,Entidade raiz,1,2023-03-18 14:51:41,2024-01-25 14:08:51,,,,,Ivana Maria Genro Flores,CC-Subchefia
+156,Iris,Silveira Dutra Neto,iris-neto,CC-Patrimonio,Entidade raiz,1,2023-03-18 14:51:41,2025-09-04 16:00:26,,,,,Iris Silveira Dutra Neto,CC-Patrimonio
+158,Henrique,Montagner Fernandes,henrique-fernandes,CC-Juridico,Entidade raiz,1,2023-03-18 14:51:41,2025-07-30 09:44:08,,,,,Henrique Montagner Fernandes,CC-Juridico
+160,Helena,da Silva Herbst Garcia,helena-garcia,CC-Juridico,Entidade raiz,1,2023-03-18 14:51:41,2025-09-01 17:56:24,,,,,Helena da Silva Herbst Garcia,CC-Juridico
+161,Gustavo,Saporiti Sehnem,gustavo-sehnem,CC-Manutencao,Entidade raiz,1,2023-03-18 14:51:41,2025-09-04 15:24:15,,,,,Gustavo Saporiti Sehnem,CC-Manutencao
+162,Gustavo,Alminhana Monteiro,gustavo-monteiro,CC-Protocolo,Entidade raiz,1,2023-03-18 14:51:41,2024-11-21 16:24:26,,,,,Gustavo Alminhana Monteiro,CC-Protocolo
+168,Francisco,Dutra de Barros,francisco-barros,CC-ATA,Entidade raiz,1,2023-03-18 14:51:41,2025-09-03 15:32:29,,,,,Francisco Dutra de Barros,CC-ATA
+172,Felipe,Bettim,felipe-bettim,CC-Parlamentar,Entidade raiz,1,2023-03-18 14:51:41,2025-07-04 09:34:27,,,,,Felipe Bettim,CC-Parlamentar
+177,Everton,Pacheco Pissaia,everton-pissaia,CC-Subchefia do Interior,Entidade raiz,1,2023-03-18 14:51:41,2023-03-18 14:51:41,,,,3495159.0,Everton Pacheco Pissaia,CC-Subchefia
+178,Everli,Bier Wingert,everli-wingert,CC - ATA,Entidade raiz,1,2023-03-18 14:51:41,2023-03-18 14:51:41,,,,467796001.0,Everli Bier Wingert,
+179,Evandro,Ademar Kondach,evandro-kondach,CC-Gabinete,Entidade raiz,1,2023-03-18 14:51:41,2023-03-18 14:51:41,,,,4551540.0,Evandro Ademar Kondach,CC-Gabinete
+181,Escritório,de Representação do RS,escritorio-rs,Usuário para Chamados do Escritório no DF,Entidade raiz,1,2023-03-18 14:51:41,2023-03-18 14:51:41,,,,,Escritório de Representação do RS,
+182,Elisangela,Dannus da Cruz Mattjie,elisangela-mattjie,CC-Juridico,Entidade raiz,1,2023-03-18 14:51:41,2024-06-05 15:31:58,,,,,Elisangela Dannus da Cruz Mattjie,CC-Juridico
+183,Elis,Rejane Bueno Nunes Alves,elis-alves,CC-Subchefia do Interior,Entidade raiz,1,2023-03-18 14:51:41,2023-03-18 14:51:41,,,,4877250.0,Elis Rejane Bueno Nunes Alves,CC-Subchefia
+187,Dorinha,de Fatima Jirkowsky,dorinha-jirkowsky,CC-Mecanografia,Entidade raiz,1,2023-03-18 14:51:41,2025-08-11 10:49:28,,,,,Dorinha de Fatima Jirkowsky,CC-Mecanografia
+190,Daura,Rocha da Rosa,daura-rosa,CC-Protocolo,Entidade raiz,1,2023-03-18 14:51:41,2024-12-03 10:52:44,,,,,Daura Rocha da Rosa,CC-Protocolo
+192,Daniela,Laitano,daniela-laitano,CC-Gabinete SA,Entidade raiz,1,2023-03-18 14:51:41,2025-07-14 15:36:33,,,,,Daniela Laitano,CC-Gabinete
+193,Daniela,Costa Vieira Da Cunha,daniela-cunha,CC-DGAP,Entidade raiz,1,2023-03-18 14:51:41,2024-11-12 15:18:40,,,,,Daniela Costa Vieira Da Cunha,CC-DGAP
+196,Cristiane,da Silva Dias,cristiane-dias,CC-Biblioteca,Entidade raiz,1,2023-03-18 14:51:41,2025-08-05 12:08:20,,,,,Cristiane da Silva Dias,CC-Biblioteca
+197,Cleusa,Villani,cleusa-villani,CC-DRH,Entidade raiz,1,2023-03-18 14:51:41,2025-07-02 15:49:13,,,,,Cleusa Villani,CC-DRH
+199,Cleber,de Lima Alves,cleber-alves,CC-Mecanografia,Entidade raiz,1,2023-03-18 14:51:41,2023-03-18 14:51:41,,,,156279701.0,Cleber de Lima Alves,CC-Mecanografia
+200,Claudio,Pamato,claudio-pamato,CC-Parlamentar,Entidade raiz,1,2023-03-18 14:51:41,2023-07-27 16:30:19,,,,,Claudio Pamato,CC-Parlamentar
+201,Clarissa,Black,clarissa-black,CC-Gabinete,Entidade raiz,1,2023-03-18 14:51:41,2023-12-27 09:54:50,,,,,Clarissa Black,CC-Gabinete
+202,Clarissa,Lima Avila,clarissa-avila,CC-Subchefia do Interior,Entidade raiz,1,2023-03-18 14:51:41,2025-08-18 09:41:55,,,,,Clarissa Lima Avila,CC-Subchefia
+206,Catieli,Samanta Vigne,catieli-vigne,CC-SAEF,Entidade raiz,1,2023-03-18 14:51:41,2025-08-28 10:15:43,,,,,Catieli Samanta Vigne,CC-SAEF
+207,Catia,Josieli dos Santos Belmonte,catia-belmonte,CC-Gabinete,Entidade raiz,1,2023-03-18 14:51:41,2025-05-29 13:19:54,,,,,Catia Josieli dos Santos Belmonte,CC-Gabinete
+208,Caroline,Souza da Silva,caroline-silva,CC-Protocolo,Entidade raiz,1,2023-03-18 14:51:41,2025-07-23 10:27:57,,,,,Caroline Souza da Silva,CC-Protocolo
+210,Carolina,Avila Gotthilf,carolina-gotthilf,CC-Gabinete,Entidade raiz,1,2023-03-18 14:51:41,2024-03-04 15:17:05,,,,,Carolina Avila Gotthilf,CC-Gabinete
+212,Carlos,Eron da Silva Marques,carlos-marques,CC-Manutencao,Entidade raiz,1,2023-03-18 14:51:41,2025-06-10 14:20:51,,,,,Carlos Eron da Silva Marques,CC-Manutencao
+213,Carlos,Roberto Dos Santos Duarte,carlos-duarte,CC-DRH,Entidade raiz,1,2023-03-18 14:51:41,2025-08-22 16:46:30,,,,,Carlos Roberto Dos Santos Duarte,CC-DRH
+216,Carla,Maria Goulart de Moraes,carla-moraes,CC-Biblioteca,Entidade raiz,1,2023-03-18 14:51:41,2023-03-18 14:51:41,,,,4879813.0,Carla Maria Goulart de Moraes,CC-Biblioteca
+217,Camila,Bicca Rassier,camila-rassier,CC-Gabinete,Entidade raiz,1,2023-03-18 14:51:41,2025-04-25 15:08:47,,,,,Camila Bicca Rassier,CC-Gabinete
+218,Camila,Caggiani Todesco de Moraes,camila-moraes,CC-Secretaria SA,Entidade raiz,1,2023-03-18 14:51:41,2023-03-18 14:51:41,,,,425510001.0,Camila Caggiani Todesco de Moraes,CC-Secretaria
+219,Bruno,Pinto de Freitas,bruno-freitas,CC-Gabinete,Entidade raiz,1,2023-03-18 14:51:41,2023-03-18 14:51:41,,,,,Bruno Pinto de Freitas,CC-Gabinete
+223,Bruna,Goncalves Aguiar,bruna-aguiar,CC-Gabinete,Entidade raiz,1,2023-03-18 14:51:41,2023-03-18 14:51:41,,,,,Bruna Goncalves Aguiar,CC-Gabinete
+225,Atahualpa,Gabriel Cavalheiro,atahualpa-cavalheiro,CC-Gabinete-ATS,Entidade raiz,1,2023-03-18 14:51:41,2025-05-29 15:55:55,,,,,Atahualpa Gabriel Cavalheiro,CC-Gabinete-ATS
+226,Artur,Jose de Lemos Junior,artur-junior,CC-Gabinete,Entidade raiz,1,2023-03-18 14:51:41,2023-03-18 14:51:41,,,,3049698.0,Artur Jose de Lemos Junior,CC-Gabinete
+229,Ariane,Carvalho da Silveira,ariane-silveira,CC-Conservacao,Entidade raiz,1,2023-03-18 14:51:41,2025-07-31 09:24:31,,,,,Ariane Carvalho da Silveira,CC-Conservacao
+230,Antonio,Carlos Porcello Marrone,antonio-marrone,CC-Compras,Entidade raiz,1,2023-03-18 14:51:41,2023-06-27 14:31:29,,,,,Antonio Carlos Porcello Marrone,CC-Compras
+231,Angela,Rizzi de Menezes,angela-menezes,CC-Juridico,Entidade raiz,1,2023-03-18 14:51:41,2023-03-18 14:51:41,,,,427273002.0,Angela Rizzi de Menezes,CC-Juridico
+232,Andreia,Cristina Brum,andreia-brum,CC-Biblioteca,Entidade raiz,1,2023-03-18 14:51:41,2023-07-06 10:32:31,,,,,Andreia Cristina Brum,CC-Biblioteca
+234,Andre,Luis Boeira Palacio,andre-palacio,CC-Gabinete,Entidade raiz,1,2023-03-18 14:51:41,2025-06-24 17:37:41,,,,,Andre Luis Boeira Palacio,CC-Gabinete
+240,Ana,Karina Gil Francisco,ana-francisco,CC-Gabinete,Entidade raiz,1,2023-03-18 14:51:41,2024-03-11 14:51:24,,,,,Ana Karina Gil Francisco,CC-Gabinete
+243,Amanda,Brito Bordin,amanda-bordin,CC-Gabinete,Entidade raiz,1,2023-03-18 14:51:41,2023-03-18 14:51:41,,,,4444850.0,Amanda Brito Bordin,CC-Gabinete
+244,Amanda,Silva Baraldo,amanda-baraldo,CC-Compras,Entidade raiz,1,2023-03-18 14:51:41,2023-12-21 10:49:58,,,,,Amanda Silva Baraldo,CC-Compras
+245,Almeris,Menti Junior,almeris-junior,CC-Compras,Entidade raiz,1,2023-03-18 14:51:41,2025-07-07 10:22:25,,,,,Almeris Menti Junior,CC-Compras
+247,Aline,Garcia Renner Salvadore,aline-renner,CC-Juridico,Entidade raiz,1,2023-03-18 14:51:41,2025-08-22 09:56:37,,,,,Aline Garcia Renner Salvadore,CC-Juridico
+248,Aline,Filter de Oliveira,aline-oliveira,CC-DAAP,Entidade raiz,1,2023-03-18 14:51:41,2025-08-28 13:33:13,,,,,Aline Filter de Oliveira,CC-DAAP
+249,Alexandre,Golubcil Wainer,alexandre-wainer,CC-Parlamentar,Entidade raiz,1,2023-03-18 14:51:41,2023-03-18 14:51:41,,,,,Alexandre Golubcil Wainer,CC-Parlamentar
+251,Alexander,Ostroga,alexander-ostroga,CC-Subchefia do Interior,Entidade raiz,1,2023-03-18 14:51:41,2025-03-26 15:01:45,,,,,Alexander Ostroga,CC-Subchefia
+256,Adriano,da Silva Pacheco,adriano-pacheco,CC-Subchefia do Interior,Entidade raiz,1,2023-03-18 14:51:41,2023-03-18 14:51:41,,,,4721144.0,Adriano da Silva Pacheco,CC-Subchefia
+258,Adriana,Alos Bielefeld,adriana-bielefeld,CC-Parlamentar,Entidade raiz,1,2023-03-18 14:51:41,2025-07-18 11:40:56,,,,,Adriana Alos Bielefeld,CC-Parlamentar
+259,Abigail,de Fatima Carneiro Correa,abigail-correa,CC-Gabinete,Entidade raiz,1,2023-03-18 14:51:41,2025-08-25 15:23:27,,,,,Abigail de Fatima Carneiro Correa,CC-Gabinete
+407,Willian,Caetano Affonso,willian-affonso,CC-Arquitetura,Entidade raiz,1,2023-03-18 14:53:10,2023-03-18 14:53:10,,,,4842693.0,Willian Caetano Affonso,CC-Arquitetura
+408,Wagner,Francisco da Silva Cousen,wagner-cousen,GG-Precursoria,Entidade raiz,1,2023-03-18 14:53:10,2023-06-12 09:26:33,,,,,Wagner Francisco da Silva Cousen,
+410,Vinicius,Ximendes Lopes,vinicius-lopes,GG-Assessoria Tecnica,Entidade raiz,1,2023-03-18 14:53:10,2025-08-29 10:44:50,,,,,Vinicius Ximendes Lopes,
+411,Vinicius,de Oliveira Flores,vinicius-flores,GG-Cerimonial,Entidade raiz,1,2023-03-18 14:53:10,2023-05-08 14:29:30,4233,,,,Vinicius de Oliveira Flores,
+412,Valeska,Ferraza Monteiro,valeska-monteiro,GG-Assessoria Tecnica,Entidade raiz,1,2023-03-18 14:53:10,2023-05-16 16:16:28,,,,4653734.0,Valeska Ferraza Monteiro,
+414,Thais,Touguinha Zeltser,thais-zeltser,GG-RS Seguro,Entidade raiz,1,2023-03-18 14:53:10,2025-07-24 11:35:45,,,,,Thais Touguinha Zeltser,
+415,Teresinha,Martini Thiesen,teresinha-thiesen,GG-Cerimonial,Entidade raiz,1,2023-03-18 14:53:10,2023-05-08 14:27:41,4230,,,223374601.0,Teresinha Martini Thiesen,
+416,Taizi,Emanueli Jesus Nunes,taizi-nunes,GG-Conservacao e Memoria (Arq),Entidade raiz,1,2023-03-18 14:53:10,2025-09-03 16:22:12,,,,,Taizi Emanueli Jesus Nunes,
+418,Silvia,Regina Magalhaes de Oliveira,silvia-oliveira,GG-Redacao Oficial,Entidade raiz,1,2023-03-18 14:53:10,2025-08-07 14:20:06,,,,,Silvia Regina Magalhaes de Oliveira,
+419,Roberto,Ambrosio Goncalves,roberto-goncalves,GG-Conservacao e Memoria (Arq),Entidade raiz,1,2023-03-18 14:53:10,2025-08-29 11:11:02,,,,,Roberto Ambrosio Goncalves,
+421,Rafael,Costa Vargas,rafael-vargas,CC-Gabinete,Entidade raiz,1,2023-03-18 14:53:10,2023-09-26 14:09:18,,,,,Rafael Costa Vargas,CC-Gabinete
+422,Rafael,Bernardini Santos,rafael-santos,GG-RS Seguro,Entidade raiz,1,2023-03-18 14:53:10,2025-08-21 10:26:54,,,,,Rafael Bernardini Santos,
+423,Patricia,Silva de Oliveira,patricia-oliveira,GG-Agenda,Entidade raiz,1,2023-03-18 14:53:10,2025-06-25 11:29:46,,,,,Patricia Silva de Oliveira,
+425,Patricia,Fabbro Bicoski,patricia-bicoski,GG-Conservacao e Memoria (Arq),Entidade raiz,1,2023-03-18 14:53:10,2025-06-05 11:17:22,,,,,Patricia Fabbro Bicoski,
+426,Nilo,Roberto Cezar Rodrigues,nilo-rodrigues,GG-Cerimonial,Entidade raiz,1,2023-03-18 14:53:10,2024-06-18 14:01:19,,,,,Nilo Roberto Cezar Rodrigues,
+428,Moacir,Morais Cavalheiro,moacir-cavalheiro,GG-Cerimonial,Entidade raiz,1,2023-03-18 14:53:10,2023-03-18 14:53:10,,,,,Moacir Morais Cavalheiro,
+430,Mateus,da Rosa Gomes,mateus-gomes,GG-Conservacao e Memoria (Arq),Entidade raiz,1,2023-03-18 14:53:10,2025-05-26 09:21:07,,,,,Mateus da Rosa Gomes,
+431,Mariane,Santos de Almeida,mariane-almeida,GG-Cerimonial,Entidade raiz,1,2023-03-18 14:53:10,2023-05-08 14:26:20,4232,,,,Mariane Santos de Almeida,
+433,Maria,Andreia Chaves Santos Lermen,maria-lermen,GG-Agenda,Entidade raiz,1,2023-03-18 14:53:10,2025-08-27 14:40:47,,,,,Maria Andreia Chaves Santos Lermen,
+437,Marco,Antonio Carreno,marco-carreno,GG-Cerimonial,Entidade raiz,1,2023-03-18 14:53:10,2023-03-18 14:53:10,,,,2460300.0,Marco Antonio Carreno,
+438,Marcio,Brum de Mello,marcio-mello,GG-Conservacao e Memoria (Arq),Entidade raiz,1,2023-03-18 14:53:10,2025-08-12 13:36:10,,,,,Marcio Brum de Mello,
+440,Luciano,Reis de Oliveira,luciano-reis,GG-Precursoria,Entidade raiz,1,2023-03-18 14:53:10,2024-02-21 11:00:57,,,,,Luciano Reis de Oliveira,
+441,Luciana,Ghiggi,luciana-ghiggi,GG-Gabinete,Entidade raiz,1,2023-03-18 14:53:10,2025-09-04 10:38:39,,,,,Luciana Ghiggi,
+442,Luciana,dos Santos Conca,luciana-conca,GG-Gabinete,Entidade raiz,1,2023-03-18 14:53:10,2025-09-02 10:25:57,,,,,Luciana dos Santos Conca,
+444,Lorena,Fonseca Vieira,lorena-vieira,GG-Conservacao e Memoria (Arq),Entidade raiz,1,2023-03-18 14:53:10,2025-07-16 17:32:38,,,,,Lorena Fonseca Vieira,
+445,Lisiane,Lemos,lisiane-lemos,GG-SEIDAPE,Entidade raiz,1,2023-03-18 14:53:10,2025-08-07 14:43:18,,,,487759402.0,Lisiane Lemos,
+446,Lindomar,Nunes Leal,lindomar-leal,GG-Conservacao e Memoria (Arq) - Estagio,Entidade raiz,1,2023-03-18 14:53:10,2025-08-27 14:33:48,,,,,Lindomar Nunes Leal,
+447,Lidia,Nicole dos Santos Ten Cate,lidia-cate,GG-Assessoria Tecnica,Entidade raiz,1,2023-03-18 14:53:10,2023-07-25 15:57:03,,,,,Lidia Nicole dos Santos Ten Cate,
+448,Leonardo,Valerao Oliveira,leonardo-oliveira,GG-Conservacao e Memoria (Arq),Entidade raiz,1,2023-03-18 14:53:10,2025-07-22 08:54:19,,,,,Leonardo Valerao Oliveira,
+449,Leonardo,Holzmann Neves,leonardo-neves,GG-Gabinete,Entidade raiz,1,2023-03-18 14:53:10,2025-03-14 14:18:09,,,,,Leonardo Holzmann Neves,
+451,Leandro,Hardt da Silva,leandro-hardt,GG-Cerimonial,Entidade raiz,1,2023-03-18 14:53:10,2025-07-17 13:34:33,,,51984100435.0,,Leandro Hardt da Silva,
+453,Jovana,Beck da Fonseca,jovana-fonseca,GG-Redacao Oficial,Entidade raiz,1,2023-03-18 14:53:10,2025-08-12 10:40:31,,,,,Jovana Beck da Fonseca,
+454,José,Carlos Silva Rodrigues,jose-rodrigues,CC-Arquitetura,Entidade raiz,1,2023-03-18 14:53:10,2023-03-18 14:53:10,,,,,José Carlos Silva Rodrigues,CC-Arquitetura
+456,Jorge,Luiz Fagundes Correa,jorge-correa,GG-Precursoria,Entidade raiz,1,2023-03-18 14:53:10,2023-03-18 14:53:10,,,,455227001.0,Jorge Luiz Fagundes Correa,
+457,Joao,Luis Ferreira da Silva,joao-silva,GG-Conservacao e Memoria (Arq),Entidade raiz,1,2023-03-18 14:53:10,2025-08-08 09:45:15,,,,,Joao Luis Ferreira da Silva,
+459,Joao,Henrique Franco Ramos,joao-ramos,GG-Redacao Oficial,Entidade raiz,1,2023-03-18 14:53:10,2025-07-18 11:25:19,,,,,Joao Henrique Franco Ramos,
+462,Joao,Luiz Bomfim da Silva,joao-bomfim,GG-Cerimonial,Entidade raiz,1,2023-03-18 14:53:10,2025-09-04 17:00:09,,,,,Joao Luiz Bomfim da Silva,
+463,Jane,Aschidamini,jane-aschidamini,GG-DCGD,Entidade raiz,1,2023-03-18 14:53:10,2025-07-01 15:37:40,,,,,Jane Aschidamini,
+465,Ismael,da Costa Assis,ismael-assis,GG-Cerimonial,Entidade raiz,1,2023-03-18 14:53:10,2023-05-08 14:28:24,4231,,,3076512.0,Ismael da Costa Assis,
+467,Greicy,Peglow da Silva,greicy-silva,GG-SEIDAPE,Entidade raiz,1,2023-03-18 14:53:10,2025-08-15 10:18:36,,,,,Greicy Peglow da Silva,
+468,Gisele,da Silva Ferreira,gisele-ferreira,GG-RS Seguro,Entidade raiz,1,2023-03-18 14:53:10,2025-04-09 14:50:20,,,,,Gisele da Silva Ferreira,
+472,Fernanda,de Freitas Braga,fernanda-braga,GG-Conservacao e Memoria (Arq),Entidade raiz,1,2023-03-18 14:53:10,2025-08-13 11:40:41,,,,,Fernanda de Freitas Braga,
+473,Felipe,Augusto Belle,felipe-belle,GG-Assessoria Tecnica,Entidade raiz,1,2023-03-18 14:53:10,2023-03-18 14:53:10,,,,4556330.0,Felipe Augusto Belle,
+474,Euclides,Maria da Silva Neto,euclides-neto,GG-Gabinete,Entidade raiz,1,2023-03-18 14:53:10,2024-06-05 15:31:58,,,,2331772.0,Euclides Maria da Silva Neto,
+475,Maria,Ester Rodigues Gazalle,ester-rodrigues,CM-Serviços Residenciais,Entidade raiz,1,2023-03-18 14:53:10,2024-06-05 15:31:58,,,,132420903.0,Maria Ester Rodigues Gazalle,
+477,Elisângela,Veiga Da Silva,elisangela-silva,GVG-RS Seguro,Entidade raiz,1,2023-03-18 14:53:10,2024-07-30 14:24:40,,,,,Elisângela Veiga Da Silva,
+479,Daniela,Baum,daniela-baum,GG-Agenda,Entidade raiz,1,2023-03-18 14:53:10,2024-10-25 09:41:58,,,,,Daniela Baum,
+483,Cristina,de Jesus Viana,cristina-viana,GG-SEIDAPE,Entidade raiz,1,2023-03-18 14:53:10,2023-10-31 17:31:14,,,,,Cristina de Jesus Viana,
+484,Christian,Muller Jung,christian-jung,GG-Cerimonial,Entidade raiz,1,2023-03-18 14:53:10,2023-03-18 14:53:10,,,,,Christian Muller Jung,
+486,Carolina,Mendonca Gutierrez Alves,carolina-alves,GG-Assessoria Tecnica,Entidade raiz,1,2023-03-18 14:53:10,2025-08-12 09:14:11,,,,,Carolina Mendonca Gutierrez Alves,
+487,Camila,Wasserman,camila-wasserman,GG-SEIDAPE,Entidade raiz,1,2023-03-18 14:53:10,2023-03-18 14:53:10,,,,487986401.0,Camila Wasserman,
+488,Bruno,Pedroso Rien,bruno-rien,GG-Conservacao e Memoria (Arq),Entidade raiz,1,2023-03-18 14:53:10,2025-06-03 09:47:53,,,,,Bruno Pedroso Rien,
+489,Bruna,Werle,bruna-werle,GG-Assessoria Tecnica,Entidade raiz,1,2023-03-18 14:53:10,2023-03-18 14:53:10,,,,4822528.0,Bruna Werle,
+491,Antonio,Marcelo Santos da Silva,antonio-silva,GG-SEIDAPE,Entidade raiz,1,2023-03-18 14:53:10,2023-08-09 14:14:24,,,,,Antonio Marcelo Santos da Silva,
+493,Angela,Cristina de Souza Oetinger,angela-oetinger,GVG-Gabinete,Entidade raiz,1,2023-03-18 14:53:10,2025-07-29 15:41:12,,,,,Angela Cristina de Souza Oetinger,
+495,Andre,Rodrigues Furtado,andre-furtado,GG-Agenda,Entidade raiz > PIRATINI > CENTRAL DE ATENDIMENTOS > GG,1,2023-03-18 14:53:10,2025-08-11 13:08:46,,,,,Andre Rodrigues Furtado,
+502,Alvaro,Bonadiman Aguiar,alvaro-aguiar,GG-Conservacao e Memoria (Arq),Entidade raiz,1,2023-03-18 14:53:10,2025-08-28 15:50:12,,,,,Alvaro Bonadiman Aguiar,
+503,Aline,Silva Fontoura de Barcellos,aline-barcellos,GG-RS Seguro,Entidade raiz,1,2023-03-18 14:53:10,2025-06-06 13:51:56,,,,,Aline Silva Fontoura de Barcellos,
+505,Adriweli,Cristhinny Bispo Lima,adriweli-lima,GG-Assessoria Tecnica,Entidade raiz,1,2023-03-18 14:53:10,2025-08-27 09:14:49,,,,,Adriweli Cristhinny Bispo Lima,
+507,Vilmar,Rama,vilmar-rama,GG-RS Seguro,Entidade raiz,1,2023-03-18 14:53:43,2024-12-12 12:16:53,,,,,Vilmar Rama,
+512,Melissa,Minuzzi Bulegon,melissa-bulegon,GVG-Gabinete,Entidade raiz,1,2023-03-18 14:53:43,2025-09-01 08:33:49,,,,,Melissa Minuzzi Bulegon,
+516,Laura,Desireé Vernier Fujita,laura-fujita,GVG - GPE,Entidade raiz,1,2023-03-18 14:53:43,2023-05-16 18:08:39,,,,4878744.0,Laura Desireé Vernier Fujita,
+517,Larissa,Cotta Winckler,larissa-winckler,GVG-Gabinete,Entidade raiz,1,2023-03-18 14:53:43,2025-08-11 14:08:50,,,,,Larissa Cotta Winckler,
+518,Kassiano,Ramos de Fraga,kassiano-fraga,GVG-GPE,Entidade raiz,1,2023-03-18 14:53:43,2025-08-27 17:15:11,,,,,Kassiano Ramos de Fraga,
+521,Juliane,Marise da Silva Pimentel,juliane-pimentel,GVG - Gabinete,Entidade raiz,1,2023-03-18 14:53:43,2024-06-05 15:31:58,,32886123,51999273758.0,,Juliane Marise da Silva Pimentel,
+522,Joel,Vargas da Silva,joel-silva,GVG - Gabinete,Entidade raiz,1,2023-03-18 14:53:43,2024-08-13 13:50:38,,,,,Joel Vargas da Silva,
+524,João,Batista Rodrigues Martins,joao-batista,GVG-Gabinete,Entidade raiz,1,2023-03-18 14:53:43,2025-01-06 12:09:38,,,,,João Batista Rodrigues Martins,
+526,Henrique,Joner,henrique-joner,GVG-RS Seguro,Entidade raiz,1,2023-03-18 14:53:43,2023-03-18 14:53:43,,,,3206815.0,Henrique Joner,
+527,Giovana,Mazzarolo Foppa,giovana-foppa,GVG-RS Seguro,Entidade raiz,1,2023-03-18 14:53:43,2023-11-23 17:25:40,,,,,Giovana Mazzarolo Foppa,
+528,Gabriel,Vieira de Souza,gabriel-souza,GVG - Vice Governador,Entidade raiz,1,2023-03-18 14:53:43,2023-03-18 14:53:43,,,,422728003.0,Gabriel Vieira de Souza,
+529,Flavia,Katiele Facioni Silva Lopes,flavia-silva,CC-DRH,Entidade raiz,1,2023-03-18 14:53:43,2025-04-29 12:41:30,,,,,Flavia Katiele Facioni Silva Lopes,CC-DRH
+531,Daniela,Machado,daniela-machado,GVG - Gabinete,Entidade raiz,1,2023-03-18 14:53:43,2024-08-12 13:37:36,,,,,Daniela Machado,
+532,Clovis Garcez,Magalhães,clovis-magalhaes,GVG - GPE,Entidade raiz,1,2023-03-18 14:53:43,2024-06-05 15:31:58,,,,,Clovis Garcez Magalhães,
+534,Claudia,Campezatto,claudia-campezatto,GVG - Gabinete,Entidade raiz,1,2023-03-18 14:53:43,2024-06-05 15:31:58,,,,2685833.0,Claudia Campezatto,
+535,Clarice,Mello Guimaraes Mautone,clarice-mautone,GG-RS Seguro,Entidade raiz,1,2023-03-18 14:53:43,2025-08-18 08:48:49,,,,,Clarice Mello Guimaraes Mautone,
+538,Carla,Catarina Cardoso,carla-cardoso,GG-RS Seguro,Entidade raiz,1,2023-03-18 14:53:43,2025-07-29 10:12:23,,,,,Carla Catarina Cardoso,
+539,Carla,de Jesus Calero,carla-calero,GVG-Gabinete,Entidade raiz,1,2023-03-18 14:53:43,2025-09-05 16:08:13,,,,,Carla de Jesus Calero,
+542,Antonio,Carlos Pacheco Padilha,antonio-padilha,GVG-RS Seguro,Entidade raiz > PIRATINI > CENTRAL DE ATENDIMENTOS > GVG,1,2023-03-18 14:53:43,2025-01-06 14:22:16,,,,2429594.0,Antonio Carlos Pacheco Padilha,
+543,Antonio,Paulo Cargnin,antonio-cargnin,GVG - GPE,Entidade raiz,1,2023-03-18 14:53:43,2024-04-15 09:13:56,,,,,Antonio Paulo Cargnin,
+553,Vagner,Karan Medeiros,vagner-medeiros,SECOM-Audio e Video,Entidade raiz,1,2023-03-18 14:54:15,2023-05-23 14:13:16,,,,,Vagner Karan Medeiros,
+555,Thamiris,dos Reis Mondin,thamiris-mondin,SECOM-Redacao,Entidade raiz,1,2023-03-18 14:54:15,2023-03-18 14:54:15,,,,454929501.0,Thamiris dos Reis Mondin,
+565,Rodrigo,Rodrigues Ziebell,rodrigo-ziebell,GVG - Imprensa,Entidade raiz,1,2023-03-18 14:54:15,2025-01-07 11:43:02,,,,,Rodrigo Rodrigues Ziebell,
+566,Rodrigo,Toledo Franca,rodrigo-franca,SECOM - Jornalismo,Entidade raiz,1,2023-03-18 14:54:15,2025-04-07 14:10:00,,,,,Rodrigo Toledo Franca,
+573,Paulo,Roberto Rodrigues da Silva,paulo-silva,SECOM - SAAC,Entidade raiz,1,2023-03-18 14:54:15,2024-11-11 15:01:27,,,,,Paulo Roberto Rodrigues da Silva,
+576,Paulo,Cesar Pereira da Silva,paulo-cesar,SECOM - Áudio e Vídeo,Entidade raiz,1,2023-03-18 14:54:15,2024-12-05 14:01:31,,,,,Paulo Cesar Pereira da Silva,
+580,Nara,Rejane Sarmento,nara-sarmento,SECOM - Áudio e Vídeo,Entidade raiz,1,2023-03-18 14:54:15,2024-11-12 11:14:55,,,,,Nara Rejane Sarmento,
+582,Mauro,da Silva Nascimento,mauro-nascimento,SECOM-Audio e Video,Entidade raiz,1,2023-03-18 14:54:15,2023-03-18 14:54:15,,,,455854501.0,Mauro da Silva Nascimento,
+592,Manoella,Azevedo Rodrigues,manoella-rodrigues,SECOM-Eventos,Entidade raiz,1,2023-03-18 14:54:15,2025-08-27 13:35:12,,,,,Manoella Azevedo Rodrigues,
+595,Luis,Andre de Lima Pinto,luis-pinto,SECOM-Audio e Video,Entidade raiz,1,2023-03-18 14:54:15,2025-07-25 16:10:40,,,,,Luis Andre de Lima Pinto,
+596,Luis,Fernando Alencastro Maria,luis-maria,SECOM-Eventos,Entidade raiz,1,2023-03-18 14:54:15,2023-03-18 14:54:15,,,,4548310.0,Luis Fernando Alencastro Maria,
+603,Juliano,Oliveira Rodrigues,juliano-rodrigues,SECOM-Imprensa,Entidade raiz,1,2023-03-18 14:54:15,2023-03-18 14:54:15,,,,3527182.0,Juliano Oliveira Rodrigues,
+604,Juliana,Santos Klaus,juliana-klaus,SECOM-Gabinete,Entidade raiz,1,2023-03-18 14:54:15,2025-07-31 15:20:30,,,,,Juliana Santos Klaus,
+606,Juliana,Alice Alves Dias,juliana-dias,SECOM-Redacao,Entidade raiz,1,2023-03-18 14:54:15,2023-03-18 14:54:15,,,,4822609.0,Juliana Alice Alves Dias,
+611,Jones,Caetano de Mattos,jones-mattos,SEOM-Jornalismo,Entidade raiz,1,2023-03-18 14:54:15,2023-10-11 16:49:32,,,,,Jones Caetano de Mattos,
+615,Jean,Carlo Rangel,jean-rangel,SECOM-Redes Sociais,Entidade raiz,1,2023-03-18 14:54:15,2025-08-28 14:22:58,,,,,Jean Carlo Rangel,
+616,Israel,Kaiper Elias,israel-elias,SECOM - Eventos,Entidade raiz,1,2023-03-18 14:54:15,2025-03-06 14:15:31,,,,,Israel Kaiper Elias,
+618,Isadora,Marques Orlandi,isadora-orlandi,SECOM - Eventos,Entidade raiz,1,2023-03-18 14:54:15,2024-10-08 16:28:50,,,,,Isadora Marques Orlandi,
+622,Guilherme,Bozzetto Ebert Hamm,guilherme-hamm,SECOM-Jornalismo,Entidade raiz,1,2023-03-18 14:54:15,2023-03-18 14:54:15,,,,455954101.0,Guilherme Bozzetto Ebert Hamm,
+623,Grégori,Jairo Fardin Bertó,gregori-berto,SECOM-Imprensa,Entidade raiz,1,2023-03-18 14:54:15,2023-03-18 14:54:15,,,,4653521.0,Grégori Jairo Fardin Bertó,
+624,Giulia,Da Fonseca Griespach,giulia-griespach,SECOM - Gabinete - Assessora,Entidade raiz,1,2023-03-18 14:54:15,2024-11-26 10:41:34,,,,,Giulia Da Fonseca Griespach,
+630,Gabriel,Braile Jacques,gabriel-jacques,SECOM-Redacao,Entidade raiz,1,2023-03-18 14:54:15,2023-03-18 14:54:15,,,,,Gabriel Braile Jacques,
+633,Fernanda,Tojal Guilhon,fernanda-guilhon,SECOM-Publicidade,Entidade raiz,1,2023-03-18 14:54:15,2023-03-18 14:54:15,,,,459508401.0,Fernanda Tojal Guilhon,
+636,Felipe,Luiz Da Silveira Borges,felipe-borges,SECOM-Redacao,Entidade raiz,1,2023-03-18 14:54:15,2023-03-18 14:54:15,,,,4822665.0,Felipe Luiz Da Silveira Borges,
+639,Eliziete,dos Santos Padilha,eliziete-padilha,CC-Subchefia de Comunicacao,Entidade raiz,1,2023-03-18 14:54:15,2025-06-30 14:30:26,,,,,Eliziete dos Santos Padilha,CC-Subchefia
+642,Diego,Luzia Nunes,diego-nunes,SECOM-Gabinete Motorista,Entidade raiz,1,2023-03-18 14:54:15,2023-03-18 14:54:15,,,,4242360.0,Diego Luzia Nunes,
+643,Danrley,Nogueira Passos,danrley-passos,SECOM - Redes Sociais,Entidade raiz,1,2023-03-18 14:54:15,2025-04-04 12:04:10,,,,,Danrley Nogueira Passos,
+647,Cintia,Garcia da Rosa,cintia-rosa,SECOM-SAAC,Entidade raiz,1,2023-03-18 14:54:15,2023-11-27 17:49:20,,,,,Cintia Garcia da Rosa,
+649,Caroline,Fraga de Souza,caroline-souza,SECOM-Clipagem - Estagio,Entidade raiz,1,2023-03-18 14:54:15,2023-03-18 14:54:15,,,,,Caroline Fraga de Souza,
+650,Caroline,Callai Sarturi,caroline-sarturi,SECOM-Clipagem -,Entidade raiz,1,2023-03-18 14:54:15,2023-03-18 14:54:15,,,,,Caroline Callai Sarturi,
+653,Carlos,Ismael Severo Moreira,carlos-moreira,SECOM - Imprensa - Assessor Governador,Entidade raiz,1,2023-03-18 14:54:15,2025-02-11 13:38:07,,,,,Carlos Ismael Severo Moreira,
+656,Camila,Marchesan Cargnelutti,camila-cargnelutti,SECOM-Redacao,Entidade raiz,1,2023-03-18 14:54:15,2023-03-18 14:54:15,,,,4822625.0,Camila Marchesan Cargnelutti,
+657,Bruno,Dias dos Santos,bruno-santos,SECOM - SAAC,Entidade raiz,1,2023-03-18 14:54:15,2025-01-27 09:53:17,,,,,Bruno Dias dos Santos,
+658,Bruno,Alves Ibaldo,bruno-ibaldo,SECOM-Publicidade,Entidade raiz,1,2023-03-18 14:54:15,2023-03-18 14:54:15,,,,454931701.0,Bruno Alves Ibaldo,
+660,Antonio,Carlos Gabiatto,antonio-gabiatto,SECOM-Diretor Eventos,Entidade raiz,1,2023-03-18 14:54:15,2023-03-18 14:54:15,,,,487779901.0,Antonio Carlos Gabiatto,
+662,Andreas,Peter,andreas-peter,SECOM-Imprensa,Entidade raiz,1,2023-03-18 14:54:15,2023-03-18 14:54:15,,,,4242203.0,Andreas Peter,
+663,Andrea,Caroline de Moura Martins,andrea-martins,SECOM - Áudio e Vídeo,Entidade raiz,1,2023-03-18 14:54:15,2024-10-08 10:14:12,,,,,Andrea Caroline de Moura Martins,
+664,Andre,dos Santos Graminho,andre-graminho,SECOM-Eventos,Entidade raiz > PIRATINI > CENTRAL DE ATENDIMENTOS > SECOM,1,2023-03-18 14:54:15,2025-08-18 11:48:52,,3213-0769,984337366.0,,Andre dos Santos Graminho,
+666,Amilcar,Alexandre Oliveira Da Rosa,amilcar-rosa,SECOM-Redacao,Entidade raiz,1,2023-03-18 14:54:15,2023-03-18 14:54:15,,,,,Amilcar Alexandre Oliveira Da Rosa,
+667,Amanda,Laroque Bormida,amanda-bormida,SECOM-Jornalismo,Entidade raiz,1,2023-03-18 14:54:15,2025-08-08 11:11:58,,,,,Amanda Laroque Bormida,
+670,Adriana,de Abreu Neves,adriana-neves,SECOM - Publicidade,Entidade raiz > PIRATINI > CENTRAL DE ATENDIMENTOS > SECOM,1,2023-03-18 14:54:15,2025-01-22 17:55:49,,,,,Adriana de Abreu Neves,
+671,Vanessa,Gehm Rodrigues,vanessa-rodrigues,CM-Defesa Civil-Estagio,Entidade raiz,1,2023-03-18 14:56:17,2023-03-18 14:56:17,,,,,Vanessa Gehm Rodrigues,
+685,Maria,Estela Lima da Silva,maria-silva,GVG - Assessoria Militar GVG,Entidade raiz,1,2023-03-18 14:56:17,2023-03-18 14:56:17,,,,,Maria Estela Lima da Silva,
+689,Guilherme,Fregapani de Almeida,guilherme-almeida,CM-DefesaCivil,Entidade raiz,1,2023-03-18 14:56:17,2024-03-13 14:03:36,,,,,Guilherme Fregapani de Almeida,
+691,Eduardo,Figueiredo Cavalheiro Leite,eduardo-leite,Governador,Entidade raiz,1,2023-03-18 14:56:17,2023-03-18 14:56:17,,,,454059001.0,Eduardo Figueiredo Cavalheiro Leite,
+694,Camila,Silva da Fontoura,camila-fontoura,Terceirizada,Entidade raiz,1,2023-03-18 14:56:17,2023-03-18 14:56:17,,,,,Camila Silva da Fontoura,
+713,Vanderlan,Frank Carvalho,vanderlan-carvalho,CM-SAA,Entidade raiz,1,2023-03-18 15:23:02,2024-11-06 09:39:20,,,,,Vanderlan Frank Carvalho,
+719,Thiago,Vinhas Denis,thiago-denis,CM-Operacoes,Entidade raiz,1,2023-03-18 15:23:02,2023-03-18 15:23:02,,,,,Thiago Vinhas Denis,
+724,Santiago,Soares Dias de Castro,santiago-castro,CM-Gabinete,Entidade raiz,1,2023-03-18 15:23:02,2024-06-05 15:31:58,,,,2311690.0,Santiago Soares Dias de Castro,
+725,Samuel,Rocha Bueno,samuel-bueno,CM-Transportes,Entidade raiz,1,2023-03-18 15:23:02,2025-04-01 09:41:23,,,,,Samuel Rocha Bueno,
+726,Sabrina,Pereira Ribas,sabrina-ribas,CM-Defesa Civil,Entidade raiz,1,2023-03-18 15:23:02,2025-06-26 15:50:45,,,,,Sabrina Pereira Ribas,
+727,Rogerio,Furtado Goncalves,rogerio-goncalves,CM-Operacoes-Seguranca,Entidade raiz,1,2023-03-18 15:23:02,2023-03-18 15:23:02,,,,,Rogerio Furtado Goncalves,
+729,Rodrigo,Lopes Duarte,rodrigo-duarte,CM-Defesa Civil,Entidade raiz,1,2023-03-18 15:23:02,2025-08-28 14:41:32,,,,,Rodrigo Lopes Duarte,
+730,Rodrigo,dos Santos Arnaldo de Alencar,rodrigo-alencar,CM-Transportes,Entidade raiz,1,2023-03-18 15:23:02,2023-03-18 15:23:02,,,,3744850.0,Rodrigo dos Santos Arnaldo de Alencar,
+732,Roberta,Araujo Martins,roberta-martins,CM-Gabinete,Entidade raiz,1,2023-03-18 15:23:02,2025-08-15 10:29:05,,,,,Roberta Araujo Martins,
+734,Raysa,Maldonado Lima,raysa-lima,GVG - Assessoria Militar GVG,Entidade raiz,1,2023-03-18 15:23:02,2023-03-18 15:23:02,,,,,Raysa Maldonado Lima,
+736,Rafael,Luft,rafael-luft,CM-Defesa Civil,Entidade raiz,1,2023-03-18 15:23:02,2023-03-18 15:23:02,,,,2311666.0,Rafael Luft,
+737,Pedro,Luis Bernardi de Camargo,pedro-camargo,CM-Defesa Civil-Clima Tempo,Entidade raiz,1,2023-03-18 15:23:02,2025-05-19 08:30:07,,,,,Pedro Luis Bernardi de Camargo,
+738,Paulo,Sergio Rodrigues Vogt,paulo-vogt,CM-SAA,Entidade raiz,1,2023-03-18 15:23:02,2025-06-30 09:44:31,,,,,Paulo Sergio Rodrigues Vogt,
+739,Paulo,Ismael Tavares dos Santos,paulo-santos,CM-Operacoes-Equipes,Entidade raiz,1,2023-03-18 15:23:02,2025-02-19 09:48:18,,,,,Paulo Ismael Tavares dos Santos,
+740,Paulo,Renato Alcaria Pacheco,paulo-pacheco,CM-Guarda,Entidade raiz,1,2023-03-18 15:23:02,2025-03-06 13:34:28,,,,,Paulo Renato Alcaria Pacheco,
+742,Patrick,Senger,patrick-senger,CM-Transportes,Entidade raiz,1,2023-03-18 15:23:02,2025-08-26 14:00:29,,,,,Patrick Senger,
+746,Pamela,Souza Fernandes,pamela-fernandes,CM-Gabinete,Entidade raiz,1,2023-03-18 15:23:02,2025-07-31 11:13:54,,,,,Pamela Souza Fernandes,
+747,Nicolle,Cordeiro Simoes dos Reis,nicolle-reis,CM-Defesa Civil-Estagio,Entidade raiz,1,2023-03-18 15:23:02,2023-03-18 15:23:02,,,,,Nicolle Cordeiro Simoes dos Reis,
+751,Michele,Garcia Pires,michele-pires,CM-Transportes,Entidade raiz,1,2023-03-18 15:23:02,2025-05-30 09:53:58,,,,,Michele Garcia Pires,
+753,Marilei,Teloken,marilei-teloken,CM-Transportes,Entidade raiz,1,2023-03-18 15:23:02,2025-07-01 09:45:32,,,,,Marilei Teloken,
+759,Marco,Antonio Moura da Costa,marco-costa,CM-Central de Doações,Entidade raiz,1,2023-03-18 15:23:02,2023-03-18 15:23:02,,,,,Marco Antonio Moura da Costa,
+761,Marcio,Holken Soares Lopes,marcio-lopes,CM-Operacoes-Equipes,Entidade raiz,1,2023-03-18 15:23:02,2023-03-18 15:23:02,,,,,Marcio Holken Soares Lopes,
+764,Marcelo,Oliveira da Costa,marcelo-costa,CM-Operacoes-Equipes,Entidade raiz,1,2023-03-18 15:23:02,2023-03-18 15:23:02,,,,2329859.0,Marcelo Oliveira da Costa,
+765,Marcel,Cristiano Martins,marcel-martins,CM-Transportes,Entidade raiz,1,2023-03-18 15:23:02,2025-09-05 15:00:11,,,,,Marcel Cristiano Martins,
+766,Maicon,Soares Machado,maicon-machado,CM-Operacoes-Seguranca,Entidade raiz,1,2023-03-18 15:23:02,2024-04-23 11:31:44,,,,,Maicon Soares Machado,
+767,Magnus,Fabiano da Silva,magnus-silva,CM-Defesa Civil,Entidade raiz,1,2023-03-18 15:23:02,2025-08-26 10:47:34,,,,,Magnus Fabiano da Silva,
+769,Luis,Omar Carvalho Rodrigues,luis-rodrigues,CM-Central de Doações,Entidade raiz,1,2023-03-18 15:23:02,2023-03-18 15:23:02,,,,2331900.0,Luis Omar Carvalho Rodrigues,
+774,Luciano,Chaves Boeira,luciano-boeira,CM-Gabinete,Entidade raiz,1,2023-03-18 15:23:02,2023-03-18 15:23:02,,,,2311607.0,Luciano Chaves Boeira,
+783,Kelen,Silveira da Silva,kelen-silva,CM-Gabinete Medico,Entidade raiz,1,2023-03-18 15:23:02,2025-04-22 09:27:20,,,,,Kelen Silveira da Silva,
+786,Junior,Rabello Bittencourt,junior-bittencourt,GG-Servicos Residenciais,Entidade raiz,1,2023-03-18 15:23:02,2025-07-30 13:09:08,,,,,Junior Rabello Bittencourt,
+787,Julio,Cesar Sirio Pinto,julio-pinto,CM-Operacoes-Equipes,Entidade raiz,1,2023-03-18 15:23:02,2023-09-13 07:30:37,,,,,Julio Cesar Sirio Pinto,
+789,Jose,Ricardo Duarte Ferreira,jose-ferreira,GVG - Assessoria Militar GVG,Entidade raiz,1,2023-03-18 15:23:02,2023-03-18 15:23:02,,,,,Jose Ricardo Duarte Ferreira,
+793,Jonatas,Gabriel de Souza,jonatas-souza,CM-SAA,Entidade raiz,1,2023-03-18 15:23:02,2025-08-28 13:32:29,,,,,Jonatas Gabriel de Souza,
+794,Joel,Ricardo de Almeida,joel-almeida,CM-SAA,Entidade raiz,1,2023-03-18 15:23:02,2025-08-26 17:13:20,,,,,Joel Ricardo de Almeida,
+796,Joao,Batista da Rosa Nunes,joao-nunes,CM-Defesa Civil,Entidade raiz,1,2023-03-18 15:23:02,2023-03-18 15:23:02,,,,,Joao Batista da Rosa Nunes,
+800,Ivo,Henrique Streb,ivo-streb,CM-Transportes,Entidade raiz,1,2023-03-18 15:23:02,2025-04-15 11:13:05,,,,,Ivo Henrique Streb,
+804,Guilherme,Ferreira Teixeira,guilherme-teixeira,GVG - Assessoria Militar GVG,Entidade raiz,1,2023-03-18 15:23:02,2023-03-18 15:23:02,,,,,Guilherme Ferreira Teixeira,
+807,Fernando,Augusto de Meirelles Almeida,fernando-almeida,CM-Gabinete,Entidade raiz,1,2023-03-18 15:23:02,2025-07-02 15:28:23,,,,,Fernando Augusto de Meirelles Almeida,
+809,Felipe,Vargas Oliveira,felipe-oliveira,CM-Defesa Civil - Departamento de Projetos e Gestão do Conhecimento,Entidade raiz,1,2023-03-18 15:23:02,2025-07-14 15:59:04,,,,,Felipe Vargas Oliveira,
+810,Felipe,Fagundes Doyle,felipe-doyle,CM-Defesa Civil,Entidade raiz,1,2023-03-18 15:23:02,2025-05-13 08:49:08,,,,,Felipe Fagundes Doyle,
+811,Fabio,Carlos Rauber,fabio-rauber,CM-Defesa Civil,Entidade raiz,1,2023-03-18 15:23:02,2025-01-13 13:07:32,,,,,Fabio Carlos Rauber,
+815,Estainan,Santana Badia,estainan-badia,CM-Transportes,Entidade raiz,1,2023-03-18 15:23:02,2023-03-18 15:23:02,,,,,Estainan Santana Badia,
+819,Elisandra,Favin Decantam,elisandra-decantam,CM-Defesa Civil,Entidade raiz,1,2023-03-18 15:23:02,2025-09-02 15:15:43,,,,,Elisandra Favin Decantam,
+823,Diego,Mattiello,diego-mattiello,CC-Compras,Entidade raiz,1,2023-03-18 15:23:02,2025-08-27 09:09:04,,,,,Diego Mattiello,CC-Compras
+824,Debora,Bernsts da Silva,debora-silva,CM-SAA,Entidade raiz,1,2023-03-18 15:23:02,2025-09-01 15:50:22,,,,,Debora Bernsts da Silva,
+825,Debora,Aparecida Caetano Abreu Silva,debora-aparecida,CM-Defesa Civil,Entidade raiz,1,2023-03-18 15:23:02,2025-07-22 14:09:37,,,,,Debora Aparecida Caetano Abreu Silva,
+828,Daniel,Silva da Silva,daniel-silva,CM-Defesa Civil,Entidade raiz,1,2023-03-18 15:23:02,2023-03-18 15:23:02,,,,2332000.0,Daniel Silva da Silva,
+831,Cinara,Zorzella Guimaraes,cinara-guimaraes,CM-Guarda,Entidade raiz,1,2023-03-18 15:23:02,2023-03-18 15:23:02,,,,,Cinara Zorzella Guimaraes,
+832,Christiano,Perin,christiano-perin,CM-Gabinete Médico,Entidade raiz,1,2023-03-18 15:23:02,2023-03-18 15:23:02,,,,,Christiano Perin,
+834,Cesar,Augusto Guindani,cesar-guindani,CM-Operacoes,Entidade raiz,1,2023-03-18 15:23:02,2024-06-05 15:31:58,,,,2331705.0,Cesar Augusto Guindani,
+836,Caroline,Schacker Evangelista,caroline-evangelista,CM-Gabinete Medico,Entidade raiz,1,2023-03-18 15:23:02,2025-08-28 14:38:53,,,,,Caroline Schacker Evangelista,
+839,Camila,Francisco Beck,camila-beck,GG-Servicos Residenciais,Entidade raiz,1,2023-03-18 15:23:02,2025-01-15 09:29:51,,,,,Camila Francisco Beck,
+840,Bruno,Zanini Rodrigues,bruno-rodrigues,GVG - Assessoria Militar GVG,Entidade raiz,1,2023-03-18 15:23:02,2023-03-18 15:23:02,,,,,Bruno Zanini Rodrigues,
+841,Barbara,Cassiane Silva Heman,barbara-heman,CM-Relações Comunitárias,Entidade raiz,1,2023-03-18 15:23:02,2025-03-05 14:10:51,,,,,Barbara Cassiane Silva Heman,
+843,Arlindo,Weber de Oliveira,arlindo-oliveira,CM-Operacoes,Entidade raiz,1,2023-03-18 15:23:02,2025-08-15 09:13:43,,,,,Arlindo Weber de Oliveira,
+846,Ana,Amelia da Cas Lima Duarte,ana-duarte,CM-Defesa Civil,Entidade raiz,1,2023-03-18 15:23:02,2025-08-13 17:24:04,,,,,Ana Amelia da Cas Lima Duarte,
+850,Agenor,Benedito Silveira Da Silva,agenor-silva,CM-Operacoes-Equipes,Entidade raiz,1,2023-03-18 15:23:02,2023-03-18 15:23:02,,,,,Agenor Benedito Silveira Da Silva,
+851,Adriano,Santos da Silva,adriano-santos,CM-Gabinete-AJO,Entidade raiz,1,2023-03-18 15:23:02,2023-03-18 15:23:02,,,,2889307.0,Adriano Santos da Silva,
+853,Acacio,Claudiomiro de Loreto,acacio-loreto,CM-Guarda,Entidade raiz,1,2023-03-18 15:23:02,2025-08-19 11:32:40,,,,,Acacio Claudiomiro de Loreto,
+857,Jose,Nilson da Cunha Maia,jose-maia,CC-Subchefia do Interior,Entidade raiz,1,2023-03-27 10:11:21,2025-07-04 14:16:17,,,,,Jose Nilson da Cunha Maia,CC-Subchefia
+861,Kauane,Andressa Miller,kauane-miller,SECOM-Jornalismo,Entidade raiz,1,2023-03-29 09:38:17,2023-03-29 09:38:17,,,,487416101.0,Kauane Andressa Miller,
+864,Alba,Conceicao Marquez dos Santos,alba-santos,CC-SAEF,Entidade raiz > PIRATINI > CENTRAL DE ATENDIMENTOS > CASA CIVIL,1,2023-03-29 09:38:17,2025-04-08 11:44:50,,,,,Alba Conceicao Marquez dos Santos,CC-SAEF
+867,Vinicius,Mendes Boff,vinicius-boff,CC-Gabinete dos Prefeitos,Entidade raiz,1,2023-04-05 09:42:56,2023-04-05 09:42:56,,,,3469891.0,Vinicius Mendes Boff,CC-Gabinete
+868,Thales,de Oliveira Moreira,thales-moreira,SECOM - Jornalismo,Entidade raiz,1,2023-04-05 09:42:56,2025-02-17 08:58:47,,,,,Thales de Oliveira Moreira,
+870,Salmo,Dias de Oliveira,salmo-oliveira,CC-Gabinete dos Prefeitos,Entidade raiz,1,2023-04-05 09:42:56,2023-04-05 09:42:56,,,,487939201.0,Salmo Dias de Oliveira,CC-Gabinete
+872,Orvalino,Antônio Kuhn,orvalino-kuhn,CC-Gabinete dos Prefeitos,Entidade raiz,1,2023-04-05 09:42:56,2023-04-05 09:42:56,,,,307188005.0,Orvalino Antônio Kuhn,CC-Gabinete
+873,Marcos,Moreira Mattos,marcos-mattos,CC-Gabinete dos Prefeitos,Entidade raiz,1,2023-04-05 09:42:56,2023-04-05 09:42:56,,,,3765601.0,Marcos Moreira Mattos,CC-Gabinete
+885,Angela,Matias Camilo da Silva,angela-silva,CC-ATA,Entidade raiz,1,2023-04-20 09:50:37,2025-07-03 10:53:06,,,,,Angela Matias Camilo da Silva,CC-ATA
+888,Janaína,Patrícia Zelinski,janaina-zelinski,GG-Precursoria,Entidade raiz,1,2023-04-26 09:16:55,2023-04-26 09:16:55,,,,370542001.0,Janaína Patrícia Zelinski,
+890,Sandro,Augusto Pereira Camargo,sandro-camargo,CM-Operações-Segurança,Entidade raiz,1,2023-05-02 14:47:58,2023-05-02 14:47:58,,,,,Sandro Augusto Pereira Camargo,
+893,Nelci,Böck,nelci-bock,CC-Subchefia do Interior,Entidade raiz > PIRATINI > CENTRAL DE ATENDIMENTOS > CASA CIVIL,1,2023-05-12 17:40:09,2025-06-23 09:50:38,,,,,Nelci Böck,CC-Subchefia
+895,Marcelo,Pinto Ribeiro,marcelo-ribeiro,SECOM - Jornalismo,Entidade raiz,1,2023-05-12 17:40:09,2024-11-11 14:50:53,,,,,Marcelo Pinto Ribeiro,
+898,Jean,Carlos Moreto Borges,jean-borges,CM-Operacoes-Toca,Entidade raiz,1,2023-05-12 17:40:09,2023-05-12 17:40:09,,,,,Jean Carlos Moreto Borges,
+900,Paulo,Deymison da Silva Souza,paulo-souza,CC-Parlamentar,Entidade raiz,1,2023-05-16 15:31:30,2025-08-28 14:14:58,,,,,Paulo Deymison da Silva Souza,CC-Parlamentar
+901,Luis,Carlos Caetano dos Santos,luis-santos,CM-Operacoes,Entidade raiz,1,2023-05-16 15:31:30,2023-05-16 15:31:30,,,,,Luis Carlos Caetano dos Santos,
+904,Paulo,Ricardo Duarte Speck,paulo-speck,CC-Subchefia do Interior,Entidade raiz,1,2023-05-24 15:45:51,2025-05-05 15:31:20,,,,,Paulo Ricardo Duarte Speck,CC-Subchefia
+905,Paulo,Cesar Pedrozo Farias,paulo-farias,CM-Operações-ChefeSegurançaFamiliar,Entidade raiz,1,2023-05-24 15:45:51,2023-11-08 13:48:36,,,,,Paulo Cesar Pedrozo Farias,
+907,Douglas,Moraes Silveira,douglas-silveira,GVG - Assessoria Militar GVG,Entidade raiz,1,2023-05-24 15:45:51,2023-05-24 15:45:51,,,,,Douglas Moraes Silveira,
+909,Rinaldo,Sanguanini da Silva,rinaldo-silva,CC-Manutencao,Entidade raiz,1,2023-05-30 11:53:45,2025-05-21 13:47:08,,,,,Rinaldo Sanguanini da Silva,CC-Manutencao
+915,Rotiane,Moreira Gomes,rotiane-gomes,CC-Conservacao-terceirizada,Entidade raiz,1,2023-06-14 13:32:14,2023-10-16 17:46:18,,,,,Rotiane Moreira Gomes,CC-Conservacao-terceirizada
+916,Maison,Roberto Mendonça Gonçalves,maison-goncalves,CC-Biblioteca,Entidade raiz,1,2023-06-14 13:32:14,2025-08-08 16:27:35,,,,,Maison Roberto Mendonça Gonçalves,CC-Biblioteca
+917,Magda,Maciel Bueno,magda-bueno,CC-SAEF,Entidade raiz,1,2023-06-14 13:32:14,2025-05-12 12:29:40,,,,,Magda Maciel Bueno,CC-SAEF
+918,Jânio,Medeiros Júnior,janio-junior,CC-Subchefia do Interior,Entidade raiz,1,2023-06-14 13:32:14,2024-10-09 15:10:15,,,,,Jânio Medeiros Júnior,CC-Subchefia
+919,Bárbara,Cristina Severino Machado,barbara-machado,CC-Gabinete-Recepção,Entidade raiz,1,2023-06-19 13:29:57,2023-09-26 11:34:13,,,,,Bárbara Cristina Severino Machado,CC-Gabinete-Recepção
+924,Gustavo,Bohrer Paim,gustavo-paim,CC-Gabinete-SecAdjunto,Entidade raiz,1,2023-06-23 17:37:03,2024-03-19 17:05:23,,,,,Gustavo Bohrer Paim,CC-Gabinete-SecAdjunto
+925,Dalvane,Elisa Albarello,dalvane-albarello,CM-Operações,Entidade raiz,1,2023-06-23 17:37:03,2023-10-19 15:13:56,,,,,Dalvane Elisa Albarello,
+928,Maiquel,Moura,maiquel-moura,CM-Defesa Civil (CREPDEC-1),Entidade raiz,1,2023-07-10 15:19:26,2025-07-09 15:34:43,,,,,Maiquel Moura,
+930,Jorge Augusto Saavedra,dos Santos Pinto Neto,jorge-neto,CC-Parlamentar,Entidade raiz,1,2023-07-10 15:19:26,2023-07-10 15:19:26,,,,,Jorge Augusto Saavedra dos Santos Pinto Neto,CC-Parlamentar
+933,Adriano,José Zanini,adriano-zanini,CM-Defesa Civil (CREPDEC-1),Entidade raiz,1,2023-07-10 15:19:26,2023-07-10 15:19:26,,,,,Adriano José Zanini,
+935,Edson,Beltrão Matos dos Santos,edson-matos,CC - Divisão de Conservação,Entidade raiz,1,2023-07-14 09:52:50,2023-07-14 09:52:50,,,,,Edson Beltrão Matos dos Santos,
+938,Lourival Aparecido,Bernardino de Seixas,lourival-seixas,CC-Gabinete dos Prefeitos,Entidade raiz,1,2023-07-17 17:05:36,2024-11-18 13:51:34,,,,,Lourival Aparecido Bernardino de Seixas,CC-Gabinete
+941,Daniel,Avila de Assis,daniel-assis,CC-Protocolo,Entidade raiz,1,2023-07-28 14:27:52,2025-07-25 15:08:02,,,,,Daniel Avila de Assis,CC-Protocolo
+947,Alexandre,Goulart Severo,alexandre-severo,CC-Gabinete dos Prefeitos,Entidade raiz,1,2023-08-18 10:54:04,2023-08-18 10:54:04,,,,,Alexandre Goulart Severo,CC-Gabinete
+949,Thayse,Cristiane Severo do Prado,thayse-prado,GG-RS Seguro,Entidade raiz,1,2023-09-01 16:39:55,2024-01-23 17:40:37,,,,,Thayse Cristiane Severo do Prado,
+950,Stefano,Voss Boeira,stefano-boeira,CM-Defesa Civil-Clima Tempo,Entidade raiz,1,2023-09-04 12:54:00,2025-07-22 17:19:29,,,,,Stefano Voss Boeira,
+952,Déborah Cristine,Berthier de Araújo Goes,deborah-goes,CC-Protocolo,Entidade raiz,1,2023-09-04 12:54:00,2024-12-02 13:35:43,,,,,Déborah Cristine Berthier de Araújo Goes,CC-Protocolo
+954,Vanessa,Rodrigues Avila Wenitt,vanessa-wenitt,CM-Operacoes-Chefe da Segurança,Entidade raiz,1,2023-09-12 15:14:32,2023-09-12 15:14:32,,,,,Vanessa Rodrigues Avila Wenitt,
+955,Leonardo,Jancowski de Avila J,leonardo-justino,CC - DRH,Entidade raiz,1,2023-09-12 15:14:32,2024-02-07 10:30:48,,,,,Leonardo Jancowski de Avila J,
+957,Bruna,Natasha Bernardes Linhares,bruna-linhares,GG-Conservacao e Memoria (Arq),Entidade raiz,1,2023-09-21 15:45:48,2025-08-12 13:29:02,,,,,Bruna Natasha Bernardes Linhares,
+972,Bruna,Kasprzak Borges,bruna-borges,GVG - GPE,Entidade raiz,1,2023-11-01 09:00:53,2024-01-22 13:27:59,,,,,Bruna Kasprzak Borges,
+975,Karine,Gomes de Freitas Teixeira,karine-teixeira,CM-Transportes,Entidade raiz,1,2023-11-06 09:54:20,2025-09-05 10:57:13,,,,,Karine Gomes de Freitas Teixeira,
+976,Graziela,Santos Klamt,graziela-klamt,CC-Gabinete,Entidade raiz,1,2023-11-06 09:54:20,2025-08-13 15:00:03,,,,,Graziela Santos Klamt,CC-Gabinete
+977,Danusa,Junqueira Flesch,danusa-flesch,GG-Gabinete,Entidade raiz,1,2023-11-06 09:54:20,2025-05-22 13:14:53,,,,,Danusa Junqueira Flesch,
+979,Mariela,Fernanda Portz Dorneles,mariela-dorneles,CC-Gabinete,Entidade raiz,1,2023-11-14 15:34:53,2023-11-14 15:34:53,,,,,Mariela Fernanda Portz Dorneles,CC-Gabinete
+982,Mateus,Jose de Lima Wesp,mateus-wesp,GG-Gabinete,Entidade raiz,1,2023-11-24 14:59:31,2025-08-07 16:29:08,,,,,Mateus Jose de Lima Wesp,
+986,Jorge,Miguel Lopes Diene,jorge-diene,SECOM-Jornalismo-Estagio,Entidade raiz,1,2023-11-29 14:50:01,2025-07-23 13:00:08,,,,,Jorge Miguel Lopes Diene,
+992,Luciane,Lewis Xerxenevsky,luciane-xerxenevsky,CC-Subchefia Geral,Entidade raiz,1,2023-12-19 11:32:30,2025-03-31 09:58:39,,,,,Luciane Lewis Xerxenevsky,CC-Subchefia
+993,Graca Fabiana,Ramos dos Santos Godinho,graca-godinho,CC-Subchefia Geral,Entidade raiz,1,2023-12-19 11:32:30,2025-04-22 13:13:19,,,,,Graca Fabiana Ramos dos Santos Godinho,CC-Subchefia
+994,Alexandre,Soares Pereira,alexandre-pereira,CM-Operações,Entidade raiz,1,2023-12-19 11:32:30,2023-12-19 11:32:30,32104177,,,,Alexandre Soares Pereira,
+996,Marcelo,De Oliveira Kervalt,marcelo-kervalt,SECOM-Jornalismo-Diretor Adjunto,Entidade raiz,1,2024-01-02 15:06:23,2025-08-18 11:28:58,,,,,Marcelo De Oliveira Kervalt,
+997,Juliana,Hoff Affeldt,juliana-affeldt,GVG-Comunicacao-Estagio,Entidade raiz,1,2024-01-02 15:06:23,2025-04-14 13:49:15,,,,,Juliana Hoff Affeldt,
+999,Silvane,Ratz,silvane-ratz,CC-Manutencao,Entidade raiz,1,2024-01-04 09:53:24,2025-04-24 09:46:08,,,,,Silvane Ratz,CC-Manutencao
+1000,Joaquim Omarati,Gonçalves Monteiro,joaquim-monteiro,CM-RelaçõesComunitárias,Entidade raiz,1,2024-01-04 09:53:24,2024-02-20 09:21:42,32217098,,,,Joaquim Omarati Gonçalves Monteiro,
+1005,Ines,Rapach Rodrigues,ines-rodrigues,GVG - Gabinete,Entidade raiz,1,2024-01-15 17:06:35,2024-01-15 17:06:35,,,,,Ines Rapach Rodrigues,
+1006,Roger Coimbra,Gonçalves,roger-goncalves,CC-SAEF,Entidade raiz,1,2024-01-19 09:58:09,2024-10-04 11:08:10,,,,,Roger Coimbra Gonçalves,CC-SAEF
+1009,Grecia,Isidorio Rodrigues,grecia-rodrigues,CC-Patrimonio,Entidade raiz,1,2024-01-26 13:49:42,2025-08-04 08:08:52,,,,,Grecia Isidorio Rodrigues,CC-Patrimonio
+1010,Gabrielli,Carvalho Wives,gabrielli-wives,SECOM-Clipagem - Estagio,Entidade raiz,1,2024-01-26 13:49:42,2024-01-26 13:49:42,,,,,Gabrielli Carvalho Wives,
+1012,Robson,Massaia,robson-massaia,CC-Gabinete,Entidade raiz,1,2024-02-07 11:03:50,2025-07-22 09:26:30,,,,,Robson Massaia,CC-Gabinete
+1015,Daniel,dos Santos Pires,daniel-pires,CM-Defesa Civil-Estagio,Entidade raiz,1,2024-02-19 12:35:42,2025-01-06 16:05:31,(51)32217098,,,,Daniel dos Santos Pires,
+1017,André Hernande,Hernandes,andre-hernandes,GVG-Comunicacao,Entidade raiz,1,2024-02-19 17:40:11,2025-01-31 15:02:35,,,,,André Hernande Hernandes,
+1018,Luciano,da Cunha Verissimo,luciano-verissimo,GG-AJO,Entidade raiz,1,2024-02-20 08:40:25,2024-02-21 08:46:38,,,,,Luciano da Cunha Verissimo,
+1019,Vinicius,Da Rocha Muniz,vinicius-muniz,CM-Transportes - Estágio,Entidade raiz,1,2024-02-29 13:59:45,2024-02-29 13:59:45,(51)32104553,,,,Vinicius Da Rocha Muniz,
+1020,Thiago Rodrigues,Rosseti,thiago-rosseti,CM-Operações-Seguranca,Entidade raiz,1,2024-02-29 13:59:45,2024-02-29 13:59:45,,,,,Thiago Rodrigues Rosseti,
+1028,Isac,da Silva Silveira,Isac-Silveira,CC-Manutencao,Entidade raiz,1,2024-03-14 10:10:31,2025-09-04 11:13:02,,,,,Isac da Silva Silveira,CC-Manutencao
+1029,Viviane,Ramos Carvalho,viviane-carvalho,SECOM-Juridico,Entidade raiz,1,2024-03-14 10:12:49,2024-03-14 10:12:49,,,,,Viviane Ramos Carvalho,
+1033,Iago,Kominski Cavalheiro,iago-cavalheiro,GG-Conservacao e Memoria (Arq) - Estagio,Entidade raiz,1,2024-03-21 11:51:13,2024-10-03 16:11:23,,,,,Iago Kominski Cavalheiro,
+1034,Gesiel,de Campos Goncalves,gesiel-goncalves,CM-Operacoes,Entidade raiz,1,2024-03-21 11:51:13,2024-03-21 11:51:13,,,,,Gesiel de Campos Goncalves,
+1039,Maicon,Andre da Luz de Oliveira,maicon-oliveira,GVG-Assessoria Militar,Entidade raiz,1,2024-03-25 17:49:39,2025-08-12 10:26:30,,,,,Maicon Andre da Luz de Oliveira,
+1042,Patrick,José Piovesan,patrick-piovesan,CC-SAEF,Entidade raiz,1,2024-03-27 13:23:24,2025-07-16 15:45:31,,,,,Patrick José Piovesan,CC-SAEF
+1045,Edson Pereira,da Silva,edson-pereira,CC-Biblioteca,Entidade raiz,1,2024-04-04 09:03:21,2025-06-12 10:09:19,,,,,Edson Pereira da Silva,CC-Biblioteca
+1048,Michelle,Ferraz Moraes Kader,michelle-kader,CC-DRH,Entidade raiz,1,2024-04-15 13:05:11,2025-08-19 14:15:03,,,,,Michelle Ferraz Moraes Kader,CC-DRH
+1050,Patricia,Aubin de Souza,patricia-souza,CC-Juridico,Entidade raiz,1,2024-04-17 11:08:48,2025-03-05 15:49:09,,,,,Patricia Aubin de Souza,CC-Juridico
+1051,Eduardo,da Silva Pinheiro,eduardo-pinheiro,CC - DPA - Divisão de Protocolo e Autuação -Estagiário,Entidade raiz,1,2024-04-17 11:08:48,2024-04-17 11:08:48,,,,,Eduardo da Silva Pinheiro,
+1052,Silvia,Leticia Alves,silvia-alves,CC-Parlamentar,Entidade raiz,1,2024-04-19 11:15:44,2024-10-29 15:11:06,,,,,Silvia Leticia Alves,CC-Parlamentar
+1060,Ana Maria,Hermes,ana-hermes,CM-Defesa Civil CODEC,Entidade raiz,1,2024-06-05 15:29:07,2024-07-29 11:10:00,,,,,Ana Maria Hermes,
+1061,Natacha,Ledesma Gastal,natacha-gastal,SECOM-Publicidade,Entidade raiz,1,2024-06-24 10:07:01,2024-06-24 10:07:01,,,,,Natacha Ledesma Gastal,
+1064,Antonia,Scalzilli e Souza,antonia-souza,CC-Parlamentar,Entidade raiz,1,2024-06-24 10:07:01,2024-06-24 10:07:01,,,,,Antonia Scalzilli e Souza,CC-Parlamentar
+1072,Vitoria Gonzatti,de Souza,vitoria-souza,GG-Assessoria Tecnica,Entidade raiz,1,2024-07-23 17:17:57,2024-07-23 17:17:57,,,,,Vitoria Gonzatti de Souza,
+1074,Roger da Silva,dos Anjos,roger-anjos,CM-Defesa Civil - CREPDEC4,Entidade raiz,1,2024-07-23 17:17:57,2025-01-15 16:07:27,,,,,Roger da Silva dos Anjos,
+1075,Nicole,Bariquello Ramos,nicole-ramos,CC-PROTOCOLO - Estagio,Entidade raiz,1,2024-07-23 17:17:57,2024-07-23 17:17:57,,,,,Nicole Bariquello Ramos,CC-PROTOCOLO
+1079,Joice Vargas,deLima,joice-lima,GVG - GPE,Entidade raiz,1,2024-07-23 17:17:57,2024-07-23 17:17:57,,,,,Joice Vargas deLima,
+1080,Isadora,Volkmann Müller,isadora-muller,GG-Nucleo de Conservação - Estagio,Entidade raiz,1,2024-07-23 17:17:57,2024-07-23 17:17:57,,,,,Isadora Volkmann Müller,
+1084,Luiz,Carlos Caio Tomazeli,luiz-tomazeli,SECOM-Gabinete,Entidade raiz,1,2024-07-30 14:40:29,2024-08-01 11:28:27,,,,,Luiz Carlos Caio Tomazeli,
+1085,Jeronima,Daltro Milton,jeronima-milton,GG-Cerimonial,Entidade raiz,1,2024-07-30 14:40:29,2024-07-30 14:40:55,,,,,Jeronima Daltro Milton,
+1089,Juliana,Leal Oliveira,juliana-oliveira,CC-Parlamentar,Entidade raiz,1,2024-08-06 13:16:05,2025-05-22 10:45:51,,,,,Juliana Leal Oliveira,CC-Parlamentar
+1091,Giovana,Chagas Rodrigues,giovana-rodrigues,CC-Compras,Entidade raiz,1,2024-08-15 16:27:36,2024-09-16 10:54:53,,,,,Giovana Chagas Rodrigues,CC-Compras
+1093,Wellington,Camargo de Oliveira,wellington-oliveira,GVG-Assessoria Militar,Entidade raiz,1,2024-09-13 17:08:21,2024-12-04 11:19:17,,,,,Wellington Camargo de Oliveira,
+1094,Simone,Maria Strieder,simone-strieder,CM-Defesa Civil-Divisão de Apoio Técnico Clima Tempo,Entidade raiz,1,2024-09-13 17:08:21,2024-09-13 17:08:21,,,,,Simone Maria Strieder,
+1095,Samuel,Hosser,samuel-hosser,CM-Defesa Civil-Divisão de Apoio Técnico Clima Tempo,Entidade raiz,1,2024-09-13 17:08:21,2024-09-13 17:08:21,,,,,Samuel Hosser,
+1099,Matheus,dos Anjos Ferreira Gomes,matheus-gomes,CC-Biblioteca -Estágio,Entidade raiz,1,2024-09-13 17:08:21,2024-09-13 17:08:21,,,,,Matheus dos Anjos Ferreira Gomes,CC-Biblioteca
+1102,Laura,Saraiva Millani,laura-millani,CC-ATA,Entidade raiz,1,2024-09-13 17:08:21,2025-07-18 13:48:43,,,,,Laura Saraiva Millani,CC-ATA
+1103,Hairlaine,Treici Freitas,hairlaine-freitas,GG-SEIDAPE,Entidade raiz,1,2024-09-13 17:08:21,2025-01-21 16:04:54,,,,,Hairlaine Treici Freitas,
+1104,Glenio,Daison Argemi Filho,glenio-filho,CM-Operações,Entidade raiz,1,2024-09-13 17:08:21,2024-10-25 13:48:28,,,,,Glenio Daison Argemi Filho,
+1105,Franciele,Trassante,franciele-trassante,CM-Defesa Civil-Clima Tempo,Entidade raiz,1,2024-09-13 17:08:21,2025-04-09 09:19:56,,,,,Franciele Trassante,
+1107,Bruna,Rossales Perleberg,bruna-perleberg,CM-Defesa Civil-Clima Tempo,Entidade raiz,1,2024-09-13 17:08:21,2025-07-25 08:08:22,,,,,Bruna Rossales Perleberg,
+1108,Anderson,Correa Boeira,anderson-boeira,SECOM-Gabinete,Entidade raiz,1,2024-09-13 17:08:21,2025-07-10 09:37:20,,,,,Anderson Correa Boeira,
+1112,Raquel,da Silva Prestes,raquel -prestes,SECOM - Clipagem - Estágio,Entidade raiz,1,2024-09-26 08:49:59,2024-09-26 08:49:59,,,,,Raquel da Silva Prestes,
+1113,Olivia,Kazmierczak Tavares,olivia-tavares,GG-Conservacao e Memoria (Arq) - Estagio,Entidade raiz,1,2024-09-26 08:49:59,2025-09-03 09:38:18,,,,,Olivia Kazmierczak Tavares,
+1117,Jürgen,Mayrhofer,jurgen-mayrhofer,SECOM - Jornalismo,Entidade raiz,1,2024-10-04 09:21:34,2025-04-29 10:37:46,,,,,Jürgen Mayrhofer,
+1119,Gabriel,Silveira,gabriel-silveira,GG-Conservacao e Memoria (Arq) - Estagio,Entidade raiz,1,2024-10-04 09:21:34,2025-08-27 11:21:44,,,,,Gabriel Silveira,
+1122,Matheus,Adami Martins,matheus-martins,CM-Operacoes-Seguranca,Entidade raiz,1,2024-11-05 19:31:58,2024-11-05 19:31:58,(51) 3210-4544,,,,Matheus Adami Martins,
+1126,Karoline,Marcos Scardiglia Ma,karoline-machado,SECOM - Áudio e Vídeo,Entidade raiz,1,2024-11-05 19:31:58,2024-11-05 19:31:58,,,,,Karoline Marcos Scardiglia Ma,
+1128,Jéssica,Corrêa,jessica-correa,SECOM - Publicidade,Entidade raiz,1,2024-11-05 19:31:58,2024-11-05 19:31:58,,,,,Jéssica Corrêa,
+1129,Gabriele,Rodrigues Senger,gabriele-senger,CM-SAA-Estagio,Entidade raiz,1,2024-11-05 19:31:58,2025-06-25 13:57:10,,,,,Gabriele Rodrigues Senger,
+1130,Gabriela,de Freitas Alves,gabriela-alves,SECOM-Diretoria Geral,Entidade raiz,1,2024-11-05 19:31:58,2025-07-07 14:48:48,,,,,Gabriela de Freitas Alves,
+1132,Dayanne,Rodrigues,dayanne-rodrigues,GVG-Comunicacao,Entidade raiz,1,2024-11-05 19:31:58,2024-11-05 19:31:58,,,,,Dayanne Rodrigues,
+1133,Camila,Borges Quinteros,camila-quinteros,SECOM - Eventos,Entidade raiz,1,2024-11-05 19:31:58,2024-11-05 19:31:58,,,,,Camila Borges Quinteros,
+1136,Alana,Gabriela Engelmann,alana-engelmann,SECOM-Juridico,Entidade raiz,1,2024-11-05 19:31:58,2025-08-07 09:43:34,,,,,Alana Gabriela Engelmann,
+1165,Sandro,Santos Da Fonseca,sandro-fonseca,CM - Operações,Entidade raiz,1,2024-11-12 09:24:49,2024-11-12 09:24:49,,,,,Sandro Santos Da Fonseca,
+1168,Gustavo,Frota,gustavo-frota,SECOM-Redes Sociais,Entidade raiz,1,2024-11-12 09:24:49,2025-07-07 11:39:27,,,,,Gustavo Frota,
+1171,Edna,Cristiane da Silva Duarte,edna-duarte,CC-Mecanografia,Entidade raiz,1,2024-11-12 09:24:49,2025-07-30 11:10:09,,,,,Edna Cristiane da Silva Duarte,CC-Mecanografia
+1178,Thalys,Rian Stobbe,thalys-stobbe,CM-Defesa Civil - CREPDEC8,Entidade raiz,1,2024-11-18 09:30:47,2024-11-18 09:30:47,,,,,Thalys Rian Stobbe,
+1182,Leonardo,Siqueira Alves dos Passos,leonardo-passos,CM-Defesa Civil-CREPDEC8,Entidade raiz,1,2024-11-18 09:30:47,2025-05-26 13:36:14,,,,,Leonardo Siqueira Alves dos Passos,
+1183,Felipe,Ostermayer,felipe-ostermayer,CC-Subchefia Geral,Entidade raiz,1,2024-11-18 09:30:47,2024-11-18 09:30:47,,,,,Felipe Ostermayer,CC-Subchefia
+1188,Walter,Walter Raimundo da Costa,walter-costa,CC-EBSB,Entidade raiz,1,2024-12-23 14:17:09,2024-12-23 14:17:09,,,,,Walter Walter Raimundo da Costa,CC-EBSB
+1189,Thiago,Lima de Oliveira,thiago-oliveira,CC-Manutencao - Estagiario,Entidade raiz,1,2024-12-23 14:17:09,2025-01-27 14:56:47,,,,,Thiago Lima de Oliveira,CC-Manutencao
+1194,Rosilene,Mendes dos Santos,rosilene-santos,CC-EBSB,Entidade raiz,1,2024-12-23 14:17:09,2024-12-23 14:17:09,,,,,Rosilene Mendes dos Santos,CC-EBSB
+1195,Robson,Coelho Cardoch Valdez,robson-valdez,CC-EBSB,Entidade raiz,1,2024-12-23 14:17:09,2024-12-23 14:17:09,,,,,Robson Coelho Cardoch Valdez,CC-EBSB
+1196,José,Henrique Medeiros Pires,jose-pires,CC-EBSB,Entidade raiz,1,2024-12-23 14:17:09,2024-12-23 14:17:09,,,,,José Henrique Medeiros Pires,CC-EBSB
+1200,Fábio,Bernardes Marcal,fabio-marcal,CC-EBSB,Entidade raiz,1,2024-12-23 14:17:09,2024-12-23 14:17:09,,,,,Fábio Bernardes Marcal,CC-EBSB
+1201,Fábio,Paiva Gomes,fabio-gomes,CC-EBSB,Entidade raiz,1,2024-12-23 14:17:09,2024-12-23 14:17:09,,,,,Fábio Paiva Gomes,CC-EBSB
+1202,Eduardo,Osório Rodrigues,eduardo-rodrigues,SECOM - Jornalismo,Entidade raiz,1,2024-12-23 14:17:09,2024-12-23 14:17:09,,,,,Eduardo Osório Rodrigues,
+1203,Edson,Costa dos Santos,edson-santos,CC-EBSB,Entidade raiz,1,2024-12-23 14:17:09,2024-12-23 14:17:09,,,,,Edson Costa dos Santos,CC-EBSB
+1205,Douglas,Pohlmann Velasquez,douglas-velasquez,CC-EBSB,Entidade raiz,1,2024-12-23 14:17:09,2024-12-23 14:17:09,,,,,Douglas Pohlmann Velasquez,CC-EBSB
+1206,Claudiana,Fiorenza Loureiro,claudiana-loureiro,CC-EBSB,Entidade raiz,1,2024-12-23 14:17:09,2025-09-02 09:35:12,,,,,Claudiana Fiorenza Loureiro,CC-EBSB
+1207,Carlos,Henrique dos Santos,carlos-santos,CC-EBSB,Entidade raiz,1,2024-12-23 14:17:09,2024-12-23 14:17:09,,,,,Carlos Henrique dos Santos,CC-EBSB
+1209,Ana,Luiza Dors Wilke,ana-wilke,CM-Defesa Civil - Climatempo,Entidade raiz,1,2024-12-23 14:17:09,2024-12-23 14:17:09,,,,,Ana Luiza Dors Wilke,
+1210,Aline,de Oliveira Coitinho,aline-coitinho,CC-Juridico,Entidade raiz,1,2024-12-23 14:17:09,2025-02-25 16:10:03,,,,,Aline de Oliveira Coitinho,CC-Juridico
+1213,Silvana,Santos Lima,silvana-lima,CM-Defesa Civil,Entidade raiz,1,2025-01-06 09:36:40,2025-08-26 14:18:06,,,,,Silvana Santos Lima,
+1214,Meline,de Moraes Cunda,meline-cunda,CM-SAA,Entidade raiz,1,2025-01-06 09:36:45,2025-09-01 10:07:22,,,,,Meline de Moraes Cunda,
+1215,Alexandre,Puntel,alexandre-puntel,CM-SAA,Entidade raiz,1,2025-01-06 13:49:20,2025-08-26 09:59:21,,,,,Alexandre Puntel,
+1216,William,Eichholz Roloff,william-roloff,CM-Defesa Civil - Pelotas,Entidade raiz,1,2025-01-07 08:48:49,2025-01-07 08:48:49,,,,,William Eichholz Roloff,
+1220,Rosemari,Fatima Drabach Marcolan,rosemari-marcolan,CM-Defesa Civil,Entidade raiz,1,2025-01-07 08:48:49,2025-05-07 14:32:51,,,,,Rosemari Fatima Drabach Marcolan,
+1221,Rodrigo,Cenci Soriano,rodrigo-soriano,CM-Defesa Civil - CREPDEC 1,Entidade raiz,1,2025-01-07 08:48:49,2025-01-07 08:48:49,,,,,Rodrigo Cenci Soriano,
+1222,Robson,Fontella Bastos,robson-bastos,CM-Defesa Civil,Entidade raiz,1,2025-01-07 08:48:49,2025-06-09 13:49:06,,,,,Robson Fontella Bastos,
+1223,Paula,Schild Mascarenhas,paula-mascarenhas,GG-Gabinete,Entidade raiz,1,2025-01-07 08:48:49,2025-01-07 08:48:49,,,,,Paula Schild Mascarenhas,
+1224,Norberto,Luis Campos Martins,norberto-martins,CM-Gabinete Médico,Entidade raiz,1,2025-01-07 08:48:49,2025-01-07 08:48:49,,,,,Norberto Luis Campos Martins,
+1225,Nicolas,Matos Dias de Castro,nicolas-castro,CM-Defesa Civil,Entidade raiz,1,2025-01-07 08:48:49,2025-06-12 12:04:13,,,,,Nicolas Matos Dias de Castro,
+1227,Luciana,Domingues Fonseca,luciana-fonseca,CM-Defesa Civil-DAT,Entidade raiz,1,2025-01-07 08:48:49,2025-09-04 15:43:01,,,,,Luciana Domingues Fonseca,
+1228,Lhais,da Luz Friedrich,lhais-friedrich,CM-Defesa Civil,Entidade raiz,1,2025-01-07 08:48:49,2025-06-11 09:53:52,,,,,Lhais da Luz Friedrich,
+1229,Leandro,de Oliveira Alfonso,leandro-alfonso,CM-Defesa Civil,Entidade raiz,1,2025-01-07 08:48:49,2025-08-20 12:52:26,,,,,Leandro de Oliveira Alfonso,
+1230,Karoline Stephanie,Demetrio de Freitas Garcia,karoline-garcia,CM-Defesa Civil,Entidade raiz,1,2025-01-07 08:48:49,2025-02-05 11:47:26,,,,,Karoline Stephanie Demetrio de Freitas Garcia,
+1232,Jéssica,Griep Timm,jessica-timm,SECOM - Jornalismo,Entidade raiz,1,2025-01-07 08:48:49,2025-02-03 18:02:51,,,,,Jéssica Griep Timm,
+1233,Jamille,Alvariza Lucas,jamille-lucas,CM-Defesa Civil,Entidade raiz,1,2025-01-07 08:48:49,2025-09-01 17:33:49,,,,,Jamille Alvariza Lucas,
+1234,Jackson,Soares Raths,jackson-raths,CM-Defesa Civil,Entidade raiz,1,2025-01-07 08:48:49,2025-08-19 17:21:30,,,,,Jackson Soares Raths,
+1235,Gustavo,Santos do Nascimento,gustavo-nascimento,CM-Relações Comunitárias,Entidade raiz,1,2025-01-07 08:48:49,2025-01-07 08:48:49,,,,,Gustavo Santos do Nascimento,
+1237,Francielle,Garcia Galimberti,francielle-galimbert,CM-Defesa Civil,Entidade raiz,1,2025-01-07 08:48:49,2025-02-04 12:05:21,,,,,Francielle Garcia Galimberti,
+1238,Fernanda,da Rosa Mendes,fernanda-mendes,CM-Defesa Civil-DAT,Entidade raiz,1,2025-01-07 08:48:49,2025-05-23 08:17:51,,,,,Fernanda da Rosa Mendes,
+1239,Fabiano,de Melo Santos,fabiano-santos,CM-Defesa Civil,Entidade raiz,1,2025-01-07 08:48:49,2025-08-05 09:22:50,,,,,Fabiano de Melo Santos,
+1240,Erick,Ivan Fernândez Rocha,erick-rocha,CM-Defesa Civil,Entidade raiz,1,2025-01-07 08:48:49,2025-01-07 08:48:49,,,,,Erick Ivan Fernândez Rocha,
+1241,Elison,Eduardo Jardim Bierhals,elison-bierhals,CM-Defesa Civil,Entidade raiz,1,2025-01-07 08:48:49,2025-01-07 08:48:49,,,,,Elison Eduardo Jardim Bierhals,
+1242,Eliane,Leal Cruz,eliane-cruz,CM-Defesa Civil,Entidade raiz,1,2025-01-07 08:48:49,2025-06-30 13:54:01,,,,,Eliane Leal Cruz,
+1244,Claudia,Regina Schwan,claudia-schwan,CM-SAA,Entidade raiz,1,2025-01-07 08:48:49,2025-07-16 09:15:00,,,,,Claudia Regina Schwan,
+1247,Carlos,Ismael Batista de Oliveira,carlos-oliveira,CM-Defesa Civil - DAT,Entidade raiz,1,2025-01-07 08:48:49,2025-02-14 12:31:44,,,,,Carlos Ismael Batista de Oliveira,
+1248,Bruno,da Costa Cunha,bruno-cunha,CM-Defesa Civil - Pelotas,Entidade raiz,1,2025-01-07 08:48:49,2025-01-17 13:29:27,,,,,Bruno da Costa Cunha,
+1249,Bruno,dos Santos,bruno,CM-Defesa Civil - CREPDEC 1,Entidade raiz,1,2025-01-07 08:48:49,2025-01-07 08:48:49,,,,,Bruno dos Santos,
+1250,Antonio,Carlos de Souza Neto,antonio-neto,CM-Defesa Civil,Entidade raiz,1,2025-01-07 08:48:49,2025-01-07 08:48:49,,,,,Antonio Carlos de Souza Neto,
+1251,Andrei,Ribeiro Taborda,andrei-taborda,CM-Defesa Civil,Entidade raiz,1,2025-01-07 08:48:49,2025-07-08 15:21:12,,,,,Andrei Ribeiro Taborda,
+1252,Alex,Silveira Flores,alex-flores,CM-Relacoes Comunitarias,Entidade raiz,1,2025-01-07 08:48:49,2025-06-03 10:53:47,,,,,Alex Silveira Flores,
+1254,Isaias,de Assis Manique,isaias-manique,GVG-Assessoria Militar,Entidade raiz,1,2025-01-13 15:48:44,2025-01-13 15:48:44,,,,,Isaias de Assis Manique,
+1255,Guilherme,Fagundes da Silva,guilherme-silva,CC-Jurídico,Entidade raiz,1,2025-01-13 15:48:44,2025-01-13 15:48:44,,,,,Guilherme Fagundes da Silva,CC-Jurídico
+1256,Guilherme,Waltermann Jesus,guilherme-jesus,GVG-Assessoria Militar,Entidade raiz,1,2025-01-13 15:48:44,2025-01-13 15:48:44,,,,,Guilherme Waltermann Jesus,
+1257,Cheyenne,Oliveira Herbstrith,cheyenne-herbstrith,CC-Gabinete,Entidade raiz,1,2025-01-13 15:48:44,2025-09-03 11:09:21,,,,,Cheyenne Oliveira Herbstrith,CC-Gabinete
+1259,Tatiane,Avila Cerolli,tatiane-cerolli,CC-Parlamentar,Entidade raiz,1,2025-01-14 10:10:37,2025-01-14 10:10:37,,,,,Tatiane Avila Cerolli,CC-Parlamentar
+1261,Luiza,dos Santos Petry,luiza-petry,CM-Defesa Civil,Entidade raiz,1,2025-01-15 09:12:33,2025-08-13 16:05:09,,,,,Luiza dos Santos Petry,
+1262,Orvalino,Pinto da Silva,orvalino-silva,CM-Guarda,Entidade raiz,1,2025-01-16 08:40:45,2025-07-01 17:40:45,,,,,Orvalino Pinto da Silva,
+1267,Alan,dos Santos Cezar,alan-cezar,CM-Relacoes Comunitarias,Entidade raiz,1,2025-01-16 08:40:45,2025-08-25 13:53:00,,,51997359522.0,,Alan dos Santos Cezar,
+1268,Silvia,Vargas,silvia-vargas,CM-Defesa Civil,Entidade raiz,1,2025-01-22 15:13:41,2025-01-22 15:13:41,(51) 3221-7098,,,,Silvia Vargas,
+1270,Yasmin,de Oliveira Pereira,yasmin-pereira,CC-Protocolo,Entidade raiz,1,2025-02-07 10:44:05,2025-02-07 10:44:05,,,,,Yasmin de Oliveira Pereira,CC-Protocolo
+1271,Yasmin,da Silva Dornelles,yasmin-dornelles,CM-SAA-Estagio,Entidade raiz,1,2025-02-07 10:44:05,2025-07-29 14:29:15,,,,,Yasmin da Silva Dornelles,
+1272,Sabrina,Fabiane Santos Machado,sabrina-machado,CC-Canela,Entidade raiz,1,2025-02-07 10:44:05,2025-02-07 10:44:05,,,,,Sabrina Fabiane Santos Machado,CC-Canela
+1276,Juliana,de Andrades Picinatto,juliana-picinatto,GG-Conservacao e Memoria (Arq) - Estagio,Entidade raiz,1,2025-02-07 10:44:05,2025-08-22 08:50:52,,,,,Juliana de Andrades Picinatto,
+1280,David,Vinicius Madeira Martin,david-martins,CC-Subchefia do Interior,Entidade raiz,1,2025-02-07 10:44:05,2025-03-12 14:36:13,,,,,David Vinicius Madeira Martin,CC-Subchefia
+1281,Ary,Júnior Chagas Jahnke,ary-jahnke,CM-Defesa Civil - CREPDEC4,Entidade raiz,1,2025-02-07 10:44:05,2025-02-07 10:44:05,,,,,Ary Júnior Chagas Jahnke,
+1283,Paula,Cristina Ioris de Oliveira,paula-oliveira,CC-Subchefia do Interior,Entidade raiz,1,2025-02-17 14:18:52,2025-07-21 16:46:57,,,,,Paula Cristina Ioris de Oliveira,CC-Subchefia
+1284,Luiz,Carlos Dias Lopes Júnior,luiz-junior,CM-Defesa Civil,Entidade raiz,1,2025-02-17 14:18:52,2025-02-17 14:18:52,,,,,Luiz Carlos Dias Lopes Júnior,
+1286,Jose,Geraldo Diefenthaeler Dias,jose-dias,CC-Parlamentar,Entidade raiz,1,2025-02-17 14:18:52,2025-02-17 14:18:52,,,,,Jose Geraldo Diefenthaeler Dias,CC-Parlamentar
+1288,Gabriela,Poyastro Maciel,gabriela-maciel,GG-Conservacao e Memoria (Arq) - Estagio,Entidade raiz,1,2025-02-17 14:18:52,2025-07-07 15:34:19,,,,,Gabriela Poyastro Maciel,
+1289,Fernanda,da Silva Rodrigues,fernanda-rodrigues,GG-Conservacao e Memoria (Arq),Entidade raiz,1,2025-02-17 14:18:52,2025-08-12 14:00:23,,,,,Fernanda da Silva Rodrigues,
+1292,Amanda,Pinheiro Nobre,amanda-nobre,CC-Manutencao-Estagio,Entidade raiz,1,2025-02-24 12:06:07,2025-08-22 11:30:50,,,,,Amanda Pinheiro Nobre,CC-Manutencao-Estagio
+1294,Diego,Goulart Collares,diego-collares,CM-Guarda,Entidade raiz,1,2025-03-10 15:23:51,2025-08-21 14:58:20,,,,,Diego Goulart Collares,
+1295,Kelli,da Silva Baum Schaefer,kelli-schaefer,GG - SERI,Entidade raiz,1,2025-03-18 11:34:18,2025-07-02 14:55:57,,,,,Kelli da Silva Baum Schaefer,
+1296,Jennifer,da Cruz Fick,jennifer-fick,GG - SERI,Entidade raiz > PIRATINI > CENTRAL DE ATENDIMENTOS > GG,1,2025-03-19 14:33:15,2025-09-03 10:52:59,,,,,Jennifer da Cruz Fick,
+1297,William,Santos Lopes,william-lopes,CM-Operacoes,Entidade raiz,1,2025-03-24 14:27:21,2025-03-24 14:27:21,,,,,William Santos Lopes,
+1299,Silvio,Marinho Raincke,silvio-raincke,CM-SAA,Entidade raiz,1,2025-03-24 14:27:21,2025-03-24 14:27:21,,,,,Silvio Marinho Raincke,
+1300,Rodrigo,da Silva Chagas,rodrigo-chagas,GG-Agenda,Entidade raiz,1,2025-03-24 14:27:21,2025-03-24 14:27:21,,,,,Rodrigo da Silva Chagas,
+1301,Rodrigo,Bastos Alves,rodrigo-alves,CM-Defesa Civil - CREPDEC4,Entidade raiz,1,2025-03-24 14:27:21,2025-03-24 14:27:21,,,,,Rodrigo Bastos Alves,
+1302,Nauro,Cardoso Machado Junior,nauro-junior,CC-EBSB,Entidade raiz,1,2025-03-24 14:27:21,2025-03-24 14:27:21,,,,,Nauro Cardoso Machado Junior,CC-EBSB
+1303,Jessica,Olsson Ullmann,jessica-ullmann,GVG-Comunicacao,Entidade raiz,1,2025-03-24 14:27:21,2025-08-07 17:02:39,,,,,Jessica Olsson Ullmann,
+1304,Gabriela,Mendes Viegas,gabriela-viegas,SECOM - Clipagem - Estágio,Entidade raiz,1,2025-03-24 14:27:21,2025-03-24 14:27:21,,,,,Gabriela Mendes Viegas,
+1305,Fabiano,Basto da Rocha,fabiano-rocha,CM-Guarda-Cmdt,Entidade raiz,1,2025-03-24 14:27:21,2025-03-24 14:27:21,,,,,Fabiano Basto da Rocha,
+1306,Everson,Guimaraes Deantoni,everson-deantoni,CM-SAA,Entidade raiz,1,2025-03-24 14:27:21,2025-08-06 11:14:59,,,,,Everson Guimaraes Deantoni,
+1307,Eduardo,Martins Ferreira,eduardo-ferreira,CM-Transportes,Entidade raiz,1,2025-03-24 14:27:21,2025-08-26 14:05:20,,,,,Eduardo Martins Ferreira,
+1308,Derli,Carlos Taborda,derli-taborda,CM-Defesa Civil,Entidade raiz,1,2025-03-24 14:27:21,2025-03-24 14:27:21,,,,,Derli Carlos Taborda,
+1309,Brenda,Trindade Santos,brenda-santos,SECOM - Clipagem - Estágio,Entidade raiz,1,2025-03-24 14:27:21,2025-03-24 14:27:21,,,,,Brenda Trindade Santos,
+1311,Orí,Peterson dos Santos Chaves,ori-chaves,CC-Gabinete,Entidade raiz,1,2025-03-28 11:03:15,2025-03-28 11:03:15,,,,,Orí Peterson dos Santos Chaves,CC-Gabinete
+1312,William,Fortes da Silva,william-silva,CM-Defesa Civil-CREPDEC 1,Entidade raiz,1,2025-04-10 11:14:56,2025-04-10 11:14:56,,,,,William Fortes da Silva,
+1314,Ruy,Teichert Filho,ruy-filho,CM-Gabinete Medico,Entidade raiz,1,2025-04-10 11:14:56,2025-04-10 11:14:56,,,,,Ruy Teichert Filho,
+1316,Priscila,Mateus de Souza,priscila-souza,CM-Defesa Civil-CREPDEC1,Entidade raiz,1,2025-04-10 11:14:56,2025-08-13 12:03:47,,,,,Priscila Mateus de Souza,
+1317,Monise,Ana Machado Follmann,monise-follmann,CM-Defesa Civil,Entidade raiz,1,2025-04-10 11:14:56,2025-07-07 11:35:54,,,,,Monise Ana Machado Follmann,
+1319,Mateus,Schwartz dos Anjos,mateus-anjos,GG-RS Seguro,Entidade raiz,1,2025-04-10 11:14:56,2025-04-10 11:14:56,,,,,Mateus Schwartz dos Anjos,
+1320,Leonardo,Bladt Reckziegel,leonardo-reckziegel,SECOM - Clipagem - Estágio,Entidade raiz,1,2025-04-10 11:14:56,2025-04-10 11:14:56,,,,,Leonardo Bladt Reckziegel,
+1321,Leandro,Dezotti Freitas,leandro-freitas,CM-Defesa Civil-CREPDEC3,Entidade raiz,1,2025-04-10 11:14:56,2025-04-10 11:14:56,,,,,Leandro Dezotti Freitas,
+1322,Juliana,Cardozo Paveglio,juliana-paveglio,CM-Defesa Civil,Entidade raiz,1,2025-04-10 11:14:56,2025-04-10 11:14:56,,,,,Juliana Cardozo Paveglio,
+1323,Guilherme,Lermen Guerra,guilherme-guerra,SECOM - Jornalismo - Estágio,Entidade raiz,1,2025-04-10 11:14:56,2025-04-10 11:14:56,,,,,Guilherme Lermen Guerra,
+1324,Erick,David Teixeira Judes,erick-judes,CM-Operacoes,Entidade raiz,1,2025-04-10 11:14:56,2025-04-10 11:14:56,,,,,Erick David Teixeira Judes,
+1325,Claudimir,Binsfeld,claudimir-binsfeld,CM-Defesa Civil-CREPDEC7,Entidade raiz,1,2025-04-10 11:14:56,2025-04-10 11:14:56,,,,,Claudimir Binsfeld,
+1326,Carolina,Tarta Reverbel de Souza,carolina-souza,CM-Defesa Civil,Entidade raiz,1,2025-04-10 11:14:56,2025-04-10 11:14:56,,,,,Carolina Tarta Reverbel de Souza,
+1327,Carlos,Eduardo de O. Menna Barreto,carlos-barreto,CM-Operacoes,Entidade raiz,1,2025-04-10 11:14:56,2025-04-10 11:14:56,,,,,Carlos Eduardo de O. Menna Barreto,
+1328,Branner,Alex Cabral Silveira,branner-silveira,CM-Operacoes,Entidade raiz,1,2025-04-10 11:14:56,2025-08-14 11:39:43,,,,,Branner Alex Cabral Silveira,
+1329,Aguiar,Luis da Silva Araujo,aguiar-araujo,CM-Defesa Civil-CREPDEC8,Entidade raiz,1,2025-04-10 11:14:56,2025-04-10 11:14:56,,,,,Aguiar Luis da Silva Araujo,
+1330,Eluanda,Jose dos Santos,eluanda-santos,CC-DRH,Entidade raiz,1,2025-04-16 09:19:19,2025-05-27 10:58:23,,,,,Eluanda Jose dos Santos,CC-DRH
+1332,Rosberguer,De Almeida Camargo,rosberguer-camargo,GVG-GPE,Entidade raiz,1,2025-04-16 09:40:40,2025-04-16 09:40:40,,,,,Rosberguer De Almeida Camargo,
+1336,Fernanda,Motta Paim,fernanda-paim,CC-Protocolo,Entidade raiz,1,2025-04-16 09:40:40,2025-07-04 15:35:15,,,,,Fernanda Motta Paim,CC-Protocolo
+1337,Erilene,Pedrosa Bezerra,erilene-bezerra,CC-Biblioteca,Entidade raiz,1,2025-04-16 09:40:40,2025-04-16 09:40:40,,,,,Erilene Pedrosa Bezerra,CC-Biblioteca
+1338,Eduardo,da Rosa Devens,eduardo-devens,SECOM - Jornalismo,Entidade raiz,1,2025-04-16 09:40:40,2025-04-16 09:40:40,,,,,Eduardo da Rosa Devens,
+1340,Ariel,Lopes do Carmo,ariel-carmo,CM-SAA,Entidade raiz,1,2025-04-16 09:40:40,2025-09-05 08:48:00,,,,,Ariel Lopes do Carmo,
+1342,André,Mendonca da Costa,andre-costa,GVG-GPE,Entidade raiz,1,2025-04-16 09:40:40,2025-06-12 08:43:03,,,,,André Mendonca da Costa,
+1343,Anderson,Rocha Cardoso,anderson-cardoso,CC-Manutencao,Entidade raiz,1,2025-04-16 09:40:40,2025-05-23 15:33:23,,,,,Anderson Rocha Cardoso,CC-Manutencao
+1344,Ana,Danielle Santana Cavalheiro,ana-cavalheiro,CC-DRH,Entidade raiz,1,2025-04-16 09:40:40,2025-05-21 10:22:15,,,,,Ana Danielle Santana Cavalheiro,CC-DRH
+1345,Alexandre,Gatti Martins,alexandre-martins,SECOM - Publicidade,Entidade raiz,1,2025-04-16 09:40:40,2025-04-16 09:40:40,,,,,Alexandre Gatti Martins,
+1346,Zandia,Dagmar Souza Cardoso,zandia-cardoso,CM-Operacoes-Seguranca,Entidade raiz,1,2025-04-22 08:59:31,2025-04-22 08:59:31,,,,,Zandia Dagmar Souza Cardoso,
+1347,Winicios,Thiago Pereira De Almeida,winicios-almeida,CM-Defesa Civi l- Departamento de Recuperação,Entidade raiz,1,2025-04-22 08:59:31,2025-04-22 08:59:31,,,,,Winicios Thiago Pereira De Almeida,
+1349,Raul,Oliveira Neto,raul-neto,CM-Defesa Civil -Departamento de Gestão de Riscos,Entidade raiz,1,2025-04-22 08:59:31,2025-04-22 08:59:31,,,,,Raul Oliveira Neto,
+1351,Marcos,Leandro Kazmierczak,marcos-kazmierczak,CM-Defesa Civil -Departamento de Gestão de Riscos,Entidade raiz,1,2025-04-22 08:59:31,2025-08-14 16:52:09,,,,,Marcos Leandro Kazmierczak,
+1352,Marcelo,Devenutte Avila,marcelo-avila,CM-Defesa Civil -Departamento de Gestão de Riscos,Entidade raiz,1,2025-04-22 08:59:31,2025-04-22 08:59:31,,,,,Marcelo Devenutte Avila,
+1355,Daniela,Colussi,daniela-colussi,GG-Agenda,Entidade raiz,1,2025-04-22 08:59:31,2025-08-27 14:38:59,,,,,Daniela Colussi,
+1356,Daniel,Pacheco Da Silveira,daniel-silveira,CM-Defesa Civil - Departamento de Recuperação,Entidade raiz,1,2025-04-22 08:59:31,2025-04-22 08:59:31,,,,,Daniel Pacheco Da Silveira,
+1357,Daiane,Rodrigues Figueira Luiz,daiane-luiz,GG-Cerimonial,Entidade raiz,1,2025-04-22 08:59:31,2025-04-22 08:59:31,,,,,Daiane Rodrigues Figueira Luiz,
+1359,Anicoli,Romanini,anicoli-romanini,CM-Defesa Civil - Departamento de Projetos e Gestão do Conhecimento,Entidade raiz,1,2025-04-22 08:59:31,2025-08-29 10:15:50,,,,,Anicoli Romanini,
+1362,Cristian,Tavares Martins,cristian-martins,CC-DRH,Entidade raiz > PIRATINI > CENTRAL DE ATENDIMENTOS > CASA CIVIL > Secretaria-Executiva > Subchefia Administrativa > Departamento de Gestão de Atos e Pessoal > Divisão de Gestão de Pessoas,1,2025-04-23 11:17:48,2025-07-28 16:08:18,,,,,Cristian Tavares Martins,CC-DRH
+1363,Melina,Angos de Oliveira Ilustre,melina-ilustre,GG-Conservacao e Memoria (Arq),Entidade raiz,1,2025-04-23 17:40:07,2025-08-26 11:25:56,,,,,Melina Angos de Oliveira Ilustre,
+1364,Hugo,Carlos Seidl,hugo-seidl,GG-Conservacao e Memoria (Arq),Entidade raiz,1,2025-04-24 08:50:13,2025-09-01 13:47:53,,,,,Hugo Carlos Seidl,
+1365,Lucas,Jaskulski Luz,lucas-luz,GG-Conservacao e Memoria (Arq),Entidade raiz,1,2025-04-24 08:52:42,2025-08-28 16:57:19,,,,,Lucas Jaskulski Luz,
+1366,Jose,Eduardo de Araujo Styzey,jose-styzey,GG-Conservacao e Memoria (Arq),Entidade raiz,1,2025-04-24 08:55:16,2025-06-25 10:21:32,,,,,Jose Eduardo de Araujo Styzey,
+1367,Yves,Pereira De Sousa Tavares,yves-tavares,CM-Defesa Civi l- Departamento de Recuperação,Entidade raiz,1,2025-04-30 13:11:50,2025-04-30 13:11:50,,,,,Yves Pereira De Sousa Tavares,
+1368,Waldomiro,Noda Valadão Cardoso,waldomiro-cardoso,CM-Defesa Civi l- Departamento de Recuperação,Entidade raiz,1,2025-04-30 13:11:50,2025-04-30 13:11:50,,,,,Waldomiro Noda Valadão Cardoso,
+1371,Sofia,Boeira Rocha,sofia-rocha,GG-Servicos Residenciais,Entidade raiz,1,2025-04-30 13:11:50,2025-08-05 10:11:51,,,,,Sofia Boeira Rocha,
+1374,Murilo,Machado Silva,murilo-silva,CC-Subchefia do Interior,Entidade raiz,1,2025-04-30 13:11:50,2025-04-30 13:11:50,,,,,Murilo Machado Silva,CC-Subchefia
+1375,Missury,Luiz De Almeida,missury-almeida,GG-Conservacao e Memoria (Arq),Entidade raiz,1,2025-04-30 13:11:50,2025-04-30 13:11:50,,,,,Missury Luiz De Almeida,
+1376,Mateus,Lopes Soares,mateus-soares,CM-Defesa Civi l- Departamento de Recuperação,Entidade raiz,1,2025-04-30 13:11:50,2025-04-30 13:11:50,,,,,Mateus Lopes Soares,
+1378,Lucas,Gabriel Lopes,lucas-lopes,CC-Subchefia do Interior,Entidade raiz,1,2025-04-30 13:11:50,2025-04-30 13:11:50,,,,,Lucas Gabriel Lopes,CC-Subchefia
+1379,Ilidio,Medina Pereira,ilidio-pereira,GVG-GPE,Entidade raiz,1,2025-04-30 13:11:50,2025-04-30 13:11:50,,,,,Ilidio Medina Pereira,
+1380,Gabrielly,Teixeira Merencia de Souza,gabrielly-souza,CC-Protocolo-Estagio,Entidade raiz,1,2025-04-30 13:11:50,2025-04-30 13:11:50,,,,,Gabrielly Teixeira Merencia de Souza,CC-Protocolo-Estagio
+1381,Fernando,Galarça Da Silva,fernando-silva,GG-Conservacao e Memoria (Arq),Entidade raiz,1,2025-04-30 13:11:50,2025-04-30 13:11:50,,,,,Fernando Galarça Da Silva,
+1382,Clair,Tome Kuhn,clair-kuhn,GVG-GPE,Entidade raiz,1,2025-04-30 13:11:50,2025-04-30 13:11:50,,,,,Clair Tome Kuhn,
+1384,Álvaro,Mata Lara,alvaro-lara,nan,Entidade raiz,1,2025-04-30 13:11:50,2025-04-30 13:11:50,,,,,Álvaro Mata Lara,
+1385,Alex,da Silva Pereira,alex-pereira,SECOM - Eventos,Entidade raiz,1,2025-04-30 13:11:50,2025-04-30 13:11:50,,,,,Alex da Silva Pereira,
+1387,Sandro,Peter,sandro-peter,CM-Defesa Civil-CREPDEC7,Entidade raiz,1,2025-05-15 09:50:58,2025-05-15 09:50:58,,,,,Sandro Peter,
+1388,Rodrigo,Garcia Prates,rodrigo-prates,CM-Defesa Civil-CREPDEC10,Entidade raiz,1,2025-05-15 09:50:58,2025-05-15 09:50:58,,,,,Rodrigo Garcia Prates,
+1389,Martins,Cardoso,martins-cardoso,GG-Conservacao e Memoria (Arq) - Estagio,Entidade raiz,1,2025-05-15 09:50:58,2025-06-03 14:43:18,,,,,Martins Cardoso,
+1390,Marcelo,Almeida de Souza,marcelo-souza,CM-Defesa Civil-CREPDEC9,Entidade raiz,1,2025-05-15 09:50:58,2025-05-15 09:50:58,,,,,Marcelo Almeida de Souza,
+1392,Luís,Gustavo de Azevedo,luis-azevedo,GG-Agenda,Entidade raiz,1,2025-05-15 09:50:58,2025-05-15 09:50:58,,,,,Luís Gustavo de Azevedo,
+1393,Joaquim,Baptista de Freitas,joaquim-freitas,GG - SERI,Entidade raiz,1,2025-05-15 09:50:58,2025-08-14 16:33:52,,,,,Joaquim Baptista de Freitas,
+1396,Gabriel,Eduardo Laud de Souza,gabriel-laud,CM-Transportes,Entidade raiz,1,2025-05-15 09:50:58,2025-08-07 09:17:37,,,,,Gabriel Eduardo Laud de Souza,
+1399,Aline,Almeida Duvoisin,aline-duvoisin,GVG-Comunicacao,Entidade raiz,1,2025-05-15 09:50:58,2025-05-23 12:13:21,,,,,Aline Almeida Duvoisin,
+1402,Maicon,Gonçalves de Oliveira,maicon-goncalves,CC-Subchefia do Interior,Entidade raiz,1,2025-05-19 12:42:05,2025-07-16 16:08:37,,,,,Maicon Gonçalves de Oliveira,CC-Subchefia
+1406,Mariana,Cunha Fontana,mariana-fontana,CC-Subchefia de Comunicacao,Entidade raiz,1,2025-05-30 15:45:28,2025-05-30 15:45:28,,,,,Mariana Cunha Fontana,CC-Subchefia
+1407,João,Pedro Rodrigues Gonçalves,joao-goncalves,SECOM-Jornalismo,Entidade raiz,1,2025-05-30 15:45:28,2025-05-30 15:45:28,,,,,João Pedro Rodrigues Gonçalves,
+1408,Everton,Reis Quevedo,everton-quevedo,GG-Conservacao e Memoria (Arq),Entidade raiz,1,2025-05-30 15:45:28,2025-07-03 13:03:45,,,,,Everton Reis Quevedo,
+1409,Bernardo,Abbad da Rocha,bernardo-rocha,SECOM-Redes Sociais,Entidade raiz,1,2025-05-30 15:45:28,2025-05-30 15:45:28,,,,,Bernardo Abbad da Rocha,
+1410,Andre,Spilman Miltersteiner,andre-miltersteiner,GG-Precursoria,Entidade raiz,1,2025-05-30 15:45:28,2025-05-30 15:45:28,,,,,Andre Spilman Miltersteiner,
+1412,Julia,Boeira Keller,julia-keller,GG-Conservacao e Memoria (Arq) - Estagio,Entidade raiz,1,2025-06-10 13:32:06,2025-06-10 13:32:06,,,,,Julia Boeira Keller,
+1418,Augusto,Moura dos Santos,augusto-santos,CM-Operacoes,Entidade raiz,1,2025-06-11 11:34:26,2025-06-11 11:34:26,,,,,Augusto Moura dos Santos,
+1419,Andreza,Silva de Souza,andreza-souza,GG-DCGD,Entidade raiz,1,2025-06-11 11:34:26,2025-06-11 11:34:26,,,,,Andreza Silva de Souza,
+1421,Paulo,Roberto Farinha de Oliveira,paulo-oliveira,CM-Guarda,Entidade raiz,1,2025-06-16 14:35:47,2025-06-16 14:35:47,,,,,Paulo Roberto Farinha de Oliveira,
+1423,Tiago,Moraes Dellanhese,tiago-dellanhese,CC-Conservacao,Entidade raiz,1,2025-06-24 13:50:23,2025-07-28 17:46:47,,,,,Tiago Moraes Dellanhese,CC-Conservacao
+1426,Manuella,Cezarina Silva Cardoso,manuella-cardoso,CM-Transportes,Entidade raiz,1,2025-06-24 13:50:23,2025-06-24 13:50:23,,,,,Manuella Cezarina Silva Cardoso,
+1427,Luis,Carlos Mota Ximenes,luis-ximenes,CM-Operacoes,Entidade raiz,1,2025-06-24 13:50:23,2025-06-24 13:50:23,,,,,Luis Carlos Mota Ximenes,
+1428,Liciane,dos Santos Souza,liciane-souza,CM-Guarda,Entidade raiz,1,2025-06-24 13:50:23,2025-06-24 13:50:23,,,,,Liciane dos Santos Souza,
+1429,Lavinia,Maria Lima Santos,lavinia-santos,CM-Defesa Civil,Entidade raiz,1,2025-06-24 13:50:23,2025-07-04 17:34:26,,,,,Lavinia Maria Lima Santos,
+1431,Lais,Coelho Teixeira Bins,lais-bins,CM-Defesa Civil,Entidade raiz,1,2025-06-24 13:50:23,2025-06-24 13:50:23,,,,,Lais Coelho Teixeira Bins,
+1432,Joelce,Mello de Carvalho,joelce-carvalho,CM-Defesa Civil-CREPDEC 1,Entidade raiz,1,2025-06-24 13:50:23,2025-08-12 11:14:24,,,,,Joelce Mello de Carvalho,
+1433,Jefferson,da Silva Oliveira,jefferson-oliveira,CM-Defesa Civil,Entidade raiz,1,2025-06-24 13:50:23,2025-06-24 13:50:23,,,,,Jefferson da Silva Oliveira,
+1437,Alexandre,Pires Lacerda,alexandre-lacerda,CM-Defesa Civil-CREPDEC3,Entidade raiz,1,2025-06-24 13:50:23,2025-06-24 13:50:23,,,,,Alexandre Pires Lacerda,
+1440,Renan,Ruoso Aprato Silva,renan-silva,CM-Transportes,Entidade raiz,1,2025-07-07 11:38:02,2025-07-07 11:38:02,,,,,Renan Ruoso Aprato Silva,
+1441,Natalia,Winter de Freitas,natalia-freitas,CM-Defesa Civil - Departamento de Recuperação,Entidade raiz,1,2025-07-07 11:38:02,2025-09-05 14:23:22,,,,,Natalia Winter de Freitas,
+1442,Marina,Mamede Guimarães,marina-guimaraes,SECOM-Clipagem-Estagio,Entidade raiz,1,2025-07-07 11:38:02,2025-07-07 11:38:02,,,,,Marina Mamede Guimarães,
+1443,Mariana,Santos Trindade,mariana-trindade,CC-Subchefia de Comunicacao,Entidade raiz,1,2025-07-07 11:38:02,2025-07-22 14:58:38,,,,,Mariana Santos Trindade,CC-Subchefia
+1447,Andre,Luis da Silva Rosa,andre-rosa,GG-SEIDAPE,Entidade raiz,1,2025-07-07 11:38:02,2025-09-01 10:50:56,,,,,Andre Luis da Silva Rosa,
+1448,Anderson,dos Santos Machado,anderson-machado,SECOM-Jornalismo,Entidade raiz,1,2025-07-07 11:38:02,2025-09-03 09:44:03,,,,,Anderson dos Santos Machado,
+1449,Gustavo,Gomes Batista,gustavo-batista,CC-Subchefia de Comunicacao,Entidade raiz,1,2025-07-07 11:42:20,2025-07-07 11:42:20,,,,,Gustavo Gomes Batista,CC-Subchefia
+1451,Ademar,Gilberto Nagel,ademar-nagel,CM-Defesa Civil-CREPDEC1,Entidade raiz,1,2025-07-09 15:38:45,2025-07-09 15:38:45,,,,,Ademar Gilberto Nagel,
+1454,Rodrigo,Ferreira de Lima,rodrigo-lima,SECOM-Redes Sociais,Entidade raiz,1,2025-07-22 17:55:52,2025-07-24 12:09:58,,,,,Rodrigo Ferreira de Lima,
+1455,Nathália,Velten Iochims,nathalia-iochims,CM-Defesa Civil - Divisão de Desastres,Entidade raiz,1,2025-07-22 17:55:52,2025-07-22 17:55:52,,,,,Nathália Velten Iochims,
+1456,Jose,Augusto Bandeira de Barros,jose-bandeira,SECOM-Jornalismo,Entidade raiz,1,2025-07-22 17:55:52,2025-07-22 17:55:52,,,,,Jose Augusto Bandeira de Barros,
+1457,Franciele,Anziliero,franciele-anziliero,CM-Defesa Civil -Departamento de Desastres,Entidade raiz,1,2025-07-22 17:55:52,2025-07-22 17:55:52,4721,,,,Franciele Anziliero,
+1458,Dario,Elceo Panzenhagen,dario-panzenhagen,SECOM-Jornalismo -Diretor de Departamento Adjunto,Entidade raiz,1,2025-07-22 17:55:52,2025-07-29 09:39:03,,,,,Dario Elceo Panzenhagen,
+1460,Eliane,Marin,eliane-marin,CC-Gabinete dos Prefeitos,Entidade raiz,1,2025-07-25 12:10:02,2025-08-14 10:05:49,,,,,Eliane Marin,CC-Gabinete
+1461,Luiz,Felipe Flores,luiz-flores,CM-SAA,Entidade raiz,1,2025-08-01 13:58:55,2025-09-01 10:50:06,,,,,Luiz Felipe Flores,
+1462,Suelen,Gotardo,suelen-gotardo,SECOM-Imprensa,Entidade raiz,1,2025-08-14 16:07:46,2025-08-14 16:07:46,,,,,Suelen Gotardo,
+1463,Samuel,Godois de Almeida,samuel-almeida,CM-SAA-Estagio,Entidade raiz,1,2025-08-14 16:07:46,2025-08-14 16:07:46,,,,,Samuel Godois de Almeida,
+1464,Marilin,de Mello,marilin-mello,CC-DRH,Entidade raiz,1,2025-08-14 16:07:46,2025-08-14 16:09:31,,,,,Marilin de Mello,CC-DRH
+1466,Ivan,Flores da Rosa,ivan-rosa,CM-Defesa Civil-CREPDEC4,Entidade raiz,1,2025-08-14 16:07:46,2025-08-14 16:07:46,,,,,Ivan Flores da Rosa,
+1468,Emily,Adriane de O. N. Cavalheiro,emily-cavalheiro,CC-Protocolo,Entidade raiz,1,2025-08-14 16:07:46,2025-08-14 16:07:46,,,,,Emily Adriane de O. N. Cavalheiro,CC-Protocolo
+1469,Jose,Francisco da Silva Junior,jose-junior,CM-Operacoes-Seguranca,Entidade raiz,1,2025-08-20 09:18:57,2025-08-20 09:18:57,,,,,Jose Francisco da Silva Junior,
+1472,Marcelo,Dias Camara,marcelo-camara,CM-Defesa Civil-Departamento de Recuperacao,Entidade raiz,1,2025-08-25 16:13:04,2025-08-25 16:13:04,,,,,Marcelo Dias Camara,
+1473,Joao,Carlos Chirico,joao-chirico,CM-SAA,Entidade raiz,1,2025-08-25 16:13:04,2025-08-26 11:45:32,,,,,Joao Carlos Chirico,
+1474,Elizandro,Oliveira Silveira,elizandro-silveira,CM-Defesa Civil-Departamento de Riscos,Entidade raiz,1,2025-08-25 16:13:04,2025-08-25 16:13:04,,,,,Elizandro Oliveira Silveira,
+1475,Claudia,Roberta Barbosa Lopes,claudia-lopes,CM-Defesa Civil-DLT,Entidade raiz,1,2025-08-25 16:13:04,2025-08-25 16:13:04,,,,,Claudia Roberta Barbosa Lopes,
+1476,Wescley,de Oliveira Pinto,wescley-pinto,GG-Conservacao e Memoria (Arq),Entidade raiz,1,2025-08-26 09:02:21,2025-08-26 11:35:12,,,,,Wescley de Oliveira Pinto,
+1477,Lucas,de Barbosa Delgado,lucas-delgado,CC-ATA,Entidade raiz,1,2025-08-26 09:02:21,2025-08-26 09:02:21,,,,,Lucas de Barbosa Delgado,CC-ATA
+1478,Daniela,da Silva Vieira,daniela-vieira,CC-Parlamentar,Entidade raiz > PIRATINI > CENTRAL DE ATENDIMENTOS > CASA CIVIL,1,2025-08-26 09:02:21,2025-08-26 09:03:16,,,,,Daniela da Silva Vieira,CC-Parlamentar
+1479,Cristiano,Melo Farias,cristiano-farias,GG-Conservacao e Memoria (Arq),Entidade raiz,1,2025-08-26 13:41:34,2025-09-04 10:17:18,,,,,Cristiano Melo Farias,

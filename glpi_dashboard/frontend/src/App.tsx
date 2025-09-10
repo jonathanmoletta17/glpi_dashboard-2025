@@ -4,6 +4,7 @@ import { NotificationSystem } from './components/NotificationSystem';
 import CacheNotification from './components/CacheNotification';
 import { ModernDashboard } from './components/dashboard/ModernDashboard';
 import { TicketDetailModal } from './components/TicketDetailModal';
+import SkipLink from './components/SkipLink';
 
 import { Ticket } from './types/ticket';
 import { UnifiedLoading } from './components/UnifiedLoading';
@@ -149,6 +150,10 @@ function App() {
 
   return (
     <div className={`h-screen overflow-hidden transition-all duration-300 ${theme}`}>
+      {/* Skip Links for Accessibility */}
+      <SkipLink href='#main-content'>Pular para o conteúdo principal</SkipLink>
+      <SkipLink href='#dashboard-metrics'>Pular para métricas do dashboard</SkipLink>
+
       {/* Header */}
       <Header
         currentTime={new Date().toLocaleTimeString('pt-BR')}
@@ -178,7 +183,7 @@ function App() {
       />
 
       {/* Dashboard Principal */}
-      <div className='flex-1 overflow-hidden'>
+      <main id='main-content' className='flex-1 overflow-hidden' tabIndex={-1}>
         {levelMetrics ? (
           (() => {
             const dashboardMetrics = {
@@ -192,10 +197,10 @@ function App() {
                 (metrics?.progresso || 0) +
                 (metrics?.resolvidos || 0),
               niveis: metrics?.niveis || {
-                n1: { novos: 0, progresso: 0, pendentes: 0, resolvidos: 0 },
-                n2: { novos: 0, progresso: 0, pendentes: 0, resolvidos: 0 },
-                n3: { novos: 0, progresso: 0, pendentes: 0, resolvidos: 0 },
-                n4: { novos: 0, progresso: 0, pendentes: 0, resolvidos: 0 },
+                n1: { novos: 0, progresso: 0, pendentes: 0, resolvidos: 0, total: 0 },
+                n2: { novos: 0, progresso: 0, pendentes: 0, resolvidos: 0, total: 0 },
+                n3: { novos: 0, progresso: 0, pendentes: 0, resolvidos: 0, total: 0 },
+                n4: { novos: 0, progresso: 0, pendentes: 0, resolvidos: 0, total: 0 },
               },
             };
             // Debug logs removidos para produção
@@ -255,7 +260,7 @@ function App() {
             </div>
           </div>
         )}
-      </div>
+      </main>
 
       {/* Loading overlay for refresh */}
       {isLoading && levelMetrics && (

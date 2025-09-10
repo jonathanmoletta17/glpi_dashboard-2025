@@ -48,213 +48,162 @@ GLPI_USER_TOKEN=seu_user_token_aqui
 GLPI_APP_TOKEN=seu_app_token_aqui
 ```
 
-### Obtendo Tokens GLPI
+### Processo de Autenticação
 
-1. **User Token**: Acesse seu perfil no GLPI → Configurações → Tokens de API
-2. **App Token**: Configuração → Geral → API → Tokens de aplicação
+1. **Inicialização de Sessão**
+   ```python
+   headers = {
+       'Content-Type': 'application/json',
+       'App-Token': 'seu_app_token_aqui',
+       'Authorization': 'user_token seu_user_token_aqui'
+   }
 
-## Filtros de Data
+   url = f"{base_url}/apirest.php/initSession"
+   response = session.get(url, headers=headers)
+   ```
 
-A API suporta três tipos de filtros de data:
+2. **Resposta de Sucesso**
+   ```json
+   {
+       "session_token": "fkegh7v413anh1598a79...",
+       "glpi_currenttime": "2025-01-22 22:55:48"
+   }
+   ```
 
-- `creation`: Filtro por data de criação (padrão)
-- `modification`: Filtro por data de modificação
-- `current_status`: Filtro por status atual
-
-### Exemplo de Uso
-
-```bash
-# Métricas dos últimos 7 dias por data de criação
-GET /api/metrics/filtered?data_inicio=2024-01-01&data_fim=2024-01-07&tipo_filtro=creation
-
-# Métricas por data de modificação
-GET /api/metrics/filtered?data_inicio=2024-01-01&data_fim=2024-01-07&tipo_filtro=modification
-```
+3. **Headers para Próximas Requisições**
+   ```python
+   session.headers.update({
+       'Session-Token': session_token_obtido
+   })
+   ```
 
 ## Schemas de Dados
 
-### DashboardMetrics
+### Métricas Response
 ```json
 {
-  "novos": 0,
-  "pendentes": 0,
-  "progresso": 0,
-  "resolvidos": 0,
-  "total": 0,
-  "niveis": {
-    "n1": {"novos": 0, "pendentes": 0, "progresso": 0, "resolvidos": 0},
-    "n2": {"novos": 0, "pendentes": 0, "progresso": 0, "resolvidos": 0},
-    "n3": {"novos": 0, "pendentes": 0, "progresso": 0, "resolvidos": 0},
-    "n4": {"novos": 0, "pendentes": 0, "progresso": 0, "resolvidos": 0}
+  "tickets_novos": 15,
+  "tickets_pendentes": 8,
+  "tickets_em_progresso": 12,
+  "tickets_resolvidos": 45,
+  "metricas_por_nivel": {
+    "N1": { "novos": 5, "pendentes": 3, "progresso": 4, "resolvidos": 20 },
+    "N2": { "novos": 6, "pendentes": 3, "progresso": 5, "resolvidos": 15 },
+    "N3": { "novos": 3, "pendentes": 2, "progresso": 2, "resolvidos": 8 },
+    "N4": { "novos": 1, "pendentes": 0, "progresso": 1, "resolvidos": 2 }
   },
-  "tendencias": {
-    "novos": "0",
-    "pendentes": "0",
-    "progresso": "0",
-    "resolvidos": "0"
-  },
-  "filters_applied": {
-    "data_inicio": "2024-01-01",
-    "data_fim": "2024-01-07"
-  },
-  "timestamp": "2024-01-01T12:00:00Z",
-  "tempo_execucao": 1.23
+  "timestamp": "2025-01-22T22:55:48Z"
 }
 ```
 
-### TechnicianRanking
+### Ranking de Técnicos Response
 ```json
 {
   "ranking": [
     {
       "tecnico_id": 123,
       "nome": "João Silva",
-      "tickets_resolvidos": 45,
-      "tempo_medio_resolucao": 2.5,
-      "satisfacao_cliente": 4.8,
-      "posicao": 1
+      "nivel": "N2",
+      "tickets_resolvidos": 25,
+      "tempo_medio_resolucao": "2.5h",
+      "score": 95.5
     }
   ],
-  "periodo": {
-    "inicio": "2024-01-01",
-    "fim": "2024-01-31"
-  },
-  "total_tecnicos": 10
+  "timestamp": "2025-01-22T22:55:48Z"
 }
 ```
 
+## Rate Limiting
+
+- **100 requests por minuto** por IP
+- **1000 requests por hora** por token
+- Headers de resposta incluem informações de rate limiting:
+  ```
+  X-RateLimit-Limit: 100
+  X-RateLimit-Remaining: 95
+  X-RateLimit-Reset: 1642896000
+  ```
+
 ## Cache
 
-A API implementa cache inteligente com TTL configurável:
+- **Métricas**: cache de 5 minutos
+- **Rankings**: cache de 15 minutos
+- **Status**: sem cache
+- **Health checks**: cache de 1 minuto
 
-- **Métricas gerais**: 5 minutos
-- **Ranking de técnicos**: 15 minutos
-- **Alertas**: 2 minutos
-- **Health checks**: 1 minuto
-
-## Códigos de Status HTTP
+## Códigos de Status
 
 - `200` - Sucesso
-- `400` - Erro de validação nos parâmetros
-- `401` - Não autorizado (token inválido)
+- `400` - Requisição inválida
+- `401` - Não autorizado
+- `403` - Acesso negado
 - `404` - Recurso não encontrado
 - `429` - Rate limit excedido
 - `500` - Erro interno do servidor
 - `503` - Serviço indisponível
 
-## Rate Limiting
+## Exemplos de Uso
 
-A API implementa rate limiting para proteger contra abuso:
-
-- **Limite geral**: 1000 requisições por hora por IP
-- **Endpoints de métricas**: 100 requisições por minuto
-- **Health checks**: 60 requisições por minuto
-
-## Exemplos de Integração
-
-### Python
-```python
-import requests
-
-base_url = "http://localhost:5000/api"
-
-# Obter métricas gerais
-response = requests.get(f"{base_url}/metrics")
-metrics = response.json()
-
-# Obter métricas filtradas
-params = {
-    "data_inicio": "2024-01-01",
-    "data_fim": "2024-01-31",
-    "tipo_filtro": "creation"
-}
-response = requests.get(f"{base_url}/metrics/filtered", params=params)
-filtered_metrics = response.json()
-```
-
-### JavaScript
-```javascript
-const baseUrl = 'http://localhost:5000/api';
-
-// Obter métricas gerais
-fetch(`${baseUrl}/metrics`)
-  .then(response => response.json())
-  .then(data => console.log(data));
-
-// Obter ranking de técnicos
-fetch(`${baseUrl}/technicians/ranking`)
-  .then(response => response.json())
-  .then(data => console.log(data));
-```
-
-### cURL
+### Obter Métricas Básicas
 ```bash
-# Métricas gerais
-curl -X GET "http://localhost:5000/api/metrics"
-
-# Métricas filtradas
-curl -X GET "http://localhost:5000/api/metrics/filtered?data_inicio=2024-01-01&data_fim=2024-01-31"
-
-# Health check
-curl -X GET "http://localhost:5000/api/health"
+curl -X GET "http://localhost:5000/api/metrics" \
+  -H "Authorization: Bearer seu_token_aqui"
 ```
 
-## Monitoramento e Observabilidade
-
-A API inclui métricas Prometheus para monitoramento:
-
-- Tempo de resposta por endpoint
-- Taxa de erro por endpoint
-- Número de requisições por endpoint
-- Status de saúde dos serviços
-
-### Métricas Prometheus
+### Obter Métricas Filtradas
+```bash
+curl -X GET "http://localhost:5000/api/metrics/filtered?start_date=2025-01-01&end_date=2025-01-31" \
+  -H "Authorization: Bearer seu_token_aqui"
 ```
-# Tempo de resposta
-api_request_duration_seconds{method="GET",endpoint="/metrics"}
 
-# Taxa de erro
-api_request_errors_total{method="GET",endpoint="/metrics",status="500"}
-
-# Número de requisições
-api_requests_total{method="GET",endpoint="/metrics"}
+### Obter Ranking de Técnicos
+```bash
+curl -X GET "http://localhost:5000/api/technicians/ranking?nivel=N2" \
+  -H "Authorization: Bearer seu_token_aqui"
 ```
 
 ## Troubleshooting
 
 ### Problemas Comuns
 
-1. **Erro 401 - Não autorizado**
-   - Verifique se os tokens GLPI estão configurados corretamente
-   - Confirme se os tokens não expiraram
+1. **Erro 401 - Token Inválido**
+   - Verifique se o token GLPI está correto
+   - Confirme se o token não expirou
+   - Valide as variáveis de ambiente
 
-2. **Erro 503 - Serviço indisponível**
-   - Verifique a conectividade com o servidor GLPI
-   - Confirme se o GLPI está respondendo
+2. **Erro 429 - Rate Limit**
+   - Implemente backoff exponencial
+   - Reduza a frequência de requisições
+   - Use cache local quando possível
 
-3. **Timeout nas requisições**
-   - Verifique a latência de rede com o GLPI
-   - Considere aumentar o timeout da aplicação
+3. **Erro 503 - GLPI Indisponível**
+   - Verifique conectividade com o servidor GLPI
+   - Confirme se o serviço GLPI está rodando
+   - Valide configurações de rede
 
-### Logs
+### Logs e Debugging
 
-Os logs da API estão disponíveis em:
-- Desenvolvimento: Console
-- Produção: `/var/log/glpi-dashboard/api.log`
+Para habilitar logs detalhados:
+```bash
+export LOG_LEVEL=DEBUG
+export GLPI_DEBUG=true
+```
+
+## Documentação Adicional
+
+- **OpenAPI Specification**: Consulte o arquivo `openapi.yaml` para especificação completa
+- **Postman Collection**: Disponível em `/docs/postman/`
+- **SDK Python**: Documentação em `/docs/sdk/`
 
 ## Suporte
 
 Para suporte técnico:
-- Email: support@glpi-dashboard.com
-- Issues: GitHub Repository
-- Documentação: Esta documentação
+- **Email**: dev@empresa.com
+- **Issues**: GitHub Issues
+- **Documentação**: Wiki interno
 
-## Changelog
+---
 
-### v1.0.0
-- Implementação inicial da API
-- Endpoints básicos de métricas
-- Documentação OpenAPI/Swagger
-- Sistema de cache
-- Rate limiting
-- Monitoramento Prometheus
+**Versão**: 1.0.0
+**Última Atualização**: 2025-01-22
+**Licença**: MIT

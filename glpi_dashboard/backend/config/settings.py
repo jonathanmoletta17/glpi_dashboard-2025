@@ -374,3 +374,14 @@ active_config = config_by_name[os.environ.get("FLASK_ENV", "dev")]
 def get_config():
     """Retorna a configuração ativa baseada na variável de ambiente FLASK_ENV"""
     return active_config()
+
+
+def get_cache_config():
+    """Retorna configurações específicas de cache"""
+    config = active_config()
+    return {
+        'redis_url': config.REDIS_URL,
+        'cache_type': config.CACHE_TYPE,
+        'default_timeout': config.CACHE_DEFAULT_TIMEOUT,
+        'key_prefix': config.CACHE_KEY_PREFIX,
+    }

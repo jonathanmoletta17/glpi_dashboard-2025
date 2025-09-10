@@ -328,20 +328,28 @@ export const ProfessionalTicketsList = React.memo<ProfessionalTicketsListProps>(
           ) : error ? (
             <ProfessionalEmptyState error={error} />
           ) : hasTickets ? (
-            <motion.div
-              className='space-y-2'
-              variants={containerVariants}
-              initial='hidden'
-              animate='visible'
+            <div
+              className={cn(
+                'space-y-2',
+                tickets.length > 3 &&
+                  'max-h-80 overflow-y-auto pr-2 scrollbar-thin scrollbar-thumb-gray-300 scrollbar-track-gray-100 dark:scrollbar-thumb-gray-600 dark:scrollbar-track-gray-800'
+              )}
             >
-              {tickets.map(ticket => (
-                <ProfessionalTicketItem
-                  key={ticket.id}
-                  ticket={ticket}
-                  onTicketClick={onTicketClick}
-                />
-              ))}
-            </motion.div>
+              <motion.div
+                className='space-y-2'
+                variants={containerVariants}
+                initial='hidden'
+                animate='visible'
+              >
+                {tickets.map(ticket => (
+                  <ProfessionalTicketItem
+                    key={ticket.id}
+                    ticket={ticket}
+                    onTicketClick={onTicketClick}
+                  />
+                ))}
+              </motion.div>
+            </div>
           ) : (
             <ProfessionalEmptyState />
           )}
