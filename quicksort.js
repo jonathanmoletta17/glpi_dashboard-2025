@@ -10,7 +10,7 @@ function quicksort(arr, low = 0, high = arr.length - 1) {
     if (low < high) {
         // Encontra o índice de partição
         const pivotIndex = partition(arr, low, high);
-        
+
         // Recursivamente ordena os elementos antes e depois da partição
         quicksort(arr, low, pivotIndex - 1);
         quicksort(arr, pivotIndex + 1, high);
@@ -29,7 +29,7 @@ function partition(arr, low, high) {
     // Escolhe o último elemento como pivot
     const pivot = arr[high];
     let i = low - 1; // Índice do menor elemento
-    
+
     for (let j = low; j < high; j++) {
         // Se o elemento atual é menor ou igual ao pivot
         if (arr[j] <= pivot) {
@@ -37,7 +37,7 @@ function partition(arr, low, high) {
             [arr[i], arr[j]] = [arr[j], arr[i]]; // Troca elementos
         }
     }
-    
+
     // Coloca o pivot na posição correta
     [arr[i + 1], arr[high]] = [arr[high], arr[i + 1]];
     return i + 1;
@@ -50,12 +50,12 @@ function partition(arr, low, high) {
  */
 function quicksortImmutable(arr) {
     if (arr.length <= 1) return arr;
-    
+
     const pivot = arr[Math.floor(arr.length / 2)];
     const left = arr.filter(x => x < pivot);
     const middle = arr.filter(x => x === pivot);
     const right = arr.filter(x => x > pivot);
-    
+
     return [...quicksortImmutable(left), ...middle, ...quicksortImmutable(right)];
 }
 
@@ -80,11 +80,11 @@ if (typeof module !== 'undefined' && module.exports) {
 // Teste de performance
 function performanceTest() {
     const largeArray = Array.from({length: 10000}, () => Math.floor(Math.random() * 10000));
-    
+
     console.time('Quicksort Performance');
     const sorted = quicksortImmutable([...largeArray]);
     console.timeEnd('Quicksort Performance');
-    
+
     console.log('Array de 10.000 elementos ordenado com sucesso!');
     console.log('Primeiros 10 elementos:', sorted.slice(0, 10));
     console.log('Últimos 10 elementos:', sorted.slice(-10));

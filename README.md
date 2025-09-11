@@ -332,4 +332,3 @@ Para suporte e dúvidas:
 **Status**: ✅ **FUNCIONAL E PRONTO PARA PRODUÇÃO**
 
 Este repositório representa um checkpoint estável e funcional do GLPI Dashboard, com todas as funcionalidades principais implementadas e testadas.
-

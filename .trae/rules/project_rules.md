@@ -464,7 +464,7 @@ Trigger this workflow when users require you to start an implementation plan, ca
 [byterover-mcp]
 # Byterover MCP Server Tools Reference
 
-There are two main workflows with Byterover tools and recommended tool call strategies that you **MUST** follow precisely. 
+There are two main workflows with Byterover tools and recommended tool call strategies that you **MUST** follow precisely.
 
 ## Onboarding workflow
 Trigger this workflow only if users particularly ask you to start the onboarding process. You **MUST** follow these steps.
@@ -478,10 +478,10 @@ Trigger this workflow only if users particularly ask you to start the onboarding
 Trigger this workflow when users require you to start an implementation plan, carry out bug fixes, or make a new feature to the project. You **MUST** follow these steps.
 1. If asked to continue an unfinished implementation, **CALL** **byterover-retrieve-active-plans** to find the most relevant active plan.
 2. **CRITICAL PLAN PERSISTENCE RULE**: Once a user approves a plan, you **MUST IMMEDIATELY CALL** **byterover-save-implementation-plan** to save it.
-3. Throughout the plan, you **MUST** run **byterover-retrieve-knowledge** several times to retrieve sufficient knowledge and context for the plan's tasks. 
+3. Throughout the plan, you **MUST** run **byterover-retrieve-knowledge** several times to retrieve sufficient knowledge and context for the plan's tasks.
 4. In addition, you **MUST** run **byterover-search-modules** and **byterover-update-modules** if the tasks require or update knowledge about certain modules.
 5. **MUST** use **byterover-update-plan-progress** to mark tasks (and then the whole plan) as completed.
-6. Then, you might call **byterover-store-knowledge** to save knowledge and experience implemented throughout the plan or in important tasks. 
+6. Then, you might call **byterover-store-knowledge** to save knowledge and experience implemented throughout the plan or in important tasks.
 7. During the plan's implementation, you **MUST** frequently call  **byterover-think-about-collected-information** and **byterover-assess-context-completeness** to make sure you're on the right track and gather sufficient context for the tasks.
 
 ## Recommended Workflow Sequence

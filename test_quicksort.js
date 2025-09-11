@@ -15,12 +15,12 @@ const testArrays = [
 testArrays.forEach((arr, index) => {
     console.log(`Teste ${index + 1}:`);
     console.log('Array original:', arr);
-    
+
     // Teste quicksort in-place
     const arrCopy1 = [...arr];
     quicksort(arrCopy1);
     console.log('Quicksort in-place:', arrCopy1);
-    
+
     // Teste quicksort imutável
     const sortedImmutable = quicksortImmutable(arr);
     console.log('Quicksort imutável:', sortedImmutable);

@@ -90,7 +90,7 @@ const cardClasses = cn(
 @validate_json(TicketQuerySchema)
 def get_tickets():
     """Retrieve GLPI tickets with filtering and pagination.
-    
+
     Returns:
         JSON response with tickets data and metadata
     """
@@ -116,7 +116,7 @@ class TicketModel(BaseModel):
     priority: TicketPriority
     created_at: datetime
     updated_at: Optional[datetime] = None
-    
+
     class Config:
         orm_mode = True
         json_encoders = {
@@ -184,19 +184,19 @@ def get_dashboard_metrics(user_id: int) -> dict:
 # ✅ Bom: Paginação com cursor
 def paginate_tickets(cursor: Optional[str] = None, limit: int = 20):
     query = Ticket.query.order_by(Ticket.created_at.desc())
-    
+
     if cursor:
         cursor_date = decode_cursor(cursor)
         query = query.filter(Ticket.created_at < cursor_date)
-    
+
     tickets = query.limit(limit + 1).all()
-    
+
     has_next = len(tickets) > limit
     if has_next:
         tickets = tickets[:-1]
-    
+
     next_cursor = encode_cursor(tickets[-1].created_at) if has_next else None
-    
+
     return tickets, next_cursor
 ```
 
@@ -208,13 +208,13 @@ def paginate_tickets(cursor: Optional[str] = None, limit: int = 20):
 describe('DashboardCard', () => {
   it('should display loading state correctly', () => {
     render(
-      <DashboardCard 
-        title="Test Card" 
-        data={mockData} 
-        isLoading={true} 
+      <DashboardCard
+        title="Test Card"
+        data={mockData}
+        isLoading={true}
       />
     );
-    
+
     expect(screen.getByTestId('loading-spinner')).toBeInTheDocument();
   });
 });
@@ -226,7 +226,7 @@ describe('DashboardCard', () => {
 def test_get_tickets_success(client, auth_headers, sample_tickets):
     """Test successful ticket retrieval."""
     response = client.get('/api/tickets', headers=auth_headers)
-    
+
     assert response.status_code == 200
     data = response.get_json()
     assert 'data' in data
@@ -256,14 +256,14 @@ logger.info(
 def process_glpi_sync():
     """Process GLPI synchronization with monitoring."""
     start_time = time.time()
-    
+
     try:
         # Processamento
         result = sync_glpi_data()
-        
+
         metrics.increment('glpi.sync.success')
         metrics.timing('glpi.sync.duration', time.time() - start_time)
-        
+
         return result
     except Exception as e:
         metrics.increment('glpi.sync.error')
@@ -275,11 +275,11 @@ def process_glpi_sync():
 ### Componentes Acessíveis
 ```typescript
 // ✅ Bom: Componente com acessibilidade
-const AccessibleButton: React.FC<ButtonProps> = ({ 
-  children, 
-  onClick, 
+const AccessibleButton: React.FC<ButtonProps> = ({
+  children,
+  onClick,
   disabled = false,
-  ariaLabel 
+  ariaLabel
 }) => {
   return (
     <button
