@@ -5,6 +5,13 @@ import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { cn, formatNumber } from '@/lib/utils';
 import { Trophy, Medal, Award, Star, BarChart3 } from 'lucide-react';
 import { TechnicianRanking } from '@/types';
+import { listPresets, cardPresets } from '@/utils/animations';
+import {
+  getRankingPositionStyle,
+  getLevelStyle,
+  RANKING_VARIANTS,
+  RANKING_ANIMATIONS
+} from '@/utils/rankingStyles';
 
 interface ProfessionalRankingTableProps {
   data: TechnicianRanking[];
@@ -20,37 +27,7 @@ interface ProfessionalRankingTableProps {
   };
 }
 
-// Variantes de animação profissionais
-const containerVariants = {
-  hidden: { opacity: 0 },
-  visible: {
-    opacity: 1,
-    transition: {
-      staggerChildren: 0.1,
-    },
-  },
-} as const;
-
-const cardVariants = {
-  hidden: { opacity: 0, y: 20, scale: 0.9 },
-  visible: {
-    opacity: 1,
-    y: 0,
-    scale: 1,
-    transition: {
-      duration: 0.4,
-      ease: 'easeOut' as const,
-    },
-  },
-  hover: {
-    y: -1,
-    scale: 1.005,
-    transition: {
-      duration: 0.2,
-      ease: 'easeOut' as const,
-    },
-  },
-} as const;
+// Usando variantes de animação da biblioteca centralizada
 
 // Componente TechnicianCard profissional
 const ProfessionalTechnicianCard = React.memo<{
@@ -58,7 +35,7 @@ const ProfessionalTechnicianCard = React.memo<{
   index: number;
 }>(({ technician, index }) => {
   const position = index + 1;
-  const isTopThree = position <= 3;
+  // const isTopThree = position <= 3; // Removido pois não está sendo usado
 
   const formattedName = useMemo(() => {
     const nameParts = technician.name.split(' ');
@@ -81,84 +58,17 @@ const ProfessionalTechnicianCard = React.memo<{
     }
   };
 
-  const getPositionConfig = () => {
-    switch (position) {
-      case 1:
-        return {
-          bgClass: 'bg-gradient-to-br from-yellow-50 to-yellow-100',
-          borderClass: 'border-yellow-200',
-          iconClass: 'text-yellow-600',
-          textClass: 'text-yellow-800',
-        };
-      case 2:
-        return {
-          bgClass: 'bg-gradient-to-br from-gray-50 to-gray-100',
-          borderClass: 'border-gray-200',
-          iconClass: 'text-gray-600',
-          textClass: 'text-gray-800',
-        };
-      case 3:
-        return {
-          bgClass: 'bg-gradient-to-br from-orange-50 to-orange-100',
-          borderClass: 'border-orange-200',
-          iconClass: 'text-orange-600',
-          textClass: 'text-orange-800',
-        };
-      default:
-        return {
-          bgClass: 'bg-gradient-to-br from-blue-50 to-blue-100',
-          borderClass: 'border-blue-200',
-          iconClass: 'text-blue-600',
-          textClass: 'text-blue-800',
-        };
-    }
-  };
+  const positionStyle = getRankingPositionStyle(position);
 
-  const getLevelConfig = (level?: string) => {
-    switch (level) {
-      case 'N1':
-        return {
-          bgClass: 'bg-emerald-50 border-emerald-200',
-          textClass: 'text-emerald-700',
-          label: 'N1',
-        };
-      case 'N2':
-        return {
-          bgClass: 'bg-blue-50 border-blue-200',
-          textClass: 'text-blue-700',
-          label: 'N2',
-        };
-      case 'N3':
-        return {
-          bgClass: 'bg-purple-50 border-purple-200',
-          textClass: 'text-purple-700',
-          label: 'N3',
-        };
-      case 'N4':
-        return {
-          bgClass: 'bg-orange-50 border-orange-200',
-          textClass: 'text-orange-700',
-          label: 'N4',
-        };
-      default:
-        return {
-          bgClass: 'bg-gray-50 border-gray-200',
-          textClass: 'text-gray-700',
-          label: 'Outros',
-        };
-    }
-  };
-
-  const positionConfig = getPositionConfig();
-  const levelConfig = getLevelConfig(technician.level);
+  const levelStyle = getLevelStyle(technician.level || 'N1');
 
   return (
-    <motion.div variants={cardVariants} whileHover='hover' className='flex-shrink-0 w-48'>
+    <motion.div variants={listPresets.item} whileHover={{ scale: 1.02, y: -2 }} className='flex-shrink-0 w-48'>
       <Card
         className={cn(
           'h-full border-2 dark:border-gray-700',
-          positionConfig.bgClass,
-          positionConfig.borderClass
+          positionStyle.bg,
+          positionStyle.border
         )}
       >
         <CardContent className='p-3'>
@@ -167,12 +77,12 @@ const ProfessionalTechnicianCard = React.memo<{
               <div
                 className={cn(
                   'p-1.5 rounded-md bg-white dark:bg-gray-700 shadow-sm border dark:border-gray-600',
-                  positionConfig.iconClass
+                  positionStyle.icon
                 )}
               >
                 {getPositionIcon()}
               </div>
-              <span className={cn('text-base font-bold', positionConfig.textClass)}>
+              <span className={cn('text-base font-bold', positionStyle.text)}>
                 #{position}
               </span>
             </div>
@@ -180,11 +90,12 @@ const ProfessionalTechnicianCard = React.memo<{
               variant='outline'
               className={cn(
                 'text-xs px-2 py-1 font-semibold dark:border-gray-600',
-                levelConfig.bgClass,
-                levelConfig.textClass
+                levelStyle.bg,
+                levelStyle.text,
+                levelStyle.border
               )}
             >
-              {levelConfig.label}
+              {technician.level || 'N1'}
             </Badge>
           </div>
 
@@ -240,7 +151,6 @@ export const ProfessionalRankingTable = React.memo<ProfessionalRankingTableProps
     data,
     title = 'Ranking de Técnicos',
     className,
-    variant = 'default',
     isLoading = false,
     filters,
   }) => {
@@ -393,7 +303,7 @@ export const ProfessionalRankingTable = React.memo<ProfessionalRankingTableProps
             </div>
           ) : (
             <motion.div
-              variants={containerVariants}
+              variants={listPresets.container}
               initial='hidden'
               animate='visible'
               className='flex-1 flex flex-col'

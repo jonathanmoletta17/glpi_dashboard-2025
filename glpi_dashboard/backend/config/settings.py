@@ -130,10 +130,10 @@ class Config:
     def API_TIMEOUT(self) -> int:
         """Timeout da API com validação"""
         try:
-            timeout = self._get_config_value("glpi.timeout", 30, "API_TIMEOUT")
+            timeout = self._get_config_value("glpi.timeout", 60, "API_TIMEOUT")
             timeout = int(timeout)  # Garantir que é inteiro
-            if not (1 <= timeout <= 300):
-                raise ValueError(f"Timeout deve estar entre 1 e 300 segundos: {timeout}")
+            if not (10 <= timeout <= 300):
+                raise ValueError(f"Timeout deve estar entre 10 e 300 segundos: {timeout}")
             return timeout
         except (ValueError, TypeError) as e:
             raise ConfigValidationError(f"Erro na configuração API_TIMEOUT: {e}")

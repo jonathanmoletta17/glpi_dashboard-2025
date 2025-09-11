@@ -9,6 +9,8 @@ import { cn, formatRelativeTime, formatDate } from '@/lib/utils';
 import { apiService } from '@/services/api';
 import { useThrottledCallback } from '@/hooks/useDebounce';
 import { useSmartRefresh } from '@/hooks/useSmartRefresh';
+import { itemVariants as animationItemVariants } from '@/utils/animations';
+import { SkeletonTickets, OptimizedErrorState, useLoadingState } from '@/utils/loadingComponents';
 
 interface ProfessionalTicketsListProps {
   className?: string;
@@ -189,35 +191,7 @@ const ProfessionalTicketItem = React.memo<{
 
 ProfessionalTicketItem.displayName = 'ProfessionalTicketItem';
 
-// Componente de loading skeleton profissional
-const ProfessionalLoadingSkeleton = () => (
-  <div className='space-y-3'>
-    {[...Array(4)].map((_, i) => (
-      <div key={i} className='animate-pulse'>
-        <div className='p-4 rounded-lg border border-gray-200 bg-white'>
-          <div className='flex items-start justify-between gap-3'>
-            <div className='h-6 w-16 bg-gray-200 rounded-full flex-shrink-0' />
-            <div className='flex-1 space-y-2'>
-              <div className='flex items-start justify-between gap-2'>
-                <div className='flex items-center gap-2'>
-                  <div className='h-4 w-12 bg-gray-200 dark:bg-gray-700 rounded' />
-                  <div className='h-4 w-12 bg-gray-200 dark:bg-gray-700 rounded' />
-                </div>
-                <div className='h-4 w-4 bg-gray-200 dark:bg-gray-700 rounded' />
-              </div>
-              <div className='h-4 bg-gray-200 dark:bg-gray-700 rounded w-3/4' />
-              <div className='h-3 bg-gray-200 dark:bg-gray-700 rounded w-1/2' />
-              <div className='flex items-center justify-between gap-2'>
-                <div className='h-3 w-24 bg-gray-200 dark:bg-gray-700 rounded' />
-                <div className='h-3 w-16 bg-gray-200 dark:bg-gray-700 rounded' />
-              </div>
-            </div>
-          </div>
-        </div>
-      </div>
-    ))}
-  </div>
-);
+// Removido ProfessionalLoadingSkeleton - usando SkeletonTickets centralizado
 
 // Componente de estado vazio profissional
 const ProfessionalEmptyState = ({ error }: { error?: string }) => (
@@ -327,7 +301,7 @@ export const ProfessionalTicketsList = React.memo<ProfessionalTicketsListProps>(
           style={{ maxHeight: '400px' }}
         >
           {isLoading ? (
-            <ProfessionalLoadingSkeleton />
+            <SkeletonTickets />
           ) : error ? (
             <ProfessionalEmptyState error={error} />
           ) : hasTickets ? (

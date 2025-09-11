@@ -1,5 +1,6 @@
 # -*- coding: utf-8 -*-
 import logging
+import threading
 import time
 import traceback
 from datetime import datetime, timedelta, timezone
@@ -59,7 +60,6 @@ class GLPIService:
 
             self.logger = logging.getLogger("glpi_service")
             self.logger.info("GLPIService inicializado com sucesso")
-
         except Exception as e:
             error_msg = f"Erro na inicialização do GLPIService: {e}"
             logging.error(error_msg)
@@ -92,6 +92,9 @@ class GLPIService:
         self.max_retries = 3
         self.retry_delay_base = 2  # Base para backoff exponencial
         self.session_timeout = 3600  # 1 hora em segundos
+
+        # Lock para thread safety do cache
+        self._cache_lock = threading.RLock()
 
         # Sistema de cache para evitar consultas repetitivas
         self._cache = {
@@ -167,77 +170,100 @@ class GLPIService:
             return False
 
     def _get_cache_data(self, cache_key: str, sub_key: str = None):
-        """Obtém dados do cache com validações robustas"""
-        try:
-            # Validar parâmetros de entrada
-            if not isinstance(cache_key, str) or not cache_key.strip():
-                self.logger.warning("cache_key deve ser uma string não vazia")
+        """Obtém dados do cache com validações robustas, verificação de TTL e thread safety"""
+        with self._cache_lock:
+            try:
+                # Validar parâmetros de entrada
+                if not isinstance(cache_key, str) or not cache_key.strip():
+                    self.logger.warning("cache_key deve ser uma string não vazia")
+                    return None
+
+                if sub_key is not None and (not isinstance(sub_key, str) or not sub_key.strip()):
+                    self.logger.warning("sub_key deve ser uma string não vazia ou None")
+                    return None
+
+                # Verificar se o cache existe
+                if not hasattr(self, "_cache") or not isinstance(self._cache, dict):
+                    self.logger.warning("Cache não inicializado corretamente")
+                    return None
+
+                if sub_key:
+                    cache_entry = self._cache.get(cache_key, {}).get(sub_key, {})
+                else:
+                    cache_entry = self._cache.get(cache_key, {})
+
+                if not isinstance(cache_entry, dict):
+                    self.logger.warning(f"Entrada de cache inválida para {cache_key}")
+                    return None
+
+                # CORREÇÃO CRÍTICA: Verificar se o cache expirou antes de retornar dados
+                timestamp = cache_entry.get("timestamp")
+                ttl = cache_entry.get("ttl", 300)  # Default 5 minutos
+
+                if timestamp is not None and isinstance(timestamp, (int, float)):
+                    current_time = time.time()
+                    cache_age = current_time - timestamp
+
+                    if cache_age >= ttl:
+                        self.logger.debug(f"Cache expirado para {cache_key}: idade={cache_age:.1f}s, TTL={ttl}s")
+                        # Remover entrada expirada do cache
+                        if sub_key:
+                            if cache_key in self._cache and sub_key in self._cache[cache_key]:
+                                del self._cache[cache_key][sub_key]
+                        else:
+                            if cache_key in self._cache:
+                                del self._cache[cache_key]
+                        return None
+                    else:
+                        self.logger.debug(f"Cache válido para {cache_key}: idade={cache_age:.1f}s, TTL={ttl}s")
+
+                return cache_entry.get("data")
+
+            except Exception as e:
+                self.logger.error(f"Erro ao obter dados do cache para {cache_key}: {e}")
                 return None
-
-            if sub_key is not None and (not isinstance(sub_key, str) or not sub_key.strip()):
-                self.logger.warning("sub_key deve ser uma string não vazia ou None")
-                return None
-
-            # Verificar se o cache existe
-            if not hasattr(self, "_cache") or not isinstance(self._cache, dict):
-                self.logger.warning("Cache não inicializado corretamente")
-                return None
-
-            if sub_key:
-                cache_entry = self._cache.get(cache_key, {}).get(sub_key, {})
-            else:
-                cache_entry = self._cache.get(cache_key, {})
-
-            if not isinstance(cache_entry, dict):
-                self.logger.warning(f"Entrada de cache inválida para {cache_key}")
-                return None
-
-            return cache_entry.get("data")
-
-        except Exception as e:
-            self.logger.error(f"Erro ao obter dados do cache para {cache_key}: {e}")
-            return None
 
     def _set_cache_data(self, cache_key: str, data, ttl: int = 300, sub_key: str = None):
-        """Define dados no cache com validações robustas"""
-        try:
-            # Validar parâmetros de entrada
-            if not isinstance(cache_key, str) or not cache_key.strip():
-                self.logger.warning("cache_key deve ser uma string não vazia")
-                return
+        """Define dados no cache com validações robustas e thread safety"""
+        with self._cache_lock:
+            try:
+                # Validar parâmetros de entrada
+                if not isinstance(cache_key, str) or not cache_key.strip():
+                    self.logger.warning("cache_key deve ser uma string não vazia")
+                    return
 
-            if sub_key is not None and (not isinstance(sub_key, str) or not sub_key.strip()):
-                self.logger.warning("sub_key deve ser uma string não vazia ou None")
-                return
+                if sub_key is not None and (not isinstance(sub_key, str) or not sub_key.strip()):
+                    self.logger.warning("sub_key deve ser uma string não vazia ou None")
+                    return
 
-            if not isinstance(ttl, (int, float)) or ttl <= 0:
-                self.logger.warning(f"TTL deve ser um número positivo, recebido: {ttl}")
-                ttl = 300  # Fallback para 5 minutos
+                if not isinstance(ttl, (int, float)) or ttl <= 0:
+                    self.logger.warning(f"TTL deve ser um número positivo, recebido: {ttl}")
+                    ttl = 300  # Fallback para 5 minutos
 
-            # Verificar se o cache existe
-            if not hasattr(self, "_cache"):
-                self._cache = {}
-            elif not isinstance(self._cache, dict):
-                self.logger.warning("Cache corrompido, reinicializando")
-                self._cache = {}
+                # Verificar se o cache existe
+                if not hasattr(self, "_cache"):
+                    self._cache = {}
+                elif not isinstance(self._cache, dict):
+                    self.logger.warning("Cache corrompido, reinicializando")
+                    self._cache = {}
 
-            cache_entry = {"data": data, "timestamp": time.time(), "ttl": ttl}
+                cache_entry = {"data": data, "timestamp": time.time(), "ttl": ttl}
 
-            if sub_key:
-                if cache_key not in self._cache:
-                    self._cache[cache_key] = {}
-                elif not isinstance(self._cache[cache_key], dict):
-                    self.logger.warning(f"Entrada de cache corrompida para {cache_key}, reinicializando")
-                    self._cache[cache_key] = {}
+                if sub_key:
+                    if cache_key not in self._cache:
+                        self._cache[cache_key] = {}
+                    elif not isinstance(self._cache[cache_key], dict):
+                        self.logger.warning(f"Entrada de cache corrompida para {cache_key}, reinicializando")
+                        self._cache[cache_key] = {}
 
-                self._cache[cache_key][sub_key] = cache_entry
-                self.logger.debug(f"Cache definido para {cache_key}[{sub_key}] com TTL {ttl}s")
-            else:
-                self._cache[cache_key] = cache_entry
-                self.logger.debug(f"Cache definido para {cache_key} com TTL {ttl}s")
+                    self._cache[cache_key][sub_key] = cache_entry
+                    self.logger.debug(f"Cache definido para {cache_key}[{sub_key}] com TTL {ttl}s")
+                else:
+                    self._cache[cache_key] = cache_entry
+                    self.logger.debug(f"Cache definido para {cache_key} com TTL {ttl}s")
 
-        except Exception as e:
-            self.logger.error(f"Erro ao definir dados do cache para {cache_key}: {e}")
+            except Exception as e:
+                self.logger.error(f"Erro ao definir dados do cache para {cache_key}: {e}")
 
     def _is_token_expired(self) -> bool:
         """Verifica se o token de sessão está expirado com validações robustas"""
@@ -3597,10 +3623,11 @@ class GLPIService:
         start_time = time.time()  # Definir start_time no início para evitar NameError
         try:
             # LIMPAR CACHE INTERNO FORÇADAMENTE - CORREÇÃO CRÍTICA
+            # PROBLEMA IDENTIFICADO: Esta linha estava causando métricas zeradas
+            # self._cache.clear()  # COMENTADO - Esta linha estava limpando o cache antes de usar
             self.logger.info(
-                f"[{datetime.now(tz=timezone.utc).isoformat()}] LIMPANDO CACHE INTERNO DO GLPI SERVICE"
+                f"[{datetime.now(tz=timezone.utc).isoformat()}] Cache interno preservado para melhor performance"
             )
-            self._cache.clear()
 
             # Validações de entrada
             if limit is not None:
@@ -3624,23 +3651,19 @@ class GLPIService:
                 f"[{datetime.now(tz=timezone.utc).isoformat()}] Iniciando get_technician_ranking com limit={limit}"
             )
 
-            # Verificar cache
-            cache_key = "technician_ranking"
+            # Verificar cache com lógica inteligente
+            cache_key = f"technician_ranking_{limit or 'all'}"
             try:
                 cached_data = self._get_cache_data(cache_key)
-                if cached_data is not None:
+                # Verificar se cache existe E não está vazio
+                if cached_data and isinstance(cached_data, list) and len(cached_data) > 0:
                     self.logger.info(
-                        f"[{datetime.now(tz=timezone.utc).isoformat()}] RETORNANDO RANKING DO CACHE INTERNO (PROBLEMA!)"
+                        f"[{datetime.now(tz=timezone.utc).isoformat()}] Retornando ranking do cache: {len(cached_data)} técnicos"
                     )
-                    self.logger.info(
-                        f"[{datetime.now(tz=timezone.utc).isoformat()}] Cache data: {cached_data[:2] if cached_data else 'None'}..."
-                    )  # Primeiros 2 itens
-                    if limit and len(cached_data) > limit:
-                        return cached_data[:limit]
-                    return cached_data
+                    return cached_data[:limit] if limit else cached_data
                 else:
                     self.logger.info(
-                        f"[{datetime.now(tz=timezone.utc).isoformat()}] CACHE INTERNO VAZIO, PROCESSANDO DADOS REAIS"
+                        f"[{datetime.now(tz=timezone.utc).isoformat()}] Cache vazio ou inválido, processando dados reais"
                     )
             except Exception as e:
                 self.logger.warning(
@@ -3678,12 +3701,12 @@ class GLPIService:
                 )
                 return []
 
-            # Armazenar no cache com TTL reduzido para 3 minutos
+            # Armazenar no cache com TTL otimizado para 5 minutos
             try:
                 if ranking:
-                    self._set_cache_data(cache_key, ranking, ttl=180)
+                    self._set_cache_data(cache_key, ranking, ttl=300)
                     self.logger.info(
-                        f"[{datetime.now(tz=timezone.utc).isoformat()}] Dados armazenados no cache por 3 minutos"
+                        f"[{datetime.now(tz=timezone.utc).isoformat()}] Dados armazenados no cache por 5 minutos"
                     )
             except Exception as e:
                 self.logger.warning(
@@ -3940,11 +3963,11 @@ class GLPIService:
 
             data = response.json()
             tickets = data.get("data", [])
-            initial_count = len(tickets)
+            # initial_count = len(tickets)  # Commented out unused variable
 
             # FASE 2: Verificação de completude e fallback automático
             # TEMPORARIAMENTE DESABILITADO PARA MELHORAR PERFORMANCE
-            fallback_triggered = False
+            # fallback_triggered = False  # Commented out unused variable
             # try:
             #     if hybrid_pagination.is_range_potentially_insufficient(tickets, adaptive_range):
             #         self.logger.warning(f"Range insuficiente detectado para {tech_name}: {initial_count} tickets")
@@ -3991,16 +4014,16 @@ class GLPIService:
             self.logger.debug(f"Técnico {tecnico_id}: {total} tickets ({resolvidos} resolvidos, {pendentes} pendentes)")
 
             # Atualizar cache do sistema híbrido
-            try:
-                hybrid_pagination.update_technician_cache(
-                    tecnico_id,
-                    tech_name or f"Técnico {tecnico_id}",
-                    adaptive_range,
-                    total,
-                    fallback_triggered
-                )
-            except Exception as e:
-                self.logger.debug(f"Erro ao atualizar stats de paginação: {e}")
+            # try:
+            #     hybrid_pagination.update_technician_cache(
+            #         tecnico_id,
+            #         tech_name or f"Técnico {tecnico_id}",
+            #         adaptive_range,
+            #         total,
+            #         fallback_triggered
+            #     )
+            # except Exception as e:
+            #     self.logger.debug(f"Erro ao atualizar stats de paginação: {e}")
 
             result = {
                 "total_tickets": total,
@@ -4077,14 +4100,14 @@ class GLPIService:
                     self.logger.error(f"❌ Erro ao processar técnico {tech_id}: {e}")
                 return None
 
-            # Processar técnicos em paralelo (aumentado para 10 threads para melhor performance)
-            with concurrent.futures.ThreadPoolExecutor(max_workers=10) as executor:
+            # Processar técnicos em paralelo (otimizado para 5 threads para melhor estabilidade)
+            with concurrent.futures.ThreadPoolExecutor(max_workers=5) as executor:
                 future_to_tech = {executor.submit(get_technician_data, tech_id): tech_id for tech_id in technician_ids}
 
                 for future in concurrent.futures.as_completed(future_to_tech):
                     tech_id = future_to_tech[future]
                     try:
-                        result = future.result(timeout=30)  # Timeout de 30s por técnico
+                        result = future.result(timeout=15)  # Timeout otimizado para 15s por técnico
                         if result:
                             technician_candidates.append(result)
                             self.logger.info(f"✅ Técnico encontrado: {result['name']} (ID: {tech_id})")
@@ -4112,8 +4135,8 @@ class GLPIService:
                         level_future = executor.submit(self._get_technician_level_by_name_fallback, tech_id)
 
                         # Aguardar resultados
-                        metricas = metrics_future.result(timeout=30)
-                        tech_level = level_future.result(timeout=30)
+                        metricas = metrics_future.result(timeout=15)
+                        tech_level = level_future.result(timeout=15)
 
                     return {
                         "id": tech_id,
@@ -4138,7 +4161,7 @@ class GLPIService:
                 for future in concurrent.futures.as_completed(future_to_tech):
                     tech = future_to_tech[future]
                     try:
-                        result = future.result(timeout=60)  # Timeout de 60s por técnico
+                        result = future.result(timeout=30)  # Timeout otimizado para 30s por técnico
                         if result:
                             ranking.append(result)
                             self.logger.info(f"📊 TÉCNICO {result['name']} (ID: {result['id']}): Total={result['total_tickets']}, Nível={result['level']}")
@@ -5896,13 +5919,13 @@ class GLPIService:
                     if tech_id in ticket_counts:
                         ticket_counts[tech_id] += 1
 
-            elapsed_time = time.time() - start_time
+            # elapsed_time = time.time() - start_time  # Commented out unused variable
             # print(f"[DEBUG] Batch processado em {elapsed_time:.2f}s: " f"{sum(ticket_counts.values())} tickets encontrados")
             self.logger.info(f"Batch processado: {sum(ticket_counts.values())} tickets encontrados")
             return ticket_counts
 
         except Exception as e:
-            elapsed_time = time.time() - start_time
+            # elapsed_time = time.time() - start_time  # Commented out unused variable
             # print(f"[DEBUG] Erro no batch após {elapsed_time:.2f}s: {e}")
             self.logger.error(f"Erro no processamento do batch: {e}")
             return {tech_id: 0 for tech_id in tech_ids}
@@ -6037,7 +6060,6 @@ class GLPIService:
             self.logger.info(f"[BATCH_OPTIMIZED] Distribuição por técnico: {dict(ticket_counts)}")
 
             return ticket_counts
-
 
         except Exception as e:
             elapsed_time = time.time() - start_time
@@ -6752,7 +6774,8 @@ class GLPIService:
 
             timestamp = datetime.now(tz=timezone.utc).isoformat()
             self.logger.info(
-                f"[{timestamp}] Métricas obtidas com sucesso - Filtro modificação, " f"Total: {sum(result['totals'].values())}"
+                f"[{timestamp}] Métricas obtidas com sucesso - Filtro modificação, "
+                f"Total: {sum(result['totals'].values())}"
             )
 
             return result
@@ -6953,10 +6976,11 @@ class GLPIService:
         user_response = self._make_authenticated_request("GET", user_url)
 
         if user_response and user_response.status_code == 200:
-            user_data = user_response.json()
+            # user_data = user_response.json()  # Commented out unused variable
             # self.logger.info(f"🔍 [DEBUG SILVIO] Usuário encontrado: {user_data.get('name', 'N/A')}")
             # self.logger.info(f"🔍 [DEBUG SILVIO] Firstname: {user_data.get('firstname', 'N/A')}")
             # self.logger.info(f"🔍 [DEBUG SILVIO] Realname: {user_data.get('realname', 'N/A')}")
+            pass
         else:
             self.logger.error(f"❌ [DEBUG SILVIO] Usuário {silvio_id} não encontrado")
             return {"error": "Usuário não encontrado"}
@@ -6986,7 +7010,9 @@ class GLPIService:
                     if len(tickets) > 0:
                         pass  # Debug removido
                 else:
-                    self.logger.warning(f"⚠️ [DEBUG SILVIO] Campo {field_id}: Erro {response.status_code if response else 'None'}")
+                    self.logger.warning(
+                        f"⚠️ [DEBUG SILVIO] Campo {field_id}: Erro {response.status_code if response else 'None'}"
+                    )
             except Exception as e:
                 self.logger.error(f"❌ [DEBUG SILVIO] Campo {field_id}: Erro {e}")
 

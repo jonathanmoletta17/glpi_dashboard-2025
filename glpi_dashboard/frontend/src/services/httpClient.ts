@@ -11,9 +11,20 @@ const getEnvVar = (key: string, defaultValue: string = '') => {
   return import.meta.env[key] || defaultValue;
 };
 
+// Configuração dinâmica baseada no ambiente
+const getApiBaseUrl = () => {
+  // Em desenvolvimento, sempre usar localhost
+  if (import.meta.env.DEV) {
+    return 'http://localhost:5000/api';
+  }
+
+  // Em produção, usar variável de ambiente ou fallback
+  return getEnvVar('VITE_API_BASE_URL', 'http://localhost:5000/api');
+};
+
 // Configuração da API usando variáveis de ambiente
 export const API_CONFIG = {
-  BASE_URL: getEnvVar('VITE_API_BASE_URL', 'http://localhost:8000/api'),
+  BASE_URL: getApiBaseUrl(),
   TIMEOUT: parseInt(getEnvVar('VITE_API_TIMEOUT', '120000')),
   RETRY_ATTEMPTS: parseInt(getEnvVar('VITE_API_RETRY_ATTEMPTS', '3')),
   RETRY_DELAY: parseInt(getEnvVar('VITE_API_RETRY_DELAY', '1000')),
@@ -48,6 +59,16 @@ export const httpClient: AxiosInstance = axios.create({
   },
 });
 
+// Log da configuração inicial (apenas em desenvolvimento)
+if (import.meta.env.DEV) {
+  console.log('🌐 HTTP Client configurado:', {
+    baseURL: API_CONFIG.BASE_URL,
+    timeout: API_CONFIG.TIMEOUT,
+    environment: import.meta.env.MODE,
+    isDev: import.meta.env.DEV,
+  });
+}
+
 // Interceptador de requisição para autenticação e logging
 httpClient.interceptors.request.use(
   (config: any) => {
@@ -66,17 +87,13 @@ httpClient.interceptors.request.use(
       config.headers['Session-Token'] = authConfig.userToken;
     }
 
-    // Log da requisição
-    const logLevel = getEnvVar('VITE_LOG_LEVEL', 'info');
-    const showApiCalls = getEnvVar('VITE_SHOW_API_CALLS') === 'true';
-
-    if (showApiCalls || logLevel === 'debug') {
-      // Debug logs removidos para produção
-      // console.log(`🚀 ${config.method?.toUpperCase()} ${config.url}`, {
-      //   headers: config.headers,
-      //   params: config.params,
-      //   data: config.data,
-      // });
+    // Log da requisição (apenas em desenvolvimento com debug habilitado)
+    if (import.meta.env.DEV && getEnvVar('VITE_SHOW_API_CALLS') === 'true') {
+      console.log(`🚀 ${config.method?.toUpperCase()} ${config.url}`, {
+        headers: config.headers,
+        params: config.params,
+        data: config.data,
+      });
     }
 
     return config;
@@ -90,19 +107,16 @@ httpClient.interceptors.request.use(
 // Interceptador de resposta para tratamento de erros e logging
 httpClient.interceptors.response.use(
   (response: AxiosResponse) => {
-    const logLevel = getEnvVar('VITE_LOG_LEVEL', 'info');
-    const showApiCalls = getEnvVar('VITE_SHOW_API_CALLS') === 'true';
-
-    if (showApiCalls || logLevel === 'debug') {
-      // Debug logs removidos para produção
-      // console.log(
-      //   `✅ ${response.config.method?.toUpperCase()} ${response.config.url} - ${response.status}`,
-      //   {
-      //     status: response.status,
-      //     statusText: response.statusText,
-      //     data: response.data,
-      //   }
-      // );
+    // Log da resposta (apenas em desenvolvimento com debug habilitado)
+    if (import.meta.env.DEV && getEnvVar('VITE_SHOW_API_CALLS') === 'true') {
+      console.log(
+        `✅ ${response.config.method?.toUpperCase()} ${response.config.url} - ${response.status}`,
+        {
+          status: response.status,
+          statusText: response.statusText,
+          data: response.data,
+        }
+      );
     }
 
     return response;

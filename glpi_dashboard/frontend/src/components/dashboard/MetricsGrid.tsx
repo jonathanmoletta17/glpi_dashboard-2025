@@ -7,6 +7,9 @@ import {
   createResponsiveClasses,
   createSimpleGridClasses,
 } from '@/utils/responsive';
+import { gridPresets } from '@/utils/animations';
+import { useDashboardFormatters } from '@/hooks/useFormatters';
+import { SkeletonMetrics } from '@/utils/loadingComponents';
 
 import { useScreenReaderAnnouncement } from '../accessibility/VisuallyHidden';
 
@@ -28,7 +31,8 @@ interface StatusCardProps {
 const StatusCard = React.memo<StatusCardProps>(
   ({ title, value, icon: Icon, className, onClick }) => {
     const { announce } = useScreenReaderAnnouncement();
-    const formattedValue = useMemo(() => value.toLocaleString(), [value]);
+    const formatters = useDashboardFormatters();
+    const formattedValue = useMemo(() => formatters.largeNumber(value), [value, formatters]);
     const isClickable = onClick;
 
     const handleClick = useCallback(() => {
@@ -90,26 +94,7 @@ const StatusCard = React.memo<StatusCardProps>(
 
 StatusCard.displayName = 'StatusCard';
 
-const containerVariants = {
-  hidden: { opacity: 0 },
-  visible: {
-    opacity: 1,
-    transition: {
-      staggerChildren: 0.1,
-    },
-  },
-};
-
-const itemVariants = {
-  hidden: { opacity: 0, y: 20 },
-  visible: {
-    opacity: 1,
-    y: 0,
-    transition: {
-      duration: 0.3,
-    },
-  },
-};
+// Usando variantes de animação da biblioteca centralizada
 
 export const MetricsGrid = React.memo<MetricsGridProps>(
   ({ metrics, onFilterByStatus, isLoading = false, className = '' }) => {
@@ -152,40 +137,7 @@ export const MetricsGrid = React.memo<MetricsGridProps>(
     );
 
     if (isLoading) {
-      const gridClasses = createResponsiveClasses({
-        base: RESPONSIVE_GRID_CLASSES.metricsCards.base,
-        mobile: 'grid-cols-1',
-        tablet: 'grid-cols-2',
-        desktop: 'grid-cols-4',
-      });
-
-      return (
-        <div
-          className={`${gridClasses} ${className}`}
-          role='region'
-          aria-label='Carregando métricas de tickets'
-          aria-busy='true'
-        >
-          {Array.from({ length: 4 }).map((_, index) => (
-            <div
-              key={index}
-              className='bg-white dark:bg-gray-800 rounded-xl shadow-sm border border-gray-200 dark:border-gray-700 p-4 sm:p-6 animate-pulse'
-              role='status'
-              aria-label={`Carregando métrica ${index + 1} de 4`}
-            >
-              <div className='flex items-center justify-between'>
-                <div>
-                  <div className='h-4 bg-gray-200 dark:bg-gray-700 rounded w-16 mb-2'></div>
-                  <div className='h-6 sm:h-8 bg-gray-200 dark:bg-gray-700 rounded w-12'></div>
-                </div>
-                <div className='p-2 sm:p-3 rounded-lg bg-gray-100 dark:bg-gray-700'>
-                  <div className='w-5 h-5 sm:w-6 sm:h-6 bg-gray-200 dark:bg-gray-600 rounded'></div>
-                </div>
-              </div>
-            </div>
-          ))}
-        </div>
-      );
+      return <SkeletonMetrics className={className} />;
     }
 
     const gridClasses = createSimpleGridClasses({
@@ -198,7 +150,7 @@ export const MetricsGrid = React.memo<MetricsGridProps>(
     return (
       <motion.div
         className={`${gridClasses} ${className}`}
-        variants={containerVariants}
+        variants={gridPresets.container}
         initial='hidden'
         animate='visible'
         role='region'
@@ -210,7 +162,7 @@ export const MetricsGrid = React.memo<MetricsGridProps>(
           navegar entre os cartões.
         </div>
         {cardsData.map(card => (
-          <motion.div key={`metrics-${card.status}`} variants={itemVariants}>
+          <motion.div key={`metrics-${card.status}`} variants={gridPresets.item}>
             <StatusCard
               title={card.title}
               value={card.value}

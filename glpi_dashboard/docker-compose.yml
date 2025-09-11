@@ -4,12 +4,23 @@ services:
     image: mysql:8.0
     container_name: glpi_dashboard_mysql
     environment:
-      MYSQL_ROOT_PASSWORD: root_password
+      MYSQL_ROOT_PASSWORD_FILE: /run/secrets/mysql_root_password
       MYSQL_DATABASE: glpi_dashboard
       MYSQL_USER: glpi_user
-      MYSQL_PASSWORD: glpi_password
-    ports:
-      - "3307:3306"
+      MYSQL_PASSWORD_FILE: /run/secrets/mysql_password
+    secrets:
+      - mysql_root_password
+      - mysql_password
+    deploy:
+      resources:
+        limits:
+          memory: 1G
+          cpus: '1.0'
+        reservations:
+          memory: 512M
+          cpus: '0.5'
+    # ports:
+    #   - "3307:3306"  # Removido para segurança - acesso apenas interno
     volumes:
       - mysql_data:/var/lib/mysql
       - ./backend/database/init:/docker-entrypoint-initdb.d
@@ -25,8 +36,16 @@ services:
   redis:
     image: redis:7-alpine
     container_name: glpi_dashboard_redis
-    ports:
-      - "6379:6379"
+    deploy:
+      resources:
+        limits:
+          memory: 256M
+          cpus: '0.5'
+        reservations:
+          memory: 128M
+          cpus: '0.25'
+    # ports:
+    #   - "6379:6379"  # Removido para segurança - acesso apenas interno
     volumes:
       - redis_data:/data
     networks:
@@ -46,6 +65,16 @@ services:
     container_name: glpi_dashboard_backend
     env_file:
       - docker.env
+    secrets:
+      - flask_secret_key
+    deploy:
+      resources:
+        limits:
+          memory: 1G
+          cpus: '2.0'
+        reservations:
+          memory: 512M
+          cpus: '1.0'
     ports:
       - "5000:5000"
     volumes:
@@ -67,8 +96,16 @@ services:
       dockerfile: Dockerfile
     container_name: glpi_dashboard_frontend
     environment:
-      - NODE_ENV=development
+      - NODE_ENV=production
       - VITE_API_BASE_URL=http://backend:5000/api
+    deploy:
+      resources:
+        limits:
+          memory: 512M
+          cpus: '1.0'
+        reservations:
+          memory: 256M
+          cpus: '0.5'
     ports:
       - "3001:3000"
     volumes:
@@ -96,3 +133,11 @@ networks:
     ipam:
       config:
         - subnet: 172.20.0.0/16
+
+secrets:
+  mysql_root_password:
+    file: ./secrets/mysql_root_password.txt
+  mysql_password:
+    file: ./secrets/mysql_password.txt
+  flask_secret_key:
+    file: ./secrets/flask_secret_key.txt

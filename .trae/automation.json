@@ -1,0 +1,129 @@
+{
+  "$schema": "https://trae.ai/schemas/automation.json",
+  "version": "1.0",
+  "triggers": {
+    "on_file_change": {
+      "frontend": {
+        "patterns": ["glpi_dashboard/frontend/src/**/*.{ts,tsx,js,jsx}"],
+        "actions": [
+          "lint_and_format",
+          "type_check",
+          "run_related_tests"
+        ]
+      },
+      "backend": {
+        "patterns": ["glpi_dashboard/backend/**/*.py"],
+        "actions": [
+          "lint_python",
+          "format_python",
+          "type_check_python",
+          "run_related_tests"
+        ]
+      },
+      "config": {
+        "patterns": ["**/*.{json,yaml,yml,env}"],
+        "actions": [
+          "validate_config",
+          "update_documentation"
+        ]
+      }
+    },
+    "on_commit": {
+      "pre_commit": [
+        "lint_all",
+        "format_all",
+        "run_tests",
+        "check_security"
+      ],
+      "post_commit": [
+        "update_changelog",
+        "sync_documentation"
+      ]
+    },
+    "on_pull_request": {
+      "actions": [
+        "full_test_suite",
+        "performance_check",
+        "security_scan",
+        "documentation_check"
+      ]
+    }
+  },
+  "commands": {
+    "lint_and_format": {
+      "frontend": [
+        "cd glpi_dashboard/frontend && npm run lint:fix",
+        "cd glpi_dashboard/frontend && npm run format"
+      ]
+    },
+    "type_check": {
+      "frontend": "cd glpi_dashboard/frontend && npm run type-check"
+    },
+    "run_related_tests": {
+      "frontend": "cd glpi_dashboard/frontend && npm run test:related",
+      "backend": "cd glpi_dashboard/backend && python -m pytest tests/ -v"
+    },
+    "lint_python": "cd glpi_dashboard/backend && flake8 .",
+    "format_python": "cd glpi_dashboard/backend && black . && isort .",
+    "type_check_python": "cd glpi_dashboard/backend && mypy .",
+    "validate_config": "echo 'Validating configuration files...'",
+    "update_documentation": "echo 'Updating documentation...'",
+    "lint_all": [
+      "cd glpi_dashboard/frontend && npm run lint:fix",
+      "cd glpi_dashboard/backend && flake8 ."
+    ],
+    "format_all": [
+      "cd glpi_dashboard/frontend && npm run format",
+      "cd glpi_dashboard/backend && black . && isort ."
+    ],
+    "run_tests": [
+      "cd glpi_dashboard/frontend && npm run test",
+      "cd glpi_dashboard/backend && python -m pytest tests/ -v"
+    ],
+    "check_security": [
+      "cd glpi_dashboard/backend && bandit -r .",
+      "cd glpi_dashboard/frontend && npm audit"
+    ],
+    "update_changelog": "echo 'Updating changelog...'",
+    "sync_documentation": "echo 'Syncing documentation...'",
+    "full_test_suite": [
+      "cd glpi_dashboard/frontend && npm run test:coverage",
+      "cd glpi_dashboard/backend && python -m pytest tests/ --cov=. --cov-report=html"
+    ],
+    "performance_check": "echo 'Running performance checks...'",
+    "security_scan": [
+      "cd glpi_dashboard/backend && bandit -r . -f json",
+      "cd glpi_dashboard/frontend && npm audit --audit-level=moderate"
+    ],
+    "documentation_check": "echo 'Checking documentation completeness...'"
+  },
+  "notifications": {
+    "on_success": {
+      "show_summary": true,
+      "include_metrics": true
+    },
+    "on_failure": {
+      "show_details": true,
+      "suggest_fixes": true
+    }
+  },
+  "scheduling": {
+    "daily_health_check": {
+      "time": "09:00",
+      "actions": [
+        "run_tests",
+        "check_security",
+        "update_documentation"
+      ]
+    },
+    "weekly_maintenance": {
+      "day": "sunday",
+      "time": "02:00",
+      "actions": [
+        "full_test_suite",
+        "performance_check",
+        "sync_documentation"
+      ]
+    }
+  }
+}

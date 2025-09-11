@@ -35,7 +35,7 @@ Sistema de cache para otimização de performance:
 ### Variáveis Obrigatórias
 
 ```env
-VITE_API_BASE_URL=http://localhost:5000/api
+VITE_API_BASE_URL=http://localhost:5000
 ```
 
 ### Variáveis Opcionais
@@ -181,7 +181,7 @@ Para migrar código existente:
 
    ```typescript
    // Antes
-   const response = await axios.get('/api/metrics');
+   const response = await axios.get('/metrics');
 
    // Depois
    const metrics = await apiService.getMetrics();

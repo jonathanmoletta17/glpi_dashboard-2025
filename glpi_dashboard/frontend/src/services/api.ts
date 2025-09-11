@@ -41,7 +41,7 @@ export const apiService = {
       cacheKey,
       async () => {
         const startTime = Date.now();
-        let url = '/api/metrics';
+        let url = '/metrics';
         if (dateRange && dateRange.startDate && dateRange.endDate) {
           const params = new URLSearchParams({
             start_date: dateRange.startDate,
@@ -239,7 +239,7 @@ export const apiService = {
       async () => {
         const startTime = Date.now();
 
-        const response = await api.get<ApiResponse<SystemStatus>>('/api/status');
+        const response = await api.get<ApiResponse<SystemStatus>>('/status');
 
         // Monitora performance
         const responseTime = Date.now() - startTime;
@@ -277,7 +277,7 @@ export const apiService = {
   // Health check
   async healthCheck(): Promise<boolean> {
     try {
-      await api.head('/api/status');
+      await api.head('/status');
       return true;
     } catch (error) {
       console.error('Health check failed:', error);
@@ -311,7 +311,7 @@ export const apiService = {
     }
 
     try {
-      let url = '/api/technicians/ranking';
+      let url = '/technicians/ranking';
 
       // Construir query parameters se filtros foram fornecidos
       if (filters && Object.keys(filters).length > 0) {
@@ -382,7 +382,7 @@ export const apiService = {
     }
 
     try {
-      const response = await api.get<ApiResponse<any[]>>(`/api/tickets/new?limit=${limit}`);
+      const response = await api.get<ApiResponse<any[]>>(`/tickets/new?limit=${limit}`);
 
       // Monitora performance
       const responseTime = Date.now() - startTime;
@@ -505,7 +505,7 @@ export const apiService = {
     const cacheParams = { endpoint: 'tickets/detail', ticketId };
 
     try {
-      const response = await api.get<ApiResponse<any>>(`/api/tickets/${ticketId}`);
+      const response = await api.get<ApiResponse<any>>(`/tickets/${ticketId}`);
 
       if (response.data.success && response.data.data) {
         const data = response.data.data;
@@ -568,7 +568,7 @@ export const apiService = {
       'filterTypes',
       cacheKey,
       async () => {
-        const response = await api.get('/api/filter-types');
+        const response = await api.get('/filter-types');
         const responseTime = Date.now() - startTime;
 
         console.log(`📋 Filter types fetched in ${responseTime}ms`);
@@ -681,7 +681,7 @@ export const fetchDashboardMetrics = async (
       }
     }
 
-    url = queryParams.toString() ? `/api/metrics?${queryParams.toString()}` : `/api/metrics`;
+    url = queryParams.toString() ? `/metrics?${queryParams.toString()}` : `/metrics`;
 
     // console.log('🔍 Filtros originais:', filters);
     // console.log('🔍 Query params construídos:', queryParams.toString());
@@ -705,7 +705,7 @@ export const fetchDashboardMetrics = async (
       responseTime,
       cacheHit: false,
       timestamp: new Date(),
-      endpoint: '/api/metrics',
+      endpoint: '/metrics',
     };
     // Debug: console.log('Métricas de performance:', perfMetrics);
 

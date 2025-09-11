@@ -1,0 +1,64 @@
+{
+  "$schema": "https://trae.ai/schemas/behavior.json",
+  "version": "1.0",
+  "autonomy": {
+    "level": "collaborative",
+    "auto_fix_errors": true,
+    "auto_optimize_code": true,
+    "auto_add_tests": true,
+    "auto_update_docs": true,
+    "require_confirmation": {
+      "breaking_changes": true,
+      "major_refactoring": true,
+      "external_api_changes": true,
+      "security_modifications": true,
+      "database_schema_changes": true
+    }
+  },
+  "code_generation": {
+    "style": "consistent_with_project",
+    "verbosity": "detailed_comments",
+    "error_handling": "comprehensive",
+    "performance_focus": "high",
+    "security_focus": "high",
+    "accessibility_focus": "medium",
+    "patterns": {
+      "frontend": {
+        "component_structure": "functional_components",
+        "state_management": "tanstack_query",
+        "styling_approach": "tailwind_with_design_tokens",
+        "error_boundaries": "required",
+        "lazy_loading": "preferred",
+        "memoization": "when_beneficial"
+      },
+      "backend": {
+        "architecture": "layered_with_blueprints",
+        "error_handling": "structured_exceptions",
+        "logging": "structured_json",
+        "caching": "intelligent_warming",
+        "validation": "pydantic_models",
+        "testing": "comprehensive_coverage"
+      }
+    }
+  },
+  "communication": {
+    "explanation_level": "detailed",
+    "include_reasoning": true,
+    "suggest_alternatives": true,
+    "highlight_tradeoffs": true,
+    "provide_examples": true,
+    "language_preference": "match_user_input"
+  },
+  "workflow": {
+    "planning_approach": "iterative_with_feedback",
+    "testing_strategy": "test_driven_development",
+    "documentation_timing": "concurrent_with_development",
+    "code_review": "mandatory_for_critical_changes"
+  },
+  "preferences": {
+    "file_organization": "feature_based",
+    "naming_conventions": "descriptive_and_consistent",
+    "comment_style": "explain_why_not_what",
+    "refactoring_approach": "incremental_improvements"
+  }
+}

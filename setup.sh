@@ -38,3 +38,4 @@ fi
 echo "✅ Configuração concluída!"
 echo "🔧 Configure as variáveis no arquivo .env"
 echo "🚀 Execute: npm run dev (frontend) e python app.py (backend)"
+

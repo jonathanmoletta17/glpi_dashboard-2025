@@ -206,3 +206,168 @@ export function truncateText(text: string, maxLength: number = 50): string {
   }
   return text.substring(0, maxLength - 3) + '...';
 }
+
+// ============================================================================
+// NOVAS FUNÇÕES DE FORMATAÇÃO CONSOLIDADAS
+// ============================================================================
+
+/**
+ * Formatação de nomes de pessoas (Nome + Inicial do sobrenome)
+ * Consolida a lógica duplicada encontrada em ProfessionalRankingTable
+ */
+export function formatPersonName(fullName: string): string {
+  if (!fullName || typeof fullName !== 'string') {
+    return '';
+  }
+
+  const nameParts = fullName.trim().split(' ').filter(part => part.length > 0);
+
+  if (nameParts.length === 0) {
+    return '';
+  }
+
+  if (nameParts.length === 1) {
+    return nameParts[0];
+  }
+
+  const firstName = nameParts[0];
+  const lastNameInitial = nameParts[nameParts.length - 1].charAt(0).toUpperCase() + '.';
+
+  return `${firstName} ${lastNameInitial}`.trim();
+}
+
+/**
+ * Formatação de data compacta (dd/mm/aa)
+ * Consolida a formatação de data encontrada em Header.tsx
+ */
+export function formatCompactDate(dateStr: string | Date): string {
+  const date = typeof dateStr === 'string' ? new Date(dateStr) : dateStr;
+
+  if (isNaN(date.getTime())) {
+    return 'Data inválida';
+  }
+
+  return date.toLocaleDateString('pt-BR', {
+    day: '2-digit',
+    month: '2-digit',
+    year: '2-digit',
+  });
+}
+
+/**
+ * Formatação de data e hora completa
+ * Extensão da formatação existente para casos específicos
+ */
+export function formatDateTime(dateStr: string | Date): string {
+  const date = typeof dateStr === 'string' ? new Date(dateStr) : dateStr;
+
+  if (isNaN(date.getTime())) {
+    return 'Data inválida';
+  }
+
+  return date.toLocaleString('pt-BR', {
+    day: '2-digit',
+    month: '2-digit',
+    year: 'numeric',
+    hour: '2-digit',
+    minute: '2-digit',
+  });
+}
+
+/**
+ * Formatação de números grandes com sufixos (K, M, B)
+ * Para métricas e dashboards
+ */
+export function formatLargeNumber(value: number, decimals: number = 1): string {
+  if (value === 0) return '0';
+
+  const absValue = Math.abs(value);
+  const sign = value < 0 ? '-' : '';
+
+  if (absValue < 1000) {
+    return `${sign}${absValue}`;
+  }
+
+  if (absValue < 1000000) {
+    return `${sign}${(absValue / 1000).toFixed(decimals)}K`;
+  }
+
+  if (absValue < 1000000000) {
+    return `${sign}${(absValue / 1000000).toFixed(decimals)}M`;
+  }
+
+  return `${sign}${(absValue / 1000000000).toFixed(decimals)}B`;
+}
+
+/**
+ * Formatação de tempo de resposta/SLA
+ * Para métricas de performance
+ */
+export function formatResponseTime(minutes: number): string {
+  if (minutes < 60) {
+    return `${Math.round(minutes)}min`;
+  }
+
+  const hours = Math.floor(minutes / 60);
+  const remainingMinutes = Math.round(minutes % 60);
+
+  if (hours < 24) {
+    return remainingMinutes > 0 ? `${hours}h ${remainingMinutes}min` : `${hours}h`;
+  }
+
+  const days = Math.floor(hours / 24);
+  const remainingHours = hours % 24;
+
+  return remainingHours > 0 ? `${days}d ${remainingHours}h` : `${days}d`;
+}
+
+/**
+ * Formatação de prioridade com cores
+ * Para tickets e tarefas
+ */
+export function formatPriority(priority: string | number): {
+  text: string;
+  color: string;
+  bgColor: string;
+} {
+  const priorityStr = priority.toString().toLowerCase();
+
+  const priorityMap: Record<string, { text: string; color: string; bgColor: string }> = {
+    '1': { text: 'Muito Baixa', color: 'text-gray-700', bgColor: 'bg-gray-100' },
+    '2': { text: 'Baixa', color: 'text-blue-700', bgColor: 'bg-blue-100' },
+    '3': { text: 'Média', color: 'text-yellow-700', bgColor: 'bg-yellow-100' },
+    '4': { text: 'Alta', color: 'text-orange-700', bgColor: 'bg-orange-100' },
+    '5': { text: 'Muito Alta', color: 'text-red-700', bgColor: 'bg-red-100' },
+    'baixa': { text: 'Baixa', color: 'text-blue-700', bgColor: 'bg-blue-100' },
+    'media': { text: 'Média', color: 'text-yellow-700', bgColor: 'bg-yellow-100' },
+    'alta': { text: 'Alta', color: 'text-orange-700', bgColor: 'bg-orange-100' },
+    'critica': { text: 'Crítica', color: 'text-red-700', bgColor: 'bg-red-100' },
+  };
+
+  return priorityMap[priorityStr] || {
+    text: priority.toString(),
+    color: 'text-gray-700',
+    bgColor: 'bg-gray-100',
+  };
+}
+
+/**
+ * Formatação de iniciais de nome
+ * Para avatars e identificadores visuais
+ */
+export function getInitials(name: string, maxInitials: number = 2): string {
+  if (!name || typeof name !== 'string') {
+    return '';
+  }
+
+  const nameParts = name.trim().split(' ').filter(part => part.length > 0);
+
+  if (nameParts.length === 0) {
+    return '';
+  }
+
+  return nameParts
+    .slice(0, maxInitials)
+    .map(part => part.charAt(0).toUpperCase())
+    .join('');
+}

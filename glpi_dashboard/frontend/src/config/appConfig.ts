@@ -5,6 +5,9 @@
  * eliminando configurações hardcoded espalhadas pelos componentes.
  */
 
+// Importações
+import { API_CONFIG } from '../services/httpClient';
+
 // Tipos de configuração
 export interface EnvironmentConfig {
   development: {
@@ -244,18 +247,12 @@ const notificationConfig: NotificationConfig = {
   },
 };
 
-// Configuração da API
-const apiConfig: APIConfig = {
-  baseURL: import.meta.env.VITE_API_URL || 'http://localhost:5000',
-  timeout: 10000,
-  retryAttempts: 3,
-  retryDelay: 1000,
-  endpoints: {
-    dashboard: '/api/dashboard',
-    ranking: '/api/ranking',
-    metrics: '/api/metrics',
-    health: '/api/health',
-  },
+// Configuração de endpoints específicos da aplicação
+const endpointsConfig = {
+  dashboard: '/dashboard',
+  ranking: '/ranking',
+  metrics: '/metrics',
+  health: '/health',
 };
 
 // Configuração do cache
@@ -289,7 +286,10 @@ export const appConfig = {
   environment: environmentConfigs[getCurrentEnvironment()],
   loading: loadingConfig,
   notifications: notificationConfig,
-  api: apiConfig,
+  api: {
+    ...API_CONFIG,
+    endpoints: endpointsConfig,
+  },
   cache: cacheConfig,
 
   // Helpers
@@ -306,7 +306,7 @@ export const appConfig = {
   },
 
   getAPITimeout: () => {
-    return apiConfig.timeout;
+    return API_CONFIG.TIMEOUT;
   },
 
   getCacheTTL: (strategy: keyof CacheConfig['strategies'] = 'dashboard') => {

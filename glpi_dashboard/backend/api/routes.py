@@ -61,7 +61,7 @@ def health_check():
     try:
         return jsonify({
             "status": "healthy",
-            "timestamp": datetime.datetime.now().isoformat(),
+            "timestamp": datetime.now().isoformat(),
             "service": "GLPI Dashboard API",
         })
     except Exception as e:
@@ -659,6 +659,80 @@ def get_new_tickets(validated_start_date=None, validated_end_date=None, validate
 
     except Exception as e:
         logger.error(f"Erro inesperado ao buscar tickets novos: {e}", exc_info=True)
+        error_response = ResponseFormatter.format_error_response(
+            f"Erro interno do servidor: {str(e)}", [str(e)]
+        )
+        return jsonify(error_response), 500
+
+
+@api_bp.route("/tickets/<int:ticket_id>")
+@monitor_api_endpoint("get_ticket_details")
+@monitor_performance
+@cache_with_smart_ttl(endpoint_pattern="/tickets/<int:ticket_id>", invalidation_patterns=["tickets"])
+def get_ticket_details(ticket_id):
+    """Endpoint para obter detalhes de um ticket específico por ID"""
+    start_time = time.time()
+
+    try:
+        # Validar ID do ticket
+        if not ticket_id or ticket_id <= 0:
+            logger.warning(f"ID de ticket inválido: {ticket_id}")
+            error_response = ResponseFormatter.format_error_response(
+                "ID de ticket inválido", ["O ID do ticket deve ser um número positivo"]
+            )
+            return jsonify(error_response), 400
+
+        logger.debug(f"Buscando detalhes do ticket ID: {ticket_id}")
+
+        # Buscar detalhes do ticket no GLPI
+        ticket_details = glpi_service.get_ticket_by_id(ticket_id)
+
+        # Verificar se o ticket foi encontrado
+        if ticket_details is None:
+            logger.warning(f"Ticket não encontrado: ID {ticket_id}")
+            error_response = ResponseFormatter.format_error_response(
+                "Ticket não encontrado", [f"Nenhum ticket encontrado com o ID {ticket_id}"]
+            )
+            return jsonify(error_response), 404
+
+        # Verificar erro de comunicação com GLPI
+        if isinstance(ticket_details, dict) and ticket_details.get("error"):
+            logger.error(f"Erro na comunicação com GLPI para ticket {ticket_id}: {ticket_details.get('error')}")
+            error_response = ResponseFormatter.format_error_response(
+                "Erro na comunicação com GLPI", [ticket_details.get("error", "Erro desconhecido")]
+            )
+            return jsonify(error_response), 503
+
+        # Log de performance
+        response_time = (time.time() - start_time) * 1000
+        logger.info(f"Detalhes do ticket {ticket_id} obtidos em {response_time:.2f}ms")
+
+        # Verificar performance
+        try:
+            config_obj = active_config()
+            target_p95 = config_obj.PERFORMANCE_TARGET_P95
+        except Exception:
+            target_p95 = 300
+
+        if response_time > target_p95:
+            logger.warning(f"Resposta lenta para ticket {ticket_id}: {response_time:.2f}ms")
+
+        return jsonify({
+            "success": True,
+            "data": ticket_details,
+            "response_time_ms": round(response_time, 2),
+            "ticket_id": ticket_id
+        })
+
+    except ValueError as e:
+        logger.error(f"Erro de validação para ticket {ticket_id}: {e}")
+        error_response = ResponseFormatter.format_error_response(
+            "Dados inválidos", [str(e)]
+        )
+        return jsonify(error_response), 400
+
+    except Exception as e:
+        logger.error(f"Erro inesperado ao buscar detalhes do ticket {ticket_id}: {e}", exc_info=True)
         error_response = ResponseFormatter.format_error_response(
             f"Erro interno do servidor: {str(e)}", [str(e)]
         )

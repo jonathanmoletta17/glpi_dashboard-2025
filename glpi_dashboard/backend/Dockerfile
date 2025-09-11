@@ -34,19 +34,12 @@ COPY . .
 # Create logs directory
 RUN mkdir -p logs
 
-# Create non-root user and set permissions
-RUN groupadd -r appuser && useradd -r -g appuser -m appuser \
-    && chown -R appuser:appuser /app
-
-# Switch to non-root user
-USER appuser
-
 # Expose port
 EXPOSE 5000
 
-# Health check
-HEALTHCHECK --interval=30s --timeout=30s --start-period=5s --retries=3 \
-    CMD curl -f http://localhost:5000/health || exit 1
+# Health check otimizado
+HEALTHCHECK --interval=15s --timeout=10s --start-period=10s --retries=3 \
+    CMD curl -f http://localhost:5000/api/health || exit 1
 
-# Default command
-CMD ["python", "app.py"]
+# Default command - usando uvicorn para melhor performance
+CMD ["uvicorn", "app:app", "--host", "0.0.0.0", "--port", "5000", "--workers", "4"]

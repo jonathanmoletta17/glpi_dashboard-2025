@@ -4,14 +4,17 @@ import { MetricsGrid } from './MetricsGrid';
 import { PremiumLevelCard } from './PremiumLevelCard';
 import { ProfessionalTicketsList } from './ProfessionalTicketsList';
 import { ProfessionalRankingTable } from './ProfessionalRankingTable';
+import { useDashboardFormatters } from '@/hooks/useFormatters';
 
 // Componentes lazy centralizados
 
 import { Card, CardContent, CardHeader } from '@/components/ui/card';
+import { dashboardPresets } from '@/utils/animations';
 
 import { MetricsData, TicketStatus, SystemStatus, TechnicianRanking, Ticket } from '@/types';
 import { cn } from '@/lib/utils';
 import { SkipLink } from '../accessibility/VisuallyHidden';
+import { SkeletonCard, OptimizedErrorState, useLoadingState } from '@/utils/loadingComponents';
 
 interface ModernDashboardProps {
   metrics: MetricsData;
@@ -31,53 +34,13 @@ interface ModernDashboardProps {
   };
 }
 
-// Variantes de animação movidas para fora do componente
-const containerVariants = {
-  hidden: { opacity: 0 },
-  visible: {
-    opacity: 1,
-    transition: {
-      staggerChildren: 0.01,
-      delayChildren: 0,
-    },
-  },
-} as const;
+// Usando variantes de animação da biblioteca centralizada
 
-const itemVariants = {
-  hidden: { opacity: 0 },
-  visible: {
-    opacity: 1,
-    transition: {
-      duration: 0.05,
-      ease: 'easeOut' as const,
-    },
-  },
-} as const;
-
-// Componente SkeletonCard memoizado
-const SkeletonCard = React.memo(function SkeletonCard() {
-  return (
-    <Card className='bg-white/80 backdrop-blur-sm border border-white/90 shadow-sm dark:bg-white/5 dark:border-white/10 shadow-none'>
-      <CardHeader className='pb-2'>
-        <div className='flex items-center justify-between'>
-          <div className='h-4 bg-gray-200 dark:bg-gray-700 rounded animate-pulse w-20' />
-          <div className='h-8 w-8 bg-gray-200 dark:bg-gray-700 rounded-full animate-pulse' />
-        </div>
-      </CardHeader>
-      <CardContent>
-        <div className='space-y-3'>
-          <div className='h-8 bg-gray-200 dark:bg-gray-700 rounded animate-pulse w-16' />
-          <div className='h-3 bg-gray-200 dark:bg-gray-700 rounded animate-pulse w-24' />
-        </div>
-      </CardContent>
-    </Card>
-  );
-});
+// Removido SkeletonCard local - usando SkeletonCard centralizado
 
 export const ModernDashboard = React.memo<ModernDashboardProps>(function ModernDashboard({
   metrics,
   levelMetrics,
-  systemStatus,
   technicianRanking = [],
   onFilterByStatus,
   onTicketClick,
@@ -85,6 +48,7 @@ export const ModernDashboard = React.memo<ModernDashboardProps>(function ModernD
   className,
   filters,
 }) {
+  const formatters = useDashboardFormatters();
   // Debug logs para investigar o problema do ranking zerado
   // Debug logs removidos para produção
   // console.log('🔍 ModernDashboard - technicianRanking recebido:', technicianRanking);
@@ -112,6 +76,11 @@ export const ModernDashboard = React.memo<ModernDashboardProps>(function ModernD
         pending_tickets: tech.pending_tickets || 0,
         avg_resolution_time: tech.avg_resolution_time || 0,
         rank: tech.rank || 0,
+        // Formatações usando o hook
+        formattedTotal: formatters.largeNumber(tech.total_tickets || 0),
+        formattedResolved: formatters.largeNumber(tech.resolved_tickets || 0),
+        formattedAvgTime: formatters.responseTime(tech.avg_resolution_time || 0),
+        initials: formatters.nameInitials(tech.name || tech.nome || 'Técnico'),
       };
       // console.log('🔍 ModernDashboard - processando técnico:', tech, '-> resultado:', processed);
       return processed;
@@ -179,7 +148,7 @@ export const ModernDashboard = React.memo<ModernDashboardProps>(function ModernD
 
   return (
     <motion.main
-      variants={containerVariants}
+      variants={dashboardPresets.container}
       initial='hidden'
       animate='visible'
       className={cn('dashboard-fullscreen-container px-6', className)}
@@ -195,7 +164,7 @@ export const ModernDashboard = React.memo<ModernDashboardProps>(function ModernD
 
       {/* Cards de métricas gerais no topo - OTIMIZADO */}
       <motion.section
-        variants={itemVariants}
+        variants={dashboardPresets.card}
         className='w-full mt-4 mb-4'
         id='metrics-section'
         data-dashboard-section='metrics'
@@ -407,7 +376,7 @@ export const ModernDashboard = React.memo<ModernDashboardProps>(function ModernD
         aria-labelledby='ranking-heading'
       >
         {/* Ranking de técnicos */}
-        <motion.div variants={itemVariants} className='w-full'>
+        <motion.div variants={dashboardPresets.card} className='w-full'>
           <div
             className='glpi-card-premium glpi-glass-premium glpi-hover-lift h-full'
             role='region'
