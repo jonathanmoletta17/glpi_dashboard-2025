@@ -76,44 +76,33 @@ Dashboard interativo para monitoramento de performance de técnicos GLPI com foc
 ### Frontend Core (`/frontend/src`)
 
 #### Components (`/components`)
-- **`dashboard/ModernDashboard.tsx`** - Dashboard principal modernizado com métricas
-- **`dashboard/MetricsGrid.tsx`** - Grid de métricas responsivo
-- **`dashboard/ProfessionalRankingTable.tsx`** - Tabela de ranking de técnicos
-- **`dashboard/ProfessionalTicketsList.tsx`** - Lista de tickets com scroll otimizado
-- **`dashboard/PremiumLevelCard.tsx`** - Componente de card premium para níveis
+- **`ProfessionalDashboard.tsx`** - Dashboard principal com métricas
+- **`TechnicianRanking.tsx`** - Ranking de técnicos com filtros
+- **`TicketList.tsx`** - Lista de tickets com paginação
 - **`TicketDetailModal.tsx`** - Modal de detalhes do ticket
-- **`TicketDescriptionFormatter.tsx`** - Formatador de descrições de tickets
+- **`MetricCard.tsx`** - Componente de métricas reutilizável
+- **`RecentTickets.tsx`** - Visualização de tickets recentes
+- **`CacheManager.tsx`** - Gerenciamento de cache frontend
 - **`CacheNotification.tsx`** - Notificações de cache
 - **`ErrorBoundary.tsx`** - Tratamento de erros
-- **`Header.tsx`** - Cabeçalho da aplicação com navegação
-- **`UnifiedLoading.tsx`** - Componente de loading unificado
-- **`NotificationSystem.tsx`** - Sistema de notificações
-- **`SimpleTechIcon.tsx`** - Ícone simplificado de técnico
-- **`SkipLink.tsx`** - Link de pular para conteúdo (acessibilidade)
-- **`ui/`** - Componentes base do design system (badge, button, card)
-- **`accessibility/VisuallyHidden.tsx`** - Componente para conteúdo visualmente oculto
-- **`fallback/`** - Componentes de fallback para erros
+- **`ui/`** - Componentes base do design system
 
 #### Hooks (`/hooks`)
 - **`useDashboard.ts`** - Gerenciamento de estado do dashboard
 - **`useApi.ts`** - Integração com API e cache
-- **`useApiErrorHandler.ts`** - Tratamento de erros de API
 - **`useCache.ts`** - Gerenciamento de cache local
-- **`useCacheNotifications.ts`** - Notificações de cache
 - **`useSmartRefresh.ts`** - Estratégias de refresh inteligente
-- **`useDebounce.ts`** - Hook de debounce para otimização
-- **`useFormatters.ts`** - Formatadores de dados reutilizáveis
-- **`useKeyboardNavigation.ts`** - Navegação por teclado (acessibilidade)
 
 #### Services (`/services`)
 - **`api.ts`** - Cliente HTTP principal
 - **`httpClient.ts`** - Configuração do cliente HTTP
 - **`unifiedCache.ts`** - Sistema de cache unificado
+- **`requestBatcher.ts`** - Batching de requisições
 
 #### Design System (`/design-system`)
-- **`ticket-tokens.ts`** - Design tokens específicos para tickets
-- **`utils.ts`** - Utilitários do design system
-- **`README.md`** - Documentação do design system
+- **`tokens.ts`** - Design tokens e variáveis
+- **`component-patterns.ts`** - Padrões de componentes reutilizáveis
+- **`spacing.ts`** - Sistema de espaçamento
 
 ### Backend Core (`/backend`)
 
@@ -123,10 +112,8 @@ Dashboard interativo para monitoramento de performance de técnicos GLPI com foc
 
 #### Services (`/services`)
 - **`glpi_service.py`** - Integração principal com GLPI API
-- **`glpi_helpers.py`** - Funções auxiliares para GLPI
 - **`api_service.py`** - Camada de serviço interno
 - **`cache_warming.py`** - Aquecimento proativo de cache
-- **`smart_cache.py`** - Implementação de cache inteligente
 
 #### Configuration (`/config`)
 - **`settings.py`** - Gerenciamento de configurações da aplicação
@@ -137,16 +124,9 @@ Dashboard interativo para monitoramento de performance de técnicos GLPI com foc
 - **`smart_cache.py`** - Cache inteligente com TTL dinâmico
 - **`prometheus_metrics.py`** - Métricas customizadas do Prometheus
 - **`structured_logger.py`** - Logging estruturado centralizado
-- **`structured_logging.py`** - Configuração adicional de logging
 - **`observability_middleware.py`** - Middleware de métricas e monitoramento
 - **`dynamic_pagination.py`** - Utilitários de paginação avançada
-- **`hybrid_pagination.py`** - Sistema de paginação híbrida
 - **`response_formatter.py`** - Padronização de respostas da API
-- **`alerting_system.py`** - Sistema de alertas e notificações
-- **`date_decorators.py`** - Decoradores para manipulação de datas
-- **`date_validator.py`** - Validação de formatos de data
-- **`html_cleaner.py`** - Limpeza e sanitização de HTML
-- **`performance.py`** - Utilitários de monitoramento de performance
 
 #### Data Layer (`/schemas`)
 - **`dashboard.py`** - Schemas de validação de dados
@@ -362,7 +342,6 @@ docker-compose up -d
 ```
 
 ### Recent Improvements
-- **Análise Crítica de Requisições GLPI** - Documentação completa de 28 tipos de consultas à API
 - **Otimização de Performance** - Paginação robusta e batching de requisições
 - **Qualidade de Código** - Setup abrangente de linting e testes
 - **Observabilidade** - Coleta de logs estruturados e métricas
@@ -371,13 +350,6 @@ docker-compose up -d
 - **Limpeza de Código** - Remoção de arquivos obsoletos (mock.ts, test.ts, mock_glpi_service.py)
 - **Consolidação de Tipos** - Simplificação da estrutura de tipos TypeScript
 - **Documentação Atualizada** - Sincronização do handbook com mudanças recentes
-- **Análise de Duplicação de Código** - Identificação e refatoração de código duplicado
-- **Melhorias de UI/UX** - Componentes modernos e responsivos implementados
-- **Correção de URLs da API** - Resolução de duplicação de `/api` em configurações
-- **Estrutura de Layout** - Implementação de Header e Sidebar para navegação
-- **Sistema de Gráficos** - Adição de componentes de visualização de dados
-- **Configuração Docker** - Otimização de containers e resource limits
-- **Documentação de Arquitetura** - Criação de documentação detalhada do frontend
 
 ---
 
