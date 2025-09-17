@@ -4,7 +4,6 @@ import { AlertTriangle, Activity, Clock, CheckCircle } from 'lucide-react';
 import { MetricsData, TicketStatus } from '../../types';
 import {
   RESPONSIVE_GRID_CLASSES,
-  createResponsiveClasses,
   createSimpleGridClasses,
 } from '@/utils/responsive';
 import { gridPresets } from '@/utils/animations';

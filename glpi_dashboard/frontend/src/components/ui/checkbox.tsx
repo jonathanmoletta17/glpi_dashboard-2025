@@ -3,7 +3,7 @@ import { cn } from '../../lib/utils';
 import { generateId, announceToScreenReader } from '../../utils/accessibility';
 
 // Interface para props do Checkbox
-interface CheckboxProps extends Omit<React.InputHTMLAttributes<HTMLInputElement>, 'type' | 'onChange'> {
+interface CheckboxProps extends Omit<React.InputHTMLAttributes<HTMLInputElement>, 'type' | 'onChange' | 'size'> {
   checked?: boolean;
   defaultChecked?: boolean;
   onCheckedChange?: (checked: boolean) => void;
@@ -64,7 +64,7 @@ export const Checkbox = forwardRef<HTMLInputElement, CheckboxProps>(({
   };
 
   // Configurar aria-describedby
-  const describedByIds = [];
+  const describedByIds: string[] = [];
   if (description) describedByIds.push(descriptionId);
   if (error) describedByIds.push(errorId);
   if (ariaDescribedBy) describedByIds.push(ariaDescribedBy);
@@ -267,7 +267,7 @@ export const CheckboxGroup: React.FC<CheckboxGroupProps> = ({
   };
 
   // Configurar aria-describedby
-  const describedByIds = [];
+  const describedByIds: string[] = [];
   if (description) describedByIds.push(descriptionId);
   if (error) describedByIds.push(errorId);
   const finalAriaDescribedBy = describedByIds.length > 0 ? describedByIds.join(' ') : undefined;

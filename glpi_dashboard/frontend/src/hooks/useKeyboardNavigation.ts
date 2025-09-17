@@ -93,7 +93,7 @@ export const useListNavigation = ({
   loop?: boolean;
   isEnabled?: boolean;
 }) => {
-  const containerRef = useRef<HTMLElement>(null);
+  const containerRef = useRef<HTMLUListElement>(null);
   const currentIndexRef = useRef<number>(-1);
   const [focusedIndex, setFocusedIndex] = useState<number>(-1);
 
@@ -162,7 +162,7 @@ export const useListNavigation = ({
   }, [items, onSelect, actualItemCount, isEnabled]);
 
   const handleKeyDown = useCallback(
-    (event: React.KeyboardEvent) => {
+    (event: React.KeyboardEvent<HTMLElement> | KeyboardEvent) => {
       if (!isEnabled) return;
 
       switch (event.key) {

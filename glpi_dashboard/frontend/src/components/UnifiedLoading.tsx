@@ -17,6 +17,7 @@ interface UnifiedLoadingProps {
   type?: LoadingType;
   size?: LoadingSize;
   variant?: LoadingVariant;
+  _variant?: LoadingVariant;
 
   // Conteúdo
   text?: string;
@@ -25,6 +26,7 @@ interface UnifiedLoadingProps {
   // Configurações visuais
   fullScreen?: boolean;
   overlay?: boolean;
+  _overlay?: boolean;
   className?: string;
 
   // Skeleton específico
@@ -198,15 +200,18 @@ const UnifiedSkeleton = React.memo<{
 UnifiedSkeleton.displayName = 'UnifiedSkeleton';
 
 // Componente principal unificado
-export const UnifiedLoading = React.memo<UnifiedLoadingProps>(({
+export const UnifiedLoading = React.memo<UnifiedLoadingProps>((
+{
   isLoading,
   type = 'spinner',
   size = 'md',
   variant = 'default',
+  _variant = 'default',
   text,
   title,
   fullScreen = false,
   overlay = false,
+  _overlay = false,
   className = '',
   skeletonType = 'card',
   skeletonCount = 1,
@@ -215,7 +220,8 @@ export const UnifiedLoading = React.memo<UnifiedLoadingProps>(({
   showTimeEstimate = false,
   onTimeout,
   timeoutDuration = 60,
-}) => {
+}
+) => {
   const [elapsedTime, setElapsedTime] = useState(0);
   const [hasTimedOut, setHasTimedOut] = useState(false);
   const [calculatedProgress, setCalculatedProgress] = useState(0);

@@ -1,6 +1,6 @@
 import * as React from "react"
 import { cn } from "@/lib/utils"
-import { generateId, ariaUtils } from "@/utils/accessibility"
+import { generateId } from "@/utils/accessibility"
 import { Eye, EyeOff, AlertCircle, CheckCircle } from "lucide-react"
 
 export interface InputProps
@@ -69,7 +69,7 @@ const Input = React.forwardRef<HTMLInputElement, InputProps>(
     }, [props.onBlur])
 
     const ariaDescribedBy = React.useMemo(() => {
-      const ids = []
+      const ids: string[] = []
       if (descriptionId) ids.push(descriptionId)
       if (errorId) ids.push(errorId)
       if (successId) ids.push(successId)

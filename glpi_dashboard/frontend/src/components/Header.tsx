@@ -6,6 +6,7 @@ import { useDebouncedCallback } from '../hooks/useDebounce';
 import { useListNavigation } from '../hooks/useKeyboardNavigation';
 import { useScreenReaderAnnouncement } from '../components/accessibility/VisuallyHidden';
 import ThemeToggle from './ThemeToggle';
+import { Theme } from '../contexts/ThemeContext';
 
 interface HeaderProps {
   currentTime: string;
@@ -28,6 +29,8 @@ interface HeaderProps {
   ) => void;
   onDateRangeChange?: (dateRange: { startDate: string; endDate: string; label: string }) => void;
   onFilterTypeChange?: (type: string) => void;
+  theme?: string;
+  onThemeChange?: (theme: Theme) => void;
 }
 
 
@@ -56,6 +59,7 @@ export const Header = React.memo<HeaderProps>(({
 }) => {
   const [showSearchResults, setShowSearchResults] = useState(false);
   const [showDatePicker, setShowDatePicker] = useState(false);
+  const [_showThemeSelector, setShowThemeSelector] = useState(false);
 
   const [customStartDate, setCustomStartDate] = useState('');
   const [customEndDate, setCustomEndDate] = useState('');
@@ -63,6 +67,7 @@ export const Header = React.memo<HeaderProps>(({
   const searchRef = useRef<HTMLDivElement>(null);
   const inputRef = useRef<HTMLInputElement>(null);
   const dateRef = useRef<HTMLDivElement>(null);
+  const themeRef = useRef<HTMLDivElement>(null);
 
   // Format date for display - memoized
   const formatDate = useCallback((dateStr: string) => {
@@ -216,20 +221,10 @@ export const Header = React.memo<HeaderProps>(({
 
       // Handle navigation in open dropdowns
       if (showSearchResults || showDatePicker) {
-        // Create a minimal React.KeyboardEvent-like object
-        const syntheticEvent = {
-          key: e.key,
-          preventDefault: () => e.preventDefault(),
-          stopPropagation: () => e.stopPropagation(),
-          currentTarget: e.target,
-          target: e.target,
-          nativeEvent: e,
-        } as React.KeyboardEvent<Element>;
-
         if (showSearchResults) {
-          handleSearchKeyDown(syntheticEvent);
+          handleSearchKeyDown(e);
         } else if (showDatePicker) {
-          handleDateKeyDown(syntheticEvent);
+            handleDateKeyDown(e);
         }
       }
     };

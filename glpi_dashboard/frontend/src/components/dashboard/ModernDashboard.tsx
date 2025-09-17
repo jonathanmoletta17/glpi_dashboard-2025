@@ -14,8 +14,8 @@ import { dashboardPresets } from '@/utils/animations';
 import { MetricsData, TicketStatus, SystemStatus, TechnicianRanking, Ticket } from '@/types';
 import { cn } from '@/lib/utils';
 import { SkipLink } from '../SkipLink';
-import { generateId, announceToScreenReader } from '@/utils/accessibility';
-import { SkeletonCard, OptimizedErrorState, useLoadingState } from '@/utils/loadingComponents';
+import { generateId } from '@/utils/accessibility';
+import { SkeletonCard } from '@/utils/loadingComponents';
 
 interface ModernDashboardProps {
   metrics: MetricsData;
@@ -49,9 +49,9 @@ export const ModernDashboard = React.memo<ModernDashboardProps>(function ModernD
   className,
   filters,
 }) {
-  const dashboardId = useMemo(() => generateId('dashboard'), []);
-  const metricsId = useMemo(() => generateId('metrics'), []);
-  const rankingId = useMemo(() => generateId('ranking'), []);
+  const _dashboardId = useMemo(() => generateId('dashboard'), []);
+  const _metricsId = useMemo(() => generateId('metrics'), []);
+  const _rankingId = useMemo(() => generateId('ranking'), []);
   const formatters = useDashboardFormatters();
   // Debug logs para investigar o problema do ranking zerado
   // Debug logs removidos para produção

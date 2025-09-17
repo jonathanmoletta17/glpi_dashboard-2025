@@ -137,7 +137,7 @@ const FormControl = React.forwardRef<HTMLDivElement, FormControlProps>(
     const { id, error, success, description } = useFormField()
 
     const ariaDescribedBy = React.useMemo(() => {
-      const ids = []
+      const ids: string[] = []
       if (description) ids.push(`${id}-description`)
       if (error) ids.push(`${id}-error`)
       if (success) ids.push(`${id}-success`)

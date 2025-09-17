@@ -9,8 +9,7 @@ import { cn, formatRelativeTime, formatDate } from '@/lib/utils';
 import { apiService } from '@/services/api';
 import { useThrottledCallback } from '@/hooks/useDebounce';
 import { useSmartRefresh } from '@/hooks/useSmartRefresh';
-import { itemVariants as animationItemVariants } from '@/utils/animations';
-import { SkeletonTickets, OptimizedErrorState, useLoadingState } from '@/utils/loadingComponents';
+import { SkeletonTickets } from '@/utils/loadingComponents';
 
 interface ProfessionalTicketsListProps {
   className?: string;

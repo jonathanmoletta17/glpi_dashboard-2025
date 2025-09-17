@@ -207,7 +207,7 @@ const DialogContent = React.forwardRef<HTMLDivElement, DialogContentProps>(
             ref={(node) => {
               if (typeof ref === 'function') ref(node)
               else if (ref) ref.current = node
-              contentRef.current = node
+              if (contentRef) (contentRef as React.MutableRefObject<HTMLDivElement | null>).current = node
             }}
             className={cn(
               "relative z-50 grid w-full max-w-lg gap-4 border border-gray-200 dark:border-gray-800",

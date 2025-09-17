@@ -12,7 +12,7 @@ from flask import Blueprint, jsonify, request
 from pydantic import ValidationError
 
 from config.settings import active_config
-from schemas.dashboard import ApiError, DashboardMetrics
+from schemas.dashboard import DashboardMetrics
 from services.api_service import APIService
 from services.glpi_service import GLPIService
 from utils.alerting_system import alert_manager
@@ -23,8 +23,8 @@ from utils.performance import (
     monitor_performance,
     performance_monitor,
 )
+from utils.prometheus_metrics import monitor_api_endpoint
 from services.smart_cache import cache_with_smart_ttl, smart_cache
-from utils.prometheus_metrics import monitor_api_endpoint, prometheus_metrics
 from utils.response_formatter import ResponseFormatter
 from utils.structured_logging import api_logger
 
@@ -112,7 +112,6 @@ def glpi_health_check():
 @standard_date_validation(support_predefined=True, log_usage=True)
 def get_metrics(validated_start_date=None, validated_end_date=None, validated_filters=None):
     """Endpoint para obter métricas do dashboard do GLPI"""
-    from utils.structured_logging import api_logger
     import hashlib
     import json
 
@@ -130,8 +129,8 @@ def get_metrics(validated_start_date=None, validated_end_date=None, validated_fi
 
     current_time = time.time()
     if (_metrics_cache["data"] is not None and
-        current_time - _metrics_cache["timestamp"] < _metrics_cache["ttl"] and
-        _metrics_cache["filters_hash"] == filters_hash):
+            current_time - _metrics_cache["timestamp"] < _metrics_cache["ttl"] and
+            _metrics_cache["filters_hash"] == filters_hash):
 
         cached_data = _metrics_cache["data"].copy()
         if isinstance(cached_data, dict):
@@ -217,7 +216,7 @@ def get_metrics(validated_start_date=None, validated_end_date=None, validated_fi
         try:
             config_obj = active_config()
             target_p95 = config_obj.PERFORMANCE_TARGET_P95
-        except:
+        except (AttributeError, ImportError):
             target_p95 = 300
         if response_time > target_p95:
             logger.warning(f"[{correlation_id}] Resposta lenta detectada: {response_time:.2f}ms > {target_p95}ms")
@@ -258,8 +257,6 @@ def get_metrics(validated_start_date=None, validated_end_date=None, validated_fi
 @standard_date_validation(support_predefined=True, log_usage=True)
 def get_filtered_metrics(validated_start_date=None, validated_end_date=None, validated_filters=None):
     """Endpoint para obter métricas filtradas do dashboard do GLPI"""
-    from utils.structured_logging import api_logger
-
     correlation_id = api_logger.generate_correlation_id()
     observability_logger = api_logger
     start_time = time.time()
@@ -322,7 +319,7 @@ def get_filtered_metrics(validated_start_date=None, validated_end_date=None, val
         try:
             config_obj = active_config()
             target_p95 = config_obj.PERFORMANCE_TARGET_P95
-        except:
+        except (AttributeError, ImportError):
             target_p95 = 300
         if response_time > target_p95:
             logger.warning(f"[{correlation_id}] Resposta lenta detectada: {response_time:.2f}ms > {target_p95}ms")
@@ -360,8 +357,6 @@ def get_filtered_metrics(validated_start_date=None, validated_end_date=None, val
 @cache_with_smart_ttl(endpoint_pattern="/technicians", invalidation_patterns=["technicians"])
 def get_technicians():
     """Endpoint para obter lista de técnicos"""
-    from utils.structured_logging import api_logger
-
     start_time = time.time()
     obs_logger = api_logger
     correlation_id = obs_logger.generate_correlation_id()
@@ -426,8 +421,6 @@ def get_technicians():
 @standard_date_validation(support_predefined=True, log_usage=True)
 def get_technician_ranking(validated_start_date=None, validated_end_date=None, validated_filters=None):
     """Endpoint para obter ranking de técnicos por nível"""
-    from utils.structured_logging import api_logger
-
     start_time = time.time()
     obs_logger = api_logger
     correlation_id = obs_logger.generate_correlation_id()
@@ -456,8 +449,8 @@ def get_technician_ranking(validated_start_date=None, validated_end_date=None, v
         )
 
         if (_ranking_cache["data"] is not None and
-            current_time - _ranking_cache["timestamp"] < _ranking_cache["ttl"] and
-            _ranking_cache["filters_hash"] == filters_hash):
+                current_time - _ranking_cache["timestamp"] < _ranking_cache["ttl"] and
+                _ranking_cache["filters_hash"] == filters_hash):
 
             cached_data = _ranking_cache["data"].copy()
             cached_data["cached"] = True
@@ -523,7 +516,7 @@ def get_technician_ranking(validated_start_date=None, validated_end_date=None, v
         try:
             config_obj = active_config()
             target_p95 = config_obj.PERFORMANCE_TARGET_P95
-        except:
+        except (AttributeError, ImportError):
             target_p95 = 300
         if response_time > target_p95:
             logger.warning(f"[{correlation_id}] Resposta lenta: {response_time:.2f}ms")
@@ -637,7 +630,7 @@ def get_new_tickets(validated_start_date=None, validated_end_date=None, validate
         try:
             config_obj = active_config()
             target_p95 = config_obj.PERFORMANCE_TARGET_P95
-        except Exception:
+        except (AttributeError, ImportError):
             target_p95 = 300
 
         if response_time > target_p95:
@@ -801,7 +794,7 @@ def get_alerts():
             try:
                 config_obj = active_config()
                 target_p95 = config_obj.PERFORMANCE_TARGET_P95
-            except:
+            except (AttributeError, ImportError):
                 target_p95 = 300
             if avg_response_time > target_p95:
                 alerts_data.append({
@@ -863,6 +856,7 @@ def get_cache_stats():
             "timestamp": datetime.now().isoformat()
         }), 500
 
+
 @api_bp.route("/cache/invalidate", methods=["POST"])
 @monitor_api_endpoint("invalidate_cache")
 def invalidate_cache():
@@ -880,7 +874,7 @@ def invalidate_cache():
         invalidated_count = smart_cache.invalidate_pattern(pattern)
 
         return jsonify({
-            "message": f"Cache invalidado com sucesso",
+            "message": "Cache invalidado com sucesso",
             "pattern": pattern,
             "invalidated_count": invalidated_count,
             "timestamp": datetime.now().isoformat()
@@ -894,14 +888,13 @@ def invalidate_cache():
             "timestamp": datetime.now().isoformat()
         }), 500
 
+
 @api_bp.route("/filter-types")
 @monitor_api_endpoint("get_filter_types")
 @monitor_performance
 @cache_with_smart_ttl(endpoint_pattern="/filter-types", invalidation_patterns=["filter-types"])
 def get_filter_types():
     """Endpoint para obter tipos de filtro disponíveis"""
-    from utils.structured_logging import api_logger
-
     start_time = time.time()
     correlation_id = api_logger.generate_correlation_id()
 

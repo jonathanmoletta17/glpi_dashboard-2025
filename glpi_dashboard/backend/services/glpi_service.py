@@ -511,6 +511,7 @@ class GLPIService:
         **kwargs,
     ) -> Optional[requests.Response]:
         """Faz uma requisição autenticada com retry automático e validações robustas"""
+        start_time = None  # Initialize start_time to avoid UnboundLocalError
         try:
             # Validar parâmetros de entrada
             if (
@@ -6297,13 +6298,13 @@ class GLPIService:
                 "pre_sorting",
                 {
                     "total_technicians_processed": len(ranking),
-                    "zero_totals": sum(1 for tech in ranking if tech.get("total", 0) == 0),
-                    "max_total": max([tech.get("total", 0) for tech in ranking]) if ranking else 0,
+                    "zero_totals": sum(1 for tech in ranking if tech.get("total_tickets", 0) == 0),
+                    "max_total": max([tech.get("total_tickets", 0) for tech in ranking]) if ranking else 0,
                 },
             )
 
             # Ordenar por contagem de tickets (decrescente)
-            ranking.sort(key=lambda x: x["total"], reverse=True)
+            ranking.sort(key=lambda x: x["total_tickets"], reverse=True)
 
             # Definir ranks
             for i, tech in enumerate(ranking):
@@ -6318,7 +6319,7 @@ class GLPIService:
                 {
                     "final_count": len(result),
                     "limit_applied": limit,
-                    "top_3_totals": [tech.get("total", 0) for tech in result[:3]],
+                    "top_3_totals": [tech.get("total_tickets", 0) for tech in result[:3]],
                 },
             )
 

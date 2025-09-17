@@ -19,7 +19,7 @@ import { useCacheNotifications } from './hooks/useCacheNotifications';
 import { TicketStatus } from './types';
 
 function AppContent() {
-  const { theme, changeTheme } = useTheme();
+  const { theme, setTheme } = useTheme();
 
   const {
     metrics,
@@ -47,11 +47,11 @@ function AppContent() {
 
   const [selectedTicket, setSelectedTicket] = useState<Ticket | null>(null);
   const [isTicketModalOpen, setIsTicketModalOpen] = useState(false);
-  const [isLoadingTicketDetails, setIsLoadingTicketDetails] = useState(false);
+  const [_isLoadingTicketDetails, _setIsLoadingTicketDetails] = useState(false);
 
   // Ticket modal handlers
   const handleTicketClick = async (ticket: Ticket) => {
-    setIsLoadingTicketDetails(true);
+    _setIsLoadingTicketDetails(true);
 
     try {
       // Import the API function dynamically to avoid circular dependencies
@@ -76,7 +76,7 @@ function AppContent() {
       setSelectedTicket(ticket);
       setIsTicketModalOpen(true);
     } finally {
-      setIsLoadingTicketDetails(false);
+      _setIsLoadingTicketDetails(false);
     }
   };
 
@@ -163,8 +163,8 @@ function AppContent() {
         filterType={filterType}
         availableFilterTypes={availableFilterTypes}
         onSearch={search}
-        theme={theme as Theme}
-        onThemeChange={(newTheme: Theme) => changeTheme(newTheme)}
+        theme={theme}
+        onThemeChange={setTheme}
         onNotification={(title, message, type) =>
           addNotification({
             id: Date.now().toString(),

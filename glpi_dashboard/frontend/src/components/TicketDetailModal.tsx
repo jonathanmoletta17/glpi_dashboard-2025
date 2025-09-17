@@ -1,8 +1,7 @@
-import React from 'react';
+import React, { JSX } from 'react';
 import { Ticket } from '../types/ticket';
 import { ExternalLink, Clock, User, Tag, Paperclip, MessageSquare, Phone } from 'lucide-react';
-import { formatDate, getStatusColor } from '../lib/utils';
-import { cn } from '../lib/utils';
+import { formatDate, getStatusColor, cn } from '../lib/utils';
 import { TicketDescriptionFormatter } from './TicketDescriptionFormatter';
 import {
   Dialog,
@@ -10,8 +9,7 @@ import {
   DialogHeader,
   DialogTitle,
   DialogDescription,
-  DialogClose,
-  DialogFooter
+  DialogClose
 } from './ui/dialog';
 import { VisuallyHidden } from './accessibility/VisuallyHidden';
 

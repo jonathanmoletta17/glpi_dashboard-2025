@@ -54,7 +54,7 @@ const NavigationItem = React.forwardRef<
     }
   }, [item, hasChildren, isExpanded, onItemSelect])
 
-  const { handleKeyDown } = useKeyboardNavigation({
+  const { handleKeyDown: handleNativeKeyDown } = useKeyboardNavigation({
     onEnter: handleClick,
     onSpace: handleClick,
     onArrowRight: hasChildren && orientation === 'horizontal' ? () => setIsExpanded(true) : undefined,
@@ -63,6 +63,10 @@ const NavigationItem = React.forwardRef<
     onArrowUp: hasChildren && orientation === 'vertical' ? () => setIsExpanded(false) : undefined,
     disabled: item.disabled
   })
+
+  const handleKeyDown = React.useCallback((event: React.KeyboardEvent) => {
+    handleNativeKeyDown(event.nativeEvent)
+  }, [handleNativeKeyDown])
 
   const linkProps = item.href ? {
     as: 'a' as const,
@@ -82,7 +86,7 @@ const NavigationItem = React.forwardRef<
     'aria-expanded': hasChildren ? isExpanded : undefined,
     'aria-controls': submenuId,
     'aria-disabled': item.disabled,
-    'aria-current': item.current ? 'page' : undefined,
+    'aria-current': item.current ? ('page' as const) : undefined,
     tabIndex: item.disabled ? -1 : 0
   }
 

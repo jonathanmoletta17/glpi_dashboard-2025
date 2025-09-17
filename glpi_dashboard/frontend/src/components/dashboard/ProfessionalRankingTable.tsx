@@ -5,12 +5,10 @@ import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { cn, formatNumber } from '@/lib/utils';
 import { Trophy, Medal, Award, Star, BarChart3 } from 'lucide-react';
 import { TechnicianRanking } from '@/types';
-import { listPresets, cardPresets } from '@/utils/animations';
+import { listPresets } from '@/utils/animations';
 import {
   getRankingPositionStyle,
-  getLevelStyle,
-  RANKING_VARIANTS,
-  RANKING_ANIMATIONS
+  getLevelStyle
 } from '@/utils/rankingStyles';
 
 interface ProfessionalRankingTableProps {
