@@ -5698,9 +5698,12 @@ class GLPIService:
 
             # Criar instância dos helpers
             helpers = GLPIServiceHelpers(self)
+            print(f"DEBUG: GLPIServiceHelpers criado: {helpers}")
 
             # Buscar IDs de técnicos através de tickets atribuídos
+            print(f"DEBUG: Chamando get_technician_ids_from_tickets com entity_id={entity_id}")
             tech_ids_set = helpers.get_technician_ids_from_tickets(entity_id)
+            print(f"DEBUG: get_technician_ids_from_tickets retornou: {tech_ids_set}")
 
             if not tech_ids_set:
                 self.logger.warning(f"[{timestamp}] Nenhum técnico encontrado nos tickets")
@@ -6155,7 +6158,9 @@ class GLPIService:
         else:
             obs_logger = glpi_logger
 
-        if not self._ensure_authenticated():
+        auth_result = self._ensure_authenticated()
+        print(f"DEBUG: _ensure_authenticated() retornou: {auth_result}")
+        if not auth_result:
             obs_logger.emit_warning(
                 correlation_id,
                 "AUTHENTICATION_FAILURE",
@@ -6183,6 +6188,9 @@ class GLPIService:
             # Descobrir o field ID do técnico dinamicamente
             tech_field_id = self._discover_tech_field_id()
             print(f"DEBUG: tech_field_id descoberto: {tech_field_id}")
+            print(f"DEBUG: tech_field_id type: {type(tech_field_id)}")
+            print(f"DEBUG: tech_field_id bool: {bool(tech_field_id)}")
+            print(f"DEBUG: not tech_field_id: {not tech_field_id}")
             if not tech_field_id:
                 obs_logger.emit_warning(
                     correlation_id,

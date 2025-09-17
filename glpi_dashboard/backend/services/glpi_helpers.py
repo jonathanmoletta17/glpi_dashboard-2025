@@ -417,6 +417,9 @@ class GLPIServiceHelpers:
         content_range = response.headers.get("Content-Range", "")
         if content_range:
             try:
+                # Remove 'items ' prefix if present
+                if content_range.startswith('items '):
+                    content_range = content_range[6:]
                 range_part, total_str = content_range.split("/")
                 total_items = int(total_str)
                 start_range, end_range = map(int, range_part.split("-"))
