@@ -809,32 +809,32 @@ body.dark .level-card-n4 {
   @apply bg-blue-500;
 }
 
-/* Badge para nível dentro do ranking */
+/* Badge para nível dentro do ranking - Cores neutras */
 .ranking-level-n1 {
-  @apply bg-emerald-500 text-white;
+  @apply bg-gray-500 text-white;
 }
 .ranking-level-n2 {
-  @apply bg-blue-500 text-white;
+  @apply bg-gray-500 text-white;
 }
 .ranking-level-n3 {
-  @apply bg-purple-500 text-white;
+  @apply bg-gray-500 text-white;
 }
 .ranking-level-n4 {
-  @apply bg-orange-500 text-white;
+  @apply bg-gray-500 text-white;
 }
 
-/* Dark theme para badges de ranking */
+/* Dark theme para badges de ranking - Cores neutras */
 body.dark .ranking-level-n1 {
-  @apply bg-emerald-700 text-emerald-100;
+  @apply bg-gray-600 text-gray-100;
 }
 body.dark .ranking-level-n2 {
-  @apply bg-blue-700 text-blue-100;
+  @apply bg-gray-600 text-gray-100;
 }
 body.dark .ranking-level-n3 {
-  @apply bg-purple-700 text-purple-100;
+  @apply bg-gray-600 text-gray-100;
 }
 body.dark .ranking-level-n4 {
-  @apply bg-orange-700 text-orange-100;
+  @apply bg-gray-600 text-gray-100;
 }
 
 /* ==============================

@@ -284,6 +284,27 @@ class StructuredLogger:
             },
         )
 
+    def log_pipeline_step(self, correlation_id: str, step_name: str, step_data: dict = None):
+        """Registra uma etapa do pipeline com ID de correlação."""
+        extra_data = {
+            "correlation_id": correlation_id,
+            "pipeline_step": step_name,
+            "step_data": step_data or {}
+        }
+        self.logger.info(
+            f"Pipeline step: {step_name}",
+            extra=extra_data
+        )
+
+    def emit_warning(self, correlation_id: str, warning_type: str, message: str, **kwargs):
+        """Emite um warning com contexto adicional."""
+        extra_data = {
+            "correlation_id": correlation_id,
+            "warning_type": warning_type,
+            **kwargs
+        }
+        self.logger.warning(message, extra=extra_data)
+
 
 # Decorador para instrumentação automática
 def with_structured_logging(operation_name: str, logger_name: Optional[str] = None):

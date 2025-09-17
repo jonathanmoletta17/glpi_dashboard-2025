@@ -69,12 +69,12 @@ const sizeClasses = {
 };
 
 // Componente de Skeleton unificado
-const UnifiedSkeleton: React.FC<{
+const UnifiedSkeleton = React.memo<{
   type: SkeletonType;
   count?: number;
   size: LoadingSize;
   className?: string;
-}> = ({ type, count = 1, size, className = '' }) => {
+}>(({ type, count = 1, size, className = '' }) => {
   const skeletonClass = `bg-gray-200 dark:bg-gray-700 rounded animate-pulse ${className}`;
 
   const renderSkeletonByType = () => {
@@ -193,10 +193,12 @@ const UnifiedSkeleton: React.FC<{
   };
 
   return <div className={className}>{renderSkeletonByType()}</div>;
-};
+});
+
+UnifiedSkeleton.displayName = 'UnifiedSkeleton';
 
 // Componente principal unificado
-export const UnifiedLoading: React.FC<UnifiedLoadingProps> = ({
+export const UnifiedLoading = React.memo<UnifiedLoadingProps>(({
   isLoading,
   type = 'spinner',
   size = 'md',
@@ -411,7 +413,7 @@ export const UnifiedLoading: React.FC<UnifiedLoadingProps> = ({
       )}
     </AnimatePresence>
   );
-};
+}); // End of UnifiedLoading component
 
 // Componentes de conveniência para casos específicos
 export const LoadingSpinner: React.FC<Omit<UnifiedLoadingProps, 'type'>> = props => (
@@ -500,5 +502,7 @@ export const ErrorState: React.FC<ErrorStateProps> = ({
     </div>
   );
 };
+
+UnifiedLoading.displayName = 'UnifiedLoading';
 
 export default UnifiedLoading;

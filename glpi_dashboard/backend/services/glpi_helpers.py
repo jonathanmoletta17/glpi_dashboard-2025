@@ -28,21 +28,24 @@ class GLPIServiceHelpers:
 
         Args:
             entity_id: Entity ID to filter tickets (optional)
-            days_back: Number of days to look back for tickets
+            days_back: Number of days to look back for tickets (default: 90)
 
         Returns:
-            Set of unique technician IDs
+            Set of technician IDs found in tickets
         """
-        end_date = datetime.now()
-        start_date = end_date - timedelta(days=days_back)
-
+        print(f"DEBUG: get_technician_ids_from_tickets CHAMADO com entity_id={entity_id}")
+        start_date = datetime.now() - timedelta(days=days_back)
         ticket_params = self._build_ticket_search_params(start_date, entity_id)
 
+        print(f"DEBUG: GLPIServiceHelpers fazendo requisição para: {self.glpi_service.glpi_url}/search/Ticket")
+        print(f"DEBUG: Parâmetros: {ticket_params}")
         response = self.glpi_service._make_authenticated_request(
             "GET",
             f"{self.glpi_service.glpi_url}/search/Ticket",
             params=ticket_params,
         )
+        print(f"DEBUG: Resposta recebida: {response}")
+        print(f"DEBUG: Tipo da resposta: {type(response)}")
 
         if not response or not response.ok:
             self.logger.error(f"Failed to fetch tickets - Status: {response.status_code if response else 'None'}")

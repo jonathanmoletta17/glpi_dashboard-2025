@@ -236,18 +236,8 @@ export const ProfessionalRankingTable = React.memo<ProfessionalRankingTableProps
             <div className='flex items-center gap-2'>
               {Object.entries(levelStats).map(([level, count]) => {
                 const getLevelConfig = (level: string) => {
-                  switch (level) {
-                    case 'N1':
-                      return 'bg-emerald-50 dark:bg-emerald-900/30 text-emerald-700 dark:text-emerald-300 border-emerald-200 dark:border-emerald-700';
-                    case 'N2':
-                      return 'bg-blue-50 dark:bg-blue-900/30 text-blue-700 dark:text-blue-300 border-blue-200 dark:border-blue-700';
-                    case 'N3':
-                      return 'bg-purple-50 dark:bg-purple-900/30 text-purple-700 dark:text-purple-300 border-purple-200 dark:border-purple-700';
-                    case 'N4':
-                      return 'bg-orange-50 dark:bg-orange-900/30 text-orange-700 dark:text-orange-300 border-orange-200 dark:border-orange-700';
-                    default:
-                      return 'bg-gray-50 dark:bg-gray-800 text-gray-700 dark:text-gray-300 border-gray-200 dark:border-gray-600';
-                  }
+                  // Cores neutras para todos os níveis
+                  return 'bg-gray-50 dark:bg-gray-800 text-gray-700 dark:text-gray-300 border-gray-200 dark:border-gray-600';
                 };
 
                 return (

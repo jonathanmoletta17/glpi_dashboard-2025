@@ -33,31 +33,31 @@ export const RANKING_COLORS = {
     },
   },
 
-  // Cores para níveis de técnicos
+  // Cores para níveis de técnicos - Neutras
   levels: {
     N1: {
-      bg: 'bg-green-50',
-      text: 'text-green-800',
-      badge: 'bg-green-100 text-green-800',
-      border: 'border-green-200',
+      bg: 'bg-gray-50',
+      text: 'text-gray-800',
+      badge: 'bg-gray-100 text-gray-800',
+      border: 'border-gray-200',
     },
     N2: {
-      bg: 'bg-blue-50',
-      text: 'text-blue-800',
-      badge: 'bg-blue-100 text-blue-800',
-      border: 'border-blue-200',
+      bg: 'bg-gray-50',
+      text: 'text-gray-800',
+      badge: 'bg-gray-100 text-gray-800',
+      border: 'border-gray-200',
     },
     N3: {
-      bg: 'bg-purple-50',
-      text: 'text-purple-800',
-      badge: 'bg-purple-100 text-purple-800',
-      border: 'border-purple-200',
+      bg: 'bg-gray-50',
+      text: 'text-gray-800',
+      badge: 'bg-gray-100 text-gray-800',
+      border: 'border-gray-200',
     },
     N4: {
-      bg: 'bg-red-50',
-      text: 'text-red-800',
-      badge: 'bg-red-100 text-red-800',
-      border: 'border-red-200',
+      bg: 'bg-gray-50',
+      text: 'text-gray-800',
+      badge: 'bg-gray-100 text-gray-800',
+      border: 'border-gray-200',
     },
   },
 

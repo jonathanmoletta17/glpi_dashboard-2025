@@ -5,6 +5,7 @@ import CacheNotification from './components/CacheNotification';
 import { ModernDashboard } from './components/dashboard/ModernDashboard';
 import { TicketDetailModal } from './components/TicketDetailModal';
 import SkipLink from './components/SkipLink';
+import { ThemeProvider, useTheme, Theme } from './contexts/ThemeContext';
 
 import { Ticket } from './types/ticket';
 import { UnifiedLoading } from './components/UnifiedLoading';
@@ -15,9 +16,11 @@ import { useDashboard } from './hooks/useDashboard';
 
 import { useCacheNotifications } from './hooks/useCacheNotifications';
 
-import { TicketStatus, Theme } from './types';
+import { TicketStatus } from './types';
 
-function App() {
+function AppContent() {
+  const { theme, changeTheme } = useTheme();
+
   const {
     metrics,
     levelMetrics,
@@ -29,7 +32,6 @@ function App() {
     notifications,
     searchQuery,
     filters,
-    theme,
     dataIntegrityReport,
     filterType,
     availableFilterTypes,
@@ -40,7 +42,6 @@ function App() {
     search,
     addNotification,
     removeNotification,
-    changeTheme,
     updateDateRange,
   } = useDashboard();
 
@@ -95,10 +96,7 @@ function App() {
     loadData();
   }, [loadData]);
 
-  // Apply theme to body element
-  useEffect(() => {
-    document.body.className = theme === 'dark' ? 'dark' : '';
-  }, [theme]);
+
 
   // Handle filter by status
   const handleFilterByStatus = async (status: TicketStatus) => {
@@ -148,7 +146,7 @@ function App() {
   }
 
   return (
-    <div className={`h-screen overflow-hidden transition-all duration-300 ${theme}`}>
+    <div className="h-screen overflow-hidden transition-all duration-300">
       {/* Skip Links for Accessibility */}
       <SkipLink href='#main-content'>Pular para o conteúdo principal</SkipLink>
       <SkipLink href='#dashboard-metrics'>Pular para métricas do dashboard</SkipLink>
@@ -309,6 +307,14 @@ function App() {
         />
       )}
     </div>
+  );
+}
+
+function App() {
+  return (
+    <ThemeProvider>
+      <AppContent />
+    </ThemeProvider>
   );
 }
 

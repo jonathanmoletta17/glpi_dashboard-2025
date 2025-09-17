@@ -655,7 +655,7 @@ class GLPIService:
                 except requests.exceptions.Timeout as e:
                     self.logger.warning(f"Timeout na requisição (tentativa {attempt + 1}): {e}")
                     # Incrementar contador de erros Prometheus
-                    prometheus_metrics.glpi_errors_total.labels(method=method, error_type="timeout").inc()
+                    prometheus_metrics.errors_total.labels(error_type="timeout", component=method).inc()
 
                     # Log estruturado do erro
                     glpi_logger.log_error(
@@ -675,7 +675,7 @@ class GLPIService:
                 except requests.exceptions.ConnectionError as e:
                     self.logger.error(f"Erro de conexão (tentativa {attempt + 1}): {e}")
                     # Incrementar contador de erros Prometheus
-                    prometheus_metrics.glpi_errors_total.labels(method=method, error_type="connection_error").inc()
+                    prometheus_metrics.errors_total.labels(error_type="connection_error", component=method).inc()
 
                     # Log estruturado do erro
                     glpi_logger.log_error(
@@ -5691,6 +5691,7 @@ class GLPIService:
             tuple: (lista de IDs, dicionário ID->nome)
         """
         try:
+            print(f"DEBUG: _get_all_technician_ids_and_names chamado com entity_id={entity_id}")
             timestamp = datetime.now(tz=timezone.utc).isoformat()
             self.logger.info(f"[{timestamp}] Iniciando busca de técnicos com método alternativo")
 
@@ -6157,6 +6158,8 @@ class GLPIService:
             )
             return []
 
+        print(f"DEBUG: Autenticação OK, continuando com o ranking")
+
         try:
             obs_logger.log_pipeline_step(
                 correlation_id,
@@ -6174,6 +6177,7 @@ class GLPIService:
 
             # Descobrir o field ID do técnico dinamicamente
             tech_field_id = self._discover_tech_field_id()
+            print(f"DEBUG: tech_field_id descoberto: {tech_field_id}")
             if not tech_field_id:
                 obs_logger.emit_warning(
                     correlation_id,
@@ -6181,6 +6185,7 @@ class GLPIService:
                     "Não foi possível descobrir o field ID do técnico",
                 )
                 return []
+            print(f"DEBUG: Continuando com tech_field_id: {tech_field_id}")
 
             # print(f"[DEBUG] tech_field_id descoberto: {tech_field_id}")
 

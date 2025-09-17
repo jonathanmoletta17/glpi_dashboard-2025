@@ -1,15 +1,15 @@
 import React, { useState, useRef, useEffect, useCallback, useMemo } from 'react';
 import { Search, X, Clock, Calendar, ChevronDown } from 'lucide-react';
-import { Theme, SearchResult } from '../types';
+import { SearchResult } from '../types';
 import { SimpleTechIcon } from './SimpleTechIcon';
 import { useDebouncedCallback } from '../hooks/useDebounce';
 import { useListNavigation } from '../hooks/useKeyboardNavigation';
 import { useScreenReaderAnnouncement } from '../components/accessibility/VisuallyHidden';
+import ThemeToggle from './ThemeToggle';
 
 interface HeaderProps {
   currentTime: string;
   systemActive: boolean;
-  theme: Theme;
   searchQuery: string;
   searchResults: SearchResult[];
   dateRange: { startDate: string; endDate: string };
@@ -20,7 +20,6 @@ interface HeaderProps {
     description: string;
     default?: boolean;
   }>;
-  onThemeChange: (theme: Theme) => void;
   onSearch: (query: string) => void;
   onNotification: (
     title: string,
@@ -31,11 +30,7 @@ interface HeaderProps {
   onFilterTypeChange?: (type: string) => void;
 }
 
-const themes: { value: Theme | 'professional'; label: string; icon: string }[] = [
-  { value: 'light', label: 'Claro', icon: '☀️' },
-  { value: 'dark', label: 'Escuro', icon: '🌙' },
-  { value: 'professional', label: 'Professional', icon: '💼' },
-];
+
 
 // Predefined date ranges
 const dateRanges = [
@@ -46,23 +41,20 @@ const dateRanges = [
   { label: 'Últimos 90 dias', days: 90 },
 ];
 
-export const Header: React.FC<HeaderProps> = ({
+export const Header = React.memo<HeaderProps>(({
   currentTime,
   // systemActive,
-  theme,
   searchQuery,
   searchResults,
   dateRange,
   filterType,
   availableFilterTypes,
-  onThemeChange,
   onSearch,
   onNotification,
   onDateRangeChange,
-  onFilterTypeChange,
+  onFilterTypeChange
 }) => {
   const [showSearchResults, setShowSearchResults] = useState(false);
-  const [showThemeSelector, setShowThemeSelector] = useState(false);
   const [showDatePicker, setShowDatePicker] = useState(false);
 
   const [customStartDate, setCustomStartDate] = useState('');
@@ -70,7 +62,6 @@ export const Header: React.FC<HeaderProps> = ({
 
   const searchRef = useRef<HTMLDivElement>(null);
   const inputRef = useRef<HTMLInputElement>(null);
-  const themeRef = useRef<HTMLDivElement>(null);
   const dateRef = useRef<HTMLDivElement>(null);
 
   // Format date for display - memoized
@@ -161,26 +152,7 @@ export const Header: React.FC<HeaderProps> = ({
     setTimeout(() => setShowSearchResults(false), 200);
   }, []);
 
-  // Theme change handler
-  const handleThemeChange = useCallback(
-    (newTheme: Theme | 'professional') => {
-      if (newTheme === 'professional') {
-        setShowThemeSelector(false);
-        onNotification(
-          'Professional Dashboard',
-          'Modo Professional Dashboard ativado! 💼',
-          'success'
-        );
-        return;
-      }
 
-      onThemeChange(newTheme as Theme);
-      setShowThemeSelector(false);
-      const themeName = themes.find(t => t.value === newTheme)?.label;
-      onNotification('Tema', `Alterado para ${themeName}`, 'info');
-    },
-    [onThemeChange, onNotification]
-  );
 
   // Screen reader announcements
   const { announce } = useScreenReaderAnnouncement();
@@ -202,22 +174,7 @@ export const Header: React.FC<HeaderProps> = ({
     isEnabled: showSearchResults,
   });
 
-  // Theme selector navigation
-  const {
-    focusedIndex: themeFocusedIndex,
-    handleKeyDown: handleThemeKeyDown,
-    resetFocus: resetThemeFocus,
-  } = useListNavigation({
-    itemCount: themes.length,
-    onSelect: index => {
-      const selectedTheme = themes[index];
-      if (selectedTheme) {
-        handleThemeChange(selectedTheme.value);
-        announce(`Tema alterado para ${selectedTheme.label}`);
-      }
-    },
-    isEnabled: showThemeSelector,
-  });
+
 
   // Date range navigation
   const {
@@ -250,17 +207,15 @@ export const Header: React.FC<HeaderProps> = ({
       // Escape to close all dropdowns
       if (e.key === 'Escape') {
         setShowSearchResults(false);
-        setShowThemeSelector(false);
         setShowDatePicker(false);
         resetSearchFocus();
-        resetThemeFocus();
         resetDateFocus();
         announce('Menus fechados');
         return;
       }
 
       // Handle navigation in open dropdowns
-      if (showSearchResults || showThemeSelector || showDatePicker) {
+      if (showSearchResults || showDatePicker) {
         // Create a minimal React.KeyboardEvent-like object
         const syntheticEvent = {
           key: e.key,
@@ -273,8 +228,6 @@ export const Header: React.FC<HeaderProps> = ({
 
         if (showSearchResults) {
           handleSearchKeyDown(syntheticEvent);
-        } else if (showThemeSelector) {
-          handleThemeKeyDown(syntheticEvent);
         } else if (showDatePicker) {
           handleDateKeyDown(syntheticEvent);
         }
@@ -285,13 +238,10 @@ export const Header: React.FC<HeaderProps> = ({
     return () => document.removeEventListener('keydown', handleKeyDown);
   }, [
     showSearchResults,
-    showThemeSelector,
     showDatePicker,
     handleSearchKeyDown,
-    handleThemeKeyDown,
     handleDateKeyDown,
     resetSearchFocus,
-    resetThemeFocus,
     resetDateFocus,
     announce,
   ]);
@@ -314,8 +264,7 @@ export const Header: React.FC<HeaderProps> = ({
     return () => document.removeEventListener('mousedown', handleClickOutside);
   }, []);
 
-  // Memoize current theme to prevent recalculation
-  const currentTheme = useMemo(() => themes.find(t => t.value === theme) || themes[0], [theme]);
+  // Theme functionality is handled by ThemeToggle component
 
   // Memoize search clear handler
   const handleSearchClear = useCallback(() => {
@@ -541,54 +490,8 @@ export const Header: React.FC<HeaderProps> = ({
             role='group'
             aria-label='Controles e informações do sistema'
           >
-            {/* Theme Selector */}
-            <div className='relative' ref={themeRef}>
-              <button
-                onClick={() => setShowThemeSelector(!showThemeSelector)}
-                className='flex items-center space-x-2 px-3 py-2 rounded-xl text-sm font-medium bg-white/90 text-gray-700 border border-gray-200 dark:bg-gray-800/80 dark:text-gray-200 dark:border-gray-600 hover:bg-white hover:text-gray-900 dark:hover:bg-gray-700/90 dark:hover:text-white transition-all backdrop-blur-md'
-                aria-label={`Seletor de tema. Tema atual: ${currentTheme.label}`}
-                aria-expanded={showThemeSelector}
-                aria-controls={showThemeSelector ? 'theme-selector-menu' : undefined}
-                aria-haspopup='menu'
-              >
-                <span aria-hidden='true'>{currentTheme.icon}</span>
-                <span>{currentTheme.label}</span>
-              </button>
-
-              {showThemeSelector && (
-                <div
-                  id='theme-selector-menu'
-                  className='absolute top-full right-0 mt-2 bg-white dark:bg-gray-800 rounded-xl shadow-2xl border border-gray-200 dark:border-gray-600 py-2 min-w-40 z-50'
-                  role='menu'
-                  aria-label='Menu de seleção de tema'
-                >
-                  {themes.map((themeOption, index) => (
-                    <button
-                      key={themeOption.value}
-                      onClick={() => handleThemeChange(themeOption.value)}
-                      className={`w-full px-4 py-2 text-left hover:bg-gray-50 dark:hover:bg-gray-700 transition-colors flex items-center gap-3 ${
-                        theme === themeOption.value
-                          ? 'bg-blue-50 text-blue-600 dark:bg-blue-900/50 dark:text-blue-400'
-                          : 'text-gray-700 dark:text-gray-200'
-                      } ${index === themeFocusedIndex ? 'bg-gray-100 dark:bg-gray-600' : ''}`}
-                      role='menuitem'
-                      tabIndex={-1}
-                      aria-label={`Selecionar tema ${themeOption.label}`}
-                      aria-current={theme === themeOption.value ? 'true' : 'false'}
-                    >
-                      <span aria-hidden='true'>{themeOption.icon}</span>
-                      <span className='text-sm'>{themeOption.label}</span>
-                      {theme === themeOption.value && (
-                        <div
-                          className='ml-auto w-2 h-2 bg-blue-500 dark:bg-blue-400 rounded-full'
-                          aria-hidden='true'
-                        />
-                      )}
-                    </button>
-                  ))}
-                </div>
-              )}
-            </div>
+            {/* Theme Toggle */}
+            <ThemeToggle showLabel={false} />
 
             {/* Current Time */}
             <div
@@ -604,4 +507,6 @@ export const Header: React.FC<HeaderProps> = ({
       </div>
     </header>
   );
-};
+});
+
+Header.displayName = 'Header';

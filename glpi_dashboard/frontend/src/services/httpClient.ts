@@ -13,9 +13,9 @@ const getEnvVar = (key: string, defaultValue: string = '') => {
 
 // Configuração dinâmica baseada no ambiente
 const getApiBaseUrl = () => {
-  // Em desenvolvimento, sempre usar localhost
+  // Em desenvolvimento, usar URL relativa para funcionar com proxy do Vite
   if (import.meta.env.DEV) {
-    return 'http://localhost:5000/api';
+    return '/api';
   }
 
   // Em produção, usar variável de ambiente ou fallback

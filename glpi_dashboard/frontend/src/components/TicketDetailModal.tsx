@@ -1,9 +1,19 @@
 import React from 'react';
 import { Ticket } from '../types/ticket';
-import { X, ExternalLink, Clock, User, Tag, Paperclip, MessageSquare, Phone } from 'lucide-react';
+import { ExternalLink, Clock, User, Tag, Paperclip, MessageSquare, Phone } from 'lucide-react';
 import { formatDate, getStatusColor } from '../lib/utils';
 import { cn } from '../lib/utils';
 import { TicketDescriptionFormatter } from './TicketDescriptionFormatter';
+import {
+  Dialog,
+  DialogContent,
+  DialogHeader,
+  DialogTitle,
+  DialogDescription,
+  DialogClose,
+  DialogFooter
+} from './ui/dialog';
+import { VisuallyHidden } from './accessibility/VisuallyHidden';
 
 // Função para formatar a descrição estruturada (mantida para compatibilidade)
 const formatDescription = (description: string): JSX.Element => {
@@ -21,8 +31,6 @@ export const TicketDetailModal: React.FC<TicketDetailModalProps> = ({
   isOpen,
   onClose,
 }) => {
-  if (!isOpen || !ticket) return null;
-
   // Ajuste para classes semânticas de prioridade (definidas em App.css)
   const getPriorityColor = (priority: string) => {
     switch (priority) {
@@ -40,46 +48,48 @@ export const TicketDetailModal: React.FC<TicketDetailModalProps> = ({
   };
 
   const handleOpenInGLPI = () => {
-    // Implementar abertura no GLPI
-    window.open(`/glpi/front/ticket.form.php?id=${ticket.id}`, '_blank');
+    if (ticket) {
+      window.open(`/glpi/front/ticket.form.php?id=${ticket.id}`, '_blank');
+    }
   };
 
   return (
-    <div className='fixed inset-0 bg-black/60 backdrop-blur-sm flex items-center justify-center z-50 p-4'>
-      <div className='bg-white dark:bg-gray-900 rounded-xl shadow-2xl w-full max-w-5xl max-h-[90vh] overflow-hidden flex flex-col border border-gray-200 dark:border-gray-700'>
-        {/* Header Profissional */}
-        <div className='bg-white dark:bg-gray-800 border-b border-gray-200 dark:border-gray-700 px-6 py-4'>
-          <div className='flex items-center justify-between'>
-            <div className='flex-1 min-w-0'>
-              <div className='flex items-center gap-3 mb-2'>
+    <Dialog open={isOpen} onOpenChange={(open) => !open && onClose()}>
+      <DialogContent className="max-w-5xl w-full max-h-[90vh] overflow-hidden flex flex-col">
+        <DialogHeader>
+          <DialogTitle>
+            {ticket ? `${ticket.title}` : 'Detalhes do Ticket'}
+          </DialogTitle>
+          <DialogDescription>
+            <VisuallyHidden>
+              {ticket ? `Visualizando detalhes do ticket ${ticket.id} - ${ticket.title}` : 'Carregando detalhes do ticket'}
+            </VisuallyHidden>
+          </DialogDescription>
+        </DialogHeader>
+
+        <DialogClose />
+
+        {ticket && (
+          <>
+            {/* Header Actions */}
+            <div className='flex items-center justify-between mb-4'>
+              <div className='flex items-center gap-3'>
                 <div className='p-2 rounded-lg bg-gray-100 dark:bg-gray-700'>
                   <MessageSquare className='h-5 w-5 text-gray-600 dark:text-gray-300' />
                 </div>
                 <div>
-                  <h2 className='text-xl font-semibold text-gray-900 dark:text-white truncate'>
-                    {ticket.title}
-                  </h2>
                   <p className='text-sm text-gray-500 dark:text-gray-400'>Ticket #{ticket.id}</p>
                 </div>
               </div>
-            </div>
-            <div className='flex items-center gap-2 ml-4'>
               <button
                 onClick={handleOpenInGLPI}
                 className='flex items-center gap-2 px-3 py-2 text-sm font-medium text-gray-700 dark:text-gray-300 bg-white dark:bg-gray-700 border border-gray-300 dark:border-gray-600 rounded-lg hover:bg-gray-50 dark:hover:bg-gray-600 hover:border-gray-400 dark:hover:border-gray-500 transition-colors duration-150'
+                aria-label={`Abrir ticket ${ticket.id} no GLPI em nova aba`}
               >
                 <ExternalLink className='h-4 w-4' />
                 Abrir no GLPI
               </button>
-              <button
-                onClick={onClose}
-                className='text-gray-400 hover:text-gray-600 dark:text-gray-400 dark:hover:text-gray-200 transition-colors p-2 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-700/50 border border-transparent hover:border-gray-200 dark:hover:border-gray-600'
-              >
-                <X className='w-5 h-5' />
-              </button>
             </div>
-          </div>
-        </div>
 
         {/* Content */}
         <div className='flex-1 overflow-y-auto'>
@@ -360,7 +370,9 @@ export const TicketDetailModal: React.FC<TicketDetailModalProps> = ({
             </div>
           </div>
         </div>
-      </div>
-    </div>
+          </>
+        )}
+      </DialogContent>
+    </Dialog>
   );
 };
