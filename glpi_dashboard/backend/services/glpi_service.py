@@ -5690,6 +5690,7 @@ class GLPIService:
         Returns:
             tuple: (lista de IDs, dicionário ID->nome)
         """
+        print(f"DEBUG: INÍCIO _get_all_technician_ids_and_names com entity_id={entity_id}")
         try:
             print(f"DEBUG: _get_all_technician_ids_and_names chamado com entity_id={entity_id}")
             timestamp = datetime.now(tz=timezone.utc).isoformat()
@@ -5717,6 +5718,10 @@ class GLPIService:
             return tech_ids, tech_names
 
         except Exception as e:
+            print(f"DEBUG: EXCEÇÃO CAPTURADA em _get_all_technician_ids_and_names: {e}")
+            print(f"DEBUG: Tipo da exceção: {type(e)}")
+            import traceback
+            print(f"DEBUG: Traceback: {traceback.format_exc()}")
             self.logger.error(f"Erro ao obter técnicos: {e}")
             return [], {}
 
