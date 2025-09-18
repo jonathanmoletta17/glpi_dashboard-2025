@@ -1,33 +1,32 @@
 #!/usr/bin/env python3
+# -*- coding: utf-8 -*-
 """
-Script para validação de dependências circulares.
-Este script verifica se há dependências circulares no código Python.
+Script para detectar dependências circulares no projeto
 """
 
 import ast
 import os
 import sys
-from collections import defaultdict, deque
 from pathlib import Path
 from typing import Dict, List, Set
 
 
 class DependencyAnalyzer:
-    """Analisador de dependências para detectar ciclos."""
+    """Analisador de dependências do projeto"""
 
-    def __init__(self, root_path: str):
-        self.root_path = Path(root_path)
-        self.dependencies: Dict[str, Set[str]] = defaultdict(set)
-        self.modules: Set[str] = set()
+    def __init__(self, project_root: str):
+        self.project_root = Path(project_root)
+        self.dependencies: Dict[str, Set[str]] = {}
 
     def extract_imports(self, file_path: Path) -> Set[str]:
-        """Extrai imports de um arquivo Python."""
+        """Extrai imports de um arquivo Python"""
+        imports = set()
+
         try:
             with open(file_path, "r", encoding="utf-8") as f:
                 content = f.read()
 
             tree = ast.parse(content)
-            imports = set()
 
             for node in ast.walk(tree):
                 if isinstance(node, ast.Import):
@@ -37,46 +36,53 @@ class DependencyAnalyzer:
                     if node.module:
                         imports.add(node.module.split(".")[0])
 
-            return imports
         except Exception as e:
             print(f"Erro ao analisar {file_path}: {e}")
-            return set()
 
-    def build_dependency_graph(self):
-        """Constrói o grafo de dependências."""
-        python_files = list(self.root_path.rglob("*.py"))
+        return imports
 
-        for file_path in python_files:
-            # Converte o caminho do arquivo para nome do módulo
-            relative_path = file_path.relative_to(self.root_path)
-            module_name = str(relative_path.with_suffix("")).replace(os.sep, ".")
+    def build_dependency_graph(self) -> Dict[str, Set[str]]:
+        """Constrói grafo de dependências do projeto"""
 
-            # Ignora arquivos de teste e __pycache__
-            if "test" in module_name.lower() or "__pycache__" in str(file_path):
-                continue
+        # Encontrar todos os arquivos Python
+        python_files = list(self.project_root.rglob("*.py"))
 
-            self.modules.add(module_name)
-            imports = self.extract_imports(file_path)
+        # Extrair módulos do projeto
+        project_modules = set()
+        for py_file in python_files:
+            relative_path = py_file.relative_to(self.project_root)
+            module_path = str(relative_path.with_suffix(""))
+            module_name = module_path.replace(os.sep, ".")
 
-            # Filtra apenas imports locais (dentro do projeto)
-            local_imports = set()
-            for imp in imports:
-                # Verifica se é um import local
-                for mod in self.modules:
-                    if mod.startswith(imp) or imp in mod:
-                        local_imports.add(imp)
+            # Filtrar apenas módulos do projeto (não bibliotecas externas)
+            if not any(part.startswith(".") for part in module_name.split(".")):
+                project_modules.add(module_name.split(".")[0])
 
-            self.dependencies[module_name] = local_imports
+        # Analisar dependências
+        for py_file in python_files:
+            relative_path = py_file.relative_to(self.project_root)
+            module_path = str(relative_path.with_suffix(""))
+            module_name = module_path.replace(os.sep, ".")
 
-    def detect_cycles(self) -> List[List[str]]:
-        """Detecta ciclos no grafo de dependências usando DFS."""
+            imports = self.extract_imports(py_file)
+
+            # Filtrar apenas imports de módulos do projeto
+            project_imports = imports.intersection(project_modules)
+
+            if project_imports:
+                self.dependencies[module_name] = project_imports
+
+        return self.dependencies
+
+    def detect_circular_dependencies(self) -> List[List[str]]:
+        """Detecta dependências circulares usando DFS"""
         visited = set()
         rec_stack = set()
         cycles = []
 
         def dfs(node: str, path: List[str]) -> bool:
             if node in rec_stack:
-                # Encontrou um ciclo
+                # Encontrou ciclo
                 cycle_start = path.index(node)
                 cycle = path[cycle_start:] + [node]
                 cycles.append(cycle)
@@ -87,57 +93,70 @@ class DependencyAnalyzer:
 
             visited.add(node)
             rec_stack.add(node)
-            path.append(node)
 
-            for neighbor in self.dependencies.get(node, set()):
-                if neighbor in self.modules:  # Apenas módulos locais
-                    dfs(neighbor, path.copy())
+            # Visitar dependências
+            for dependency in self.dependencies.get(node, set()):
+                if dfs(dependency, path + [node]):
+                    return True
 
             rec_stack.remove(node)
             return False
 
-        for module in self.modules:
+        # Executar DFS para todos os nós
+        for module in self.dependencies:
             if module not in visited:
                 dfs(module, [])
 
         return cycles
 
 
-def main():
-    """Função principal."""
-    # Determina o diretório raiz do projeto
-    current_dir = Path.cwd()
+def find_project_root() -> Path:
+    """Encontra a raiz do projeto"""
+    current = Path.cwd()
 
-    # Procura pelo diretório que contém código Python
-    root_dirs = ["api", "services", "utils", "schemas", "database"]
-    project_root = None
+    # Procurar por indicadores de raiz do projeto
+    indicators = [".git", "pyproject.toml", "setup.py", "requirements.txt"]
 
-    for root_dir in root_dirs:
-        if (current_dir / root_dir).exists():
-            project_root = current_dir
-            break
+    while current != current.parent:
+        if any((current / indicator).exists() for indicator in indicators):
+            return current
+        current = current.parent
 
-    if not project_root:
-        print("❌ Não foi possível encontrar o diretório raiz do projeto")
+    return Path.cwd()
+
+
+def main() -> int:
+    """Função principal"""
+    try:
+        project_root = find_project_root()
+
+        if not project_root:
+            print("X Nao foi possivel encontrar o diretorio raiz do projeto")
+            return 1
+
+        print(f"Analisando dependencias em: {project_root}")
+
+        analyzer = DependencyAnalyzer(str(project_root))
+        dependencies = analyzer.build_dependency_graph()
+
+        if not dependencies:
+            print("Nenhuma dependencia interna encontrada")
+            return 0
+
+        cycles = analyzer.detect_circular_dependencies()
+
+        if cycles:
+            print("X Dependencias circulares detectadas:")
+            for i, cycle in enumerate(cycles, 1):
+                print(f"  Ciclo {i}: {' -> '.join(cycle)}")
+            return 1
+        else:
+            print("V Nenhuma dependencia circular detectada")
+            return 0
+
+    except Exception as e:
+        print(f"Erro durante analise: {e}")
         return 1
-
-    print(f"🔍 Analisando dependências em: {project_root}")
-
-    analyzer = DependencyAnalyzer(str(project_root))
-    analyzer.build_dependency_graph()
-
-    print(f"📦 Encontrados {len(analyzer.modules)} módulos")
-
-    cycles = analyzer.detect_cycles()
-
-    if cycles:
-        print(f"❌ Encontradas {len(cycles)} dependências circulares:")
-        for i, cycle in enumerate(cycles, 1):
-            print(f"  {i}. {' -> '.join(cycle)}")
-        return 1
-    else:
-        print("✅ Nenhuma dependência circular encontrada")
-        return 0
 
 
 if __name__ == "__main__":

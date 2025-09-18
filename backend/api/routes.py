@@ -10,17 +10,19 @@ from datetime import datetime
 
 from flask import Blueprint, jsonify, request
 from pydantic import ValidationError
+from schemas.dashboard import DashboardMetrics
 
 from config.settings import active_config
-from schemas.dashboard import DashboardMetrics
+
 # Removed api_service import - service deleted
 from services.glpi_service import GLPIService
+from services.simple_dict_cache import cached, simple_cache
+
 # Removed unused import: alerting_system
 # Removed date_decorators import - module deleted
 from utils.performance import monitor_performance
-from utils.simple_decorators import monitor_api_endpoint
-from services.simple_dict_cache import simple_cache, cached
 from utils.response_formatter import ResponseFormatter
+from utils.simple_decorators import monitor_api_endpoint
 from utils.structured_logging import api_logger
 
 # Importar cache do app principal
@@ -47,22 +49,30 @@ logger = logging.getLogger("api")
 # ROTAS ESSENCIAIS - HEALTH CHECK
 # ============================================================================
 
+
 @api_bp.route("/health")
 def health_check():
     """Health check básico da aplicação"""
     try:
-        return jsonify({
-            "status": "healthy",
-            "timestamp": datetime.now().isoformat(),
-            "service": "GLPI Dashboard API",
-        })
+        return jsonify(
+            {
+                "status": "healthy",
+                "timestamp": datetime.now().isoformat(),
+                "service": "GLPI Dashboard API",
+            }
+        )
     except Exception as e:
         logger.error(f"Erro no health check: {e}", exc_info=True)
-        return jsonify({
-            "status": "unhealthy",
-            "timestamp": datetime.now().isoformat(),
-            "error": str(e),
-        }), 500
+        return (
+            jsonify(
+                {
+                    "status": "unhealthy",
+                    "timestamp": datetime.now().isoformat(),
+                    "error": str(e),
+                }
+            ),
+            500,
+        )
 
 
 @api_bp.route("/health/glpi")
@@ -72,36 +82,48 @@ def glpi_health_check():
         auth_result = glpi_service._authenticate_with_retry()
 
         if auth_result:
-            return jsonify({
-                "glpi_connection": "healthy",
-                "timestamp": datetime.now().isoformat(),
-                "message": "Conexão GLPI funcionando corretamente",
-            })
+            return jsonify(
+                {
+                    "glpi_connection": "healthy",
+                    "timestamp": datetime.now().isoformat(),
+                    "message": "Conexão GLPI funcionando corretamente",
+                }
+            )
         else:
-            return jsonify({
-                "glpi_connection": "unhealthy",
-                "timestamp": datetime.now().isoformat(),
-                "message": "Falha na autenticação GLPI",
-            }), 503
+            return (
+                jsonify(
+                    {
+                        "glpi_connection": "unhealthy",
+                        "timestamp": datetime.now().isoformat(),
+                        "message": "Falha na autenticação GLPI",
+                    }
+                ),
+                503,
+            )
 
     except Exception as e:
         logger.error(f"Erro no health check GLPI: {e}", exc_info=True)
-        return jsonify({
-            "glpi_connection": "unhealthy",
-            "timestamp": datetime.now().isoformat(),
-            "error": str(e),
-        }), 503
+        return (
+            jsonify(
+                {
+                    "glpi_connection": "unhealthy",
+                    "timestamp": datetime.now().isoformat(),
+                    "error": str(e),
+                }
+            ),
+            503,
+        )
 
 
 # ============================================================================
 # ROTAS ESSENCIAIS - MÉTRICAS
 # ============================================================================
 
+
 @api_bp.route("/metrics")
 @monitor_api_endpoint("get_metrics")
 @monitor_performance
 @cached(ttl=300)
-
 def get_metrics(validated_start_date=None, validated_end_date=None, validated_filters=None):
     """Endpoint para obter métricas do dashboard do GLPI"""
     import hashlib
@@ -135,7 +157,9 @@ def get_metrics(validated_start_date=None, validated_end_date=None, validated_fi
             method="GET",
         )
 
-        logger.info(f"[{correlation_id}] Buscando métricas do GLPI com filtros: data={start_date} até {end_date}")
+        logger.info(
+            f"[{correlation_id}] Buscando métricas do GLPI com filtros: data={start_date} até {end_date}"
+        )
 
         # Usar método apropriado baseado nos filtros
         if start_date or end_date:
@@ -179,7 +203,10 @@ def get_metrics(validated_start_date=None, validated_end_date=None, validated_fi
         # Log de performance
         response_time = (time.time() - start_time) * 1000
         observability_logger.log_operation_end(
-            "get_metrics", success=True, result_count=1 if metrics_data else 0, duration_ms=response_time
+            "get_metrics",
+            success=True,
+            result_count=1 if metrics_data else 0,
+            duration_ms=response_time,
         )
 
         logger.info(f"[{correlation_id}] Métricas obtidas com sucesso em {response_time:.2f}ms")
@@ -191,7 +218,9 @@ def get_metrics(validated_start_date=None, validated_end_date=None, validated_fi
         except (AttributeError, ImportError):
             target_p95 = 300
         if response_time > target_p95:
-            logger.warning(f"[{correlation_id}] Resposta lenta detectada: {response_time:.2f}ms > {target_p95}ms")
+            logger.warning(
+                f"[{correlation_id}] Resposta lenta detectada: {response_time:.2f}ms > {target_p95}ms"
+            )
 
         # Validar dados com Pydantic
         try:
@@ -226,6 +255,7 @@ def get_metrics(validated_start_date=None, validated_end_date=None, validated_fi
 # ROTAS ESSENCIAIS - TÉCNICOS
 # ============================================================================
 
+
 @api_bp.route("/technicians")
 @monitor_api_endpoint("get_technicians")
 @monitor_performance
@@ -256,7 +286,9 @@ def get_technicians():
                 entity_id = None
 
         # Buscar técnicos
-        technician_ids, technician_names = glpi_service._get_all_technician_ids_and_names(entity_id=entity_id)
+        technician_ids, technician_names = glpi_service._get_all_technician_ids_and_names(
+            entity_id=entity_id
+        )
 
         # Converter para formato de lista
         technicians = []
@@ -293,8 +325,9 @@ def get_technicians():
 @monitor_api_endpoint("get_technician_ranking")
 @monitor_performance
 @cached(ttl=300)
-
-def get_technician_ranking(validated_start_date=None, validated_end_date=None, validated_filters=None):
+def get_technician_ranking(
+    validated_start_date=None, validated_end_date=None, validated_filters=None
+):
     """Endpoint para obter ranking de técnicos por nível"""
     start_time = time.time()
     obs_logger = api_logger
@@ -330,7 +363,9 @@ def get_technician_ranking(validated_start_date=None, validated_end_date=None, v
             entity_id=entity_id,
         )
 
-        logger.debug(f"[{correlation_id}] Buscando ranking de técnicos: dates={start_date}-{end_date}, level={level}")
+        logger.debug(
+            f"[{correlation_id}] Buscando ranking de técnicos: dates={start_date}-{end_date}, level={level}"
+        )
 
         # Buscar ranking com ou sem filtros
         if any([start_date, end_date, level, entity_id]):
@@ -355,24 +390,33 @@ def get_technician_ranking(validated_start_date=None, validated_end_date=None, v
 
         if not ranking_data:
             logger.info(f"[{correlation_id}] Nenhum técnico encontrado com os filtros aplicados")
-            return jsonify({
-                "success": True,
-                "data": [],
-                "message": "Nenhum técnico encontrado com os filtros aplicados",
-                "correlation_id": correlation_id,
-                "filters_applied": {
-                    "start_date": start_date,
-                    "end_date": end_date,
-                    "level": level,
-                    "limit": limit,
-                    "entity_id": entity_id,
-                },
-            })
+            return jsonify(
+                {
+                    "success": True,
+                    "data": [],
+                    "message": "Nenhum técnico encontrado com os filtros aplicados",
+                    "correlation_id": correlation_id,
+                    "filters_applied": {
+                        "start_date": start_date,
+                        "end_date": end_date,
+                        "level": level,
+                        "limit": limit,
+                        "entity_id": entity_id,
+                    },
+                }
+            )
 
         # Log de performance
         response_time = (time.time() - start_time) * 1000
-        obs_logger.log_operation_end("technician_ranking", success=True, result_count=len(ranking_data), duration_ms=response_time)
-        logger.info(f"[{correlation_id}] Ranking obtido: {len(ranking_data)} técnicos em {response_time:.2f}ms")
+        obs_logger.log_operation_end(
+            "technician_ranking",
+            success=True,
+            result_count=len(ranking_data),
+            duration_ms=response_time,
+        )
+        logger.info(
+            f"[{correlation_id}] Ranking obtido: {len(ranking_data)} técnicos em {response_time:.2f}ms"
+        )
 
         # Verificar performance
         try:
@@ -414,6 +458,7 @@ def get_technician_ranking(validated_start_date=None, validated_end_date=None, v
 # ============================================================================
 # ROTAS ESSENCIAIS - TICKETS
 # ============================================================================
+
 
 @api_bp.route("/tickets/recent")
 @monitor_api_endpoint("get_new_tickets")
@@ -466,19 +511,21 @@ def get_new_tickets(validated_start_date=None, validated_end_date=None, validate
 
         if not new_tickets:
             logger.info("Nenhum ticket novo encontrado com os filtros aplicados")
-            return jsonify({
-                "success": True,
-                "data": [],
-                "message": "Nenhum ticket novo encontrado com os filtros aplicados",
-                "filters_applied": {
-                    "limit": limit,
-                    "priority": priority,
-                    "category": category,
-                    "technician": technician,
-                    "start_date": start_date,
-                    "end_date": end_date,
-                },
-            })
+            return jsonify(
+                {
+                    "success": True,
+                    "data": [],
+                    "message": "Nenhum ticket novo encontrado com os filtros aplicados",
+                    "filters_applied": {
+                        "limit": limit,
+                        "priority": priority,
+                        "category": category,
+                        "technician": technician,
+                        "start_date": start_date,
+                        "end_date": end_date,
+                    },
+                }
+            )
 
         # Log de performance
         response_time = (time.time() - start_time) * 1000
@@ -494,19 +541,21 @@ def get_new_tickets(validated_start_date=None, validated_end_date=None, validate
         if response_time > target_p95:
             logger.warning(f"Resposta lenta: {response_time:.2f}ms")
 
-        return jsonify({
-            "success": True,
-            "data": new_tickets,
-            "response_time_ms": round(response_time, 2),
-            "filters_applied": {
-                "limit": limit,
-                "priority": priority,
-                "category": category,
-                "technician": technician,
-                "start_date": start_date,
-                "end_date": end_date,
-            },
-        })
+        return jsonify(
+            {
+                "success": True,
+                "data": new_tickets,
+                "response_time_ms": round(response_time, 2),
+                "filters_applied": {
+                    "limit": limit,
+                    "priority": priority,
+                    "category": category,
+                    "technician": technician,
+                    "start_date": start_date,
+                    "end_date": end_date,
+                },
+            }
+        )
 
     except Exception as e:
         logger.error(f"Erro inesperado ao buscar tickets novos: {e}", exc_info=True)

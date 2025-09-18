@@ -520,7 +520,7 @@ class GLPIMetricsCollector:
         for nivel, status_counts in status_por_nivel.items():
             color = self.level_colors.get(nivel, Fore.WHITE)
             total_nivel = sum(status_counts.values())
-            print(f"{color}   {nivel} (Total: {total_nivel}):{Style.RESET_ALL}")
+            print(f"{color}   {nivel} (Total: {total_nivel}): {Style.RESET_ALL}")
 
             for status, count in status_counts.items():
                 if count > 0:
@@ -606,7 +606,7 @@ class GLPIMetricsCollector:
                             return str(item)
                 elif parsed and str(parsed) != "0":
                     return str(parsed)
-            except:
+            except Exception:
                 # Se não for JSON, tratar como string simples
                 if tech_field and tech_field != "0":
                     return str(tech_field)
@@ -726,7 +726,6 @@ class GLPIMetricsCollector:
                 return "N1"  # Nível padrão
 
             user_data = response.json()
-            name = user_data.get("name", "").lower()
             firstname = user_data.get("firstname", "").lower()
             realname = user_data.get("realname", "").lower()
 
@@ -1059,9 +1058,8 @@ def main():
             return
 
         if not config.user_token and not (config.username and config.password):
-            print(
-                f"{Fore.RED}❌ Credenciais não configuradas (USER_TOKEN ou USERNAME/PASSWORD){Style.RESET_ALL}"
-            )
+            error_msg = "❌ Credenciais não configuradas " "(USER_TOKEN ou USERNAME/PASSWORD)"
+            print(f"{Fore.RED}{error_msg}{Style.RESET_ALL}")
             return
 
     except Exception as e:
@@ -1077,17 +1075,15 @@ def main():
     # Salvar resultados
     if metrics["success"]:
         filename = save_metrics_to_file(metrics)
-        print(
-            f"\n{Fore.GREEN}🎉 Processo concluído! Verifique o arquivo: {filename}{Style.RESET_ALL}"
-        )
+        success_msg = "🎉 Processo concluído! " f"Verifique o arquivo: {filename}"
+        print(f"\n{Fore.GREEN}{success_msg}{Style.RESET_ALL}")
     else:
-        print(
-            f"\n{Fore.RED}⚠️  Processo finalizado com erros. Verifique os logs acima.{Style.RESET_ALL}"
-        )
+        error_msg = "⚠️  Processo finalizado com erros. " "Verifique os logs acima."
+        print(f"\n{Fore.RED}{error_msg}{Style.RESET_ALL}")
         if metrics["errors"]:
-            print(f"{Fore.RED}Erros encontrados:{Style.RESET_ALL}")
+            print(f"{Fore.RED}Erros encontrados: {Style.RESET_ALL}")
             for error in metrics["errors"]:
-                print(f"{Fore.RED}  - {error}{Style.RESET_ALL}")
+                print(f"{Fore.RED} - {error}{Style.RESET_ALL}")
 
 
 if __name__ == "__main__":
@@ -1108,8 +1104,7 @@ if __name__ == "__main__":
 
     # Instalar dependências se necessário
     try:
-        import colorama
-        import requests
+        pass  # requests já importado no topo
     except ImportError as e:
         print(f"❌ Dependência não encontrada: {e}")
         print("💡 Instale as dependências com:")

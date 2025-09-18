@@ -21,9 +21,10 @@ sys.path.insert(0, parent_dir)
 from api.routes import api_bp
 
 from config.settings import active_config
+from services.simple_dict_cache import simple_cache
+
 # Removed unused import: observability_middleware
 from utils.structured_logging import system_logger
-from services.simple_dict_cache import simple_cache
 
 # Instâncias globais
 cache = Cache()
@@ -71,7 +72,7 @@ def _setup_cache(app: Flask) -> Dict[str, Any]:
                 decode_responses=True,
                 socket_connect_timeout=5,
                 socket_timeout=5,
-                retry_on_timeout=True
+                retry_on_timeout=True,
             )
 
             # Testa conexão Redis
@@ -231,7 +232,9 @@ def run_server() -> None:
     logger.info(f"Iniciando servidor Flask em {host}:{port} (Debug: {debug})")
 
     try:
-        app.run(host=server_config["host"], port=server_config["port"], debug=server_config["debug"])
+        app.run(
+            host=server_config["host"], port=server_config["port"], debug=server_config["debug"]
+        )
     except KeyboardInterrupt:
         logger.info("Servidor interrompido pelo usuário")
     except Exception as e:

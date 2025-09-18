@@ -11,10 +11,7 @@ from typing import Any, Dict, Optional
 # from utils.structured_logger import JSONFormatter  # Não utilizado
 
 
-def get_logging_config(
-    log_level: str = "INFO",
-    log_file: Optional[str] = None
-) -> Dict[str, Any]:
+def get_logging_config(log_level: str = "INFO", log_file: Optional[str] = None) -> Dict[str, Any]:
     """
     Retorna configuração de logging estruturado.
 
@@ -31,10 +28,7 @@ def get_logging_config(
     # Validar log_level
     valid_levels = ["DEBUG", "INFO", "WARNING", "ERROR", "CRITICAL"]
     if log_level.upper() not in valid_levels:
-        raise ValueError(
-            f"log_level deve ser um dos: {valid_levels}. "
-            f"Recebido: {log_level}"
-        )
+        raise ValueError(f"log_level deve ser um dos: {valid_levels}. " f"Recebido: {log_level}")
 
     log_level = log_level.upper()
 
@@ -46,9 +40,7 @@ def get_logging_config(
                 "()": "utils.structured_logging.JSONFormatter",
                 "include_extra_fields": True,
             },
-            "standard": {
-                "format": "%(asctime)s [%(levelname)s] %(name)s: %(message)s"
-            },
+            "standard": {"format": "%(asctime)s [%(levelname)s] %(name)s: %(message)s"},
         },
         "handlers": {
             "console": {
@@ -100,10 +92,7 @@ def get_logging_config(
 
         except (OSError, PermissionError) as e:
             # Log de fallback para console se não conseguir criar arquivo
-            print(
-                f"Aviso: Não foi possível configurar log em arquivo "
-                f"{log_file}: {e}"
-            )
+            print(f"Aviso: Não foi possível configurar log em arquivo " f"{log_file}: {e}")
             print("Continuando apenas com log no console.")
             return config
 
@@ -124,10 +113,7 @@ def get_logging_config(
     return config
 
 
-def configure_structured_logging(
-    log_level: str = "INFO",
-    log_file: Optional[str] = None
-) -> None:
+def configure_structured_logging(log_level: str = "INFO", log_file: Optional[str] = None) -> None:
     """
     Configura o sistema de logging estruturado.
 
@@ -145,9 +131,7 @@ def configure_structured_logging(
 
         # Testar se o logging está funcionando
         logger = logging.getLogger("logging_config")
-        logger.info(
-            f"Sistema de logging configurado com sucesso. Nível: {log_level}"
-        )
+        logger.info(f"Sistema de logging configurado com sucesso. Nível: {log_level}")
 
     except Exception as e:
         # Fallback para configuração básica
@@ -176,11 +160,7 @@ class LoggingConfig:
             }
         except Exception:
             # Fallback para configuração mínima
-            return {
-                "log_level": "INFO",
-                "log_file": None,
-                "console_output": True
-            }
+            return {"log_level": "INFO", "log_file": None, "console_output": True}
 
     @staticmethod
     def production() -> Dict[str, Any]:
@@ -193,28 +173,16 @@ class LoggingConfig:
             }
         except Exception:
             # Fallback para configuração mínima
-            return {
-                "log_level": "WARNING",
-                "log_file": None,
-                "console_output": True
-            }
+            return {"log_level": "WARNING", "log_file": None, "console_output": True}
 
     @staticmethod
     def testing() -> Dict[str, Any]:
         """Configuração para ambiente de testes."""
         try:
-            return {
-                "log_level": "WARNING",
-                "log_file": None,
-                "console_output": True
-            }
+            return {"log_level": "WARNING", "log_file": None, "console_output": True}
         except Exception:
             # Fallback para configuração mínima
-            return {
-                "log_level": "ERROR",
-                "log_file": None,
-                "console_output": True
-            }
+            return {"log_level": "ERROR", "log_file": None, "console_output": True}
 
 
 # Configurações para integração com serviços de monitoramento
@@ -263,11 +231,7 @@ class MonitoringIntegration:
                     "environment": "development",
                     "version": "1.0.0",
                 },
-                "logstash": {
-                    "host": "localhost",
-                    "port": 5044,
-                    "protocol": "tcp"
-                },
+                "logstash": {"host": "localhost", "port": 5044, "protocol": "tcp"},
                 "index_pattern": "glpi-dashboard-*",
             }
 
@@ -293,10 +257,7 @@ class MonitoringIntegration:
                     "level": "${level}",
                     "logger": "${logger_name}",
                 },
-                "loki": {
-                    "url": loki_url,
-                    "push_endpoint": "/loki/api/v1/push"
-                },
+                "loki": {"url": loki_url, "push_endpoint": "/loki/api/v1/push"},
             }
         except Exception:
             # Fallback para configuração básica
@@ -324,10 +285,7 @@ class MonitoringIntegration:
         """
         try:
             # Validar URL do Prometheus Gateway
-            gateway_url = os.getenv(
-                "PROMETHEUS_GATEWAY_URL",
-                "http://localhost:9091"
-            )
+            gateway_url = os.getenv("PROMETHEUS_GATEWAY_URL", "http://localhost:9091")
             if not gateway_url.startswith(("http://", "https://")):
                 gateway_url = "http://localhost:9091"  # Fallback
 
