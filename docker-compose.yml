@@ -1,0 +1,143 @@
+services:
+  # MySQL Database
+  mysql:
+    image: mysql:8.0
+    container_name: glpi_dashboard_funcional_mysql
+    environment:
+      MYSQL_ROOT_PASSWORD_FILE: /run/secrets/mysql_root_password
+      MYSQL_DATABASE: glpi_dashboard_funcional
+      MYSQL_USER: glpi_user
+      MYSQL_PASSWORD_FILE: /run/secrets/mysql_password
+    secrets:
+      - mysql_root_password
+      - mysql_password
+    deploy:
+      resources:
+        limits:
+          memory: 1G
+          cpus: '1.0'
+        reservations:
+          memory: 512M
+          cpus: '0.5'
+    # ports:
+    #   - "3307:3306"  # Removido para segurança - acesso apenas interno
+    volumes:
+      - mysql_data:/var/lib/mysql
+      - ./backend/database/init:/docker-entrypoint-initdb.d
+    networks:
+      - glpi_network
+    restart: unless-stopped
+    healthcheck:
+      test: ["CMD", "mysqladmin", "ping", "-h", "localhost"]
+      timeout: 20s
+      retries: 10
+
+  # Redis Cache
+  redis:
+    image: redis:7-alpine
+    container_name: glpi_dashboard_funcional_redis
+    deploy:
+      resources:
+        limits:
+          memory: 256M
+          cpus: '0.5'
+        reservations:
+          memory: 128M
+          cpus: '0.25'
+    # ports:
+    #   - "6379:6379"  # Removido para segurança - acesso apenas interno
+    volumes:
+      - redis_data:/data
+    networks:
+      - glpi_network
+    restart: unless-stopped
+    healthcheck:
+      test: ["CMD", "redis-cli", "ping"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+
+  # Backend API
+  backend:
+    build:
+      context: .
+      dockerfile: backend/Dockerfile
+    container_name: glpi_dashboard_funcional_backend
+    env_file:
+      - docker.env
+    secrets:
+      - flask_secret_key
+    deploy:
+      resources:
+        limits:
+          memory: 1G
+          cpus: '2.0'
+        reservations:
+          memory: 512M
+          cpus: '1.0'
+    ports:
+      - "5000:5000"
+    volumes:
+      - ./backend:/app
+      - backend_logs:/app/logs
+    networks:
+      - glpi_network
+    depends_on:
+      mysql:
+        condition: service_healthy
+      redis:
+        condition: service_healthy
+    restart: unless-stopped
+
+  # Frontend
+  frontend:
+    build:
+      context: ./frontend
+      dockerfile: Dockerfile
+    container_name: glpi_dashboard_funcional_frontend
+    environment:
+      - NODE_ENV=production
+      - VITE_API_BASE_URL=http://backend:5000/api
+    deploy:
+      resources:
+        limits:
+          memory: 512M
+          cpus: '1.0'
+        reservations:
+          memory: 256M
+          cpus: '0.5'
+    ports:
+      - "3001:3000"
+    volumes:
+      - ./frontend:/app
+      - /app/node_modules
+    networks:
+      - glpi_network
+    depends_on:
+      - backend
+    restart: unless-stopped
+
+
+
+volumes:
+  mysql_data:
+    driver: local
+  redis_data:
+    driver: local
+  backend_logs:
+    driver: local
+
+networks:
+  glpi_network:
+    driver: bridge
+    ipam:
+      config:
+        - subnet: 172.20.0.0/16
+
+secrets:
+  mysql_root_password:
+    file: ./secrets/mysql_root_password.txt
+  mysql_password:
+    file: ./secrets/mysql_password.txt
+  flask_secret_key:
+    file: ./secrets/flask_secret_key.txt

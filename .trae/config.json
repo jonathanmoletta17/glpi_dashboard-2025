@@ -16,18 +16,18 @@
       "bundler": "Vite",
       "styling": "Tailwind CSS",
       "ui_library": "shadcn/ui",
-      "path": "glpi_dashboard/frontend"
+      "path": "frontend"
     },
     "backend": {
       "framework": "Flask",
       "language": "Python",
       "database": "MySQL (GLPI)",
       "cache": "Redis",
-      "path": "glpi_dashboard/backend"
+      "path": "backend"
     },
     "monitoring": {
       "metrics": "Prometheus",
-      "path": "glpi_dashboard/monitoring"
+      "path": "monitoring"
     }
   },
   "ai_behavior": {

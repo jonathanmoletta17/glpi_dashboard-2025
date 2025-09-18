@@ -45,19 +45,18 @@ Sistema completo de dashboard para monitoramento e análise de tickets do GLPI, 
 
 ```
 glpi_dashboard_funcional/
-├── glpi_dashboard/           # Aplicação principal
-│   ├── backend/              # Backend Flask
-│   │   ├── api/              # Endpoints da API
-│   │   ├── config/           # Configurações centralizadas
-│   │   ├── schemas/          # Schemas de validação
-│   │   ├── services/         # Serviços de integração
-│   │   └── utils/            # Utilitários
-│   ├── frontend/             # Frontend React + TypeScript
-│   │   ├── src/              # Código fonte
-│   │   │   ├── components/   # Componentes React
-│   │   │   ├── hooks/        # Hooks customizados
-│   │   │   ├── services/     # Serviços do frontend
-│   │   │   ├── types/        # Definições TypeScript
+├── backend/                  # Backend Flask
+│   ├── api/                  # Endpoints da API
+│   ├── config/               # Configurações centralizadas
+│   ├── schemas/              # Schemas de validação
+│   ├── services/             # Serviços de integração
+│   └── utils/                # Utilitários
+├── frontend/                 # Frontend React + TypeScript
+│   ├── src/                  # Código fonte
+│   │   ├── components/       # Componentes React
+│   │   ├── hooks/            # Hooks customizados
+│   │   ├── services/         # Serviços do frontend
+│   │   ├── types/            # Definições TypeScript
 │   │   │   └── utils/        # Utilitários
 │   │   ├── package.json      # Dependências Node.js
 │   │   └── vite.config.ts    # Configuração Vite
@@ -93,7 +92,7 @@ glpi_dashboard_funcional/
 #### 1. Clone e Configuração Inicial
 ```bash
 git clone <repository-url>
-cd glpi_dashboard_funcional
+cd backend_funcional
 cp .env.example .env
 ```
 
@@ -109,7 +108,7 @@ python -m venv venv
 source venv/bin/activate
 
 # Instalar dependências
-cd glpi_dashboard
+cd backend
 pip install -r requirements.txt
 
 # Executar backend
@@ -119,7 +118,7 @@ python app.py
 #### 3. Frontend (React)
 ```bash
 # Em novo terminal
-cd glpi_dashboard/frontend
+cd frontend
 npm install
 npm run dev
 ```
@@ -146,7 +145,7 @@ PORT=5000
 LOG_LEVEL=INFO
 ```
 
-**Frontend `.env` (glpi_dashboard/frontend/.env):**
+**Frontend `.env` (frontend/.env):
 ```bash
 VITE_API_BASE_URL=http://localhost:5000/api
 VITE_LOG_LEVEL=info
@@ -169,11 +168,11 @@ VITE_LOG_LEVEL=info
 ### Manual
 ```bash
 # Frontend
-cd glpi_dashboard/frontend
+cd frontend
 npm run build
 
 # Backend
-cd glpi_dashboard
+cd backend
 gunicorn -w 4 -b 0.0.0.0:5000 app:app
 ```
 
@@ -251,11 +250,11 @@ GET /api/health      # Health check
 
 ```bash
 # Frontend
-cd glpi_dashboard/frontend
+cd frontend
 npm run test
 
 # Backend
-cd glpi_dashboard
+cd backend
 pytest
 ```
 

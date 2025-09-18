@@ -4,7 +4,7 @@
   "triggers": {
     "on_file_change": {
       "frontend": {
-        "patterns": ["glpi_dashboard/frontend/src/**/*.{ts,tsx,js,jsx}"],
+        "patterns": ["frontend/src/**/*.{ts,tsx,js,jsx}"],
         "actions": [
           "lint_and_format",
           "type_check",
@@ -12,7 +12,7 @@
         ]
       },
       "backend": {
-        "patterns": ["glpi_dashboard/backend/**/*.py"],
+        "patterns": ["backend/**/*.py"],
         "actions": [
           "lint_python",
           "format_python",
@@ -52,48 +52,48 @@
   "commands": {
     "lint_and_format": {
       "frontend": [
-        "cd glpi_dashboard/frontend && npm run lint:fix",
-        "cd glpi_dashboard/frontend && npm run format"
+        "cd frontend && npm run lint:fix",
+        "cd frontend && npm run format"
       ]
     },
     "type_check": {
-      "frontend": "cd glpi_dashboard/frontend && npm run type-check"
+      "frontend": "cd frontend && npm run type-check"
     },
     "run_related_tests": {
-      "frontend": "cd glpi_dashboard/frontend && npm run test:related",
-      "backend": "cd glpi_dashboard/backend && python -m pytest tests/ -v"
+      "frontend": "cd frontend && npm run test:related",
+        "backend": "cd backend && python -m pytest tests/ -v"
     },
-    "lint_python": "cd glpi_dashboard/backend && flake8 .",
-    "format_python": "cd glpi_dashboard/backend && black . && isort .",
-    "type_check_python": "cd glpi_dashboard/backend && mypy .",
+    "lint_python": "cd backend && flake8 .",
+    "format_python": "cd backend && black . && isort .",
+    "type_check_python": "cd backend && mypy .",
     "validate_config": "echo 'Validating configuration files...'",
     "update_documentation": "echo 'Updating documentation...'",
     "lint_all": [
-      "cd glpi_dashboard/frontend && npm run lint:fix",
-      "cd glpi_dashboard/backend && flake8 ."
+      "cd frontend && npm run lint:fix",
+      "cd backend && flake8 ."
     ],
     "format_all": [
-      "cd glpi_dashboard/frontend && npm run format",
-      "cd glpi_dashboard/backend && black . && isort ."
+      "cd frontend && npm run format",
+      "cd backend && black . && isort ."
     ],
     "run_tests": [
-      "cd glpi_dashboard/frontend && npm run test",
-      "cd glpi_dashboard/backend && python -m pytest tests/ -v"
+      "cd frontend && npm run test",
+      "cd backend && python -m pytest tests/ -v"
     ],
     "check_security": [
-      "cd glpi_dashboard/backend && bandit -r .",
-      "cd glpi_dashboard/frontend && npm audit"
+      "cd backend && bandit -r .",
+        "cd frontend && npm audit"
     ],
     "update_changelog": "echo 'Updating changelog...'",
     "sync_documentation": "echo 'Syncing documentation...'",
     "full_test_suite": [
-      "cd glpi_dashboard/frontend && npm run test:coverage",
-      "cd glpi_dashboard/backend && python -m pytest tests/ --cov=. --cov-report=html"
+      "cd frontend && npm run test:coverage",
+        "cd backend && python -m pytest tests/ --cov=. --cov-report=html"
     ],
     "performance_check": "echo 'Running performance checks...'",
     "security_scan": [
-      "cd glpi_dashboard/backend && bandit -r . -f json",
-      "cd glpi_dashboard/frontend && npm audit --audit-level=moderate"
+      "cd backend && bandit -r . -f json",
+        "cd frontend && npm audit --audit-level=moderate"
     ],
     "documentation_check": "echo 'Checking documentation completeness...'"
   },

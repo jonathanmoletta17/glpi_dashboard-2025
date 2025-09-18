@@ -3,30 +3,30 @@
 
 # === ARQUIVOS DE BUILD E DISTRIBUIÇÃO ===
 # Frontend
-glpi_dashboard/frontend/dist/
-glpi_dashboard/frontend/build/
-glpi_dashboard/frontend/.vite/
-glpi_dashboard/frontend/coverage/
+frontend/dist/
+frontend/build/
+frontend/.vite/
+frontend/coverage/
 
 # Backend
-glpi_dashboard/backend/__pycache__/
-glpi_dashboard/backend/*.pyc
-glpi_dashboard/backend/*.pyo
-glpi_dashboard/backend/*.pyd
-glpi_dashboard/backend/.pytest_cache/
-glpi_dashboard/backend/htmlcov/
+backend/__pycache__/
+backend/*.pyc
+backend/*.pyo
+backend/*.pyd
+backend/.pytest_cache/
+backend/htmlcov/
 
 # === NODE_MODULES E DEPENDÊNCIAS ===
 node_modules/
-glpi_dashboard/frontend/node_modules/
+frontend/node_modules/
 .pnpm-store/
 yarn.lock
 package-lock.json
 
 # Python packages
-glpi_dashboard/backend/venv/
-glpi_dashboard/backend/.venv/
-glpi_dashboard/backend/env/
+backend/venv/
+backend/.venv/
+backend/env/
 *.egg-info/
 
 # === ARQUIVOS DE AMBIENTE E CONFIGURAÇÃO SENSÍVEL ===
@@ -43,8 +43,8 @@ credentials/
 # === LOGS E ARQUIVOS TEMPORÁRIOS ===
 *.log
 logs/
-glpi_dashboard/backend/logs/
-glpi_dashboard/frontend/logs/
+backend/logs/
+frontend/logs/
 *.tmp
 *.temp
 .cache/
@@ -60,9 +60,9 @@ Thumbs.db
 .idea/
 
 # === DADOS E BACKUPS ===
-glpi_dashboard/data/backups/
-glpi_dashboard/data/exports/
-glpi_dashboard/data/imports/
+data/backups/
+data/exports/
+data/imports/
 *.sql
 *.dump
 *.backup
@@ -123,8 +123,8 @@ docker-compose.override.yml
 *.flac
 
 # === ARQUIVOS DE MONITORAMENTO ===
-glpi_dashboard/monitoring/data/
-glpi_dashboard/monitoring/logs/
+monitoring/data/
+monitoring/logs/
 prometheus_data/
 grafana_data/
 
@@ -160,10 +160,10 @@ site/
 
 # === ARQUIVOS ESPECÍFICOS DO PROJETO ===
 # Dados de exemplo grandes
-glpi_dashboard/data/samples/large_datasets/
+data/samples/large_datasets/
 
 # Scripts de migração executados
-glpi_dashboard/backend/migrations/executed/
+backend/migrations/executed/
 
 # Arquivos de configuração local
 local.config.js

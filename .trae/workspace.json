@@ -16,10 +16,10 @@
     "critical": {
       "weight": 10,
       "patterns": [
-        "glpi_dashboard/frontend/src/**/*.{ts,tsx,js,jsx}",
-        "glpi_dashboard/backend/**/*.py",
-        "glpi_dashboard/frontend/package.json",
-        "glpi_dashboard/requirements.txt",
+        "frontend/src/**/*.{ts,tsx,js,jsx}",
+        "backend/**/*.py",
+        "frontend/package.json",
+        "requirements.txt",
         "docs/BYTEROVER.md",
         ".trae/**/*"
       ]
@@ -27,19 +27,19 @@
     "high": {
       "weight": 8,
       "patterns": [
-        "glpi_dashboard/docker-compose.yml",
-        "glpi_dashboard/frontend/tailwind.config.js",
-        "glpi_dashboard/frontend/vite.config.ts",
-        "glpi_dashboard/frontend/tsconfig.json",
-        "glpi_dashboard/backend/config/**/*.py",
+        "docker-compose.yml",
+        "frontend/tailwind.config.js",
+        "frontend/vite.config.ts",
+        "frontend/tsconfig.json",
+        "backend/config/**/*.py",
         "docs/**/*.md"
       ]
     },
     "medium": {
       "weight": 5,
       "patterns": [
-        "glpi_dashboard/monitoring/**/*.yml",
-        "glpi_dashboard/scripts/**/*.{py,sh,bat}",
+        "monitoring/**/*.yml",
+        "scripts/**/*.{py,sh,bat}",
         "*.dockerfile",
         ".env.example",
         "docker.env"
@@ -48,7 +48,7 @@
     "low": {
       "weight": 2,
       "patterns": [
-        "glpi_dashboard/data/**/*",
+        "data/**/*",
         "*.md",
         "*.txt",
         "*.json"
@@ -58,23 +58,23 @@
   "context_rules": {
     "auto_include": {
       "on_frontend_mention": [
-        "glpi_dashboard/frontend/src/**/*.{ts,tsx}",
-        "glpi_dashboard/frontend/package.json",
-        "glpi_dashboard/frontend/tailwind.config.js",
-        "glpi_dashboard/frontend/vite.config.ts"
+        "frontend/src/**/*.{ts,tsx}",
+        "frontend/package.json",
+        "frontend/tailwind.config.js",
+        "frontend/vite.config.ts"
       ],
       "on_backend_mention": [
-        "glpi_dashboard/backend/**/*.py",
-        "glpi_dashboard/requirements.txt",
-        "glpi_dashboard/backend/config/**/*"
+        "backend/**/*.py",
+        "requirements.txt",
+        "backend/config/**/*"
       ],
       "on_component_mention": [
-        "glpi_dashboard/frontend/src/components/**/*.{ts,tsx}",
-        "glpi_dashboard/frontend/src/types/**/*.ts"
+        "frontend/src/components/**/*.{ts,tsx}",
+        "frontend/src/types/**/*.ts"
       ],
       "on_api_mention": [
-        "glpi_dashboard/backend/api/**/*.py",
-        "glpi_dashboard/backend/schemas/**/*.py",
+        "backend/api/**/*.py",
+        "backend/schemas/**/*.py",
         "docs/api/**/*.md"
       ]
     },

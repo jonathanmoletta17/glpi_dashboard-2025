@@ -16,18 +16,18 @@ if %errorlevel% neq 0 (
 
 REM Configurar frontend
 echo 📦 Configurando frontend...
-cd glpi_dashboard\frontend
+cd frontend
 npm install
 npm run build
-cd ..\..
+cd ..
 
 REM Configurar backend
 echo 🐍 Configurando backend...
-cd glpi_dashboard\backend
+cd backend
 python -m venv venv
 call venv\Scripts\activate
-pip install -r ..\requirements.txt
-cd ..\..
+pip install -r requirements.txt
+cd ..
 
 REM Configurar variáveis de ambiente
 echo ⚙️ Configurando variáveis de ambiente...

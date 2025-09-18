@@ -4,36 +4,36 @@
 
 ### Prioridades de Indexação
 1. **Alta Prioridade** - Sempre incluir no contexto:
-   - `glpi_dashboard/frontend/src/` - Código fonte React/TypeScript
-   - `glpi_dashboard/backend/` - Código fonte Flask/Python
-   - `glpi_dashboard/frontend/package.json` - Dependências frontend
-   - `glpi_dashboard/requirements.txt` - Dependências backend
+   - `frontend/src/` - Código fonte React/TypeScript
+- `backend/` - Código fonte Flask/Python
+   - `frontend/package.json` - Dependências frontend
+- `requirements.txt` - Dependências backend
    - `docs/BYTEROVER.md` - Documentação principal da arquitetura
    - `.trae/` - Configurações do Trae AI
 
 2. **Média Prioridade** - Incluir quando relevante:
-   - `glpi_dashboard/docker-compose.yml` - Configuração de containers
-   - `glpi_dashboard/frontend/tailwind.config.js` - Configuração do Tailwind
-   - `glpi_dashboard/frontend/vite.config.ts` - Configuração do Vite
+   - `docker-compose.yml` - Configuração de containers
+- `frontend/tailwind.config.js` - Configuração do Tailwind
+   - `frontend/vite.config.ts` - Configuração do Vite
    - `docs/` - Documentação geral
-   - `glpi_dashboard/monitoring/` - Configurações de monitoramento
+   - `monitoring/` - Configurações de monitoramento
 
 3. **Baixa Prioridade** - Incluir apenas se especificamente solicitado:
-   - `glpi_dashboard/data/` - Dados de exemplo/teste
-   - `glpi_dashboard/scripts/` - Scripts utilitários
+   - `data/` - Dados de exemplo/teste
+- `scripts/` - Scripts utilitários
    - Arquivos de log e temporários
 
 ### Contexto por Tipo de Tarefa
 
 #### Desenvolvimento Frontend
-- **Foco Principal**: `glpi_dashboard/frontend/src/`
+- **Foco Principal**: `frontend/src/`
 - **Arquivos de Configuração**: `package.json`, `tailwind.config.js`, `vite.config.ts`
 - **Componentes UI**: Priorizar `src/components/`
 - **Tipos TypeScript**: Incluir `src/types/`
 - **Estilos**: Considerar classes Tailwind e componentes shadcn/ui
 
 #### Desenvolvimento Backend
-- **Foco Principal**: `glpi_dashboard/backend/`
+- **Foco Principal**: `backend/`
 - **APIs**: Priorizar `backend/api/`
 - **Serviços**: Incluir `backend/services/`
 - **Configuração**: `backend/config/`
@@ -56,12 +56,12 @@
 
 ### Detecção Automática de Escopo
 1. **Quando mencionar "frontend"** → Incluir automaticamente:
-   - `glpi_dashboard/frontend/src/`
+   - `frontend/src/`
    - `package.json`
    - Configurações do Vite/Tailwind
 
 2. **Quando mencionar "backend"** → Incluir automaticamente:
-   - `glpi_dashboard/backend/`
+   - `backend/`
    - `requirements.txt`
    - Configurações Flask
 
