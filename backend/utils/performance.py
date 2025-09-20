@@ -156,9 +156,7 @@ def monitor_performance(func):
             except:
                 target_p95 = 300
             if duration * 1000 > target_p95:
-                logger.warning(
-                    f"Slow request: {func.__name__} took {duration*1000:.2f}ms (target: {target_p95}ms)"
-                )
+                logger.warning(f"Slow request: {func.__name__} took {duration*1000:.2f}ms (target: {target_p95}ms)")
 
     return wrapper
 

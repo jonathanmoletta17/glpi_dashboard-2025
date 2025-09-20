@@ -3,7 +3,7 @@
 Script para limpeza interna profunda do projeto GLPI Dashboard
 Remove documentação de desenvolvimento, testes excessivos e configurações obsoletas
 Mantém apenas código funcional e configurações essenciais
-"""
+."""
 
 import os
 import shutil
@@ -12,12 +12,12 @@ from pathlib import Path
 
 
 def get_project_root():
-    """Retorna o diretório raiz do projeto"""
+    """Retorna o diretório raiz do projeto."""
     return Path(__file__).parent.parent
 
 
 def get_files_to_remove():
-    """Lista de arquivos e pastas para remoção"""
+    """Lista de arquivos e pastas para remoção."""
     return [
         # Documentação de Desenvolvimento na Raiz
         "ANALISE_LIMPEZA_RAIZ.md",
@@ -66,7 +66,7 @@ def get_files_to_remove():
 
 
 def get_files_to_keep():
-    """Lista de arquivos essenciais que devem ser mantidos"""
+    """Lista de arquivos essenciais que devem ser mantidos."""
     return [
         # Configuração e Infraestrutura
         "config/system.yaml",
@@ -95,7 +95,7 @@ def get_files_to_keep():
 
 
 def remove_file_or_dir(path):
-    """Remove arquivo ou diretório de forma segura"""
+    """Remove arquivo ou diretório de forma segura."""
     try:
         if path.is_file():
             path.unlink()
@@ -110,7 +110,7 @@ def remove_file_or_dir(path):
 
 
 def validate_essential_files():
-    """Valida se arquivos essenciais ainda existem"""
+    """Valida se arquivos essenciais ainda existem."""
     root = get_project_root()
     essential_files = [
         "backend/app.py",
@@ -138,7 +138,7 @@ def validate_essential_files():
 
 
 def count_files_in_directory(directory):
-    """Conta arquivos em um diretório recursivamente"""
+    """Conta arquivos em um diretório recursivamente."""
     count = 0
     if directory.exists():
         for item in directory.rglob("*"):
@@ -148,7 +148,7 @@ def count_files_in_directory(directory):
 
 
 def main():
-    """Função principal de limpeza interna profunda"""
+    """Função principal de limpeza interna profunda."""
     print("🔍 INICIANDO LIMPEZA INTERNA PROFUNDA DO PROJETO GLPI DASHBOARD")
     print("=" * 70)
 

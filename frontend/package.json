@@ -20,7 +20,8 @@
     "test:ci": "vitest run --coverage --reporter=verbose --reporter=json --outputFile=coverage/test-results.json",
     "audit:dead-code": "node scripts/audit-dead-code.cjs",
     "audit:dependencies": "node scripts/analyze-dependencies.cjs",
-    "audit:duplicates": "jscpd src",
+    "audit:duplicates": "jscpd --config .jscpd.json",
+    "audit:duplicates:html": "jscpd --config .jscpd.json --reporters html",
     "clean:unused": "npm run audit:dead-code && npm run lint:fix",
     "prepare": "husky install",
     "pre-commit": "lint-staged"
@@ -71,6 +72,7 @@
     "eslint-plugin-react-hooks": "^4.6.0",
     "eslint-plugin-react-refresh": "^0.4.4",
     "eslint-plugin-unused-imports": "^4.2.0",
+    "eslint-plugin-vitest-globals": "^1.5.0",
     "html2canvas": "^1.4.1",
     "husky": "^9.1.7",
     "jest-axe": "^10.0.0",

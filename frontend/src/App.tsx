@@ -5,7 +5,7 @@ import CacheNotification from './components/CacheNotification';
 import { ModernDashboard } from './components/dashboard/ModernDashboard';
 import { TicketDetailModal } from './components/TicketDetailModal';
 import SkipLink from './components/SkipLink';
-import { ThemeProvider, useTheme, Theme } from './contexts/ThemeContext';
+import { ThemeProvider, useTheme } from './contexts/ThemeContext';
 
 import { Ticket } from './types/ticket';
 import { UnifiedLoading } from './components/UnifiedLoading';
@@ -32,7 +32,6 @@ function AppContent() {
     notifications,
     searchQuery,
     filters,
-    dataIntegrityReport,
     filterType,
     availableFilterTypes,
     loadData,
@@ -47,11 +46,11 @@ function AppContent() {
 
   const [selectedTicket, setSelectedTicket] = useState<Ticket | null>(null);
   const [isTicketModalOpen, setIsTicketModalOpen] = useState(false);
-  const [_isLoadingTicketDetails, _setIsLoadingTicketDetails] = useState(false);
+  const [, setIsLoadingTicketDetails] = useState(false);
 
   // Ticket modal handlers
   const handleTicketClick = async (ticket: Ticket) => {
-    _setIsLoadingTicketDetails(true);
+    setIsLoadingTicketDetails(true);
 
     try {
       // Import the API function dynamically to avoid circular dependencies
@@ -76,7 +75,7 @@ function AppContent() {
       setSelectedTicket(ticket);
       setIsTicketModalOpen(true);
     } finally {
-      _setIsLoadingTicketDetails(false);
+      setIsLoadingTicketDetails(false);
     }
   };
 
@@ -95,8 +94,6 @@ function AppContent() {
   useEffect(() => {
     loadData();
   }, [loadData]);
-
-
 
   // Handle filter by status
   const handleFilterByStatus = async (status: TicketStatus) => {
@@ -146,7 +143,7 @@ function AppContent() {
   }
 
   return (
-    <div className="h-screen overflow-hidden transition-all duration-300">
+    <div className='h-screen overflow-hidden transition-all duration-300'>
       {/* Skip Links for Accessibility */}
       <SkipLink href='#main-content'>Pular para o conteúdo principal</SkipLink>
       <SkipLink href='#dashboard-metrics'>Pular para métricas do dashboard</SkipLink>

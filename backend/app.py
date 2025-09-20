@@ -232,9 +232,7 @@ def run_server() -> None:
     logger.info(f"Iniciando servidor Flask em {host}:{port} (Debug: {debug})")
 
     try:
-        app.run(
-            host=server_config["host"], port=server_config["port"], debug=server_config["debug"]
-        )
+        app.run(host=server_config["host"], port=server_config["port"], debug=server_config["debug"])
     except KeyboardInterrupt:
         logger.info("Servidor interrompido pelo usuário")
     except Exception as e:

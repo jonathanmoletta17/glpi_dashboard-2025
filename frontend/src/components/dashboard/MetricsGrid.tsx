@@ -2,13 +2,10 @@ import React, { useMemo, useCallback } from 'react';
 import { motion } from 'framer-motion';
 import { AlertTriangle, Activity, Clock, CheckCircle } from 'lucide-react';
 import { MetricsData, TicketStatus } from '../../types';
-import {
-  RESPONSIVE_GRID_CLASSES,
-  createSimpleGridClasses,
-} from '@/utils/responsive';
+import { RESPONSIVE_GRID_CLASSES, createSimpleGridClasses } from '@/utils/responsive';
 import { gridPresets } from '@/utils/animations';
 import { useDashboardFormatters } from '@/hooks/useFormatters';
-import { SkeletonMetrics } from '@/utils/loadingComponents';
+import { SkeletonMetrics } from '@/utils/loadingUtils';
 
 import { useScreenReaderAnnouncement } from '../accessibility/VisuallyHidden';
 
@@ -136,7 +133,7 @@ export const MetricsGrid = React.memo<MetricsGridProps>(
     );
 
     if (isLoading) {
-      return <SkeletonMetrics className={className} />;
+      return <SkeletonMetrics />;
     }
 
     const gridClasses = createSimpleGridClasses({

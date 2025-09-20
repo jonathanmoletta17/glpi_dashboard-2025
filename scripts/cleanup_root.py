@@ -3,7 +3,7 @@
 Script para limpeza da raiz do projeto GLPI Dashboard
 Remove apenas documentação de desenvolvimento e arquivos obsoletos
 Mantém toda a funcionalidade e conhecimento técnico essencial
-"""
+."""
 
 import os
 import shutil
@@ -12,12 +12,12 @@ from pathlib import Path
 
 
 def get_project_root():
-    """Retorna o diretório raiz do projeto"""
+    """Retorna o diretório raiz do projeto."""
     return Path(__file__).parent.parent
 
 
 def get_files_to_remove():
-    """Lista de arquivos e pastas para remoção"""
+    """Lista de arquivos e pastas para remoção."""
     return [
         # Documentação de Desenvolvimento
         "RELATORIO_AUDITORIA_COMPLETA_PROJETO.md",
@@ -73,7 +73,7 @@ def get_files_to_remove():
 
 
 def get_files_to_keep():
-    """Lista de arquivos essenciais que devem ser mantidos"""
+    """Lista de arquivos essenciais que devem ser mantidos."""
     return [
         # Configuração e Infraestrutura
         "config/system.yaml",
@@ -102,7 +102,7 @@ def get_files_to_keep():
 
 
 def remove_file_or_dir(path):
-    """Remove arquivo ou diretório de forma segura"""
+    """Remove arquivo ou diretório de forma segura."""
     try:
         if path.is_file():
             path.unlink()
@@ -117,7 +117,7 @@ def remove_file_or_dir(path):
 
 
 def validate_essential_files():
-    """Valida se arquivos essenciais ainda existem"""
+    """Valida se arquivos essenciais ainda existem."""
     root = get_project_root()
     essential_files = [
         "backend/app.py",
@@ -143,7 +143,7 @@ def validate_essential_files():
 
 
 def main():
-    """Função principal de limpeza"""
+    """Função principal de limpeza."""
     print("🧹 INICIANDO LIMPEZA DA RAIZ DO PROJETO GLPI DASHBOARD")
     print("=" * 60)
 

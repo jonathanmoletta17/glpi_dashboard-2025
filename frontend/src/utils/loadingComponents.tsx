@@ -2,88 +2,15 @@ import React from 'react';
 import { motion } from 'framer-motion';
 import { Loader2, AlertCircle } from 'lucide-react';
 import { cn } from '@/lib/utils';
-import { Card, CardContent, CardHeader } from '@/components/ui/card';
-
-// Tipos centralizados para loading
-export type LoadingSize = 'xs' | 'sm' | 'md' | 'lg' | 'xl';
-export type LoadingVariant = 'default' | 'minimal' | 'detailed' | 'professional';
-export type SkeletonType = 'card' | 'list' | 'table' | 'metrics' | 'levels' | 'tickets' | 'dashboard' | 'custom';
-
-// Configurações de tamanhos otimizadas
-export const LOADING_SIZES = {
-  xs: {
-    spinner: 'w-3 h-3',
-    text: 'text-xs',
-    container: 'p-1',
-    skeleton: 'h-2',
-    gap: 'gap-1',
-  },
-  sm: {
-    spinner: 'w-4 h-4',
-    text: 'text-xs',
-    container: 'p-2',
-    skeleton: 'h-3',
-    gap: 'gap-2',
-  },
-  md: {
-    spinner: 'w-6 h-6',
-    text: 'text-sm',
-    container: 'p-4',
-    skeleton: 'h-4',
-    gap: 'gap-3',
-  },
-  lg: {
-    spinner: 'w-8 h-8',
-    text: 'text-base',
-    container: 'p-6',
-    skeleton: 'h-5',
-    gap: 'gap-4',
-  },
-  xl: {
-    spinner: 'w-12 h-12',
-    text: 'text-lg',
-    container: 'p-8',
-    skeleton: 'h-6',
-    gap: 'gap-6',
-  },
-} as const;
-
-// Configurações de variantes
-export const LOADING_VARIANTS = {
-  default: {
-    bg: 'bg-white dark:bg-gray-800',
-    border: 'border border-gray-200 dark:border-gray-700',
-    shadow: 'shadow-sm',
-    skeleton: 'bg-gray-200 dark:bg-gray-700',
-  },
-  minimal: {
-    bg: 'bg-transparent',
-    border: '',
-    shadow: '',
-    skeleton: 'bg-gray-100 dark:bg-gray-800',
-  },
-  detailed: {
-    bg: 'bg-white/80 backdrop-blur-sm dark:bg-white/5',
-    border: 'border border-white/90 dark:border-white/10',
-    shadow: 'shadow-lg',
-    skeleton: 'bg-gray-200 dark:bg-gray-700',
-  },
-  professional: {
-    bg: 'bg-gradient-to-br from-white to-gray-50 dark:from-gray-800 dark:to-gray-900',
-    border: 'border border-gray-200/50 dark:border-gray-700/50',
-    shadow: 'shadow-md hover:shadow-lg transition-shadow',
-    skeleton: 'bg-gradient-to-r from-gray-200 to-gray-300 dark:from-gray-700 dark:to-gray-600',
-  },
-} as const;
-
-// Animações otimizadas
-export const LOADING_ANIMATIONS = {
-  pulse: 'animate-pulse',
-  spin: 'animate-spin',
-  bounce: 'animate-bounce',
-  shimmer: 'animate-pulse bg-gradient-to-r from-transparent via-white/20 to-transparent',
-  wave: 'animate-pulse duration-1000',
-} as const;
+import { Card, CardHeader, CardContent } from '@/components/ui/card';
+import {
+  LoadingSize,
+  LoadingVariant,
+  SkeletonType,
+  LOADING_SIZES,
+  LOADING_VARIANTS,
+  LOADING_ANIMATIONS,
+} from './loadingConstants';
 
 // Interface para props de skeleton
 interface SkeletonProps {
@@ -108,12 +35,7 @@ export const OptimizedSkeleton: React.FC<SkeletonProps> = ({
   const variantConfig = LOADING_VARIANTS[variant];
   const animationClass = animate ? LOADING_ANIMATIONS.pulse : '';
 
-  const baseSkeletonClass = cn(
-    variantConfig.skeleton,
-    'rounded',
-    animationClass,
-    className
-  );
+  const baseSkeletonClass = cn(variantConfig.skeleton, 'rounded', animationClass, className);
 
   const renderSkeletonByType = () => {
     switch (type) {
@@ -185,7 +107,10 @@ export const OptimizedSkeleton: React.FC<SkeletonProps> = ({
         return (
           <div className='space-y-3'>
             {Array.from({ length: count }).map((_, i) => (
-              <div key={i} className={cn('flex items-center space-x-3 p-3 rounded', variantConfig.border)}>
+              <div
+                key={i}
+                className={cn('flex items-center space-x-3 p-3 rounded', variantConfig.border)}
+              >
                 <div className={cn(baseSkeletonClass, sizeConfig.skeleton, 'w-8')} />
                 <div className={cn(baseSkeletonClass, sizeConfig.skeleton, 'flex-1')} />
                 <div className={cn(baseSkeletonClass, sizeConfig.skeleton, 'w-16')} />
@@ -214,7 +139,10 @@ export const OptimizedSkeleton: React.FC<SkeletonProps> = ({
         return (
           <div className='grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6'>
             {Array.from({ length: count || 4 }).map((_, i) => (
-              <Card key={i} className={cn(variantConfig.bg, variantConfig.border, variantConfig.shadow)}>
+              <Card
+                key={i}
+                className={cn(variantConfig.bg, variantConfig.border, variantConfig.shadow)}
+              >
                 <CardContent className={sizeConfig.container}>
                   <div className='flex items-center justify-between mb-4'>
                     <div className={cn(baseSkeletonClass, 'w-10 h-10 rounded-lg')} />
@@ -242,7 +170,10 @@ export const OptimizedSkeleton: React.FC<SkeletonProps> = ({
             </div>
             <div className='grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6'>
               {Array.from({ length: 4 }).map((_, i) => (
-                <Card key={i} className={cn(variantConfig.bg, variantConfig.border, variantConfig.shadow)}>
+                <Card
+                  key={i}
+                  className={cn(variantConfig.bg, variantConfig.border, variantConfig.shadow)}
+                >
                   <CardContent className={sizeConfig.container}>
                     <div className='flex items-center justify-between mb-4'>
                       <div className={cn(baseSkeletonClass, 'w-10 h-10 rounded-lg')} />
@@ -256,7 +187,9 @@ export const OptimizedSkeleton: React.FC<SkeletonProps> = ({
                 </Card>
               ))}
             </div>
-            <Card className={cn(variantConfig.bg, variantConfig.border, variantConfig.shadow, 'h-48')}>
+            <Card
+              className={cn(variantConfig.bg, variantConfig.border, variantConfig.shadow, 'h-48')}
+            >
               <CardContent className={cn(sizeConfig.container, 'h-full')}>
                 <div className={cn(baseSkeletonClass, 'h-full rounded')} />
               </CardContent>
@@ -282,27 +215,6 @@ export const OptimizedSkeleton: React.FC<SkeletonProps> = ({
   );
 };
 
-// Componentes de conveniência específicos
-export const SkeletonCard: React.FC<Omit<SkeletonProps, 'type'>> = (props) => (
-  <OptimizedSkeleton {...props} type="card" />
-);
-
-export const SkeletonDashboard: React.FC<Omit<SkeletonProps, 'type'>> = (props) => (
-  <OptimizedSkeleton {...props} type="dashboard" />
-);
-
-export const SkeletonTickets: React.FC<Omit<SkeletonProps, 'type'>> = (props) => (
-  <OptimizedSkeleton {...props} type="tickets" />
-);
-
-export const SkeletonMetrics: React.FC<Omit<SkeletonProps, 'type'>> = (props) => (
-  <OptimizedSkeleton {...props} type="metrics" />
-);
-
-export const SkeletonLevels: React.FC<Omit<SkeletonProps, 'type'>> = (props) => (
-  <OptimizedSkeleton {...props} type="levels" />
-);
-
 // Spinner otimizado
 interface SpinnerProps {
   size?: LoadingSize;
@@ -310,20 +222,20 @@ interface SpinnerProps {
   text?: string;
 }
 
-export const OptimizedSpinner: React.FC<SpinnerProps> = ({
-  size = 'md',
-  className = '',
-  text,
-}) => {
+export const OptimizedSpinner: React.FC<SpinnerProps> = ({ size = 'md', className = '', text }) => {
   const sizeConfig = LOADING_SIZES[size];
 
   return (
     <div className={cn('flex flex-col items-center justify-center gap-2', className)}>
-      <Loader2 className={cn(sizeConfig.spinner, 'text-blue-600 dark:text-blue-400', LOADING_ANIMATIONS.spin)} />
+      <Loader2
+        className={cn(
+          sizeConfig.spinner,
+          'text-blue-600 dark:text-blue-400',
+          LOADING_ANIMATIONS.spin
+        )}
+      />
       {text && (
-        <span className={cn('text-gray-600 dark:text-gray-400', sizeConfig.text)}>
-          {text}
-        </span>
+        <span className={cn('text-gray-600 dark:text-gray-400', sizeConfig.text)}>{text}</span>
       )}
     </div>
   );
@@ -348,7 +260,13 @@ export const OptimizedErrorState: React.FC<ErrorStateProps> = ({
   const sizeConfig = LOADING_SIZES[size];
 
   return (
-    <div className={cn('flex flex-col items-center justify-center text-center', sizeConfig.container, className)}>
+    <div
+      className={cn(
+        'flex flex-col items-center justify-center text-center',
+        sizeConfig.container,
+        className
+      )}
+    >
       <div className='w-16 h-16 bg-red-100 dark:bg-red-900/20 rounded-full flex items-center justify-center mb-4'>
         <AlertCircle className='w-8 h-8 text-red-600 dark:text-red-400' />
       </div>
@@ -383,38 +301,4 @@ export const OptimizedErrorState: React.FC<ErrorStateProps> = ({
       )}
     </div>
   );
-};
-
-// Hook para gerenciar estados de loading
-export const useLoadingState = (initialState = false) => {
-  const [isLoading, setIsLoading] = React.useState(initialState);
-  const [error, setError] = React.useState<string | null>(null);
-
-  const startLoading = React.useCallback(() => {
-    setIsLoading(true);
-    setError(null);
-  }, []);
-
-  const stopLoading = React.useCallback(() => {
-    setIsLoading(false);
-  }, []);
-
-  const setLoadingError = React.useCallback((errorMessage: string) => {
-    setIsLoading(false);
-    setError(errorMessage);
-  }, []);
-
-  const reset = React.useCallback(() => {
-    setIsLoading(false);
-    setError(null);
-  }, []);
-
-  return {
-    isLoading,
-    error,
-    startLoading,
-    stopLoading,
-    setLoadingError,
-    reset,
-  };
 };

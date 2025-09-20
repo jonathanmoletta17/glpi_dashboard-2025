@@ -7,7 +7,7 @@ Extrai dados completos do GLPI com formatação adequada para IA
 Autor: Assistant
 Data: 2025-01-06
 Versão: 2.0
-"""
+."""
 
 import csv
 import html
@@ -28,7 +28,7 @@ load_dotenv()
 
 
 class GLPICompleteExtractor:
-    """Extrator completo de dados GLPI com formatação para IA"""
+    """Extrator completo de dados GLPI com formatação para IA."""
 
     def __init__(self):
         self.setup_logging()
@@ -50,7 +50,7 @@ class GLPICompleteExtractor:
         }
 
     def setup_logging(self):
-        """Configura o sistema de logging"""
+        """Configura o sistema de logging."""
         logging.basicConfig(
             level=logging.INFO,
             format="%(asctime)s - %(levelname)s - %(message)s",
@@ -62,7 +62,7 @@ class GLPICompleteExtractor:
         self.logger = logging.getLogger(__name__)
 
     def load_config(self):
-        """Carrega configurações do ambiente"""
+        """Carrega configurações do ambiente."""
         self.glpi_url = os.getenv("GLPI_URL", "").rstrip("/")
         self.app_token = os.getenv("GLPI_APP_TOKEN", "")
         self.user_token = os.getenv("GLPI_USER_TOKEN", "")
@@ -73,7 +73,7 @@ class GLPICompleteExtractor:
         self.logger.info(f"Configuração carregada - URL: `{self.glpi_url}`")
 
     def authenticate(self) -> bool:
-        """Autentica na API GLPI"""
+        """Autentica na API GLPI."""
         try:
             self.logger.info("Iniciando autenticação na API GLPI...")
 
@@ -101,7 +101,7 @@ class GLPICompleteExtractor:
             return False
 
     def get_headers(self) -> Dict[str, str]:
-        """Retorna headers para requisições autenticadas"""
+        """Retorna headers para requisições autenticadas."""
         return {
             "Content-Type": "application/json",
             "Session-Token": self.session_token,
@@ -109,7 +109,7 @@ class GLPICompleteExtractor:
         }
 
     def clean_text(self, text: str) -> str:
-        """Limpa e formata texto para IA"""
+        """Limpa e formata texto para IA."""
         if not isinstance(text, str):
             return str(text) if text is not None else ""
 
@@ -129,7 +129,7 @@ class GLPICompleteExtractor:
         return text.strip()
 
     def format_complex_field(self, value: Any) -> str:
-        """Formata campos complexos para CSV"""
+        """Formata campos complexos para CSV."""
         if value is None:
             return ""
 
@@ -146,7 +146,7 @@ class GLPICompleteExtractor:
     def make_api_request(
         self, endpoint: str, params: Optional[Dict] = None
     ) -> Optional[List[Dict]]:
-        """Faz requisição à API com retry automático"""
+        """Faz requisição à API com retry automático."""
         url = f"{self.glpi_url}/{endpoint}"
         headers = self.get_headers()
 
@@ -181,7 +181,7 @@ class GLPICompleteExtractor:
         return None
 
     def extract_with_pagination(self, endpoint: str, description: str) -> List[Dict]:
-        """Extrai dados com paginação automática"""
+        """Extrai dados com paginação automática."""
         all_data = []
         start = 0
 
@@ -226,7 +226,7 @@ class GLPICompleteExtractor:
         return all_data
 
     def extract_all_tickets(self) -> List[Dict]:
-        """Extrai todos os tickets com todos os campos"""
+        """Extrai todos os tickets com todos os campos."""
         tickets = self.extract_with_pagination("Ticket", "tickets")
 
         # Limpar e formatar dados dos tickets
@@ -244,7 +244,7 @@ class GLPICompleteExtractor:
         return cleaned_tickets
 
     def extract_all_users(self) -> List[Dict]:
-        """Extrai todos os usuários"""
+        """Extrai todos os usuários."""
         users = self.extract_with_pagination("User", "usuários")
 
         # Limpar e formatar dados dos usuários
@@ -274,7 +274,7 @@ class GLPICompleteExtractor:
         return cleaned_users
 
     def extract_user_profiles(self, user_id: str) -> List[Dict]:
-        """Extrai perfis de um usuário específico"""
+        """Extrai perfis de um usuário específico."""
         try:
             profiles = self.make_api_request(f"User/{user_id}/Profile_User")
             return profiles if profiles else []
@@ -282,7 +282,7 @@ class GLPICompleteExtractor:
             return []
 
     def filter_technicians(self, users: List[Dict]) -> List[Dict]:
-        """Filtra usuários que são técnicos baseado em critérios rigorosos"""
+        """Filtra usuários que são técnicos baseado em critérios rigorosos."""
         technicians = []
 
         # Critérios mais específicos para identificar técnicos reais
@@ -361,7 +361,7 @@ class GLPICompleteExtractor:
         return technicians
 
     def filter_requesters(self, users: List[Dict]) -> List[Dict]:
-        """Filtra usuários que são solicitantes (usuários finais)"""
+        """Filtra usuários que são solicitantes (usuários finais)."""
         requesters = []
 
         for user in users:
@@ -452,7 +452,7 @@ class GLPICompleteExtractor:
         return requesters
 
     def save_to_csv(self, data: List[Dict], filename: str, description: str):
-        """Salva dados em arquivo CSV formatado para IA"""
+        """Salva dados em arquivo CSV formatado para IA."""
         if not data:
             self.logger.warning(f"Nenhum dado para salvar em {filename}")
             return
@@ -485,7 +485,7 @@ class GLPICompleteExtractor:
             self.logger.error(f"Erro ao salvar {filename}: {e}")
 
     def cleanup(self):
-        """Limpa recursos e encerra sessão"""
+        """Limpa recursos e encerra sessão."""
         try:
             if self.session_token:
                 headers = self.get_headers()
@@ -497,7 +497,7 @@ class GLPICompleteExtractor:
             self.session.close()
 
     def print_statistics(self):
-        """Imprime estatísticas da extração"""
+        """Imprime estatísticas da extração."""
         end_time = datetime.now()
         duration = end_time - self.stats["start_time"]
 
@@ -521,7 +521,7 @@ class GLPICompleteExtractor:
         print("=" * 60)
 
     def run(self):
-        """Executa a extração completa"""
+        """Executa a extração completa."""
         try:
             self.logger.info("Iniciando extração completa de dados GLPI")
 
@@ -560,7 +560,7 @@ class GLPICompleteExtractor:
 
 
 def main():
-    """Função principal"""
+    """Função principal."""
     try:
         extractor = GLPICompleteExtractor()
         extractor.run()

@@ -3,13 +3,13 @@ import { useState, useEffect, useCallback, useRef } from 'react';
 /**
  * Opções para configurar o comportamento do hook useApi
  */
-export interface UseApiOptions {
+export interface UseApiOptions<T = unknown> {
   /** Se deve executar automaticamente ao montar o componente */
   autoExecute?: boolean;
   /** Dependências que, quando alteradas, reexecutam a função */
-  dependencies?: any[];
+  dependencies?: unknown[];
   /** Callback executado quando a requisição é bem-sucedida */
-  onSuccess?: (data: any) => void;
+  onSuccess?: (data: T) => void;
   /** Callback executado quando ocorre um erro */
   onError?: (error: string) => void;
 }
@@ -25,7 +25,7 @@ export interface UseApiState<T> {
   /** Mensagem de erro, se houver */
   error: string | null;
   /** Função para executar a requisição manualmente */
-  execute: (...args: any[]) => Promise<void>;
+  execute: (...args: unknown[]) => Promise<void>;
   /** Função para resetar o estado */
   reset: () => void;
 }
@@ -53,9 +53,9 @@ export interface UseApiState<T> {
  * });
  * ```
  */
-export function useApi<T = any>(
-  apiFunction: (...args: any[]) => Promise<T>,
-  options: UseApiOptions = {}
+export function useApi<T = unknown>(
+  apiFunction: (...args: unknown[]) => Promise<T>,
+  options: UseApiOptions<T> = {}
 ): UseApiState<T> {
   const { autoExecute = false, dependencies = [], onSuccess, onError } = options;
 
@@ -71,7 +71,7 @@ export function useApi<T = any>(
    * Executa a função da API
    */
   const execute = useCallback(
-    async (...args: any[]) => {
+    async (...args: unknown[]) => {
       // Incrementar contador de execução para cancelar requisições anteriores
       const currentExecution = ++executionCountRef.current;
       cancelRef.current = false;
@@ -142,9 +142,9 @@ export function useApi<T = any>(
  */
 export function useMetrics(options?: UseApiOptions) {
   // Importação dinâmica para evitar problemas de dependência circular
-  const apiFunction = async (...args: any[]) => {
+  const apiFunction = async (...args: unknown[]) => {
     const { apiService } = await import('../services/api');
-    return apiService.getMetrics(...args);
+    return apiService.getMetrics(...(args as Parameters<typeof apiService.getMetrics>));
   };
   return useApi(apiFunction, options);
 }
@@ -183,9 +183,9 @@ export function useTechnicianRanking(
  * Hook especializado para novos tickets
  */
 export function useNewTickets(options?: UseApiOptions) {
-  const apiFunction = async (...args: any[]) => {
+  const apiFunction = async (...args: unknown[]) => {
     const { apiService } = await import('../services/api');
-    return apiService.getNewTickets(...args);
+    return apiService.getNewTickets(...(args as Parameters<typeof apiService.getNewTickets>));
   };
   return useApi(apiFunction, options);
 }

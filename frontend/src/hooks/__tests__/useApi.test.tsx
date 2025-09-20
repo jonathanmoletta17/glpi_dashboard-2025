@@ -1,8 +1,6 @@
 import { renderHook, waitFor, act } from '@testing-library/react';
 import { describe, it, expect, beforeEach, vi } from 'vitest';
 import { useApi } from '../useApi';
-import { server } from '../../test/mocks/server';
-import { http, HttpResponse } from 'msw';
 
 // Mock API functions
 const mockApiFunction = vi.fn();
@@ -29,7 +27,7 @@ describe('useApi Hook', () => {
 
   it('should handle loading state during API call', async () => {
     const mockData = { test: 'data' };
-    let resolvePromise: (value: any) => void;
+    let resolvePromise: (value: unknown) => void;
     const delayedPromise = new Promise(resolve => {
       resolvePromise = resolve;
     });
@@ -76,9 +74,11 @@ describe('useApi Hook', () => {
 
     mockApiFunction.mockResolvedValue(mockData);
 
-    const { result } = renderHook(() => useApi(mockApiFunction, {
-      onSuccess: mockSuccessCallback
-    }));
+    const { result } = renderHook(() =>
+      useApi(mockApiFunction, {
+        onSuccess: mockSuccessCallback,
+      })
+    );
 
     act(() => {
       result.current.execute();
@@ -99,9 +99,11 @@ describe('useApi Hook', () => {
 
     mockApiFunction.mockRejectedValue(error);
 
-    const { result } = renderHook(() => useApi(mockApiFunction, {
-      onError: mockErrorCallback
-    }));
+    const { result } = renderHook(() =>
+      useApi(mockApiFunction, {
+        onError: mockErrorCallback,
+      })
+    );
 
     act(() => {
       result.current.execute();
@@ -190,9 +192,11 @@ describe('useApi Hook', () => {
     const mockData = { autoExecuted: true };
     mockApiFunction.mockResolvedValue(mockData);
 
-    const { result } = renderHook(() => useApi(mockApiFunction, {
-      autoExecute: true
-    }));
+    const { result } = renderHook(() =>
+      useApi(mockApiFunction, {
+        autoExecute: true,
+      })
+    );
 
     await waitFor(() => {
       expect(result.current.loading).toBe(false);

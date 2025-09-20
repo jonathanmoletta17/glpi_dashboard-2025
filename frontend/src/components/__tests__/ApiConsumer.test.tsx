@@ -15,9 +15,9 @@ vi.mock('../../services/api', () => ({
 
 // Simple test component that uses API
 const TestApiConsumer = () => {
-  const [data, setData] = React.useState(null);
+  const [data, setData] = React.useState<any>(null);
   const [loading, setLoading] = React.useState(false);
-  const [error, setError] = React.useState(null);
+  const [error, setError] = React.useState<string | null>(null);
 
   const fetchData = async () => {
     setLoading(true);
@@ -39,13 +39,13 @@ const TestApiConsumer = () => {
 
   return (
     <div>
-      <button onClick={fetchData} data-testid="fetch-button">
+      <button onClick={fetchData} data-testid='fetch-button'>
         Fetch Data
       </button>
-      {loading && <div data-testid="loading">Loading...</div>}
-      {error && <div data-testid="error">{error}</div>}
+      {loading && <div data-testid='loading'>Loading...</div>}
+      {error && <div data-testid='error'>{error}</div>}
       {data && (
-        <div data-testid="data">
+        <div data-testid='data'>
           <div>Total: {data.total}</div>
           <div>Novos: {data.novos}</div>
           <div>Pendentes: {data.pendentes}</div>

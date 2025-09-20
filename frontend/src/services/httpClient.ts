@@ -1,9 +1,8 @@
-import axios from 'axios';
-import type {
-  AxiosInstance,
-  AxiosError,
-  AxiosRequestConfig,
-  AxiosResponse,
+import axios, {
+  type AxiosInstance,
+  type AxiosError,
+  type AxiosRequestConfig,
+  type AxiosResponse,
 } from 'axios';
 
 // Função auxiliar para acessar variáveis de ambiente
@@ -71,9 +70,11 @@ if (import.meta.env.DEV) {
 
 // Interceptador de requisição para autenticação e logging
 httpClient.interceptors.request.use(
-  (config: any) => {
+  (config: AxiosRequestConfig) => {
     // Garantir que headers existe
-    config.headers = config.headers || {};
+    if (!config.headers) {
+      config.headers = {};
+    }
 
     if (authConfig.apiToken) {
       config.headers['Authorization'] = `Bearer ${authConfig.apiToken}`;
@@ -123,7 +124,7 @@ httpClient.interceptors.response.use(
     // Tratamento gracioso de erros
     const config = error.config;
     const url = config?.url || 'unknown';
-    
+
     // Log do erro (apenas em desenvolvimento)
     if (import.meta.env.DEV) {
       console.warn('❌ HTTP Error:', {
@@ -137,7 +138,7 @@ httpClient.interceptors.response.use(
     // Tratamento específico para endpoints removidos/inexistentes
     if (error.response?.status === 404) {
       console.warn(`⚠️ Endpoint não encontrado: ${url}. Retornando dados de fallback.`);
-      
+
       // Para endpoints específicos que foram removidos, retornar dados de fallback
       if (url.includes('/status') || url.includes('/filter-types')) {
         return Promise.resolve({
@@ -146,12 +147,12 @@ httpClient.interceptors.response.use(
             data: null,
             message: `Endpoint ${url} não está mais disponível`,
             timestamp: new Date().toISOString(),
-            fallback: true
+            fallback: true,
           },
           status: 200,
           statusText: 'OK (Fallback)',
           headers: {},
-          config: error.config
+          config: error.config,
         } as AxiosResponse);
       }
     }
@@ -159,13 +160,13 @@ httpClient.interceptors.response.use(
     // Para erros 500, tentar fornecer informações úteis
     if (error.response?.status === 500) {
       console.error(`🚨 Erro interno do servidor em ${url}:`, error.response.data);
-      
+
       // Retornar erro estruturado para melhor tratamento no frontend
       return Promise.reject({
         ...error,
         isServerError: true,
         endpoint: url,
-        fallbackAvailable: url.includes('/status') || url.includes('/filter-types')
+        fallbackAvailable: url.includes('/status') || url.includes('/filter-types'),
       });
     }
 
@@ -253,11 +254,11 @@ declare module 'axios' {
 }
 
 // Adicionar métodos para interceptadores (para compatibilidade com testes)
-(httpClient as any).addRequestInterceptor = (interceptor: any) => {
+(httpClient as any).addRequestInterceptor = (interceptor: (config: AxiosRequestConfig) => AxiosRequestConfig) => {
   return httpClient.interceptors.request.use(interceptor);
 };
 
-(httpClient as any).addResponseInterceptor = (interceptor: any) => {
+(httpClient as any).addResponseInterceptor = (interceptor: (response: AxiosResponse) => AxiosResponse) => {
   return httpClient.interceptors.response.use(interceptor);
 };
 
@@ -265,32 +266,32 @@ declare module 'axios' {
   httpClient.defaults.baseURL = baseURL;
 };
 
-(httpClient as any).removeRequestInterceptor = (interceptor: any) => {
-  httpClient.interceptors.request.eject(interceptor);
+(httpClient as any).removeRequestInterceptor = (interceptorId: number) => {
+  httpClient.interceptors.request.eject(interceptorId);
 };
 
-(httpClient as any).removeResponseInterceptor = (interceptor: any) => {
-  httpClient.interceptors.response.eject(interceptor);
+(httpClient as any).removeResponseInterceptor = (interceptorId: number) => {
+  httpClient.interceptors.response.eject(interceptorId);
 };
 
 // Funções utilitárias para requisições comuns
 export const apiUtils = {
   // GET request
-  get: <T = any>(url: string, config?: AxiosRequestConfig) => httpClient.get<T>(url, config),
+  get: <T = unknown>(url: string, config?: AxiosRequestConfig) => httpClient.get<T>(url, config),
 
   // POST request
-  post: <T = any>(url: string, data?: any, config?: AxiosRequestConfig) =>
+  post: <T = unknown>(url: string, data?: unknown, config?: AxiosRequestConfig) =>
     httpClient.post<T>(url, data, config),
 
   // PUT request
-  put: <T = any>(url: string, data?: any, config?: AxiosRequestConfig) =>
+  put: <T = unknown>(url: string, data?: unknown, config?: AxiosRequestConfig) =>
     httpClient.put<T>(url, data, config),
 
   // DELETE request
-  delete: <T = any>(url: string, config?: AxiosRequestConfig) => httpClient.delete<T>(url, config),
+  delete: <T = unknown>(url: string, config?: AxiosRequestConfig) => httpClient.delete<T>(url, config),
 
   // PATCH request
-  patch: <T = any>(url: string, data?: any, config?: AxiosRequestConfig) =>
+  patch: <T = unknown>(url: string, data?: unknown, config?: AxiosRequestConfig) =>
     httpClient.patch<T>(url, data, config),
 
   // HEAD request

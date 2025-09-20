@@ -78,13 +78,9 @@ export const useFormatters = (options: FormatterOptions = {}) => {
         title: truncateText(ticket.title, 60),
         priority: formatPriority(ticket.priority),
         createdAt: formatRelativeTime(
-          typeof ticket.createdAt === 'string'
-            ? new Date(ticket.createdAt)
-            : ticket.createdAt
+          typeof ticket.createdAt === 'string' ? new Date(ticket.createdAt) : ticket.createdAt
         ),
-        responseTime: ticket.responseTime
-          ? formatResponseTime(ticket.responseTime)
-          : 'N/A',
+        responseTime: ticket.responseTime ? formatResponseTime(ticket.responseTime) : 'N/A',
       }),
 
       // Formatador para métricas de dashboard
@@ -113,9 +109,14 @@ export const useFormatters = (options: FormatterOptions = {}) => {
         return {
           value: formattedValue,
           change: change !== undefined ? formatPercentage(change) : undefined,
-          changeColor: change !== undefined
-            ? (change > 0 ? 'text-green-600' : change < 0 ? 'text-red-600' : 'text-gray-600')
-            : undefined,
+          changeColor:
+            change !== undefined
+              ? change > 0
+                ? 'text-green-600'
+                : change < 0
+                  ? 'text-red-600'
+                  : 'text-gray-600'
+              : undefined,
         };
       },
 
@@ -131,11 +132,12 @@ export const useFormatters = (options: FormatterOptions = {}) => {
         ticketsResolved: formatLargeNumber(technician.ticketsResolved),
         avgResponseTime: formatResponseTime(technician.avgResponseTime),
         satisfactionRate: formatPercentage(technician.satisfactionRate),
-        satisfactionColor: technician.satisfactionRate >= 0.9
-          ? 'text-green-600'
-          : technician.satisfactionRate >= 0.7
-            ? 'text-yellow-600'
-            : 'text-red-600',
+        satisfactionColor:
+          technician.satisfactionRate >= 0.9
+            ? 'text-green-600'
+            : technician.satisfactionRate >= 0.7
+              ? 'text-yellow-600'
+              : 'text-red-600',
       }),
     };
   }, [locale, currency, timezone, dateFormat, numberFormat]);

@@ -3,7 +3,7 @@
 """
 Script de Limpeza do Projeto GLPI Dashboard
 Remove arquivos obsoletos, duplicações e organiza estrutura
-"""
+."""
 
 import os
 import shutil
@@ -13,7 +13,7 @@ from typing import Dict, List, Tuple
 
 
 class ProjectCleanup:
-    """Classe para limpeza e organização do projeto"""
+    """Classe para limpeza e organização do projeto."""
 
     def __init__(self, project_root: str = "."):
         self.project_root = Path(project_root)
@@ -23,11 +23,11 @@ class ProjectCleanup:
         self.errors = []
 
     def log_action(self, action: str, file_path: str, status: str = "SUCCESS"):
-        """Registra ação realizada"""
+        """Registra ação realizada."""
         print(f"[{status}] {action}: {file_path}")
 
     def create_backup_structure(self):
-        """Cria estrutura de backup para arquivos importantes"""
+        """Cria estrutura de backup para arquivos importantes."""
         try:
             self.backup_dir.mkdir(parents=True, exist_ok=True)
             self.log_action("CREATE", f"Diretório de backup: {self.backup_dir}")
@@ -37,7 +37,7 @@ class ProjectCleanup:
             return False
 
     def remove_backup_files(self) -> bool:
-        """Remove arquivos .backup"""
+        """Remove arquivos .backup."""
         backup_patterns = ["**/*.backup", "**/*.bak", "**/*.old", "**/*.tmp", "**/*.temp"]
 
         removed_count = 0
@@ -56,7 +56,7 @@ class ProjectCleanup:
         return removed_count > 0
 
     def remove_debug_files(self) -> bool:
-        """Remove arquivos de debug e logs temporários"""
+        """Remove arquivos de debug e logs temporários."""
         debug_files = [
             "debug_ranking.log",
             "debug_technician_ranking.log",
@@ -83,7 +83,7 @@ class ProjectCleanup:
         return removed_count > 0
 
     def remove_refactored_duplicates(self) -> bool:
-        """Remove arquivos refatorados duplicados - CUIDADO: Analisar antes de remover"""
+        """Remove arquivos refatorados duplicados - CUIDADO: Analisar antes de remover."""
         refactored_files = [
             "frontend/src/components/dashboard/MetricsGrid-refactored.tsx",
             "frontend/src/components/dashboard/StatusCard-refactored.tsx",
@@ -112,7 +112,7 @@ class ProjectCleanup:
         return removed_count > 0
 
     def remove_duplicate_services(self) -> bool:
-        """Remove serviços duplicados"""
+        """Remove serviços duplicados."""
         duplicate_services = ["backend/services/glpi_service_backup.py"]
 
         removed_count = 0
@@ -134,7 +134,7 @@ class ProjectCleanup:
         return removed_count > 0
 
     def archive_old_reports(self) -> bool:
-        """Move relatórios antigos para archive"""
+        """Move relatórios antigos para archive."""
         old_reports = [
             "API_ERRORS_RESOLUTION_REPORT.md",
             "APP_REFACTORING_REPORT.md",
@@ -171,7 +171,7 @@ class ProjectCleanup:
         return moved_count > 0
 
     def organize_root_files(self) -> bool:
-        """Organiza arquivos soltos na raiz"""
+        """Organiza arquivos soltos na raiz."""
         root_files = {
             "como_configurar_trae_ai.txt": "docs/",
             "RELATORIO_AUDITORIA_UTILS_FRONTEND.md": "docs/",
@@ -195,7 +195,7 @@ class ProjectCleanup:
         return moved_count > 0
 
     def update_gitignore(self) -> bool:
-        """Atualiza .gitignore para evitar arquivos temporários"""
+        """Atualiza .gitignore para evitar arquivos temporários."""
         gitignore_path = self.project_root / ".gitignore"
 
         new_entries = [
@@ -259,7 +259,7 @@ class ProjectCleanup:
             return False
 
     def generate_cleanup_report(self) -> str:
-        """Gera relatório da limpeza realizada"""
+        """Gera relatório da limpeza realizada."""
         report = f"""
 # 🧹 Relatório de Limpeza do Projeto
 
@@ -272,7 +272,7 @@ class ProjectCleanup:
 
 ## 🗑️ Arquivos Removidos
 
-"""
+."""
 
         for file_path in self.removed_files:
             report += f"- {file_path}\n"
@@ -301,12 +301,12 @@ class ProjectCleanup:
 - [ ] Imports atualizados
 - [ ] Documentação atualizada
 - [ ] Commit realizado
-"""
+."""
 
         return report
 
     def run_cleanup(self, dry_run: bool = False) -> bool:
-        """Executa limpeza completa do projeto"""
+        """Executa limpeza completa do projeto."""
         print("🧹 INICIANDO LIMPEZA DO PROJETO GLPI DASHBOARD")
         print("=" * 60)
         print()
@@ -376,7 +376,7 @@ class ProjectCleanup:
 
 
 def main():
-    """Função principal"""
+    """Função principal."""
     import argparse
 
     parser = argparse.ArgumentParser(description="Script de limpeza do projeto GLPI Dashboard")

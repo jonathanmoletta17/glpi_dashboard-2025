@@ -8,8 +8,7 @@ import { NewTicket, Ticket } from '@/types';
 import { cn, formatRelativeTime, formatDate } from '@/lib/utils';
 import { apiService } from '@/services/api';
 import { useThrottledCallback } from '@/hooks/useDebounce';
-import { useSmartRefresh } from '@/hooks/useSmartRefresh';
-import { SkeletonTickets } from '@/utils/loadingComponents';
+import { SkeletonTickets } from '@/utils/loadingUtils';
 
 interface ProfessionalTicketsListProps {
   className?: string;
@@ -213,7 +212,7 @@ export const ProfessionalTicketsList = React.memo<ProfessionalTicketsListProps>(
     const [isLoading, setIsLoading] = useState(true);
     const [error, setError] = useState<string | null>(null);
     const [lastUpdate, setLastUpdate] = useState<Date | null>(null);
-    const [isPending, startTransition] = useTransition();
+    const [, startTransition] = useTransition();
 
     const fetchTickets = useThrottledCallback(async () => {
       try {
@@ -223,7 +222,6 @@ export const ProfessionalTicketsList = React.memo<ProfessionalTicketsListProps>(
         startTransition(() => {
           setTickets(response || []);
           setLastUpdate(new Date());
-          markRefreshed();
         });
       } catch (err) {
         console.error('Erro ao buscar tickets novos:', err);
@@ -237,19 +235,6 @@ export const ProfessionalTicketsList = React.memo<ProfessionalTicketsListProps>(
       fetchTickets();
     }, [fetchTickets]);
 
-    const { shouldRefresh, markRefreshed } = useSmartRefresh({
-      intervalMs: 30000,
-      refreshKey: 'new-tickets',
-      refreshFn: fetchTickets,
-      enabled: true,
-    });
-
-    useEffect(() => {
-      if (shouldRefresh() && !isLoading) {
-        fetchTickets();
-      }
-    }, [shouldRefresh, fetchTickets, isLoading]);
-
     const ticketsCount = useMemo(() => tickets.length, [tickets.length]);
     const hasTickets = useMemo(() => tickets.length > 0, [tickets.length]);
     const formattedLastUpdate = useMemo(
@@ -259,7 +244,7 @@ export const ProfessionalTicketsList = React.memo<ProfessionalTicketsListProps>(
 
     return (
       <Card className={cn('h-full bg-transparent border-0 shadow-none flex flex-col', className)}>
-        <CardHeader className='pb-2 px-4 pt-4 flex-shrink-0'>
+        <CardHeader className='flex-shrink-0'>
           <div className='flex items-center justify-between'>
             <CardTitle className='text-base font-semibold flex items-center gap-2 text-gray-900 dark:text-white'>
               <div className='p-1.5 rounded-md bg-white dark:bg-gray-700 shadow-sm border border-gray-200 dark:border-gray-600'>
@@ -288,7 +273,7 @@ export const ProfessionalTicketsList = React.memo<ProfessionalTicketsListProps>(
           </div>
 
           {formattedLastUpdate && (
-            <div className='flex items-center gap-1 text-xs text-gray-500 dark:text-gray-400 mt-1'>
+            <div className='flex items-center gap-1 text-xs text-gray-500 dark:text-gray-400  px-2'>
               <Clock className='h-3 w-3' />
               Atualizado {formattedLastUpdate}
             </div>
@@ -311,8 +296,7 @@ export const ProfessionalTicketsList = React.memo<ProfessionalTicketsListProps>(
                   'overflow-y-auto pr-2 scrollbar-thin scrollbar-thumb-gray-300 scrollbar-track-gray-100 dark:scrollbar-thumb-gray-600 dark:scrollbar-track-gray-800'
               )}
               style={{
-                maxHeight: '320px',
-                minHeight: tickets.length > 3 ? '320px' : 'auto'
+                minHeight: tickets.length > 2 ? '320px' : 'auto',
               }}
             >
               <motion.div

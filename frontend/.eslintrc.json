@@ -2,7 +2,8 @@
   "env": {
     "browser": true,
     "es2020": true,
-    "node": true
+    "node": true,
+    "vitest-globals/env": true
   },
   "extends": [
     "eslint:recommended"
@@ -16,7 +17,7 @@
       "jsx": true
     }
   },
-  "plugins": ["@typescript-eslint", "react-refresh", "react-hooks", "react", "unused-imports"],
+  "plugins": ["@typescript-eslint", "react-refresh", "react-hooks", "react", "unused-imports", "vitest-globals"],
   "settings": {
     "react": {
       "version": "detect"

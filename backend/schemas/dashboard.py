@@ -107,19 +107,10 @@ class DashboardMetrics(BaseModel):
     @validator("total")
     def validate_total_consistency(cls, v, values):
         """Valida se o total é consistente com a soma dos campos"""
-        if (
-            "novos" in values
-            and "pendentes" in values
-            and "progresso" in values
-            and "resolvidos" in values
-        ):
-            calculated_total = (
-                values["novos"] + values["pendentes"] + values["progresso"] + values["resolvidos"]
-            )
+        if "novos" in values and "pendentes" in values and "progresso" in values and "resolvidos" in values:
+            calculated_total = values["novos"] + values["pendentes"] + values["progresso"] + values["resolvidos"]
             if v != calculated_total:
-                raise ValueError(
-                    f"Total ({v}) deve ser igual à soma dos campos " f"({calculated_total})"
-                )
+                raise ValueError(f"Total ({v}) deve ser igual à soma dos campos " f"({calculated_total})")
         return v
 
 
@@ -139,9 +130,7 @@ class TechnicianRanking(BaseModel):
     name: str = Field(min_length=1, description="Nome do técnico")
     ticket_count: int = Field(ge=0, description="Quantidade de tickets atribuídos")
     level: str = Field(description="Nível do técnico (N1, N2, N3, N4)")
-    performance_score: Optional[float] = Field(
-        None, ge=0, le=10, description="Score de performance (0-10)"
-    )
+    performance_score: Optional[float] = Field(None, ge=0, le=10, description="Score de performance (0-10)")
 
     @validator("level")
     def validate_technician_level(cls, v):
@@ -203,9 +192,7 @@ class ApiResponse(BaseModel):
     message: Optional[str] = Field(None, description="Mensagem informativa")
     errors: Optional[List[str]] = Field(None, description="Lista de erros, se houver")
     timestamp: datetime = Field(default_factory=datetime.now, description="Timestamp da resposta")
-    execution_time_ms: Optional[float] = Field(
-        None, ge=0, description="Tempo de execução em millisegundos"
-    )
+    execution_time_ms: Optional[float] = Field(None, ge=0, description="Tempo de execução em millisegundos")
 
 
 class ApiError(BaseModel):

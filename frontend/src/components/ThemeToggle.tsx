@@ -8,10 +8,7 @@ interface ThemeToggleProps {
   showLabel?: boolean;
 }
 
-const ThemeToggle: React.FC<ThemeToggleProps> = ({
-  className = '',
-  showLabel = false
-}) => {
+const ThemeToggle: React.FC<ThemeToggleProps> = ({ className = '', showLabel = false }) => {
   const { theme, actualTheme, setTheme } = useTheme();
 
   const themes: { value: Theme; icon: React.ReactNode; label: string }[] = [
@@ -32,8 +29,8 @@ const ThemeToggle: React.FC<ThemeToggleProps> = ({
       onClick={handleToggle}
       className={`
         relative flex items-center gap-2 px-3 py-2 rounded-lg
-        bg-white/10 hover:bg-white/20 dark:bg-gray-800/50 dark:hover:bg-gray-700/50
-        border border-gray-200/20 dark:border-gray-700/50
+        bg-white hover:bg-gray-50 dark:bg-gray-800 dark:hover:bg-gray-700
+        border border-gray-200 dark:border-gray-700
         text-gray-700 dark:text-gray-300
         transition-all duration-200 ease-in-out
         focus:outline-none focus:ring-2 focus:ring-blue-500/50
@@ -44,28 +41,28 @@ const ThemeToggle: React.FC<ThemeToggleProps> = ({
       title={`Tema atual: ${themes[currentThemeIndex].label}. Clique para alternar para: ${nextTheme.label}`}
       aria-label={`Alternar tema. Tema atual: ${themes[currentThemeIndex].label}`}
     >
-      <AnimatePresence mode="wait">
+      <AnimatePresence mode='wait'>
         <motion.div
           key={theme}
           initial={{ opacity: 0, rotate: -90 }}
           animate={{ opacity: 1, rotate: 0 }}
           exit={{ opacity: 0, rotate: 90 }}
           transition={{ duration: 0.2 }}
-          className="flex items-center"
+          className='flex items-center'
         >
           {themes[currentThemeIndex].icon}
         </motion.div>
       </AnimatePresence>
 
       {showLabel && (
-        <AnimatePresence mode="wait">
+        <AnimatePresence mode='wait'>
           <motion.span
             key={theme}
             initial={{ opacity: 0, x: -10 }}
             animate={{ opacity: 1, x: 0 }}
             exit={{ opacity: 0, x: 10 }}
             transition={{ duration: 0.2 }}
-            className="text-sm font-medium"
+            className='text-sm font-medium'
           >
             {themes[currentThemeIndex].label}
           </motion.span>

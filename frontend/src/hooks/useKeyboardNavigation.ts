@@ -87,9 +87,9 @@ export const useListNavigation = ({
   loop = true,
   isEnabled = true,
 }: {
-  items?: any[];
+  items?: unknown[];
   itemCount?: number;
-  onSelect?: (index: number, item?: any) => void;
+  onSelect?: (index: number, item?: unknown) => void;
   loop?: boolean;
   isEnabled?: boolean;
 }) => {

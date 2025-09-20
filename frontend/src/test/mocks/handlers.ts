@@ -1,5 +1,10 @@
 import { http, HttpResponse } from 'msw';
-import type { DashboardMetrics, SystemStatus, TechnicianRanking, ApiResponse } from '../../types/api';
+import type {
+  DashboardMetrics,
+  SystemStatus,
+  TechnicianRanking,
+  ApiResponse,
+} from '../../types/api';
 
 // Mock data
 const mockMetrics: DashboardMetrics = {

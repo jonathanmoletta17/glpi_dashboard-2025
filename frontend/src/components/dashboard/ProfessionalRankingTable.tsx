@@ -6,10 +6,7 @@ import { cn, formatNumber } from '@/lib/utils';
 import { Trophy, Medal, Award, Star, BarChart3 } from 'lucide-react';
 import { TechnicianRanking } from '@/types';
 import { listPresets } from '@/utils/animations';
-import {
-  getRankingPositionStyle,
-  getLevelStyle
-} from '@/utils/rankingStyles';
+import { getRankingPositionStyle, getLevelStyle } from '@/utils/rankingStyles';
 
 interface ProfessionalRankingTableProps {
   data: TechnicianRanking[];
@@ -61,7 +58,11 @@ const ProfessionalTechnicianCard = React.memo<{
   const levelStyle = getLevelStyle(technician.level || 'N1');
 
   return (
-    <motion.div variants={listPresets.item} whileHover={{ scale: 1.02, y: -2 }} className='flex-shrink-0 w-48'>
+    <motion.div
+      variants={listPresets.item}
+      whileHover={{ scale: 1.02, y: -2 }}
+      className='flex-shrink-0 w-48'
+    >
       <Card
         className={cn(
           'h-full border-2 dark:border-gray-700',
@@ -70,7 +71,7 @@ const ProfessionalTechnicianCard = React.memo<{
         )}
       >
         <CardContent className='p-3'>
-          <div className='flex items-center justify-between mb-2'>
+          <div className='px-2 flex items-center justify-between mb-2'>
             <div className='flex items-center gap-2'>
               <div
                 className={cn(
@@ -80,9 +81,7 @@ const ProfessionalTechnicianCard = React.memo<{
               >
                 {getPositionIcon()}
               </div>
-              <span className={cn('text-base font-bold', positionStyle.text)}>
-                #{position}
-              </span>
+              <span className={cn('text-base font-bold', positionStyle.text)}>#{position}</span>
             </div>
             <Badge
               variant='outline'
@@ -145,13 +144,7 @@ const ProfessionalTechnicianCard = React.memo<{
 ProfessionalTechnicianCard.displayName = 'ProfessionalTechnicianCard';
 
 export const ProfessionalRankingTable = React.memo<ProfessionalRankingTableProps>(
-  ({
-    data,
-    title = 'Ranking de Técnicos',
-    className,
-    isLoading = false,
-    filters,
-  }) => {
+  ({ data, title = 'Ranking de Técnicos', className, isLoading = false, filters }) => {
     const scrollContainerRef = useRef<HTMLDivElement>(null);
 
     // Lógica de dados - incluir todos os técnicos, mesmo com dados zerados
@@ -192,8 +185,8 @@ export const ProfessionalRankingTable = React.memo<ProfessionalRankingTableProps
 
     return (
       <Card className={cn('h-full bg-transparent border-0 shadow-none', className)}>
-        <CardHeader className='pb-1 px-3 pt-3'>
-          <div className='flex items-center justify-between'>
+        <CardHeader className='pb-0 px-3 pt-3'>
+          <div className='px-2 flex items-center justify-between'>
             <div className='flex flex-col gap-1'>
               <CardTitle className='text-base font-semibold flex items-center gap-2 text-gray-900 dark:text-white'>
                 <div className='p-1.5 rounded-md bg-white dark:bg-gray-700 shadow-sm border border-gray-200 dark:border-gray-600'>
@@ -298,7 +291,7 @@ export const ProfessionalRankingTable = React.memo<ProfessionalRankingTableProps
             >
               <div
                 ref={scrollContainerRef}
-                className='flex w-full flex-1 overflow-x-auto scrollbar-thin scrollbar-thumb-gray-300 scrollbar-track-transparent px-2 space-x-3'
+                className='pt-3 pb-2 flex w-full flex-1 overflow-x-auto scrollbar-thin scrollbar-thumb-gray-300 scrollbar-track-transparent px-2 space-x-3'
               >
                 {topTechnicians.map((technician, index) => (
                   <ProfessionalTechnicianCard

@@ -1,11 +1,12 @@
-import { httpClient, API_CONFIG } from './httpClient';
+import httpClient from './httpClient';
 import { SystemStatus, DateRange } from '../types';
-import type { ApiResult, DashboardMetrics, FilterParams, PerformanceMetrics } from '../types/api';
-import { isApiError, isApiResponse, transformLegacyData } from '../types/api';
+import type {
+  DashboardMetrics,
+  FilterParams,
+  ApiResult,
+  PerformanceMetrics,
+} from '../types/api';
 import { unifiedCache } from './unifiedCache';
-
-// Base URL for API (mantido para compatibilidade)
-const API_BASE_URL = API_CONFIG.BASE_URL;
 
 // Cliente HTTP (alias para compatibilidade)
 const api = httpClient;
@@ -261,7 +262,7 @@ export const apiService = {
               sistema_ativo: true,
               ultima_atualizacao: new Date().toISOString(),
             };
-            
+
             // Armazenar no cache
             unifiedCache.set('systemStatus', cacheParams, data);
             return data;
@@ -348,7 +349,7 @@ export const apiService = {
       // console.log('🔍 Buscando ranking de técnicos:', url);
 
       // Usar timeout maior para ranking (5 minutos para casos complexos)
-      const timeoutConfig = { timeout: 300000 }; // 5 minutos para ranking
+      //const timeoutConfig = { timeout: 300000 }; // 5 minutos para ranking
 
       console.log(`⏱️ Usando timeout de 300 segundos para ranking de técnicos`);
       const response = await api.get<ApiResponse<any[]>>(url, {
@@ -573,13 +574,11 @@ export const apiService = {
   // Esta função foi desabilitada pois o endpoint /filter-types foi removido
   async getFilterTypes(): Promise<ApiResponse<any>> {
     console.warn('getFilterTypes: Endpoint /filter-types foi removido do backend');
-    
+
     // Retornar dados mock ou vazios para manter compatibilidade
     return {
       success: true,
       data: [],
-      message: 'Filter types endpoint não disponível',
-      timestamp: new Date().toISOString()
     };
   },
 
@@ -707,18 +706,20 @@ export const fetchDashboardMetrics = async (
     // Debug: console.log('Métricas de performance:', perfMetrics);
 
     // Verificar se a resposta é um erro
-    if (isApiError(result)) {
+    if (result && 'error' in result) {
       console.error('API retornou erro:', result.error);
       return null;
     }
 
     // Verificar se é uma resposta de sucesso
-    if (isApiResponse(result)) {
+    if (result && 'success' in result && 'data' in result) {
       // console.log('🔍 API - result.data antes da transformação:', result.data);
       // console.log('🔍 API - result.data.niveis:', result.data?.niveis);
 
       // Processar dados para garantir estrutura consistente
-      const processedData = transformLegacyData(result.data);
+      // Import the actual function instead of the type
+      const { transformLegacyData: transformData } = await import('../types/api');
+      const processedData = transformData(result.data);
       // console.log('🔍 API - Dados processados após transformação:', processedData);
       // console.log('🔍 API - processedData.niveis:', processedData?.niveis);
 

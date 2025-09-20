@@ -98,7 +98,6 @@ export interface DashboardState {
   dateRange?: DateRange;
 
   technicianRanking: TechnicianRanking[];
-  dataIntegrityReport: Record<string, unknown> | null;
   monitoringAlerts: Record<string, unknown>[];
 }
 

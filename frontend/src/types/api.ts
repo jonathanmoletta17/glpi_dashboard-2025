@@ -251,7 +251,7 @@ export const isApiError = (response: ApiResult): response is ApiError => {
 };
 
 export const isApiResponse = (response: unknown): response is ApiResponse<unknown> => {
-  const obj = response as any;
+  const obj = response as Record<string, unknown>;
   const isValid =
     typeof response === 'object' && response !== null && typeof obj.success === 'boolean';
 
@@ -276,7 +276,7 @@ export const isApiResponse = (response: unknown): response is ApiResponse<unknow
 };
 
 export const isValidLevelMetrics = (data: unknown): data is LevelMetrics => {
-  const obj = data as any;
+  const obj = data as Record<string, unknown>;
   return (
     typeof data === 'object' &&
     data !== null &&
@@ -289,7 +289,7 @@ export const isValidLevelMetrics = (data: unknown): data is LevelMetrics => {
 };
 
 export const isDashboardMetrics = (data: unknown): data is DashboardMetrics => {
-  const obj = data as any;
+  const obj = data as Record<string, unknown>;
   return (
     typeof data === 'object' &&
     data !== null &&
@@ -309,7 +309,7 @@ export const isValidNiveisMetrics = (data: unknown): data is NiveisMetrics => {
   // console.log('🔍 [isValidNiveisMetrics] data.n3:', data?.n3);
   // console.log('🔍 [isValidNiveisMetrics] data.n4:', data?.n4);
 
-  const obj = data as any;
+  const obj = data as Record<string, unknown>;
   const isValid =
     typeof data === 'object' &&
     data !== null &&
@@ -339,21 +339,21 @@ export const transformLegacyData = (legacyData: unknown): DashboardMetrics => {
   };
 
   // Se os dados já vêm na estrutura correta da API
-  const apiData = legacyData as any;
+  const apiData = legacyData as Record<string, unknown>;
   if (apiData?.niveis) {
     // console.log('🔍 [transformLegacyData] Using niveis structure');
     const result = {
       // Incluir os valores totais diretamente dos dados da API
-      novos: apiData.novos || 0,
-      pendentes: apiData.pendentes || 0,
-      progresso: apiData.progresso || 0,
-      resolvidos: apiData.resolvidos || 0,
-      total: apiData.total || 0,
+      novos: (apiData.novos as number) || 0,
+      pendentes: (apiData.pendentes as number) || 0,
+      progresso: (apiData.progresso as number) || 0,
+      resolvidos: (apiData.resolvidos as number) || 0,
+      total: (apiData.total as number) || 0,
       niveis: {
-        n1: apiData.niveis.n1 || defaultLevel,
-        n2: apiData.niveis.n2 || defaultLevel,
-        n3: apiData.niveis.n3 || defaultLevel,
-        n4: apiData.niveis.n4 || defaultLevel,
+        n1: ((apiData.niveis as Record<string, unknown>)?.n1 as LevelMetrics) || defaultLevel,
+        n2: ((apiData.niveis as Record<string, unknown>)?.n2 as LevelMetrics) || defaultLevel,
+        n3: ((apiData.niveis as Record<string, unknown>)?.n3 as LevelMetrics) || defaultLevel,
+        n4: ((apiData.niveis as Record<string, unknown>)?.n4 as LevelMetrics) || defaultLevel,
         // Removido geral: não existe nos dados do backend
       },
 
@@ -364,24 +364,24 @@ export const transformLegacyData = (legacyData: unknown): DashboardMetrics => {
       technicianRanking: apiData?.technicianRanking,
     };
     // console.log('🔍 [transformLegacyData] Result with niveis:', result);
-    return result;
+    return result as DashboardMetrics;
   }
 
   // Fallback para dados legados
   // console.log('🔍 [transformLegacyData] Using fallback structure');
-  const fallbackData = legacyData as any;
+  const fallbackData = legacyData as Record<string, unknown>;
   const fallbackResult = {
     // Incluir os valores totais diretamente dos dados da API
-    novos: fallbackData?.novos || 0,
-    pendentes: fallbackData?.pendentes || 0,
-    progresso: fallbackData?.progresso || 0,
-    resolvidos: fallbackData?.resolvidos || 0,
-    total: fallbackData?.total || 0,
+    novos: (fallbackData?.novos as number) || 0,
+    pendentes: (fallbackData?.pendentes as number) || 0,
+    progresso: (fallbackData?.progresso as number) || 0,
+    resolvidos: (fallbackData?.resolvidos as number) || 0,
+    total: (fallbackData?.total as number) || 0,
     niveis: {
-      n1: fallbackData?.n1 || defaultLevel,
-      n2: fallbackData?.n2 || defaultLevel,
-      n3: fallbackData?.n3 || defaultLevel,
-      n4: fallbackData?.n4 || defaultLevel,
+      n1: (fallbackData?.n1 as LevelMetrics) || defaultLevel,
+      n2: (fallbackData?.n2 as LevelMetrics) || defaultLevel,
+      n3: (fallbackData?.n3 as LevelMetrics) || defaultLevel,
+      n4: (fallbackData?.n4 as LevelMetrics) || defaultLevel,
       // Removido geral: não existe nos dados do backend
     },
 
@@ -392,5 +392,5 @@ export const transformLegacyData = (legacyData: unknown): DashboardMetrics => {
     technicianRanking: fallbackData?.technicianRanking,
   };
   // console.log('🔍 [transformLegacyData] Fallback result:', fallbackResult);
-  return fallbackResult;
+  return fallbackResult as DashboardMetrics;
 };

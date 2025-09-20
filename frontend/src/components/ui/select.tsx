@@ -1,6 +1,11 @@
 import React, { useState, useRef, useEffect, createContext, useContext } from 'react';
 import { cn } from '../../lib/utils';
-import { generateId, handleArrowNavigation, handleTypeAheadNavigation, announceToScreenReader } from '../../utils/accessibility';
+import {
+  generateId,
+  handleArrowNavigation,
+  handleTypeAheadNavigation,
+  announceToScreenReader,
+} from '../../utils/accessibility';
 
 // Context para gerenciar estado do Select
 interface SelectContextType {
@@ -42,7 +47,7 @@ export const Select: React.FC<SelectProps> = ({
   onValueChange,
   disabled = false,
   name,
-  required = false
+  required = false,
 }) => {
   const [internalValue, setInternalValue] = useState(defaultValue);
   const [isOpen, setIsOpen] = useState(false);
@@ -69,22 +74,15 @@ export const Select: React.FC<SelectProps> = ({
     triggerId,
     contentId,
     labelId,
-    disabled
+    disabled,
   };
 
   return (
     <SelectContext.Provider value={contextValue}>
-      <div className="relative">
+      <div className='relative'>
         {children}
         {/* Hidden input for form submission */}
-        {name && (
-          <input
-            type="hidden"
-            name={name}
-            value={currentValue}
-            required={required}
-          />
-        )}
+        {name && <input type='hidden' name={name} value={currentValue} required={required} />}
       </div>
     </SelectContext.Provider>
   );
@@ -100,7 +98,7 @@ interface SelectTriggerProps {
 export const SelectTrigger: React.FC<SelectTriggerProps> = ({
   children,
   className,
-  placeholder = 'Selecione uma opção'
+  placeholder = 'Selecione uma opção',
 }) => {
   const { isOpen, setIsOpen, value, triggerId, contentId, labelId, disabled } = useSelectContext();
   const triggerRef = useRef<HTMLButtonElement>(null);
@@ -144,10 +142,10 @@ export const SelectTrigger: React.FC<SelectTriggerProps> = ({
     <button
       ref={triggerRef}
       id={triggerId}
-      type="button"
-      role="combobox"
+      type='button'
+      role='combobox'
       aria-expanded={isOpen}
-      aria-haspopup="listbox"
+      aria-haspopup='listbox'
       aria-controls={contentId}
       aria-labelledby={labelId}
       aria-describedby={disabled ? undefined : `${triggerId}-description`}
@@ -171,16 +169,16 @@ export const SelectTrigger: React.FC<SelectTriggerProps> = ({
           'h-4 w-4 opacity-50 transition-transform duration-200',
           isOpen && 'rotate-180'
         )}
-        fill="none"
-        stroke="currentColor"
-        viewBox="0 0 24 24"
-        aria-hidden="true"
+        fill='none'
+        stroke='currentColor'
+        viewBox='0 0 24 24'
+        aria-hidden='true'
       >
-        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
+        <path strokeLinecap='round' strokeLinejoin='round' strokeWidth={2} d='M19 9l-7 7-7-7' />
       </svg>
 
       {/* Screen reader description */}
-      <span id={`${triggerId}-description`} className="sr-only">
+      <span id={`${triggerId}-description`} className='sr-only'>
         Use as setas para navegar pelas opções. Pressione Enter ou Espaço para abrir.
       </span>
     </button>
@@ -199,7 +197,7 @@ export const SelectContent: React.FC<SelectContentProps> = ({
   children,
   className,
   position = 'auto',
-  maxHeight = '200px'
+  maxHeight = '200px',
 }) => {
   const { isOpen, setIsOpen, contentId, triggerId } = useSelectContext();
   const contentRef = useRef<HTMLDivElement>(null);
@@ -223,16 +221,11 @@ export const SelectContent: React.FC<SelectContentProps> = ({
       case 'ArrowDown':
       case 'ArrowUp':
         event.preventDefault();
-        const newIndex = handleArrowNavigation(
-          event,
-          options,
-          focusedIndex,
-          {
-            orientation: 'vertical',
-            loop: true,
-            onIndexChange: setFocusedIndex
-          }
-        );
+        const newIndex = handleArrowNavigation(event, options, focusedIndex, {
+          orientation: 'vertical',
+          loop: true,
+          onIndexChange: setFocusedIndex,
+        });
         setFocusedIndex(newIndex);
         break;
       case 'Home':
@@ -248,15 +241,10 @@ export const SelectContent: React.FC<SelectContentProps> = ({
         break;
       default:
         // Type-ahead navigation
-        handleTypeAheadNavigation(
-          event,
-          options,
-          focusedIndex,
-          {
-            getItemText: (item) => item.textContent || '',
-            onIndexChange: setFocusedIndex
-          }
-        );
+        handleTypeAheadNavigation(event, options, focusedIndex, {
+          getItemText: item => item.textContent || '',
+          onIndexChange: setFocusedIndex,
+        });
         break;
     }
   };
@@ -304,7 +292,7 @@ export const SelectContent: React.FC<SelectContentProps> = ({
     <div
       ref={contentRef}
       id={contentId}
-      role="listbox"
+      role='listbox'
       aria-labelledby={triggerId}
       className={cn(
         'absolute z-50 min-w-[8rem] overflow-hidden rounded-md border bg-popover p-1 text-popover-foreground shadow-md',
@@ -317,7 +305,7 @@ export const SelectContent: React.FC<SelectContentProps> = ({
       )}
       style={{ maxHeight }}
     >
-      <div className="overflow-auto" style={{ maxHeight }}>
+      <div className='overflow-auto' style={{ maxHeight }}>
         {React.Children.map(children, (child, index) => {
           if (React.isValidElement(child)) {
             return React.cloneElement(child, {
@@ -325,7 +313,7 @@ export const SelectContent: React.FC<SelectContentProps> = ({
               ref: (el: HTMLElement) => {
                 optionsRef.current[index] = el;
               },
-              'data-index': index
+              'data-index': index,
             });
           }
           return child;
@@ -343,69 +331,70 @@ interface SelectItemProps {
   className?: string;
 }
 
-export const SelectItem = React.forwardRef<HTMLDivElement, SelectItemProps>(({
-  children,
-  value,
-  disabled = false,
-  className,
-  ...props
-}, ref) => {
-  const { value: selectedValue, onValueChange, setIsOpen } = useSelectContext();
-  const isSelected = selectedValue === value;
+export const SelectItem = React.forwardRef<HTMLDivElement, SelectItemProps>(
+  ({ children, value, disabled = false, className, ...props }, ref) => {
+    const { value: selectedValue, onValueChange, setIsOpen } = useSelectContext();
+    const isSelected = selectedValue === value;
 
-  const handleClick = () => {
-    if (!disabled) {
-      onValueChange(value);
-      setIsOpen(false);
-    }
-  };
-
-  const handleKeyDown = (event: React.KeyboardEvent) => {
-    if (event.key === 'Enter' || event.key === ' ') {
-      event.preventDefault();
+    const handleClick = () => {
       if (!disabled) {
         onValueChange(value);
         setIsOpen(false);
       }
-    }
-  };
+    };
 
-  return (
-    <div
-      ref={ref}
-      role="option"
-      aria-selected={isSelected}
-      aria-disabled={disabled}
-      tabIndex={disabled ? -1 : 0}
-      onClick={handleClick}
-      onKeyDown={handleKeyDown}
-      className={cn(
-        'relative flex w-full cursor-default select-none items-center rounded-sm py-1.5 pl-8 pr-2 text-sm outline-none',
-        'focus:bg-accent focus:text-accent-foreground',
-        'data-[disabled]:pointer-events-none data-[disabled]:opacity-50',
-        disabled && 'pointer-events-none opacity-50',
-        isSelected && 'bg-accent text-accent-foreground',
-        className
-      )}
-      {...props}
-    >
-      {isSelected && (
-        <span className="absolute left-2 flex h-3.5 w-3.5 items-center justify-center">
-          <svg
-            className="h-4 w-4"
-            fill="none"
-            stroke="currentColor"
-            viewBox="0 0 24 24"
-            aria-hidden="true"
-          >
-            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
-          </svg>
-        </span>
-      )}
-      <span className="block truncate">{children}</span>
-    </div>
-  );
-});
+    const handleKeyDown = (event: React.KeyboardEvent) => {
+      if (event.key === 'Enter' || event.key === ' ') {
+        event.preventDefault();
+        if (!disabled) {
+          onValueChange(value);
+          setIsOpen(false);
+        }
+      }
+    };
+
+    return (
+      <div
+        ref={ref}
+        role='option'
+        aria-selected={isSelected}
+        aria-disabled={disabled}
+        tabIndex={disabled ? -1 : 0}
+        onClick={handleClick}
+        onKeyDown={handleKeyDown}
+        className={cn(
+          'relative flex w-full cursor-default select-none items-center rounded-sm py-1.5 pl-8 pr-2 text-sm outline-none',
+          'focus:bg-accent focus:text-accent-foreground',
+          'data-[disabled]:pointer-events-none data-[disabled]:opacity-50',
+          disabled && 'pointer-events-none opacity-50',
+          isSelected && 'bg-accent text-accent-foreground',
+          className
+        )}
+        {...props}
+      >
+        {isSelected && (
+          <span className='absolute left-2 flex h-3.5 w-3.5 items-center justify-center'>
+            <svg
+              className='h-4 w-4'
+              fill='none'
+              stroke='currentColor'
+              viewBox='0 0 24 24'
+              aria-hidden='true'
+            >
+              <path
+                strokeLinecap='round'
+                strokeLinejoin='round'
+                strokeWidth={2}
+                d='M5 13l4 4L19 7'
+              />
+            </svg>
+          </span>
+        )}
+        <span className='block truncate'>{children}</span>
+      </div>
+    );
+  }
+);
 
 SelectItem.displayName = 'SelectItem';
 
@@ -419,10 +408,7 @@ export const SelectLabel: React.FC<SelectLabelProps> = ({ children, className })
   const { labelId } = useSelectContext();
 
   return (
-    <label
-      id={labelId}
-      className={cn('px-2 py-1.5 text-sm font-semibold', className)}
-    >
+    <label id={labelId} className={cn('px-2 py-1.5 text-sm font-semibold', className)}>
       {children}
     </label>
   );
@@ -436,8 +422,8 @@ interface SelectSeparatorProps {
 export const SelectSeparator: React.FC<SelectSeparatorProps> = ({ className }) => {
   return (
     <div
-      role="separator"
-      aria-orientation="horizontal"
+      role='separator'
+      aria-orientation='horizontal'
       className={cn('-mx-1 my-1 h-px bg-muted', className)}
     />
   );
@@ -451,7 +437,7 @@ interface SelectValueProps {
 
 export const SelectValue: React.FC<SelectValueProps> = ({
   placeholder = 'Selecione uma opção',
-  className
+  className,
 }) => {
   const { value } = useSelectContext();
 
@@ -470,5 +456,5 @@ export default {
   Item: SelectItem,
   Label: SelectLabel,
   Separator: SelectSeparator,
-  Value: SelectValue
+  Value: SelectValue,
 };

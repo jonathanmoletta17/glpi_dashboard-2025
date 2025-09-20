@@ -9,7 +9,7 @@ de todas as metricas necessarias do sistema GLPI.
 Autor: Sistema de Engenharia
 Data: 2025-01-22
 Versao: 1.0
-"""
+."""
 
 import json
 import os
@@ -23,7 +23,7 @@ import requests
 
 @dataclass
 class GLPIConfig:
-    """Configuracao para conexao com GLPI"""
+    """Configuracao para conexao com GLPI."""
 
     base_url: str
     app_token: str
@@ -33,7 +33,7 @@ class GLPIConfig:
 
     @classmethod
     def from_env(cls) -> "GLPIConfig":
-        """Carrega configuracao das variaveis de ambiente"""
+        """Carrega configuracao das variaveis de ambiente."""
         return cls(
             base_url=os.getenv("GLPI_BASE_URL", "http://localhost/glpi"),
             app_token=os.getenv("GLPI_APP_TOKEN", ""),
@@ -44,7 +44,7 @@ class GLPIConfig:
 
 
 class GLPIMetricsCollector:
-    """Coletor centralizado de metricas do GLPI"""
+    """Coletor centralizado de metricas do GLPI."""
 
     def __init__(self, config: GLPIConfig):
         self.config = config
@@ -67,7 +67,7 @@ class GLPIMetricsCollector:
         }
 
     def login(self) -> bool:
-        """Realiza autenticacao no GLPI e obtem session token"""
+        """Realiza autenticacao no GLPI e obtem session token."""
         print("Iniciando autenticacao no GLPI...")
 
         url = f"{self.config.base_url}/apirest.php/initSession"
@@ -103,7 +103,7 @@ class GLPIMetricsCollector:
                 print("Falha na autenticacao: Session token nao recebido")
                 return False
 
-        except requests.exceptions.RequestException:
+        except requests.exceptions.RequestException as e:
             print(f"Erro na autenticacao: {e}")
             return False
         except json.JSONDecodeError as e:
@@ -111,7 +111,7 @@ class GLPIMetricsCollector:
             return False
 
     def get_status_geral(self) -> Dict[str, Any]:
-        """Coleta metricas gerais do sistema"""
+        """Coleta metricas gerais do sistema."""
         print("Coletando metricas gerais do sistema...")
 
         url = f"{self.config.base_url}/apirest.php/search/Ticket"
@@ -172,7 +172,7 @@ class GLPIMetricsCollector:
             return {}
 
     def get_tickets_novos(self) -> List[Dict[str, Any]]:
-        """Lista todos os tickets em status 'Novo'"""
+        """Lista todos os tickets em status 'Novo'."""
         print("Coletando tickets novos...")
 
         url = f"{self.config.base_url}/apirest.php/search/Ticket"
@@ -229,7 +229,7 @@ class GLPIMetricsCollector:
             return []
 
     def get_ranking_tecnicos(self) -> Dict[str, List[Dict[str, Any]]]:
-        """Coleta ranking de tecnicos seguindo a implementacao real do backend"""
+        """Coleta ranking de tecnicos seguindo a implementacao real do backend."""
         print("Coletando ranking de tecnicos...")
 
         ranking_por_nivel = {"N1": [], "N2": [], "N3": [], "N4": []}
@@ -306,7 +306,7 @@ class GLPIMetricsCollector:
             return ranking_por_nivel
 
     def get_status_por_nivel(self) -> Dict[str, Dict[str, int]]:
-        """Coleta contagem de tickets por status, separado por nivel de atendimento"""
+        """Coleta contagem de tickets por status, separado por nivel de atendimento."""
         print("Coletando status de tickets por nivel...")
 
         # Mapeamento de status conforme backend
@@ -412,7 +412,7 @@ class GLPIMetricsCollector:
         return status_por_nivel
 
     def _get_all_active_technicians(self) -> List[Dict[str, Any]]:
-        """Busca todos os tecnicos ativos usando IDs especificos da entidade CAU"""
+        """Busca todos os tecnicos ativos usando IDs especificos da entidade CAU."""
         print("      Buscando tecnicos ativos usando IDs especificos da entidade CAU...")
 
         # IDs dos tecnicos validos da entidade CAU
@@ -454,7 +454,7 @@ class GLPIMetricsCollector:
         return tecnicos_ativos
 
     def _get_technician_level_by_name_fallback(self, user_id: str) -> str:
-        """Determina o nivel do tecnico baseado no nome (fallback do backend)"""
+        """Determina o nivel do tecnico baseado no nome (fallback do backend)."""
         try:
             # Buscar nome do usuario
             user_url = f"{self.config.base_url}/apirest.php/User/{user_id}"
@@ -517,7 +517,7 @@ class GLPIMetricsCollector:
             return "N1"  # Nivel padrao em caso de erro
 
     def _get_technician_metrics_corrected(self, tecnico_id: str) -> Dict[str, Any]:
-        """Coleta metricas de performance de um tecnico especifico"""
+        """Coleta metricas de performance de um tecnico especifico."""
         url = f"{self.config.base_url}/apirest.php/search/Ticket"
 
         # Buscar todos os tickets atribuidos ao tecnico
@@ -563,7 +563,7 @@ class GLPIMetricsCollector:
             return {"total": 0, "resolvidos": 0, "pendentes": 0, "taxa_resolucao": 0.0}
 
     def _get_user_details(self, user_id: str) -> Optional[Dict[str, Any]]:
-        """Busca detalhes de um usuario especifico com filtros de ativo e nao deletado"""
+        """Busca detalhes de um usuario especifico com filtros de ativo e nao deletado."""
         url = f"{self.config.base_url}/apirest.php/User/{user_id}"
 
         try:
@@ -603,11 +603,11 @@ class GLPIMetricsCollector:
                 "is_deleted": is_deleted,
             }
 
-        except requests.exceptions.RequestException as e:
+        except requests.exceptions.RequestException:
             return None
 
     def logout(self) -> bool:
-        """Finaliza a sessao no GLPI (killSession)"""
+        """Finaliza a sessao no GLPI (killSession)."""
         if not self.session_token:
             print("Nenhuma sessao ativa para finalizar")
             return True
@@ -633,7 +633,7 @@ class GLPIMetricsCollector:
             return False
 
     def collect_all_metrics(self) -> Dict[str, Any]:
-        """Executa coleta completa de todas as metricas"""
+        """Executa coleta completa de todas as metricas."""
         print("=" * 60)
         print("INICIANDO COLETA COMPLETA DE METRICAS GLPI")
         print("=" * 60)
@@ -701,7 +701,7 @@ class GLPIMetricsCollector:
 
 
 def save_metrics_to_file(metrics: Dict[str, Any], filename: Optional[str] = None) -> str:
-    """Salva as metricas coletadas em arquivo JSON"""
+    """Salva as metricas coletadas em arquivo JSON."""
     if not filename:
         timestamp = datetime.now().strftime("%Y%m%d_%H%M%S")
         filename = f"glpi_metrics_{timestamp}.json"
@@ -714,7 +714,7 @@ def save_metrics_to_file(metrics: Dict[str, Any], filename: Optional[str] = None
 
 
 def main():
-    """Funcao principal - ponto de entrada do script"""
+    """Funcao principal - ponto de entrada do script."""
     print("GLPI Metrics Collector v1.0")
     print("Documentacao viva para coleta de metricas GLPI\n")
 
@@ -763,7 +763,7 @@ if __name__ == "__main__":
 
 # Linha 275 - quebrar linha longa
 def format_metrics_data(metrics: Dict) -> Dict:
-    """Formata dados de métricas para exibição"""
+    """Formata dados de métricas para exibição."""
     try:
         # Quebrar linha longa para atender limite de 100 caracteres
         formatted_date = (
@@ -786,7 +786,7 @@ def format_metrics_data(metrics: Dict) -> Dict:
 
 # Linha 296 - quebrar linha longa
 def process_ticket_metrics(tickets: List[Dict]) -> Dict:
-    """Processa métricas de tickets"""
+    """Processa métricas de tickets."""
     try:
         total = len(tickets)
         # Quebrar linha longa para atender limite de 100 caracteres
@@ -800,7 +800,7 @@ def process_ticket_metrics(tickets: List[Dict]) -> Dict:
 
 # Linha 403 - adicionar espaço após ':'
 def save_metrics_to_file_simple(metrics: Dict, filename: str) -> bool:
-    """Salva métricas em arquivo"""
+    """Salva métricas em arquivo."""
     try:
         output_path = Path(__file__).parent / filename
 
@@ -814,7 +814,7 @@ def save_metrics_to_file_simple(metrics: Dict, filename: str) -> bool:
 
 # Linha 603 - remover variável não utilizada
 def handle_api_error(response) -> None:
-    """Trata erros da API"""
+    """Trata erros da API."""
     try:
         error_data = response.json()
         print(f"Erro da API: {error_data}")
@@ -824,7 +824,7 @@ def handle_api_error(response) -> None:
 
 # Linha 754 - corrigir espaçamento
 def format_duration(seconds: float) -> str:
-    """Formata duração em segundos para formato legível"""
+    """Formata duração em segundos para formato legível."""
     if seconds < 60:
         return f"{seconds:.2f}s"
     elif seconds < 3600:
@@ -837,5 +837,5 @@ def format_duration(seconds: float) -> str:
 
 # Linha 694 - adicionar espaço após ':'
 def calculate_response_time(start_time: float, end_time: float) -> float:
-    """Calcula tempo de resposta"""
+    """Calcula tempo de resposta."""
     return round(end_time - start_time, 2)

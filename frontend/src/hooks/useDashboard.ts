@@ -1,22 +1,20 @@
 import { useState, useEffect, useCallback } from 'react';
 import { apiService } from '../services/api';
-import type { DashboardMetrics, FilterParams } from '../types/api';
-import { SystemStatus, NotificationData } from '../types';
-import { useSmartRefresh } from './useSmartRefresh';
+import type { DashboardMetrics, FilterParams, NiveisMetrics, TechnicianRanking } from '../types/api';
+import { SystemStatus, NotificationData, DateRange } from '../types';
 
 interface UseDashboardReturn {
   metrics: DashboardMetrics | null;
-  levelMetrics: any;
+  levelMetrics: NiveisMetrics | null;
   systemStatus: SystemStatus;
-  technicianRanking: any[];
+  technicianRanking: TechnicianRanking[];
   isLoading: boolean;
   isPending: boolean;
   error: string | null;
-  notifications: any[];
+  notifications: NotificationData[];
   searchQuery: string;
   filters: FilterParams;
   theme: string;
-  dataIntegrityReport: any;
   filterType: string;
   availableFilterTypes: Array<{
     key: string;
@@ -29,10 +27,10 @@ interface UseDashboardReturn {
   updateFilters: (newFilters: FilterParams) => void;
   updateFilterType: (type: string) => void;
   search: (query: string) => void;
-  addNotification: (notification: any) => void;
+  addNotification: (notification: NotificationData) => void;
   removeNotification: (id: string) => void;
   changeTheme: (theme: string) => void;
-  updateDateRange: (dateRange: any) => void;
+  updateDateRange: (dateRange: DateRange) => void;
 }
 
 const initialSystemStatus: SystemStatus = {
@@ -58,10 +56,9 @@ export const useDashboard = (initialFilters: FilterParams = {}): UseDashboardRet
   const systemStatus = data?.systemStatus || initialSystemStatus;
   const technicianRanking = data?.technicianRanking || [];
   const [isPending] = useState<boolean>(false);
-  const [notifications, setNotifications] = useState<any[]>([]);
+  const [notifications, setNotifications] = useState<NotificationData[]>([]);
   const [searchQuery, setSearchQuery] = useState<string>('');
   const [theme, setTheme] = useState<string>('light');
-  const [dataIntegrityReport] = useState<any>(null);
   const [filterType, setFilterType] = useState<string>(initialFilters.filterType || 'creation');
   const [availableFilterTypes, setAvailableFilterTypes] = useState<
     Array<{
@@ -113,7 +110,7 @@ export const useDashboard = (initialFilters: FilterParams = {}): UseDashboardRet
           (async () => {
             // Preparar filtros para o ranking de técnicos
             // NOTA: Ranking de técnicos não deve ser filtrado por data pois pode não ter dados históricos
-            const rankingFilters: any = {
+            const rankingFilters: Record<string, unknown> = {
               limit: 50, // Aumentar limite para mostrar mais técnicos
             };
 
@@ -203,27 +200,21 @@ export const useDashboard = (initialFilters: FilterParams = {}): UseDashboardRet
     loadData();
   }, []);
 
-  // Smart refresh - coordenado e inteligente
-  useSmartRefresh({
-    refreshKey: 'dashboard-main',
-    refreshFn: loadData,
-    intervalMs: 300000, // 5 minutos
-    immediate: false,
-    enabled: true,
-  });
-
   // Função para buscar tipos de filtro disponíveis
   const fetchFilterTypes = useCallback(async () => {
     try {
       const { apiService } = await import('../services/api');
       const result = await apiService.getFilterTypes();
       if (result.success && result.data) {
-        const types = Object.entries(result.data).map(([key, value]: [string, any]) => ({
-          key,
-          name: value.name,
-          description: value.description,
-          default: value.default,
-        }));
+        const types = Object.entries(result.data).map(([key, value]: [string, unknown]) => {
+          const filterType = value as { name: string; description: string; default?: boolean };
+          return {
+            key,
+            name: filterType.name,
+            description: filterType.description,
+            default: filterType.default,
+          };
+        });
         setAvailableFilterTypes(types);
       }
     } catch (error) {
@@ -280,7 +271,6 @@ export const useDashboard = (initialFilters: FilterParams = {}): UseDashboardRet
     searchQuery,
     filters,
     theme,
-    dataIntegrityReport,
     filterType,
     availableFilterTypes,
     loadData,
@@ -305,7 +295,7 @@ export const useDashboard = (initialFilters: FilterParams = {}): UseDashboardRet
     },
     removeNotification: (id: string) => setNotifications(prev => prev.filter(n => n.id !== id)),
     changeTheme: (newTheme: string) => setTheme(newTheme),
-    updateDateRange: (dateRange: any) => {
+    updateDateRange: (dateRange: DateRange) => {
       const updatedFilters = { ...filters, dateRange };
       setFilters(updatedFilters);
       // Forçar recarregamento imediato com os novos filtros

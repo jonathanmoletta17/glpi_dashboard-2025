@@ -15,11 +15,13 @@ import { MetricsData, TicketStatus, SystemStatus, TechnicianRanking, Ticket } fr
 import { cn } from '@/lib/utils';
 import { SkipLink } from '../SkipLink';
 import { generateId } from '@/utils/accessibility';
-import { SkeletonCard } from '@/utils/loadingComponents';
+import { SkeletonCard } from '@/utils/loadingUtils';
+
+import type { NiveisMetrics } from '../../types/api';
 
 interface ModernDashboardProps {
   metrics: MetricsData;
-  levelMetrics?: any;
+  levelMetrics?: NiveisMetrics;
   systemStatus?: SystemStatus | null;
   technicianRanking?: TechnicianRanking[];
   onFilterByStatus?: (status: TicketStatus) => void;
@@ -55,7 +57,7 @@ export const ModernDashboard = React.memo<ModernDashboardProps>(function ModernD
   const formatters = useDashboardFormatters();
   // Debug logs para investigar o problema do ranking zerado
   // Debug logs removidos para produção
-  // console.log('🔍 ModernDashboard - technicianRanking recebido:', technicianRanking);
+  // console.warn('🔍 ModernDashboard - technicianRanking recebido:', technicianRanking);
   // console.log('🔍 ModernDashboard - technicianRanking length:', technicianRanking?.length);
   // console.log('🔍 ModernDashboard - primeiro técnico:', technicianRanking?.[0]);
 
@@ -155,7 +157,7 @@ export const ModernDashboard = React.memo<ModernDashboardProps>(function ModernD
       variants={dashboardPresets.container}
       initial='hidden'
       animate='visible'
-      className={cn('dashboard-fullscreen-container px-6', className)}
+      className={cn('dashboard-fullscreen-container px-4', className)}
       role='main'
       aria-label='Dashboard GLPI'
       id='main-content'

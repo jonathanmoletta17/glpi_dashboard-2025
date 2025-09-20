@@ -3,7 +3,7 @@
 """
 Script para formatar e limpar dados CSV extraídos do GLPI
 Remove campos desnecessários e organiza dados em formato mais legível
-"""
+."""
 
 import logging
 import os
@@ -20,7 +20,7 @@ logging.basicConfig(
 
 
 def format_tickets_csv():
-    """Formata o arquivo tickets.csv com campos essenciais"""
+    """Formata o arquivo tickets.csv com campos essenciais."""
     try:
         logging.info("Formatando tickets.csv...")
         df = pd.read_csv("tickets.csv")
@@ -101,7 +101,7 @@ def format_tickets_csv():
 
 
 def format_users_csv():
-    """Formata o arquivo usuarios.csv com campos essenciais"""
+    """Formata o arquivo usuarios.csv com campos essenciais."""
     try:
         logging.info("Formatando usuarios.csv...")
         df = pd.read_csv("usuarios.csv")
@@ -161,7 +161,7 @@ def format_users_csv():
 
 
 def format_technicians_csv():
-    """Formata o arquivo tecnicos.csv com campos essenciais"""
+    """Formata o arquivo tecnicos.csv com campos essenciais."""
     try:
         logging.info("Formatando tecnicos.csv...")
         df = pd.read_csv("tecnicos.csv")
@@ -217,7 +217,7 @@ def format_technicians_csv():
 
 
 def format_requesters_csv():
-    """Formata o arquivo solicitantes.csv com campos essenciais"""
+    """Formata o arquivo solicitantes.csv com campos essenciais."""
     try:
         logging.info("Formatando solicitantes.csv...")
         df = pd.read_csv("solicitantes.csv")
@@ -271,7 +271,7 @@ def format_requesters_csv():
 
 
 def main():
-    """Função principal para formatar todos os arquivos CSV"""
+    """Função principal para formatar todos os arquivos CSV."""
     start_time = datetime.now()
     logging.info("Iniciando formatação de arquivos CSV...")
 

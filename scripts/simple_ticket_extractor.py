@@ -2,7 +2,7 @@
 """
 Extrator simples de tickets do GLPI
 Extrai dados de tickets do GLPI e salva em CSV
-"""
+."""
 
 import csv
 import sys
@@ -10,17 +10,17 @@ from datetime import datetime
 from pathlib import Path
 from typing import Dict, List
 
-# Adicionar o diretório backend ao path
+# Adiciona o diretório backend ao path
 backend_dir = Path(__file__).parent.parent / "backend"
 sys.path.insert(0, str(backend_dir))
 
 # Imports após modificação do sys.path
-from config.settings import get_settings
-from services.glpi_service import GLPIService
+from config.settings import get_settings  # noqa: E402
+from services.glpi_service import GLPIService  # noqa: E402
 
 
 def format_ticket_data(ticket: Dict) -> Dict:
-    """Formata dados do ticket para CSV"""
+    """Formata dados do ticket para CSV."""
     try:
         # Linha longa quebrada para atender limite de 100 caracteres
         created_date = (
@@ -50,7 +50,7 @@ def format_ticket_data(ticket: Dict) -> Dict:
 
 
 def main():
-    """Função principal"""
+    """Função principal."""
     try:
         settings = get_settings()
         glpi_service = GLPIService(settings)
@@ -92,7 +92,7 @@ def main():
 
 
 def process_tickets_batch(tickets: List[Dict]) -> List[Dict]:
-    """Processa lote de tickets"""
+    """Processa lote de tickets."""
     processed = []
 
     for ticket in tickets:
@@ -108,7 +108,7 @@ def process_tickets_batch(tickets: List[Dict]) -> List[Dict]:
 
 
 def save_to_csv(data: List[Dict], filename: str) -> bool:
-    """Salva dados em arquivo CSV"""
+    """Salva dados em arquivo CSV."""
     try:
         output_path = Path(__file__).parent / filename
 

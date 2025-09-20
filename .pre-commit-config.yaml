@@ -1,0 +1,87 @@
+# Configuração do Pre-commit para Validação de Dependências
+#
+# Instalação:
+#   pip install pre-commit
+#   pre-commit install
+#
+# Uso:
+#   pre-commit run --all-files  # Executar em todos os arquivos
+#   pre-commit run              # Executar apenas em arquivos modificados
+
+repos:
+  # Hooks padrão do pre-commit
+  - repo: https://github.com/pre-commit/pre-commit-hooks
+    rev: v4.4.0
+    hooks:
+      - id: trailing-whitespace
+        files: \.py$
+      - id: end-of-file-fixer
+        files: \.py$
+      - id: check-yaml
+      - id: check-added-large-files
+      - id: check-merge-conflict
+      - id: debug-statements
+        files: \.py$
+
+  # Formatação de código Python
+  - repo: https://github.com/psf/black
+    rev: 23.3.0
+    hooks:
+      - id: black
+        files: \.py$
+        args: [--line-length=100]
+
+  # Ordenação de imports
+  - repo: https://github.com/pycqa/isort
+    rev: 5.12.0
+    hooks:
+      - id: isort
+        files: \.py$
+        args: [--profile=black, --line-length=100]
+
+  # Linting com flake8
+  - repo: https://github.com/pycqa/flake8
+    rev: 6.0.0
+    hooks:
+      - id: flake8
+        files: \.py$
+        args: [--max-line-length=100, --extend-ignore=E203]
+
+  # Validação de dependências circulares (hook customizado)
+  - repo: local
+    hooks:
+      - id: dependency-validation
+        name: Validação de Dependências Circulares
+        entry: python scripts/pre-commit-dependency-check.py
+        language: system
+        files: \.py$
+        pass_filenames: false
+        always_run: false
+        stages: [commit]
+        verbose: true
+
+  # Verificação de tipos com mypy (opcional)
+  - repo: https://github.com/pre-commit/mirrors-mypy
+    rev: v1.3.0
+    hooks:
+      - id: mypy
+        files: ^ai/.*\.py$
+        args: [--ignore-missing-imports, --no-strict-optional]
+        additional_dependencies: [types-requests]
+
+# Configurações globais
+default_stages: [commit]
+fail_fast: false
+
+# Configuração específica para o projeto
+ci:
+  autofix_commit_msg: |
+    [pre-commit.ci] auto fixes from pre-commit hooks
+
+    for more information, see https://pre-commit.ci
+  autofix_prs: true
+  autoupdate_branch: ''
+  autoupdate_commit_msg: '[pre-commit.ci] pre-commit autoupdate'
+  autoupdate_schedule: weekly
+  skip: []
+  submodules: false

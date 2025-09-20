@@ -30,11 +30,7 @@ class ResponseFormatter:
             niveis_data = {}
 
             # Se há estrutura by_level (com filtros)
-            if (
-                raw_metrics
-                and "by_level" in raw_metrics
-                and isinstance(raw_metrics["by_level"], dict)
-            ):
+            if raw_metrics and "by_level" in raw_metrics and isinstance(raw_metrics["by_level"], dict):
                 for level_name, level_data in raw_metrics["by_level"].items():
                     if not isinstance(level_data, dict):
                         logger.warning(f"Dados do nível {level_name} inválidos: {type(level_data)}")
@@ -53,17 +49,12 @@ class ResponseFormatter:
                         ),
                         "resolvidos": max(
                             0,
-                            (
-                                int(level_data.get("Solucionado", 0) or 0)
-                                + int(level_data.get("Fechado", 0) or 0)
-                            ),
+                            (int(level_data.get("Solucionado", 0) or 0) + int(level_data.get("Fechado", 0) or 0)),
                         ),
                     }
 
             # Se há estrutura niveis (sem filtros)
-            elif (
-                raw_metrics and "niveis" in raw_metrics and isinstance(raw_metrics["niveis"], dict)
-            ):
+            elif raw_metrics and "niveis" in raw_metrics and isinstance(raw_metrics["niveis"], dict):
                 for level_name, level_data in raw_metrics["niveis"].items():
                     if not isinstance(level_data, dict):
                         logger.warning(f"Dados do nível {level_name} inválidos: {type(level_data)}")
@@ -104,11 +95,7 @@ class ResponseFormatter:
                     )
 
             # Extrair totais gerais
-            if (
-                raw_metrics
-                and "general" in raw_metrics
-                and isinstance(raw_metrics["general"], dict)
-            ):
+            if raw_metrics and "general" in raw_metrics and isinstance(raw_metrics["general"], dict):
                 # Com filtros - usar dados gerais
                 general = raw_metrics["general"]
                 novos = max(0, int(general.get("Novo", 0) or 0))
@@ -127,26 +114,10 @@ class ResponseFormatter:
             else:
                 # Sem filtros - calcular dos níveis
                 try:
-                    novos = sum(
-                        level.get("novos", 0)
-                        for level in niveis_data.values()
-                        if isinstance(level, dict)
-                    )
-                    pendentes = sum(
-                        level.get("pendentes", 0)
-                        for level in niveis_data.values()
-                        if isinstance(level, dict)
-                    )
-                    progresso = sum(
-                        level.get("progresso", 0)
-                        for level in niveis_data.values()
-                        if isinstance(level, dict)
-                    )
-                    resolvidos = sum(
-                        level.get("resolvidos", 0)
-                        for level in niveis_data.values()
-                        if isinstance(level, dict)
-                    )
+                    novos = sum(level.get("novos", 0) for level in niveis_data.values() if isinstance(level, dict))
+                    pendentes = sum(level.get("pendentes", 0) for level in niveis_data.values() if isinstance(level, dict))
+                    progresso = sum(level.get("progresso", 0) for level in niveis_data.values() if isinstance(level, dict))
+                    resolvidos = sum(level.get("resolvidos", 0) for level in niveis_data.values() if isinstance(level, dict))
                 except Exception as e:
                     logger.error(f"Erro ao calcular totais dos níveis: {e}")
                     novos = pendentes = progresso = resolvidos = 0
@@ -194,9 +165,7 @@ class ResponseFormatter:
 
         except Exception as e:
             logger.error(f"Erro ao formatar resposta do dashboard: {e}")
-            return ResponseFormatter.format_error_response(
-                message="Erro ao formatar métricas do dashboard", errors=[str(e)]
-            )
+            return ResponseFormatter.format_error_response(message="Erro ao formatar métricas do dashboard", errors=[str(e)])
 
     @staticmethod
     def format_error_response(

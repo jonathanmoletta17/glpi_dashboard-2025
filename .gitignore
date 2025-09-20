@@ -173,6 +173,10 @@ test-results/
 playwright-report/
 coverage/
 
+# JSCPD reports
+reports/
+frontend/reports/
+
 # Docker
 .dockerignore
 

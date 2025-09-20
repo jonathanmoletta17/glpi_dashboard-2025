@@ -200,226 +200,222 @@ const UnifiedSkeleton = React.memo<{
 UnifiedSkeleton.displayName = 'UnifiedSkeleton';
 
 // Componente principal unificado
-export const UnifiedLoading = React.memo<UnifiedLoadingProps>((
-{
-  isLoading,
-  type = 'spinner',
-  size = 'md',
-  variant = 'default',
-  _variant = 'default',
-  text,
-  title,
-  fullScreen = false,
-  overlay = false,
-  _overlay = false,
-  className = '',
-  skeletonType = 'card',
-  skeletonCount = 1,
-  progress,
-  estimatedTime = 30,
-  showTimeEstimate = false,
-  onTimeout,
-  timeoutDuration = 60,
-}
-) => {
-  const [elapsedTime, setElapsedTime] = useState(0);
-  const [hasTimedOut, setHasTimedOut] = useState(false);
-  const [calculatedProgress, setCalculatedProgress] = useState(0);
+export const UnifiedLoading = React.memo<UnifiedLoadingProps>(
+  ({
+    isLoading,
+    type = 'spinner',
+    size = 'md',
+    text,
+    title,
+    fullScreen = false,
+    className = '',
+    skeletonType = 'card',
+    skeletonCount = 1,
+    progress,
+    estimatedTime = 30,
+    showTimeEstimate = false,
+    onTimeout,
+    timeoutDuration = 60,
+  }) => {
+    const [elapsedTime, setElapsedTime] = useState(0);
+    const [hasTimedOut, setHasTimedOut] = useState(false);
+    const [calculatedProgress, setCalculatedProgress] = useState(0);
 
-  const config = componentConfigs.unifiedLoading;
+    const config = componentConfigs.unifiedLoading;
 
-  // Reset states when loading changes
-  useEffect(() => {
-    if (isLoading) {
-      setElapsedTime(0);
-      setHasTimedOut(false);
-      setCalculatedProgress(0);
-    }
-  }, [isLoading]);
-
-  // Timer para elapsed time e progress
-  useEffect(() => {
-    if (!isLoading || type !== 'progress') return;
-
-    const interval = setInterval(() => {
-      setElapsedTime(prev => {
-        const newTime = prev + 1;
-
-        // Calcular progresso baseado no tempo estimado se não fornecido
-        if (progress === undefined) {
-          const progressPercent = Math.min((newTime / estimatedTime) * 100, 95);
-          setCalculatedProgress(progressPercent);
-        }
-
-        // Verificar timeout
-        if (newTime >= timeoutDuration && !hasTimedOut) {
-          setHasTimedOut(true);
-          onTimeout?.();
-        }
-
-        return newTime;
-      });
-    }, 1000);
-
-    return () => clearInterval(interval);
-  }, [isLoading, type, estimatedTime, timeoutDuration, hasTimedOut, onTimeout, progress]);
-
-  const formatTime = (seconds: number) => {
-    if (seconds < 60) {
-      return `${seconds}s`;
-    }
-    const minutes = Math.floor(seconds / 60);
-    const remainingSeconds = seconds % 60;
-    return `${minutes}m ${remainingSeconds}s`;
-  };
-
-  const getStatusColor = () => {
-    if (hasTimedOut) return 'text-red-600 dark:text-red-400';
-    if (elapsedTime > estimatedTime * 0.8) return 'text-yellow-600 dark:text-yellow-400';
-    return 'text-blue-600 dark:text-blue-400';
-  };
-
-  if (!isLoading) return null;
-
-  const renderLoadingContent = () => {
-    switch (type) {
-      case 'skeleton': {
-        return (
-          <UnifiedSkeleton
-            type={skeletonType}
-            count={skeletonCount}
-            size={size}
-            className={className}
-          />
-        );
+    // Reset states when loading changes
+    useEffect(() => {
+      if (isLoading) {
+        setElapsedTime(0);
+        setHasTimedOut(false);
+        setCalculatedProgress(0);
       }
+    }, [isLoading]);
 
-      case 'progress': {
-        const currentProgress = progress !== undefined ? progress : calculatedProgress;
-        return (
-          <div
-            className={`flex flex-col items-center justify-center space-y-4 ${sizeClasses[size].container} ${className}`}
-          >
-            {title && (
-              <h3
-                className={`font-semibold text-gray-900 dark:text-white ${sizeClasses[size].text}`}
-              >
-                {title}
-              </h3>
-            )}
+    // Timer para elapsed time e progress
+    useEffect(() => {
+      if (!isLoading || type !== 'progress') return;
 
-            <div className='w-full max-w-xs'>
-              <div className='flex justify-between items-center mb-2'>
-                <span className={`${sizeClasses[size].text} text-gray-600 dark:text-gray-400`}>
-                  {text || 'Carregando...'}
-                </span>
-                {showTimeEstimate && (
-                  <span className={`${sizeClasses[size].text} ${getStatusColor()}`}>
-                    {formatTime(elapsedTime)}
-                  </span>
-                )}
-              </div>
+      const interval = setInterval(() => {
+        setElapsedTime(prev => {
+          const newTime = prev + 1;
 
-              <div className='w-full bg-gray-200 dark:bg-gray-700 rounded-full h-2'>
-                <motion.div
-                  className='bg-blue-600 dark:bg-blue-400 h-2 rounded-full'
-                  initial={{ width: 0 }}
-                  animate={{ width: `${currentProgress}%` }}
-                  transition={{ duration: 0.5 }}
-                />
-              </div>
+          // Calcular progresso baseado no tempo estimado se não fornecido
+          if (progress === undefined) {
+            const progressPercent = Math.min((newTime / estimatedTime) * 100, 95);
+            setCalculatedProgress(progressPercent);
+          }
 
-              <div className='flex justify-between items-center mt-2'>
-                <span className={`${sizeClasses[size].text} text-gray-500 dark:text-gray-400`}>
-                  {Math.round(currentProgress)}%
-                </span>
-                {hasTimedOut && (
-                  <div className='flex items-center space-x-1 text-red-600 dark:text-red-400'>
-                    <AlertCircle className='w-4 h-4' />
-                    <span className='text-xs'>Timeout</span>
-                  </div>
-                )}
-              </div>
-            </div>
-          </div>
-        );
+          // Verificar timeout
+          if (newTime >= timeoutDuration && !hasTimedOut) {
+            setHasTimedOut(true);
+            onTimeout?.();
+          }
+
+          return newTime;
+        });
+      }, 1000);
+
+      return () => clearInterval(interval);
+    }, [isLoading, type, estimatedTime, timeoutDuration, hasTimedOut, onTimeout, progress]);
+
+    const formatTime = (seconds: number) => {
+      if (seconds < 60) {
+        return `${seconds}s`;
       }
+      const minutes = Math.floor(seconds / 60);
+      const remainingSeconds = seconds % 60;
+      return `${minutes}m ${remainingSeconds}s`;
+    };
 
-      case 'overlay': {
-        return (
-          <div className='fixed inset-0 bg-black bg-opacity-50 z-50 flex items-center justify-center'>
-            <div className='bg-white dark:bg-gray-800 rounded-lg shadow-xl p-8 max-w-md w-full mx-4'>
-              <div className='flex flex-col items-center space-y-4'>
-                <Loader2
-                  className={`${sizeClasses[size].spinner} text-blue-600 dark:text-blue-400 animate-spin`}
-                />
-                {title && (
-                  <h3
-                    className={`font-semibold text-gray-900 dark:text-white ${sizeClasses[size].text}`}
-                  >
-                    {title}
-                  </h3>
-                )}
-                {text && (
-                  <p
-                    className={`text-gray-600 dark:text-gray-400 text-center ${sizeClasses[size].text}`}
-                  >
-                    {text}
-                  </p>
-                )}
-              </div>
-            </div>
-          </div>
-        );
-      }
+    const getStatusColor = () => {
+      if (hasTimedOut) return 'text-red-600 dark:text-red-400';
+      if (elapsedTime > estimatedTime * 0.8) return 'text-yellow-600 dark:text-yellow-400';
+      return 'text-blue-600 dark:text-blue-400';
+    };
 
-      default: {
-        // spinner
-        const spinnerContent = (
-          <div
-            className={`flex flex-col items-center justify-center space-y-3 ${sizeClasses[size].container} ${className}`}
-          >
-            <Loader2
-              className={`${sizeClasses[size].spinner} text-blue-600 dark:text-blue-400 animate-spin`}
-            />
-            {text && (
-              <p
-                className={`text-gray-600 dark:text-gray-400 font-medium ${sizeClasses[size].text}`}
-              >
-                {text}
-              </p>
-            )}
-          </div>
-        );
+    if (!isLoading) return null;
 
-        if (fullScreen) {
+    const renderLoadingContent = () => {
+      switch (type) {
+        case 'skeleton': {
           return (
-            <div className='fixed inset-0 bg-white dark:bg-gray-900 bg-opacity-80 dark:bg-opacity-80 backdrop-blur-sm z-50 flex items-center justify-center'>
-              {spinnerContent}
+            <UnifiedSkeleton
+              type={skeletonType}
+              count={skeletonCount}
+              size={size}
+              className={className}
+            />
+          );
+        }
+
+        case 'progress': {
+          const currentProgress = progress !== undefined ? progress : calculatedProgress;
+          return (
+            <div
+              className={`flex flex-col items-center justify-center space-y-4 ${sizeClasses[size].container} ${className}`}
+            >
+              {title && (
+                <h3
+                  className={`font-semibold text-gray-900 dark:text-white ${sizeClasses[size].text}`}
+                >
+                  {title}
+                </h3>
+              )}
+
+              <div className='w-full max-w-xs'>
+                <div className='flex justify-between items-center mb-2'>
+                  <span className={`${sizeClasses[size].text} text-gray-600 dark:text-gray-400`}>
+                    {text || 'Carregando...'}
+                  </span>
+                  {showTimeEstimate && (
+                    <span className={`${sizeClasses[size].text} ${getStatusColor()}`}>
+                      {formatTime(elapsedTime)}
+                    </span>
+                  )}
+                </div>
+
+                <div className='w-full bg-gray-200 dark:bg-gray-700 rounded-full h-2'>
+                  <motion.div
+                    className='bg-blue-600 dark:bg-blue-400 h-2 rounded-full'
+                    initial={{ width: 0 }}
+                    animate={{ width: `${currentProgress}%` }}
+                    transition={{ duration: 0.5 }}
+                  />
+                </div>
+
+                <div className='flex justify-between items-center mt-2'>
+                  <span className={`${sizeClasses[size].text} text-gray-500 dark:text-gray-400`}>
+                    {Math.round(currentProgress)}%
+                  </span>
+                  {hasTimedOut && (
+                    <div className='flex items-center space-x-1 text-red-600 dark:text-red-400'>
+                      <AlertCircle className='w-4 h-4' />
+                      <span className='text-xs'>Timeout</span>
+                    </div>
+                  )}
+                </div>
+              </div>
             </div>
           );
         }
 
-        return spinnerContent;
-      }
-    }
-  };
+        case 'overlay': {
+          return (
+            <div className='fixed inset-0 bg-background/80 backdrop-blur-sm z-50 flex items-center justify-center'>
+              <div className='bg-white dark:bg-gray-800 rounded-lg shadow-xl p-8 max-w-md w-full mx-4'>
+                <div className='flex flex-col items-center space-y-4'>
+                  <Loader2
+                    className={`${sizeClasses[size].spinner} text-blue-600 dark:text-blue-400 animate-spin`}
+                  />
+                  {title && (
+                    <h3
+                      className={`font-semibold text-gray-900 dark:text-white ${sizeClasses[size].text}`}
+                    >
+                      {title}
+                    </h3>
+                  )}
+                  {text && (
+                    <p
+                      className={`text-gray-600 dark:text-gray-400 text-center ${sizeClasses[size].text}`}
+                    >
+                      {text}
+                    </p>
+                  )}
+                </div>
+              </div>
+            </div>
+          );
+        }
 
-  return (
-    <AnimatePresence>
-      {isLoading && (
-        <motion.div
-          initial={{ opacity: 0 }}
-          animate={{ opacity: 1 }}
-          exit={{ opacity: 0 }}
-          transition={{ duration: config.animationDuration / 1000 }}
-        >
-          {renderLoadingContent()}
-        </motion.div>
-      )}
-    </AnimatePresence>
-  );
-}); // End of UnifiedLoading component
+        default: {
+          // spinner
+          const spinnerContent = (
+            <div
+              className={`flex flex-col items-center justify-center space-y-3 ${sizeClasses[size].container} ${className}`}
+            >
+              <Loader2
+                className={`${sizeClasses[size].spinner} text-blue-600 dark:text-blue-400 animate-spin`}
+              />
+              {text && (
+                <p
+                  className={`text-gray-600 dark:text-gray-400 font-medium ${sizeClasses[size].text}`}
+                >
+                  {text}
+                </p>
+              )}
+            </div>
+          );
+
+          if (fullScreen) {
+            return (
+              <div className='fixed inset-0 bg-white dark:bg-gray-900 bg-opacity-80 dark:bg-opacity-80 backdrop-blur-sm z-50 flex items-center justify-center'>
+                {spinnerContent}
+              </div>
+            );
+          }
+
+          return spinnerContent;
+        }
+      }
+    };
+
+    return (
+      <AnimatePresence>
+        {isLoading && (
+          <motion.div
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            transition={{ duration: config.animationDuration / 1000 }}
+          >
+            {renderLoadingContent()}
+          </motion.div>
+        )}
+      </AnimatePresence>
+    );
+  }
+); // End of UnifiedLoading component
 
 // Componentes de conveniência para casos específicos
 export const LoadingSpinner: React.FC<Omit<UnifiedLoadingProps, 'type'>> = props => (

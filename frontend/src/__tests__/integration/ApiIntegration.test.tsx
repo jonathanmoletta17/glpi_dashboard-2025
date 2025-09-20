@@ -3,16 +3,15 @@ import { describe, it, expect, beforeEach, vi } from 'vitest';
 import React from 'react';
 import { server } from '../../test/mocks/server';
 import { http, HttpResponse } from 'msw';
-import { apiService } from '../../services/api';
 import { useApi } from '../../hooks/useApi';
 
 // Integration test component that combines multiple API calls
 const DashboardIntegration = () => {
-  const [metrics, setMetrics] = React.useState(null);
-  const [status, setStatus] = React.useState(null);
-  const [ranking, setRanking] = React.useState(null);
+  const [metrics, setMetrics] = React.useState<any>(null);
+  const [status, setStatus] = React.useState<any>(null);
+  const [ranking, setRanking] = React.useState<any>(null);
   const [loading, setLoading] = React.useState(false);
-  const [error, setError] = React.useState(null);
+  const [error, setError] = React.useState<string | null>(null);
 
   const loadDashboardData = async () => {
     setLoading(true);
@@ -23,7 +22,7 @@ const DashboardIntegration = () => {
       const [metricsResponse, healthResponse, rankingResponse] = await Promise.all([
         fetch('/api/metrics'),
         fetch('/api/health'), // Mudado de /api/status para /api/health
-        fetch('/api/technicians/ranking')
+        fetch('/api/technicians/ranking'),
       ]);
 
       const metricsData = await metricsResponse.json();
@@ -33,7 +32,6 @@ const DashboardIntegration = () => {
       if (metricsData.success) setMetrics(metricsData.data);
       if (healthData.success) setStatus(healthData.data); // Usando healthData
       if (rankingData.success) setRanking(rankingData.data);
-
     } catch (err) {
       setError(err instanceof Error ? err.message : 'Failed to load dashboard data');
     } finally {
@@ -42,16 +40,16 @@ const DashboardIntegration = () => {
   };
 
   return (
-    <div data-testid="dashboard">
-      <button onClick={loadDashboardData} data-testid="load-dashboard">
+    <div data-testid='dashboard'>
+      <button onClick={loadDashboardData} data-testid='load-dashboard'>
         Load Dashboard
       </button>
 
-      {loading && <div data-testid="dashboard-loading">Loading dashboard...</div>}
-      {error && <div data-testid="dashboard-error">{error}</div>}
+      {loading && <div data-testid='dashboard-loading'>Loading dashboard...</div>}
+      {error && <div data-testid='dashboard-error'>{error}</div>}
 
       {metrics && (
-        <div data-testid="metrics-section">
+        <div data-testid='metrics-section'>
           <h2>Metrics</h2>
           <div>Total: {metrics.total}</div>
           <div>Novos: {metrics.novos}</div>
@@ -60,7 +58,7 @@ const DashboardIntegration = () => {
       )}
 
       {status && (
-        <div data-testid="status-section">
+        <div data-testid='status-section'>
           <h2>System Status</h2>
           <div>Status: {status.status}</div>
           <div>Uptime: {status.uptime}</div>
@@ -68,7 +66,7 @@ const DashboardIntegration = () => {
       )}
 
       {ranking && (
-        <div data-testid="ranking-section">
+        <div data-testid='ranking-section'>
           <h2>Technician Ranking</h2>
           {ranking.map((tech, index) => (
             <div key={tech.id} data-testid={`technician-${index}`}>
@@ -98,12 +96,12 @@ const ApiHookIntegration = () => {
   });
 
   return (
-    <div data-testid="hook-integration">
+    <div data-testid='hook-integration'>
       <div>
-        <button onClick={metricsApi.execute} data-testid="fetch-metrics">
+        <button onClick={metricsApi.execute} data-testid='fetch-metrics'>
           Fetch Metrics
         </button>
-        <button onClick={statusApi.execute} data-testid="fetch-status">
+        <button onClick={statusApi.execute} data-testid='fetch-status'>
           Fetch Status
         </button>
         <button
@@ -111,35 +109,23 @@ const ApiHookIntegration = () => {
             metricsApi.reset();
             statusApi.reset();
           }}
-          data-testid="reset-all"
+          data-testid='reset-all'
         >
           Reset All
         </button>
       </div>
 
-      {(metricsApi.loading || statusApi.loading) && (
-        <div data-testid="any-loading">Loading...</div>
-      )}
+      {(metricsApi.loading || statusApi.loading) && <div data-testid='any-loading'>Loading...</div>}
 
-      {metricsApi.error && (
-        <div data-testid="metrics-error">Metrics Error: {metricsApi.error}</div>
-      )}
+      {metricsApi.error && <div data-testid='metrics-error'>Metrics Error: {metricsApi.error}</div>}
 
-      {statusApi.error && (
-        <div data-testid="status-error">Status Error: {statusApi.error}</div>
-      )}
+      {statusApi.error && <div data-testid='status-error'>Status Error: {statusApi.error}</div>}
 
       {metricsApi.data && (
-        <div data-testid="metrics-data">
-          Metrics loaded: {metricsApi.data.total} total
-        </div>
+        <div data-testid='metrics-data'>Metrics loaded: {metricsApi.data.total} total</div>
       )}
 
-      {statusApi.data && (
-        <div data-testid="status-data">
-          Status: {statusApi.data.status}
-        </div>
-      )}
+      {statusApi.data && <div data-testid='status-data'>Status: {statusApi.data.status}</div>}
     </div>
   );
 };
@@ -159,7 +145,8 @@ describe('API Integration Tests', () => {
             data: { total: 100, novos: 25, pendentes: 30 },
           });
         }),
-        http.get('/api/health', () => { // Mudado de /api/status para /api/health
+        http.get('/api/health', () => {
+          // Mudado de /api/status para /api/health
           return HttpResponse.json({
             success: true,
             data: { status: 'online', uptime: '99.9%' },
@@ -210,7 +197,8 @@ describe('API Integration Tests', () => {
             data: { total: 100, novos: 25, pendentes: 30 },
           });
         }),
-        http.get('/api/health', () => { // Mudado de /api/status para /api/health
+        http.get('/api/health', () => {
+          // Mudado de /api/status para /api/health
           return HttpResponse.json(
             { success: false, error: 'Status service unavailable' },
             { status: 500 }
@@ -276,7 +264,8 @@ describe('API Integration Tests', () => {
             data: { total: 150 },
           });
         }),
-        http.get('/api/health', () => { // Mudado de /api/status para /api/health
+        http.get('/api/health', () => {
+          // Mudado de /api/status para /api/health
           return HttpResponse.json({
             success: true,
             data: { status: 'healthy' },
@@ -312,7 +301,8 @@ describe('API Integration Tests', () => {
             { status: 500 }
           );
         }),
-        http.get('/api/health', () => { // Mudado de /api/status para /api/health
+        http.get('/api/health', () => {
+          // Mudado de /api/status para /api/health
           return HttpResponse.json({
             success: true,
             data: { status: 'healthy' },

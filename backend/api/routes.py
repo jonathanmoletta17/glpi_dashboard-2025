@@ -157,9 +157,7 @@ def get_metrics(validated_start_date=None, validated_end_date=None, validated_fi
             method="GET",
         )
 
-        logger.info(
-            f"[{correlation_id}] Buscando métricas do GLPI com filtros: data={start_date} até {end_date}"
-        )
+        logger.info(f"[{correlation_id}] Buscando métricas do GLPI com filtros: data={start_date} até {end_date}")
 
         # Usar método apropriado baseado nos filtros
         if start_date or end_date:
@@ -218,9 +216,7 @@ def get_metrics(validated_start_date=None, validated_end_date=None, validated_fi
         except (AttributeError, ImportError):
             target_p95 = 300
         if response_time > target_p95:
-            logger.warning(
-                f"[{correlation_id}] Resposta lenta detectada: {response_time:.2f}ms > {target_p95}ms"
-            )
+            logger.warning(f"[{correlation_id}] Resposta lenta detectada: {response_time:.2f}ms > {target_p95}ms")
 
         # Validar dados com Pydantic
         try:
@@ -286,9 +282,7 @@ def get_technicians():
                 entity_id = None
 
         # Buscar técnicos
-        technician_ids, technician_names = glpi_service._get_all_technician_ids_and_names(
-            entity_id=entity_id
-        )
+        technician_ids, technician_names = glpi_service._get_all_technician_ids_and_names(entity_id=entity_id)
 
         # Converter para formato de lista
         technicians = []
@@ -315,9 +309,7 @@ def get_technicians():
 
     except Exception as e:
         logger.error(f"Erro ao buscar técnicos: {e}", exc_info=True)
-        error_response = ResponseFormatter.format_error_response(
-            f"Erro interno do servidor: {str(e)}", [str(e)]
-        )
+        error_response = ResponseFormatter.format_error_response(f"Erro interno do servidor: {str(e)}", [str(e)])
         return jsonify(error_response), 500
 
 
@@ -325,9 +317,7 @@ def get_technicians():
 @monitor_api_endpoint("get_technician_ranking")
 @monitor_performance
 @cached(ttl=300)
-def get_technician_ranking(
-    validated_start_date=None, validated_end_date=None, validated_filters=None
-):
+def get_technician_ranking(validated_start_date=None, validated_end_date=None, validated_filters=None):
     """Endpoint para obter ranking de técnicos por nível"""
     start_time = time.time()
     obs_logger = api_logger
@@ -363,9 +353,7 @@ def get_technician_ranking(
             entity_id=entity_id,
         )
 
-        logger.debug(
-            f"[{correlation_id}] Buscando ranking de técnicos: dates={start_date}-{end_date}, level={level}"
-        )
+        logger.debug(f"[{correlation_id}] Buscando ranking de técnicos: dates={start_date}-{end_date}, level={level}")
 
         # Buscar ranking com ou sem filtros
         if any([start_date, end_date, level, entity_id]):
@@ -383,9 +371,7 @@ def get_technician_ranking(
         # Verificar resultado
         if ranking_data is None:
             logger.error("Falha na comunicação com o GLPI")
-            error_response = ResponseFormatter.format_error_response(
-                "Não foi possível conectar ao GLPI", ["Erro de conexão"]
-            )
+            error_response = ResponseFormatter.format_error_response("Não foi possível conectar ao GLPI", ["Erro de conexão"])
             return jsonify(error_response), 503
 
         if not ranking_data:
@@ -414,9 +400,7 @@ def get_technician_ranking(
             result_count=len(ranking_data),
             duration_ms=response_time,
         )
-        logger.info(
-            f"[{correlation_id}] Ranking obtido: {len(ranking_data)} técnicos em {response_time:.2f}ms"
-        )
+        logger.info(f"[{correlation_id}] Ranking obtido: {len(ranking_data)} técnicos em {response_time:.2f}ms")
 
         # Verificar performance
         try:
@@ -449,9 +433,7 @@ def get_technician_ranking(
 
     except Exception as e:
         logger.error(f"Erro inesperado ao buscar ranking de técnicos: {e}", exc_info=True)
-        error_response = ResponseFormatter.format_error_response(
-            f"Erro interno do servidor: {str(e)}", [str(e)]
-        )
+        error_response = ResponseFormatter.format_error_response(f"Erro interno do servidor: {str(e)}", [str(e)])
         return jsonify(error_response), 500
 
 
@@ -504,9 +486,7 @@ def get_new_tickets(validated_start_date=None, validated_end_date=None, validate
         # Verificar resultado
         if new_tickets is None:
             logger.error("Falha na comunicação com o GLPI")
-            error_response = ResponseFormatter.format_error_response(
-                "Não foi possível conectar ao GLPI", ["Erro de conexão"]
-            )
+            error_response = ResponseFormatter.format_error_response("Não foi possível conectar ao GLPI", ["Erro de conexão"])
             return jsonify(error_response), 503
 
         if not new_tickets:
@@ -559,13 +539,57 @@ def get_new_tickets(validated_start_date=None, validated_end_date=None, validate
 
     except Exception as e:
         logger.error(f"Erro inesperado ao buscar tickets novos: {e}", exc_info=True)
-        error_response = ResponseFormatter.format_error_response(
-            f"Erro interno do servidor: {str(e)}", [str(e)]
-        )
+        error_response = ResponseFormatter.format_error_response(f"Erro interno do servidor: {str(e)}", [str(e)])
         return jsonify(error_response), 500
 
 
-# Endpoint /tickets/<int:ticket_id> removido - não essencial para funcionalidade básica
+@api_bp.route("/tickets/<int:ticket_id>")
+@monitor_api_endpoint("get_ticket_details")
+@monitor_performance
+@cached(ttl=300)
+def get_ticket_details(ticket_id):
+    """Endpoint para obter detalhes de um ticket específico"""
+    start_time = time.time()
+
+    try:
+        # Log da operação
+        api_logger.log_operation_start(
+            "api_request",
+            correlation_id=request.headers.get("X-Correlation-ID"),
+            method=request.method,
+            endpoint="api.get_ticket_details",
+            path=f"/api/tickets/{ticket_id}",
+            remote_addr=request.remote_addr,
+        )
+
+        # Buscar ticket no GLPI
+        ticket_data = glpi_service.get_ticket_by_id(ticket_id)
+
+        if not ticket_data:
+            logger.warning(f"Ticket {ticket_id} não encontrado")
+            error_response = ResponseFormatter.format_error_response(
+                f"Ticket {ticket_id} não encontrado",
+                [f"O ticket com ID {ticket_id} não existe ou não está acessível"],
+            )
+            return jsonify(error_response), 404
+
+        # Formatar resposta de sucesso
+        response_data = ResponseFormatter.format_success_response(
+            ticket_data, f"Detalhes do ticket {ticket_id} obtidos com sucesso"
+        )
+
+        # Log de sucesso
+        processing_time = (time.time() - start_time) * 1000
+        logger.info(f"Detalhes do ticket {ticket_id} obtidos em {processing_time:.2f}ms")
+
+        return jsonify(response_data), 200
+
+    except Exception as e:
+        logger.error(f"Erro ao buscar detalhes do ticket {ticket_id}: {e}", exc_info=True)
+        error_response = ResponseFormatter.format_error_response(
+            f"Erro interno do servidor ao buscar ticket {ticket_id}: {str(e)}", [str(e)]
+        )
+        return jsonify(error_response), 500
 
 
 # ============================================================================

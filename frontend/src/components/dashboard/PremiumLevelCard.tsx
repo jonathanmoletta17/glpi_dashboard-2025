@@ -74,7 +74,7 @@ export const PremiumLevelCard: React.FC<LevelCardProps> = ({ title, totalTickets
   return (
     <Card
       className={`h-full bg-transparent border border-gray-200 dark:border-gray-700 shadow-sm ${levelConfig.bgClass}`}
-      role="region"
+      role='region'
       aria-labelledby={`${cardId}-title`}
       aria-describedby={`${cardId}-description`}
     >
@@ -86,7 +86,7 @@ export const PremiumLevelCard: React.FC<LevelCardProps> = ({ title, totalTickets
           >
             <div
               className='p-2 rounded-lg bg-white dark:bg-gray-800 shadow-sm border border-gray-200 dark:border-gray-600'
-              aria-hidden="true"
+              aria-hidden='true'
             >
               <BarChart3 className={`h-5 w-5 ${levelConfig.accentColor}`} />
             </div>
@@ -102,7 +102,8 @@ export const PremiumLevelCard: React.FC<LevelCardProps> = ({ title, totalTickets
         </div>
         <VisuallyHidden>
           <div id={`${cardId}-description`}>
-            Cartão de métricas para {title} com {totalTickets} tickets totais distribuídos em {stats.length} categorias de status
+            Cartão de métricas para {title} com {totalTickets} tickets totais distribuídos em{' '}
+            {stats.length} categorias de status
           </div>
         </VisuallyHidden>
       </CardHeader>
@@ -110,22 +111,23 @@ export const PremiumLevelCard: React.FC<LevelCardProps> = ({ title, totalTickets
       <CardContent className='px-5 pb-5'>
         <div
           className='grid grid-cols-1 sm:grid-cols-2 gap-3'
-          role="list"
+          role='list'
           aria-label={`Estatísticas detalhadas para ${title}`}
         >
           {stats.map((stat, index) => {
             const Icon = statusIcons[stat.label as keyof typeof statusIcons] || AlertCircle;
             const statusConfig = getStatusConfig(stat.label);
-            const percentage = totalStatsValue > 0 ? ((stat.value / totalStatsValue) * 100).toFixed(1) : '0';
+            const percentage =
+              totalStatsValue > 0 ? ((stat.value / totalStatsValue) * 100).toFixed(1) : '0';
 
             return (
               <div
                 key={index}
                 className={`flex items-center justify-between p-4 rounded-lg ${statusConfig.bgClass} min-h-[56px] border transition-all duration-200 hover:shadow-md hover:scale-[1.02] focus-within:ring-2 focus-within:ring-blue-500 focus-within:ring-offset-2`}
-                role="listitem"
+                role='listitem'
                 tabIndex={0}
                 aria-label={`${stat.label}: ${stat.value.toLocaleString()} tickets (${percentage}% do total)`}
-                onKeyDown={(e) => {
+                onKeyDown={e => {
                   if (e.key === 'Enter' || e.key === ' ') {
                     e.preventDefault();
                     // Pode adicionar ação de clique aqui se necessário
@@ -135,7 +137,7 @@ export const PremiumLevelCard: React.FC<LevelCardProps> = ({ title, totalTickets
                 <div className='flex items-center gap-3'>
                   <div
                     className='p-2 rounded-lg bg-white dark:bg-gray-800 shadow-sm border border-gray-200 dark:border-gray-600'
-                    aria-hidden="true"
+                    aria-hidden='true'
                   >
                     <Icon className={`h-4 w-4 ${statusConfig.iconColor}`} />
                   </div>
@@ -144,13 +146,13 @@ export const PremiumLevelCard: React.FC<LevelCardProps> = ({ title, totalTickets
                   </span>
                 </div>
                 <div className='text-right'>
-                  <span className={`text-lg font-bold ${statusConfig.textColor} tabular-nums block`}>
+                  <span
+                    className={`text-lg font-bold ${statusConfig.textColor} tabular-nums block`}
+                  >
                     {stat.value.toLocaleString()}
                   </span>
                   <VisuallyHidden>
-                    <span aria-label={`${percentage} por cento do total`}>
-                      ({percentage}%)
-                    </span>
+                    <span aria-label={`${percentage} por cento do total`}>({percentage}%)</span>
                   </VisuallyHidden>
                 </div>
               </div>

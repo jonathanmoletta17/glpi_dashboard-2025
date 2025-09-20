@@ -220,7 +220,10 @@ export function formatPersonName(fullName: string): string {
     return '';
   }
 
-  const nameParts = fullName.trim().split(' ').filter(part => part.length > 0);
+  const nameParts = fullName
+    .trim()
+    .split(' ')
+    .filter(part => part.length > 0);
 
   if (nameParts.length === 0) {
     return '';
@@ -338,17 +341,19 @@ export function formatPriority(priority: string | number): {
     '3': { text: 'Média', color: 'text-yellow-700', bgColor: 'bg-yellow-100' },
     '4': { text: 'Alta', color: 'text-orange-700', bgColor: 'bg-orange-100' },
     '5': { text: 'Muito Alta', color: 'text-red-700', bgColor: 'bg-red-100' },
-    'baixa': { text: 'Baixa', color: 'text-blue-700', bgColor: 'bg-blue-100' },
-    'media': { text: 'Média', color: 'text-yellow-700', bgColor: 'bg-yellow-100' },
-    'alta': { text: 'Alta', color: 'text-orange-700', bgColor: 'bg-orange-100' },
-    'critica': { text: 'Crítica', color: 'text-red-700', bgColor: 'bg-red-100' },
+    baixa: { text: 'Baixa', color: 'text-blue-700', bgColor: 'bg-blue-100' },
+    media: { text: 'Média', color: 'text-yellow-700', bgColor: 'bg-yellow-100' },
+    alta: { text: 'Alta', color: 'text-orange-700', bgColor: 'bg-orange-100' },
+    critica: { text: 'Crítica', color: 'text-red-700', bgColor: 'bg-red-100' },
   };
 
-  return priorityMap[priorityStr] || {
-    text: priority.toString(),
-    color: 'text-gray-700',
-    bgColor: 'bg-gray-100',
-  };
+  return (
+    priorityMap[priorityStr] || {
+      text: priority.toString(),
+      color: 'text-gray-700',
+      bgColor: 'bg-gray-100',
+    }
+  );
 }
 
 /**
@@ -360,7 +365,10 @@ export function getInitials(name: string, maxInitials: number = 2): string {
     return '';
   }
 
-  const nameParts = name.trim().split(' ').filter(part => part.length > 0);
+  const nameParts = name
+    .trim()
+    .split(' ')
+    .filter(part => part.length > 0);
 
   if (nameParts.length === 0) {
     return '';

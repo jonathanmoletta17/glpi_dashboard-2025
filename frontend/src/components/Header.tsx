@@ -33,8 +33,6 @@ interface HeaderProps {
   onThemeChange?: (theme: Theme) => void;
 }
 
-
-
 // Predefined date ranges
 const dateRanges = [
   { label: 'Hoje', days: 0 },
@@ -44,464 +42,465 @@ const dateRanges = [
   { label: 'Últimos 90 dias', days: 90 },
 ];
 
-export const Header = React.memo<HeaderProps>(({
-  currentTime,
-  // systemActive,
-  searchQuery,
-  searchResults,
-  dateRange,
-  filterType,
-  availableFilterTypes,
-  onSearch,
-  onNotification,
-  onDateRangeChange,
-  onFilterTypeChange
-}) => {
-  const [showSearchResults, setShowSearchResults] = useState(false);
-  const [showDatePicker, setShowDatePicker] = useState(false);
-  const [_showThemeSelector, setShowThemeSelector] = useState(false);
+export const Header = React.memo<HeaderProps>(
+  ({
+    currentTime,
+    // systemActive,
+    searchQuery,
+    searchResults,
+    dateRange,
+    filterType,
+    availableFilterTypes,
+    onSearch,
+    onNotification,
+    onDateRangeChange,
+    onFilterTypeChange,
+  }) => {
+    const [showSearchResults, setShowSearchResults] = useState(false);
+    const [showDatePicker, setShowDatePicker] = useState(false);
+    const [_showThemeSelector, setShowThemeSelector] = useState(false);
 
-  const [customStartDate, setCustomStartDate] = useState('');
-  const [customEndDate, setCustomEndDate] = useState('');
+    const [customStartDate, setCustomStartDate] = useState('');
+    const [customEndDate, setCustomEndDate] = useState('');
 
-  const searchRef = useRef<HTMLDivElement>(null);
-  const inputRef = useRef<HTMLInputElement>(null);
-  const dateRef = useRef<HTMLDivElement>(null);
-  const themeRef = useRef<HTMLDivElement>(null);
+    const searchRef = useRef<HTMLDivElement>(null);
+    const inputRef = useRef<HTMLInputElement>(null);
+    const dateRef = useRef<HTMLDivElement>(null);
+    const themeRef = useRef<HTMLDivElement>(null);
 
-  // Format date for display - memoized
-  const formatDate = useCallback((dateStr: string) => {
-    const date = new Date(dateStr);
-    return date.toLocaleDateString('pt-BR', {
-      day: '2-digit',
-      month: '2-digit',
-      year: '2-digit',
-    });
-  }, []);
+    // Format date for display - memoized
+    const formatDate = useCallback((dateStr: string) => {
+      const date = new Date(dateStr);
+      return date.toLocaleDateString('pt-BR', {
+        day: '2-digit',
+        month: '2-digit',
+        year: '2-digit',
+      });
+    }, []);
 
-  // Get date range label - memoized
-  const getDateRangeLabel = useMemo(() => {
-    // ✅ Verificação de segurança
-    if (!dateRange || !dateRange.startDate || !dateRange.endDate) {
-      return 'Selecionar período';
-    }
-
-    const start = new Date(dateRange.startDate);
-    const end = new Date(dateRange.endDate);
-    const diffTime = Math.abs(end.getTime() - start.getTime());
-    const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
-
-    const predefined = dateRanges.find(range => range.days === diffDays);
-    if (predefined) return predefined.label;
-
-    return `${formatDate(dateRange.startDate)} - ${formatDate(dateRange.endDate)}`;
-  }, [dateRange, formatDate]);
-
-  // Handle predefined date range selection
-  const handleDateRangeSelect = useCallback(
-    (days: number) => {
-      const endDate = new Date();
-      const startDate = new Date();
-      startDate.setDate(startDate.getDate() - days);
-
-      const startStr = startDate.toISOString().split('T')[0];
-      const endStr = endDate.toISOString().split('T')[0];
-
-      const range = dateRanges.find(r => r.days === days);
-      const newDateRange = {
-        startDate: startStr,
-        endDate: endStr,
-        label: range?.label || 'Período personalizado',
-      };
-      // console.log('📅 Header - Enviando dateRange:', newDateRange);
-      onDateRangeChange?.(newDateRange);
-      setShowDatePicker(false);
-
-      onNotification('Período Atualizado', `Filtro alterado para: ${range?.label}`, 'info');
-    },
-    [onDateRangeChange, onNotification]
-  );
-
-  // Handle custom date range
-  const handleCustomDateRange = useCallback(() => {
-    if (customStartDate && customEndDate && onDateRangeChange) {
-      const customDateRange = {
-        startDate: customStartDate,
-        endDate: customEndDate,
-        label: 'Período personalizado',
-      };
-      // console.log('📅 Header - Enviando período personalizado:', customDateRange);
-      onDateRangeChange(customDateRange);
-      setShowDatePicker(false);
-      onNotification('Período Personalizado', 'Período customizado aplicado', 'success');
-    }
-  }, [customStartDate, customEndDate, onDateRangeChange, onNotification]);
-
-  // Search handlers with debounce (300ms)
-  const debouncedSearch = useDebouncedCallback((query: string) => {
-    onSearch(query);
-  }, 300);
-
-  const handleSearchChange = useCallback(
-    (e: React.ChangeEvent<HTMLInputElement>) => {
-      debouncedSearch(e.target.value);
-    },
-    [debouncedSearch]
-  );
-
-  const handleSearchFocus = useCallback(() => {
-    if (searchResults.length > 0) setShowSearchResults(true);
-  }, [searchResults.length]);
-
-  const handleSearchBlur = useCallback(() => {
-    setTimeout(() => setShowSearchResults(false), 200);
-  }, []);
-
-
-
-  // Screen reader announcements
-  const { announce } = useScreenReaderAnnouncement();
-
-  // Search results navigation
-  const {
-    focusedIndex: searchFocusedIndex,
-    handleKeyDown: handleSearchKeyDown,
-    resetFocus: resetSearchFocus,
-  } = useListNavigation({
-    itemCount: searchResults.length,
-    onSelect: index => {
-      const result = searchResults[index];
-      if (result) {
-        announce(`Selecionado: ${result.title}`);
-        // Handle search result selection
-      }
-    },
-    isEnabled: showSearchResults,
-  });
-
-
-
-  // Date range navigation
-  const {
-    focusedIndex: dateFocusedIndex,
-    handleKeyDown: handleDateKeyDown,
-    resetFocus: resetDateFocus,
-  } = useListNavigation({
-    itemCount: dateRanges.length,
-    onSelect: index => {
-      const selectedRange = dateRanges[index];
-      if (selectedRange) {
-        handleDateRangeSelect(selectedRange.days);
-        announce(`Período alterado para ${selectedRange.label}`);
-      }
-    },
-    isEnabled: showDatePicker,
-  });
-
-  // Enhanced keyboard shortcuts
-  useEffect(() => {
-    const handleKeyDown = (e: KeyboardEvent) => {
-      // Global search shortcut
-      if ((e.ctrlKey || e.metaKey) && e.key === 'k') {
-        e.preventDefault();
-        inputRef.current?.focus();
-        announce('Campo de busca focado');
-        return;
+    // Get date range label - memoized
+    const getDateRangeLabel = useMemo(() => {
+      // ✅ Verificação de segurança
+      if (!dateRange || !dateRange.startDate || !dateRange.endDate) {
+        return 'Selecionar período';
       }
 
-      // Escape to close all dropdowns
-      if (e.key === 'Escape') {
-        setShowSearchResults(false);
+      const start = new Date(dateRange.startDate);
+      const end = new Date(dateRange.endDate);
+      const diffTime = Math.abs(end.getTime() - start.getTime());
+      const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
+
+      const predefined = dateRanges.find(range => range.days === diffDays);
+      if (predefined) return predefined.label;
+
+      return `${formatDate(dateRange.startDate)} - ${formatDate(dateRange.endDate)}`;
+    }, [dateRange, formatDate]);
+
+    // Handle predefined date range selection
+    const handleDateRangeSelect = useCallback(
+      (days: number) => {
+        const endDate = new Date();
+        const startDate = new Date();
+        startDate.setDate(startDate.getDate() - days);
+
+        const startStr = startDate.toISOString().split('T')[0];
+        const endStr = endDate.toISOString().split('T')[0];
+
+        const range = dateRanges.find(r => r.days === days);
+        const newDateRange = {
+          startDate: startStr,
+          endDate: endStr,
+          label: range?.label || 'Período personalizado',
+        };
+        // console.log('📅 Header - Enviando dateRange:', newDateRange);
+        onDateRangeChange?.(newDateRange);
         setShowDatePicker(false);
-        resetSearchFocus();
-        resetDateFocus();
-        announce('Menus fechados');
-        return;
-      }
 
-      // Handle navigation in open dropdowns
-      if (showSearchResults || showDatePicker) {
-        if (showSearchResults) {
-          handleSearchKeyDown(e);
-        } else if (showDatePicker) {
-            handleDateKeyDown(e);
+        onNotification('Período Atualizado', `Filtro alterado para: ${range?.label}`, 'info');
+      },
+      [onDateRangeChange, onNotification]
+    );
+
+    // Handle custom date range
+    const handleCustomDateRange = useCallback(() => {
+      if (customStartDate && customEndDate && onDateRangeChange) {
+        const customDateRange = {
+          startDate: customStartDate,
+          endDate: customEndDate,
+          label: 'Período personalizado',
+        };
+        // console.log('📅 Header - Enviando período personalizado:', customDateRange);
+        onDateRangeChange(customDateRange);
+        setShowDatePicker(false);
+        onNotification('Período Personalizado', 'Período customizado aplicado', 'success');
+      }
+    }, [customStartDate, customEndDate, onDateRangeChange, onNotification]);
+
+    // Search handlers with debounce (300ms)
+    const debouncedSearch = useDebouncedCallback((query: string) => {
+      onSearch(query);
+    }, 300);
+
+    const handleSearchChange = useCallback(
+      (e: React.ChangeEvent<HTMLInputElement>) => {
+        debouncedSearch(e.target.value);
+      },
+      [debouncedSearch]
+    );
+
+    const handleSearchFocus = useCallback(() => {
+      if (searchResults.length > 0) setShowSearchResults(true);
+    }, [searchResults.length]);
+
+    const handleSearchBlur = useCallback(() => {
+      setTimeout(() => setShowSearchResults(false), 200);
+    }, []);
+
+    // Screen reader announcements
+    const { announce } = useScreenReaderAnnouncement();
+
+    // Search results navigation
+    const {
+      focusedIndex: searchFocusedIndex,
+      handleKeyDown: handleSearchKeyDown,
+      resetFocus: resetSearchFocus,
+    } = useListNavigation({
+      itemCount: searchResults.length,
+      onSelect: index => {
+        const result = searchResults[index];
+        if (result) {
+          announce(`Selecionado: ${result.title}`);
+          // Handle search result selection
         }
-      }
-    };
+      },
+      isEnabled: showSearchResults,
+    });
 
-    document.addEventListener('keydown', handleKeyDown);
-    return () => document.removeEventListener('keydown', handleKeyDown);
-  }, [
-    showSearchResults,
-    showDatePicker,
-    handleSearchKeyDown,
-    handleDateKeyDown,
-    resetSearchFocus,
-    resetDateFocus,
-    announce,
-  ]);
+    // Date range navigation
+    const {
+      focusedIndex: dateFocusedIndex,
+      handleKeyDown: handleDateKeyDown,
+      resetFocus: resetDateFocus,
+    } = useListNavigation({
+      itemCount: dateRanges.length,
+      onSelect: index => {
+        const selectedRange = dateRanges[index];
+        if (selectedRange) {
+          handleDateRangeSelect(selectedRange.days);
+          announce(`Período alterado para ${selectedRange.label}`);
+        }
+      },
+      isEnabled: showDatePicker,
+    });
 
-  // Click outside handlers
-  useEffect(() => {
-    const handleClickOutside = (event: MouseEvent) => {
-      if (searchRef.current && !searchRef.current.contains(event.target as Node)) {
-        setShowSearchResults(false);
-      }
-      if (themeRef.current && !themeRef.current.contains(event.target as Node)) {
-        setShowThemeSelector(false);
-      }
-      if (dateRef.current && !dateRef.current.contains(event.target as Node)) {
-        setShowDatePicker(false);
-      }
-    };
+    // Enhanced keyboard shortcuts
+    useEffect(() => {
+      const handleKeyDown = (e: KeyboardEvent) => {
+        // Global search shortcut
+        if ((e.ctrlKey || e.metaKey) && e.key === 'k') {
+          e.preventDefault();
+          inputRef.current?.focus();
+          announce('Campo de busca focado');
+          return;
+        }
 
-    document.addEventListener('mousedown', handleClickOutside);
-    return () => document.removeEventListener('mousedown', handleClickOutside);
-  }, []);
+        // Escape to close all dropdowns
+        if (e.key === 'Escape') {
+          setShowSearchResults(false);
+          setShowDatePicker(false);
+          resetSearchFocus();
+          resetDateFocus();
+          announce('Menus fechados');
+          return;
+        }
 
-  // Theme functionality is handled by ThemeToggle component
+        // Handle navigation in open dropdowns
+        if (showSearchResults || showDatePicker) {
+          if (showSearchResults) {
+            handleSearchKeyDown(e);
+          } else if (showDatePicker) {
+            handleDateKeyDown(e);
+          }
+        }
+      };
 
-  // Memoize search clear handler
-  const handleSearchClear = useCallback(() => {
-    onSearch('');
-  }, [onSearch]);
+      document.addEventListener('keydown', handleKeyDown);
+      return () => document.removeEventListener('keydown', handleKeyDown);
+    }, [
+      showSearchResults,
+      showDatePicker,
+      handleSearchKeyDown,
+      handleDateKeyDown,
+      resetSearchFocus,
+      resetDateFocus,
+      announce,
+    ]);
 
-  return (
-    <header
-      className='h-16 flex items-center justify-between px-6 backdrop-blur-md bg-white/95 dark:bg-gray-900/95 border-b border-gray-200/50 dark:border-gray-700/50 w-full shadow-xl relative z-50'
-      role='banner'
-      aria-label='Cabeçalho principal do dashboard'
-    >
-      <div className='w-full px-6 py-4'>
-        <div className='flex items-center justify-between w-full'>
-          {/* ========== SEÇÃO ESQUERDA: LOGO + TÍTULO ========== */}
-          <div
-            className='flex items-center space-x-4 min-w-0 flex-shrink-0'
-            role='group'
-            aria-label='Logo e título do sistema'
-          >
+    // Click outside handlers
+    useEffect(() => {
+      const handleClickOutside = (event: MouseEvent) => {
+        if (searchRef.current && !searchRef.current.contains(event.target as Node)) {
+          setShowSearchResults(false);
+        }
+        if (themeRef.current && !themeRef.current.contains(event.target as Node)) {
+          setShowThemeSelector(false);
+        }
+        if (dateRef.current && !dateRef.current.contains(event.target as Node)) {
+          setShowDatePicker(false);
+        }
+      };
+
+      document.addEventListener('mousedown', handleClickOutside);
+      return () => document.removeEventListener('mousedown', handleClickOutside);
+    }, []);
+
+    // Theme functionality is handled by ThemeToggle component
+
+    // Memoize search clear handler
+    const handleSearchClear = useCallback(() => {
+      onSearch('');
+    }, [onSearch]);
+
+    return (
+      <header
+        className='h-16 flex items-center justify-between px-6 backdrop-blur-md bg-white/95 dark:bg-gray-900/95 border-b border-gray-200/50 dark:border-gray-700/50 w-full shadow-xl relative z-50'
+        role='banner'
+        aria-label='Cabeçalho principal do dashboard'
+      >
+        <div className='w-full py-4'>
+          <div className='flex items-center justify-between w-full'>
+            {/* ========== SEÇÃO ESQUERDA: LOGO + TÍTULO ========== */}
             <div
-              className='w-11 h-11 bg-white/80 backdrop-blur-sm border border-white/90 dark:bg-white/5 dark:border-white/10 rounded-xl flex items-center justify-center hover:scale-105 transition-all duration-200 group'
-              role='img'
-              aria-label='Logo do sistema GLPI'
+              className='flex items-center space-x-4 min-w-0 flex-shrink-0'
+              role='group'
+              aria-label='Logo e título do sistema'
             >
-              <SimpleTechIcon size={24} className='group-hover:scale-110 transition-transform' />
-            </div>
-            <div className='min-w-0'>
-              <h1 className='text-2xl font-semibold text-gray-900 dark:text-gray-100 truncate'>
-                Dashboard GLPI
-              </h1>
-              <p className='text-sm font-medium text-gray-600 dark:text-gray-300 truncate'>
-                Departamento de Tecnologia do Estado
-              </p>
-            </div>
-          </div>
-
-          {/* ========== SEÇÃO CENTRO: BUSCA + FILTRO DE DATA ========== */}
-          <div
-            className='flex items-center space-x-6 flex-1 justify-center max-w-2xl mx-8'
-            role='search'
-            aria-label='Área de busca e filtros'
-          >
-            {/* Search Bar */}
-            <div className='relative flex-1 max-w-md' ref={searchRef}>
-              <div className='relative'>
-                <Search className='absolute left-4 top-1/2 transform -translate-y-1/2 w-4 h-4 text-gray-600 dark:text-gray-400 opacity-60' />
-                <input
-                  ref={inputRef}
-                  type='text'
-                  value={searchQuery}
-                  onChange={handleSearchChange}
-                  onFocus={handleSearchFocus}
-                  onBlur={handleSearchBlur}
-                  placeholder='Buscar chamados... (Ctrl+K)'
-                  className='w-full pl-12 pr-10 py-3 rounded-xl text-sm font-medium border border-gray-200 bg-white/90 text-gray-900 dark:border-gray-600 dark:bg-gray-800/90 dark:text-gray-100 focus:ring-2 focus:ring-blue-500/50 focus:border-blue-500 backdrop-blur-md transition-all'
-                  aria-label='Campo de busca de chamados'
-                  aria-describedby='search-help'
-                  aria-expanded={showSearchResults}
-                  aria-autocomplete='list'
-                  aria-controls={showSearchResults ? 'search-results' : undefined}
-                  role='combobox'
-                />
-                {searchQuery && (
-                  <button
-                    onClick={handleSearchClear}
-                    className='absolute right-4 top-1/2 transform -translate-y-1/2 w-4 h-4 text-gray-600 dark:text-gray-400 opacity-60 hover:opacity-100 transition-opacity'
-                    aria-label='Limpar busca'
-                    title='Limpar campo de busca'
-                  >
-                    <X className='w-4 h-4' />
-                  </button>
-                )}
-                <div id='search-help' className='sr-only'>
-                  Use Ctrl+K para focar no campo de busca. Use as setas para navegar pelos
-                  resultados.
-                </div>
-              </div>
-
-              {/* Search Results */}
-              {showSearchResults && searchResults.length > 0 && (
-                <div
-                  id='search-results'
-                  className='absolute top-full left-0 right-0 mt-2 bg-white rounded-xl shadow-2xl border border-gray-200 max-h-80 overflow-y-auto z-50'
-                  role='listbox'
-                  aria-label='Resultados da busca'
-                >
-                  {searchResults.map((result, index) => (
-                    <button
-                      key={`search-result-${index}`}
-                      className={`w-full px-4 py-3 text-left hover:bg-gray-50 border-b border-gray-100 last:border-b-0 transition-colors ${
-                        index === searchFocusedIndex ? 'bg-blue-50 border-blue-200' : ''
-                      }`}
-                      role='option'
-                      aria-selected={index === searchFocusedIndex}
-                      tabIndex={-1}
-                    >
-                      <div className='text-sm font-medium text-gray-900'>{result.title}</div>
-                      <div className='text-xs text-gray-500 mt-1'>{result.description}</div>
-                    </button>
-                  ))}
-                </div>
-              )}
-            </div>
-
-            {/* Date Range Picker - FUNCIONAL */}
-            <div className='relative' ref={dateRef}>
-              <button
-                onClick={() => setShowDatePicker(!showDatePicker)}
-                className='flex items-center space-x-3 px-4 py-3 rounded-xl font-medium bg-white/90 text-gray-700 border border-gray-200 dark:bg-gray-800/80 dark:text-gray-200 dark:border-gray-600 hover:bg-white hover:text-gray-900 dark:hover:bg-gray-700/90 dark:hover:text-white transition-all backdrop-blur-md'
-                aria-label='Seletor de período de datas'
-                aria-expanded={showDatePicker}
-                aria-controls={showDatePicker ? 'date-picker-menu' : undefined}
-                aria-haspopup='menu'
+              <div
+                className='w-11 h-11 bg-white backdrop-blur-sm border border-gray-200 dark:bg-gray-800 dark:border-gray-700 rounded-xl flex items-center justify-center hover:scale-105 transition-all duration-200 group'
+                role='img'
+                aria-label='Logo do sistema GLPI'
               >
-                <Calendar className='w-4 h-4' aria-hidden='true' />
-                <span className='text-sm whitespace-nowrap'>{getDateRangeLabel}</span>
-                <ChevronDown className='w-4 h-4' aria-hidden='true' />
-              </button>
+                <SimpleTechIcon size={24} className='group-hover:scale-110 transition-transform' />
+              </div>
+              <div className='min-w-0'>
+                <h1 className='text-2xl font-semibold text-gray-900 dark:text-gray-100 truncate'>
+                  Dashboard GLPI
+                </h1>
+                <p className='text-sm font-medium text-gray-600 dark:text-gray-300 truncate'>
+                  Departamento de Tecnologia do Estado
+                </p>
+              </div>
+            </div>
 
-              {/* Date Picker Dropdown */}
-              {showDatePicker && (
-                <div
-                  id='date-picker-menu'
-                  className='absolute top-full right-0 mt-2 bg-white rounded-xl shadow-2xl border border-gray-200 py-3 min-w-80 z-50'
-                  role='menu'
-                  aria-label='Menu de seleção de período'
-                >
-                  <div className='px-4 pb-3 border-b border-gray-100'>
-                    <h3 className='text-sm font-semibold text-gray-900'>Filtros de Data</h3>
-                  </div>
-
-                  {/* Filter Type Selector */}
-                  {onFilterTypeChange && availableFilterTypes && (
-                    <div className='px-4 py-3 border-b border-gray-100'>
-                      <div className='text-xs font-medium text-gray-500 mb-2'>Tipo de Filtro</div>
-                      <select
-                        value={filterType || 'creation'}
-                        onChange={e => onFilterTypeChange(e.target.value)}
-                        className='w-full px-3 py-2 border border-gray-200 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-blue-500'
-                      >
-                        {availableFilterTypes.map(type => (
-                          <option key={type.key} value={type.key}>
-                            {type.name}
-                          </option>
-                        ))}
-                      </select>
-                      <div className='text-xs text-gray-400 mt-1'>
-                        {
-                          availableFilterTypes.find(t => t.key === (filterType || 'creation'))
-                            ?.description
-                        }
-                      </div>
-                    </div>
+            {/* ========== SEÇÃO CENTRO: BUSCA + FILTRO DE DATA ========== */}
+            <div
+              className='flex items-center space-x-6 flex-1 justify-center max-w-2xl mx-8'
+              role='search'
+              aria-label='Área de busca e filtros'
+            >
+              {/* Search Bar */}
+              <div className='relative flex-1 max-w-md' ref={searchRef}>
+                <div className='relative'>
+                  <Search className='absolute left-4 top-1/2 transform -translate-y-1/2 w-4 h-4 text-gray-600 dark:text-gray-400 opacity-60' />
+                  <input
+                    ref={inputRef}
+                    type='text'
+                    value={searchQuery}
+                    onChange={handleSearchChange}
+                    onFocus={handleSearchFocus}
+                    onBlur={handleSearchBlur}
+                    placeholder='Buscar chamados... (Ctrl+K)'
+                    className='w-full pl-12 pr-10 py-3 rounded-xl text-sm font-medium border border-gray-200 bg-white/90 text-gray-900 dark:border-gray-600 dark:bg-gray-800/90 dark:text-gray-100 focus:ring-2 focus:ring-blue-500/50 focus:border-blue-500 backdrop-blur-md transition-all'
+                    aria-label='Campo de busca de chamados'
+                    aria-describedby='search-help'
+                    aria-expanded={showSearchResults}
+                    aria-autocomplete='list'
+                    aria-controls={showSearchResults ? 'search-results' : undefined}
+                    role='combobox'
+                  />
+                  {searchQuery && (
+                    <button
+                      onClick={handleSearchClear}
+                      className='absolute right-4 top-1/2 transform -translate-y-1/2 w-4 h-4 text-gray-600 dark:text-gray-400 opacity-60 hover:opacity-100 transition-opacity'
+                      aria-label='Limpar busca'
+                      title='Limpar campo de busca'
+                    >
+                      <X className='w-4 h-4' />
+                    </button>
                   )}
+                  <div id='search-help' className='sr-only'>
+                    Use Ctrl+K para focar no campo de busca. Use as setas para navegar pelos
+                    resultados.
+                  </div>
+                </div>
 
-                  {/* Predefined Ranges */}
-                  <div className='py-2' role='group' aria-label='Períodos predefinidos'>
-                    {dateRanges.map((range, index) => (
+                {/* Search Results */}
+                {showSearchResults && searchResults.length > 0 && (
+                  <div
+                    id='search-results'
+                    className='absolute top-full left-0 right-0 mt-2 bg-white rounded-xl shadow-2xl border border-gray-200 max-h-80 overflow-y-auto z-50'
+                    role='listbox'
+                    aria-label='Resultados da busca'
+                  >
+                    {searchResults.map((result, index) => (
                       <button
-                        key={range.days}
-                        onClick={() => handleDateRangeSelect(range.days)}
-                        className={`w-full px-4 py-2 text-left hover:bg-gray-50 transition-colors text-sm text-gray-700 hover:text-gray-900 ${
-                          index === dateFocusedIndex ? 'bg-blue-50 text-blue-700' : ''
+                        key={`search-result-${index}`}
+                        className={`w-full px-4 py-3 text-left hover:bg-gray-50 border-b border-gray-100 last:border-b-0 transition-colors ${
+                          index === searchFocusedIndex ? 'bg-blue-50 border-blue-200' : ''
                         }`}
-                        role='menuitem'
+                        role='option'
+                        aria-selected={index === searchFocusedIndex}
                         tabIndex={-1}
-                        aria-label={`Selecionar período: ${range.label}`}
                       >
-                        {range.label}
+                        <div className='text-sm font-medium text-gray-900'>{result.title}</div>
+                        <div className='text-xs text-gray-500 mt-1'>{result.description}</div>
                       </button>
                     ))}
                   </div>
+                )}
+              </div>
 
-                  {/* Custom Range */}
+              {/* Date Range Picker - FUNCIONAL */}
+              <div className='relative' ref={dateRef}>
+                <button
+                  onClick={() => setShowDatePicker(!showDatePicker)}
+                  className='flex items-center space-x-3 px-4 py-3 rounded-xl font-medium bg-white/90 text-gray-700 border border-gray-200 dark:bg-gray-800/80 dark:text-gray-200 dark:border-gray-600 hover:bg-white hover:text-gray-900 dark:hover:bg-gray-700/90 dark:hover:text-white transition-all backdrop-blur-md'
+                  aria-label='Seletor de período de datas'
+                  aria-expanded={showDatePicker}
+                  aria-controls={showDatePicker ? 'date-picker-menu' : undefined}
+                  aria-haspopup='menu'
+                >
+                  <Calendar className='w-4 h-4' aria-hidden='true' />
+                  <span className='text-sm whitespace-nowrap'>{getDateRangeLabel}</span>
+                  <ChevronDown className='w-4 h-4' aria-hidden='true' />
+                </button>
+
+                {/* Date Picker Dropdown */}
+                {showDatePicker && (
                   <div
-                    className='border-t border-gray-100 pt-3 px-4'
-                    role='group'
-                    aria-label='Período personalizado'
+                    id='date-picker-menu'
+                    className='absolute top-full right-0 mt-2 bg-white rounded-xl shadow-2xl border border-gray-200 py-3 min-w-80 z-50'
+                    role='menu'
+                    aria-label='Menu de seleção de período'
                   >
-                    <div className='text-xs font-medium text-gray-500 mb-2' id='custom-range-label'>
-                      Período Personalizado
+                    <div className='px-4 pb-3 border-b border-gray-100'>
+                      <h3 className='text-sm font-semibold text-gray-900'>Filtros de Data</h3>
                     </div>
+
+                    {/* Filter Type Selector */}
+                    {onFilterTypeChange && availableFilterTypes && (
+                      <div className='px-4 py-3 border-b border-gray-100'>
+                        <div className='text-xs font-medium text-gray-500 mb-2'>Tipo de Filtro</div>
+                        <select
+                          value={filterType || 'creation'}
+                          onChange={e => onFilterTypeChange(e.target.value)}
+                          className='w-full px-3 py-2 border border-gray-200 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-blue-500'
+                        >
+                          {availableFilterTypes.map(type => (
+                            <option key={type.key} value={type.key}>
+                              {type.name}
+                            </option>
+                          ))}
+                        </select>
+                        <div className='text-xs text-gray-400 mt-1'>
+                          {
+                            availableFilterTypes.find(t => t.key === (filterType || 'creation'))
+                              ?.description
+                          }
+                        </div>
+                      </div>
+                    )}
+
+                    {/* Predefined Ranges */}
+                    <div className='py-2' role='group' aria-label='Períodos predefinidos'>
+                      {dateRanges.map((range, index) => (
+                        <button
+                          key={range.days}
+                          onClick={() => handleDateRangeSelect(range.days)}
+                          className={`w-full px-4 py-2 text-left hover:bg-gray-50 transition-colors text-sm text-gray-700 hover:text-gray-900 ${
+                            index === dateFocusedIndex ? 'bg-blue-50 text-blue-700' : ''
+                          }`}
+                          role='menuitem'
+                          tabIndex={-1}
+                          aria-label={`Selecionar período: ${range.label}`}
+                        >
+                          {range.label}
+                        </button>
+                      ))}
+                    </div>
+
+                    {/* Custom Range */}
                     <div
-                      className='grid grid-cols-2 gap-2 mb-3'
+                      className='border-t border-gray-100 pt-3 px-4'
                       role='group'
-                      aria-labelledby='custom-range-label'
+                      aria-label='Período personalizado'
                     >
-                      <input
-                        type='date'
-                        value={customStartDate}
-                        onChange={e => setCustomStartDate(e.target.value)}
-                        className='px-3 py-2 border border-gray-200 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-blue-500'
-                        placeholder='Data inicial'
-                        aria-label='Data inicial do período personalizado'
-                      />
-                      <input
-                        type='date'
-                        value={customEndDate}
-                        onChange={e => setCustomEndDate(e.target.value)}
-                        className='px-3 py-2 border border-gray-200 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-blue-500'
-                        placeholder='Data final'
-                        aria-label='Data final do período personalizado'
-                      />
+                      <div
+                        className='text-xs font-medium text-gray-500 mb-2'
+                        id='custom-range-label'
+                      >
+                        Período Personalizado
+                      </div>
+                      <div
+                        className='grid grid-cols-2 gap-2 mb-3'
+                        role='group'
+                        aria-labelledby='custom-range-label'
+                      >
+                        <input
+                          type='date'
+                          value={customStartDate}
+                          onChange={e => setCustomStartDate(e.target.value)}
+                          className='px-3 py-2 border border-gray-200 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-blue-500'
+                          placeholder='Data inicial'
+                          aria-label='Data inicial do período personalizado'
+                        />
+                        <input
+                          type='date'
+                          value={customEndDate}
+                          onChange={e => setCustomEndDate(e.target.value)}
+                          className='px-3 py-2 border border-gray-200 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-blue-500'
+                          placeholder='Data final'
+                          aria-label='Data final do período personalizado'
+                        />
+                      </div>
+                      <button
+                        onClick={handleCustomDateRange}
+                        disabled={!customStartDate || !customEndDate}
+                        className='w-full px-3 py-2 bg-blue-600 text-white rounded-lg text-sm font-medium hover:bg-blue-700 disabled:opacity-50 disabled:cursor-not-allowed transition-colors'
+                        aria-label='Aplicar período personalizado selecionado'
+                      >
+                        Aplicar Período
+                      </button>
                     </div>
-                    <button
-                      onClick={handleCustomDateRange}
-                      disabled={!customStartDate || !customEndDate}
-                      className='w-full px-3 py-2 bg-blue-600 text-white rounded-lg text-sm font-medium hover:bg-blue-700 disabled:opacity-50 disabled:cursor-not-allowed transition-colors'
-                      aria-label='Aplicar período personalizado selecionado'
-                    >
-                      Aplicar Período
-                    </button>
                   </div>
-                </div>
-              )}
+                )}
+              </div>
             </div>
-          </div>
 
-          {/* ========== SEÇÃO DIREITA: CONTROLES + STATUS ========== */}
-          <div
-            className='flex items-center space-x-4 flex-shrink-0'
-            role='group'
-            aria-label='Controles e informações do sistema'
-          >
-            {/* Theme Toggle */}
-            <ThemeToggle showLabel={false} />
-
-            {/* Current Time */}
+            {/* ========== SEÇÃO DIREITA: CONTROLES + STATUS ========== */}
             <div
-              className='bg-white/80 backdrop-blur-sm border border-white/90 dark:bg-white/5 dark:border-white/10 flex items-center space-x-2 text-sm px-3 py-2 rounded-xl font-mono'
-              role='status'
-              aria-label={`Horário atual: ${currentTime}`}
+              className='flex items-center space-x-4 flex-shrink-0'
+              role='group'
+              aria-label='Controles e informações do sistema'
             >
-              <Clock className='w-4 h-4' aria-hidden='true' />
-              <span className='text-sm text-gray-600 dark:text-gray-300'>{currentTime}</span>
+              {/* Theme Toggle */}
+              <ThemeToggle showLabel={false} />
+
+              {/* Current Time */}
+              <div
+                className='bg-white/80 backdrop-blur-sm border border-white/90 dark:bg-white/5 dark:border-white/10 flex items-center space-x-2 text-sm px-3 py-2 rounded-xl font-mono'
+                role='status'
+                aria-label={`Horário atual: ${currentTime}`}
+              >
+                <Clock className='w-4 h-4' aria-hidden='true' />
+                <span className='text-sm text-gray-600 dark:text-gray-300'>{currentTime}</span>
+              </div>
             </div>
           </div>
         </div>
-      </div>
-    </header>
-  );
-});
+      </header>
+    );
+  }
+);
 
 Header.displayName = 'Header';

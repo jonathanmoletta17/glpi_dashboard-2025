@@ -28,7 +28,7 @@ export function useDebounce<T>(value: T, delay: number = 300): T {
  * @param delay - Delay em milissegundos (padrão: 300ms)
  * @returns Função debounced
  */
-export function useDebouncedCallback<T extends (...args: any[]) => any>(
+export function useDebouncedCallback<T extends (...args: unknown[]) => unknown>(
   callback: T,
   delay: number = 300
 ): T {
@@ -69,7 +69,7 @@ export function useDebouncedCallback<T extends (...args: any[]) => any>(
  * @param delay - Delay em milissegundos (padrão: 100ms)
  * @returns Função throttled
  */
-export function useThrottledCallback<T extends (...args: any[]) => any>(
+export function useThrottledCallback<T extends (...args: unknown[]) => unknown>(
   callback: T,
   delay: number = 100
 ): T {
@@ -124,7 +124,7 @@ export function useThrottledCallback<T extends (...args: any[]) => any>(
  * @param throttleDelay - Delay do throttle (padrão: 100ms)
  * @returns Objeto com funções debounced e throttled
  */
-export function useDebounceThrottle<T extends (...args: any[]) => any>(
+export function useDebounceThrottle<T extends (...args: unknown[]) => unknown>(
   callback: T,
   debounceDelay: number = 300,
   throttleDelay: number = 100

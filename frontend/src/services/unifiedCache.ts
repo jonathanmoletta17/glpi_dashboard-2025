@@ -46,7 +46,7 @@ interface RequestConfig {
 }
 
 interface PendingRequest {
-  promise: Promise<any>;
+  promise: Promise<unknown>;
   timestamp: number;
   key: string;
 }
@@ -57,12 +57,12 @@ interface PendingRequest {
 class UnifiedCacheManager {
   private caches = new Map<string, Map<string, CacheEntry<any>>>();
   private configs = new Map<string, CacheConfig>();
-  private stats = new Map<string, any>();
+  private stats = new Map<string, CacheStats>();
   private requestTimes = new Map<string, number[]>();
   private requestCounts = new Map<string, number>();
   private pendingRequests = new Map<string, PendingRequest>();
   private lastRequestTimes = new Map<string, number>();
-  private globalCache = new Map<string, { data: any; timestamp: number }>();
+  private globalCache = new Map<string, { data: unknown; timestamp: number }>();
 
   private readonly defaultConfig: CacheConfig = {
     ttl: 5 * 60 * 1000, // 5 minutos
@@ -198,7 +198,7 @@ class UnifiedCacheManager {
   /**
    * Armazena dados no cache
    */
-  set(type: string, params: Record<string, any>, data: any): void {
+  set<T>(type: string, params: Record<string, unknown>, data: T): void {
     if (!this.isCacheActive(type)) return;
 
     const cache = this.caches.get(type);
@@ -227,7 +227,7 @@ class UnifiedCacheManager {
   /**
    * Recupera dados do cache
    */
-  get(type: string, params: Record<string, any>): any | null {
+  get<T>(type: string, params: Record<string, unknown>): T | null {
     if (!this.isCacheActive(type)) return null;
 
     const cache = this.caches.get(type);
@@ -508,7 +508,7 @@ export const unifiedCache = new UnifiedCacheManager();
 
 // Registrar tipos de cache padrão
 unifiedCache.registerCacheType('metrics', {
-  ttl: 5 * 60 * 1000, // 5 minutos
+  ttl: 1 * 60 * 1000, // 1 minuto (reduzido de 5 minutos)
   maxSize: 50,
   performanceThreshold: 500,
   usageThreshold: 3,

@@ -15,9 +15,7 @@ interface PlaywrightMatchers<T = unknown> {
 }
 
 declare module 'vitest' {
-  interface Assertion<T = unknown>
-    extends TestingLibraryMatchers<T, void>,
-      PlaywrightMatchers<T> {
+  interface Assertion<T = unknown> extends TestingLibraryMatchers<T, void>, PlaywrightMatchers<T> {
     toHaveNoViolations(): T;
   }
   interface AsymmetricMatchersContaining

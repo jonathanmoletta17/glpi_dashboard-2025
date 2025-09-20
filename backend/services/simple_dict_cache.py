@@ -30,9 +30,7 @@ class SimpleDictCache:
             max_size: Número máximo de entradas no cache
             memory_limit_mb: Limite de memória em MB
         """
-        self._cache: OrderedDict[
-            str, Tuple[Any, float, int]
-        ] = OrderedDict()  # value, expiry, access_count
+        self._cache: OrderedDict[str, Tuple[Any, float, int]] = OrderedDict()  # value, expiry, access_count
         self._lock = threading.RLock()
         self._default_ttl = default_ttl
         self._max_size = max_size
@@ -222,9 +220,7 @@ class SimpleDictCache:
                 if key in self._access_patterns:
                     del self._access_patterns[key]
 
-        logger.debug(
-            f"Cache invalidation: removidas {len(keys_to_remove)} chaves com padrão '{pattern}'"
-        )
+        logger.debug(f"Cache invalidation: removidas {len(keys_to_remove)} chaves com padrão '{pattern}'")
         return len(keys_to_remove)
 
     def generate_cache_key(self, *args, **kwargs) -> str:

@@ -21,7 +21,10 @@ export const resetIdCounter = (): void => {
 /**
  * Anuncia mensagens para leitores de tela
  */
-export const announceToScreenReader = (message: string, priority: 'polite' | 'assertive' = 'polite') => {
+export const announceToScreenReader = (
+  message: string,
+  priority: 'polite' | 'assertive' = 'polite'
+) => {
   const announcement = document.createElement('div');
   announcement.setAttribute('aria-live', priority);
   announcement.setAttribute('aria-atomic', 'true');
@@ -285,7 +288,7 @@ export const handleTypeAheadNavigation = (
     onIndexChange?: (newIndex: number) => void;
   } = {}
 ): number => {
-  const { getItemText = (item) => item.textContent || '', onIndexChange } = options;
+  const { getItemText = item => item.textContent || '', onIndexChange } = options;
 
   // Apenas lida com caracteres imprimíveis
   if (event.key.length === 1 && !event.ctrlKey && !event.altKey && !event.metaKey) {
@@ -318,7 +321,9 @@ export const validateAriaLabel = (element: HTMLElement): boolean => {
   return !!(element.getAttribute('aria-label') || element.getAttribute('aria-labelledby'));
 };
 
-export const validateFormField = (field: HTMLInputElement | HTMLSelectElement | HTMLTextAreaElement): {
+export const validateFormField = (
+  field: HTMLInputElement | HTMLSelectElement | HTMLTextAreaElement
+): {
   isValid: boolean;
   issues: string[];
 } => {
@@ -344,14 +349,16 @@ export const validateFormField = (field: HTMLInputElement | HTMLSelectElement | 
 
   return {
     isValid: issues.length === 0,
-    issues
+    issues,
   };
 };
 
 /**
  * Valida hierarquia de cabeçalhos
  */
-export const validateHeadingHierarchy = (container: HTMLElement = document.body): {
+export const validateHeadingHierarchy = (
+  container: HTMLElement = document.body
+): {
   isValid: boolean;
   issues: string[];
 } => {
@@ -367,7 +374,9 @@ export const validateHeadingHierarchy = (container: HTMLElement = document.body)
     }
 
     if (level > previousLevel + 1) {
-      issues.push(`Nível de cabeçalho pula de h${previousLevel} para h${level} - deve ser sequencial`);
+      issues.push(
+        `Nível de cabeçalho pula de h${previousLevel} para h${level} - deve ser sequencial`
+      );
     }
 
     previousLevel = level;
@@ -375,14 +384,16 @@ export const validateHeadingHierarchy = (container: HTMLElement = document.body)
 
   return {
     isValid: issues.length === 0,
-    issues
+    issues,
   };
 };
 
 /**
  * Auditoria de acessibilidade em um container
  */
-export const auditAccessibility = (container: HTMLElement): {
+export const auditAccessibility = (
+  container: HTMLElement
+): {
   isValid: boolean;
   issues: string[];
 } => {
@@ -425,7 +436,7 @@ export const auditAccessibility = (container: HTMLElement): {
 
   return {
     isValid: issues.length === 0,
-    issues
+    issues,
   };
 };
 
@@ -549,11 +560,13 @@ export const ariaUtils = {
  */
 const hexToRgb = (hex: string): { r: number; g: number; b: number } | null => {
   const result = /^#?([a-f\d]{2})([a-f\d]{2})([a-f\d]{2})$/i.exec(hex);
-  return result ? {
-    r: parseInt(result[1], 16),
-    g: parseInt(result[2], 16),
-    b: parseInt(result[3], 16)
-  } : null;
+  return result
+    ? {
+        r: parseInt(result[1], 16),
+        g: parseInt(result[2], 16),
+        b: parseInt(result[3], 16),
+      }
+    : null;
 };
 
 export const contrastUtils = {
@@ -617,7 +630,11 @@ export const contrastUtils = {
   /**
    * Obtém cor acessível alternativa
    */
-  getAccessibleColor: (backgroundColor: string, textColor: string, level: 'AA' | 'AAA' = 'AA'): string => {
+  getAccessibleColor: (
+    backgroundColor: string,
+    textColor: string,
+    level: 'AA' | 'AAA' = 'AA'
+  ): string => {
     if (contrastUtils.meetsWCAGFromHex(backgroundColor, textColor, level)) {
       return textColor;
     }
@@ -681,7 +698,7 @@ export const accessibilityPreferences = {
       darkTheme: accessibilityPreferences.prefersDarkTheme(),
       reducedTransparency: window.matchMedia('(prefers-reduced-transparency: reduce)').matches,
       forcedColors: window.matchMedia('(forced-colors: active)').matches,
-      screenReader: accessibilityPreferences.isUsingScreenReader()
+      screenReader: accessibilityPreferences.isUsingScreenReader(),
     };
   },
 
@@ -701,10 +718,7 @@ export const accessibilityPreferences = {
   /**
    * Cria listener para mudanças em media queries
    */
-  createMediaQueryListener: (
-    query: string,
-    callback: (matches: boolean) => void
-  ): (() => void) => {
+  createMediaQueryListener: (query: string, callback: (matches: boolean) => void): (() => void) => {
     const mediaQuery = window.matchMedia(query);
     const handler = (e: MediaQueryListEvent) => callback(e.matches);
 
