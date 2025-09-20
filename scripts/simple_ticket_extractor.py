@@ -17,7 +17,6 @@ sys.path.insert(0, str(backend_dir))
 
 # Imports após modificação do sys.path
 from config.settings import get_settings  # noqa: E402
-
 from services.glpi_service import GLPIService  # noqa: E402
 
 
@@ -26,12 +25,12 @@ def format_ticket_data(ticket: Dict) -> Dict:
     try:
         # Linha longa quebrada para atender limite de 100 caracteres
         created_date = (
-            datetime.fromisoformat(
-                ticket.get(
-                    "date",
-                    "").replace(
-                    "Z",
-                    "+00:00")).strftime("%Y-%m-%d %H:%M:%S") if ticket.get("date") else "")
+            datetime.fromisoformat(ticket.get("date", "").replace("Z", "+00:00")).strftime(
+                "%Y-%m-%d %H:%M:%S"
+            )
+            if ticket.get("date")
+            else ""
+        )
 
         return {
             "id": ticket.get("id", ""),

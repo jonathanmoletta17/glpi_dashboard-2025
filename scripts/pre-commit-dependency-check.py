@@ -58,8 +58,7 @@ class DependencyAnalyzer:
             module_name = module_path.replace(os.sep, ".")
 
             # Filtrar apenas módulos do projeto (não bibliotecas externas)
-            if not any(part.startswith(".")
-                       for part in module_name.split(".")):
+            if not any(part.startswith(".") for part in module_name.split(".")):
                 project_modules.add(module_name.split(".")[0])
 
         # Analisar dependências

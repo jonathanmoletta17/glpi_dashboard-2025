@@ -11,12 +11,11 @@ import sys
 from typing import Any, Dict
 
 import redis
-
+from api.routes import api_bp
 from flask import Flask
 from flask_caching import Cache
 from flask_cors import CORS
 
-from api.routes import api_bp
 from config.settings import active_config
 from utils.structured_logging import system_logger
 
