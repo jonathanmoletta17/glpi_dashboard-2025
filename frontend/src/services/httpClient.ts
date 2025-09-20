@@ -70,22 +70,22 @@ if (import.meta.env.DEV) {
 
 // Interceptador de requisição para autenticação e logging
 httpClient.interceptors.request.use(
-  (config: AxiosRequestConfig) => {
+  (config: any) => {
     // Garantir que headers existe
     if (!config.headers) {
-      config.headers = {};
+      config.headers = {} as any;
     }
 
     if (authConfig.apiToken) {
-      config.headers['Authorization'] = `Bearer ${authConfig.apiToken}`;
+      (config.headers as any)['Authorization'] = `Bearer ${authConfig.apiToken}`;
     }
 
     if (authConfig.appToken) {
-      config.headers['App-Token'] = authConfig.appToken;
+      (config.headers as any)['App-Token'] = authConfig.appToken;
     }
 
     if (authConfig.userToken) {
-      config.headers['Session-Token'] = authConfig.userToken;
+      (config.headers as any)['Session-Token'] = authConfig.userToken;
     }
 
     // Log da requisição (apenas em desenvolvimento com debug habilitado)
@@ -254,7 +254,7 @@ declare module 'axios' {
 }
 
 // Adicionar métodos para interceptadores (para compatibilidade com testes)
-(httpClient as any).addRequestInterceptor = (interceptor: (config: AxiosRequestConfig) => AxiosRequestConfig) => {
+(httpClient as any).addRequestInterceptor = (interceptor: any) => {
   return httpClient.interceptors.request.use(interceptor);
 };
 

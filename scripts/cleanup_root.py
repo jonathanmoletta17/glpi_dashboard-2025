@@ -5,7 +5,6 @@ Remove apenas documentação de desenvolvimento e arquivos obsoletos
 Mantém toda a funcionalidade e conhecimento técnico essencial
 ."""
 
-import os
 import shutil
 import sys
 from pathlib import Path

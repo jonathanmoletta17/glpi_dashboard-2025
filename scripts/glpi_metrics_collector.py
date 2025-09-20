@@ -57,7 +57,8 @@ class GLPIMetricsCollector:
         self.session.timeout = config.timeout
 
         # Configurar logging
-        logging.basicConfig(level=logging.INFO, format="%(asctime)s - %(levelname)s - %(message)s")
+        logging.basicConfig(level=logging.INFO,
+                            format="%(asctime)s - %(levelname)s - %(message)s")
         self.logger = logging.getLogger(__name__)
 
     def login(self) -> bool:
@@ -74,7 +75,8 @@ class GLPIMetricsCollector:
                 "App-Token": self.config.app_token,
             }
 
-            response = self.session.get(f"{self.config.base_url}/initSession", headers=headers)
+            response = self.session.get(
+                f"{self.config.base_url}/initSession", headers=headers)
 
             if response.status_code == 200:
                 data = response.json()
@@ -82,7 +84,9 @@ class GLPIMetricsCollector:
                 self.logger.info("Autenticação realizada com sucesso")
                 return True
             else:
-                self.logger.error(f"Erro na autenticação: {response.status_code}")
+                self.logger.error(
+                    f"Erro na autenticação: {
+                        response.status_code}")
                 return False
 
         except Exception as e:
@@ -100,9 +104,12 @@ class GLPIMetricsCollector:
             return True
 
         try:
-            headers = {"Session-Token": self.session_token, "App-Token": self.config.app_token}
+            headers = {
+                "Session-Token": self.session_token,
+                "App-Token": self.config.app_token}
 
-            response = self.session.get(f"{self.config.base_url}/killSession", headers=headers)
+            response = self.session.get(
+                f"{self.config.base_url}/killSession", headers=headers)
 
             if response.status_code == 200:
                 self.logger.info("Logout realizado com sucesso")
@@ -145,11 +152,13 @@ class GLPIMetricsCollector:
             ]
 
             if level:
-                criteria.append({"field": "level", "searchtype": "equals", "value": level})
+                criteria.append(
+                    {"field": "level", "searchtype": "equals", "value": level})
 
             if filters:
                 for field, value in filters.items():
-                    criteria.append({"field": field, "searchtype": "equals", "value": value})
+                    criteria.append(
+                        {"field": field, "searchtype": "equals", "value": value})
 
             search_params = {
                 "criteria": criteria,
@@ -164,10 +173,16 @@ class GLPIMetricsCollector:
 
             if response.status_code == 200:
                 data = response.json()
-                self.logger.info(f"Coletados {data.get('totalcount', 0)} usuários")
+                self.logger.info(
+                    f"Coletados {
+                        data.get(
+                            'totalcount',
+                            0)} usuários")
                 return data
             else:
-                self.logger.error(f"Erro na coleta de usuários: {response.status_code}")
+                self.logger.error(
+                    f"Erro na coleta de usuários: {
+                        response.status_code}")
                 return {"error": f"HTTP {response.status_code}"}
 
         except Exception as e:

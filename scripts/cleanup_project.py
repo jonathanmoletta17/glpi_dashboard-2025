@@ -30,7 +30,9 @@ class ProjectCleanup:
         """Cria estrutura de backup para arquivos importantes."""
         try:
             self.backup_dir.mkdir(parents=True, exist_ok=True)
-            self.log_action("CREATE", f"Diretório de backup: {self.backup_dir}")
+            self.log_action(
+                "CREATE", f"Diretório de backup: {
+                    self.backup_dir}")
             return True
         except Exception as e:
             self.errors.append(f"Erro ao criar backup: {e}")
@@ -38,7 +40,12 @@ class ProjectCleanup:
 
     def remove_backup_files(self) -> bool:
         """Remove arquivos .backup."""
-        backup_patterns = ["**/*.backup", "**/*.bak", "**/*.old", "**/*.tmp", "**/*.temp"]
+        backup_patterns = [
+            "**/*.backup",
+            "**/*.bak",
+            "**/*.old",
+            "**/*.tmp",
+            "**/*.temp"]
 
         removed_count = 0
         for pattern in backup_patterns:
@@ -65,7 +72,8 @@ class ProjectCleanup:
             "debug_full_decorator.py",
             "docs/debug_resultado.txt",
         ]
-        # NOTA: validar_filtros_data.py NÃO deve ser removido - é um script funcional importante
+        # NOTA: validar_filtros_data.py NÃO deve ser removido - é um script
+        # funcional importante
 
         removed_count = 0
         for file_path in debug_files:
@@ -94,7 +102,8 @@ class ProjectCleanup:
             "frontend/src/styles/new-tickets-list-refactored.css",
             "frontend/src/styles/ranking-card-refactored.css",
         ]
-        # NOTA: Estes arquivos podem conter melhorias não migradas - analisar antes de remover
+        # NOTA: Estes arquivos podem conter melhorias não migradas - analisar
+        # antes de remover
 
         removed_count = 0
         for file_path in refactored_files:
@@ -248,7 +257,9 @@ class ProjectCleanup:
                 with open(gitignore_path, "a", encoding="utf-8") as f:
                     f.writelines(new_entries_to_add)
                 self.log_action("UPDATE", ".gitignore")
-                print(f"✅ Adicionadas {len(new_entries_to_add)} entradas ao .gitignore")
+                print(
+                    f"✅ Adicionadas {
+                        len(new_entries_to_add)} entradas ao .gitignore")
                 return True
             else:
                 print("✅ .gitignore já está atualizado")
@@ -379,9 +390,16 @@ def main():
     """Função principal."""
     import argparse
 
-    parser = argparse.ArgumentParser(description="Script de limpeza do projeto GLPI Dashboard")
-    parser.add_argument("--dry-run", action="store_true", help="Executa sem fazer alterações")
-    parser.add_argument("--project-root", default=".", help="Diretório raiz do projeto")
+    parser = argparse.ArgumentParser(
+        description="Script de limpeza do projeto GLPI Dashboard")
+    parser.add_argument(
+        "--dry-run",
+        action="store_true",
+        help="Executa sem fazer alterações")
+    parser.add_argument(
+        "--project-root",
+        default=".",
+        help="Diretório raiz do projeto")
 
     args = parser.parse_args()
 

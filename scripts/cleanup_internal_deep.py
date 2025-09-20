@@ -182,7 +182,8 @@ def main():
         else:
             print(f"   ⚠️  {file_path} (não encontrado)")
 
-    response = input("\n❓ Continuar com a limpeza interna profunda? (s/N): ").strip().lower()
+    response = input(
+        "\n❓ Continuar com a limpeza interna profunda? (s/N): ").strip().lower()
     if response not in ["s", "sim", "y", "yes"]:
         print("❌ Limpeza cancelada pelo usuário")
         sys.exit(0)
@@ -229,7 +230,10 @@ def main():
     print(f"   ❌ Falhas: {failed_count}")
     print(f"   📁 Total processado: {len(files_to_remove)}")
     print(f"   📄 Arquivos individuais removidos: {files_removed}")
-    print(f"   📊 Redução total: {total_files_before - total_files_after} arquivos")
+    print(
+        f"   📊 Redução total: {
+            total_files_before -
+            total_files_after} arquivos")
 
     print("\n📋 ESTRUTURA FINAL ULTRA-LIMPA:")
     essential_structure = [

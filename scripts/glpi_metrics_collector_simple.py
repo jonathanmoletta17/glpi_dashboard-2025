@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
 """
-GLPI Metrics Collector - Versao Simplificada (Sem Emojis)
+GLPI Metrics Collector - Versao Simplificada (Sem Emojis).
 
 Este script serve como documentacao viva e ferramenta centralizada para coleta
 de todas as metricas necessarias do sistema GLPI.
@@ -9,7 +9,7 @@ de todas as metricas necessarias do sistema GLPI.
 Autor: Sistema de Engenharia
 Data: 2025-01-22
 Versao: 1.0
-."""
+"""
 
 import json
 import os
@@ -47,6 +47,7 @@ class GLPIMetricsCollector:
     """Coletor centralizado de metricas do GLPI."""
 
     def __init__(self, config: GLPIConfig):
+        """Inicializa o coletor de métricas GLPI."""
         self.config = config
         self.session_token: Optional[str] = None
         self.session = requests.Session()
@@ -78,7 +79,9 @@ class GLPIMetricsCollector:
             print("   Usando User Token para autenticacao")
         else:
             # Fallback para username/password
-            auth_data = {"login": self.config.username, "password": self.config.password}
+            auth_data = {
+                "login": self.config.username,
+                "password": self.config.password}
             headers = {}
             print("   Usando Username/Password para autenticacao")
 
@@ -86,7 +89,8 @@ class GLPIMetricsCollector:
             if self.config.user_token:
                 response = self.session.get(url, headers=headers)
             else:
-                response = self.session.post(url, json=auth_data, headers=headers)
+                response = self.session.post(
+                    url, json=auth_data, headers=headers)
 
             response.raise_for_status()
 
@@ -95,7 +99,8 @@ class GLPIMetricsCollector:
 
             if self.session_token:
                 # Adicionar session token aos headers padrao
-                self.session.headers.update({"Session-Token": self.session_token})
+                self.session.headers.update(
+                    {"Session-Token": self.session_token})
                 print("Autenticacao realizada com sucesso!")
                 print(f"   Session Token: {self.session_token[:20]}...")
                 return True
@@ -217,7 +222,8 @@ class GLPIMetricsCollector:
             if tickets_novos:
                 print("   Primeiros 5 tickets novos:")
                 for i, ticket in enumerate(tickets_novos[:5]):
-                    print(f"   {i+1}. ID: {ticket['id']} - {ticket['titulo'][:50]}...")
+                    print(
+                        f"   {i + 1}. ID: {ticket['id']} - {ticket['titulo'][:50]}...")
 
             return tickets_novos
 
@@ -253,10 +259,12 @@ class GLPIMetricsCollector:
                     tecnico_nome = tecnico["nome"]
 
                     # Determinar nivel do tecnico
-                    nivel = self._get_technician_level_by_name_fallback(tecnico_id)
+                    nivel = self._get_technician_level_by_name_fallback(
+                        tecnico_id)
 
                     # Calcular metricas do tecnico
-                    metricas = self._get_technician_metrics_corrected(tecnico_id)
+                    metricas = self._get_technician_metrics_corrected(
+                        tecnico_id)
 
                     tecnico_data = {
                         "id": tecnico_id,
@@ -273,12 +281,14 @@ class GLPIMetricsCollector:
 
                 except Exception as e:
                     nome_tecnico = tecnico.get("nome", "Desconhecido")
-                    print(f"      Erro ao processar tecnico {nome_tecnico}: {e}")
+                    print(
+                        f"      Erro ao processar tecnico {nome_tecnico}: {e}")
                     continue
 
             # Ordenar tecnicos por nivel (por tickets resolvidos)
             for nivel in ranking_por_nivel:
-                ranking_por_nivel[nivel].sort(key=lambda x: x["tickets_resolvidos"], reverse=True)
+                ranking_por_nivel[nivel].sort(
+                    key=lambda x: x["tickets_resolvidos"], reverse=True)
 
                 # Atualizar posicoes
                 for i, tecnico in enumerate(ranking_por_nivel[nivel]):
@@ -370,7 +380,8 @@ class GLPIMetricsCollector:
             url = f"{self.config.base_url}/apirest.php/search/Ticket"
 
             params = {
-                "criteria[0][field]": 8,  # Campo do grupo atribuido (Groups_id)
+                # Campo do grupo atribuido (Groups_id)
+                "criteria[0][field]": 8,
                 "criteria[0][searchtype]": "equals",
                 "criteria[0][value]": group_id,
                 "forcedisplay[0]": 12,  # Status
@@ -385,7 +396,9 @@ class GLPIMetricsCollector:
                 data = response.json()
                 tickets = data.get("data", [])
 
-                print(f"      Grupo {group_id}: {len(tickets)} tickets encontrados")
+                print(
+                    f"      Grupo {group_id}: {
+                        len(tickets)} tickets encontrados")
 
                 # Contar por status
                 for ticket in tickets:
@@ -442,15 +455,19 @@ class GLPIMetricsCollector:
 
         for tech_id in technician_ids:
             try:
-                # Buscar detalhes do usuario e verificar se esta ativo e nao deletado
+                # Buscar detalhes do usuario e verificar se esta ativo e nao
+                # deletado
                 user_details = self._get_user_details(tech_id)
                 if user_details:
-                    tecnicos_ativos.append({"id": tech_id, "nome": user_details["nome"]})
+                    tecnicos_ativos.append(
+                        {"id": tech_id, "nome": user_details["nome"]})
             except Exception as e:
                 print(f"      Erro ao processar tecnico {tech_id}: {e}")
                 continue
 
-        print(f"      {len(tecnicos_ativos)} tecnicos ativos validos encontrados")
+        print(
+            f"      {
+                len(tecnicos_ativos)} tecnicos ativos validos encontrados")
         return tecnicos_ativos
 
     def _get_technician_level_by_name_fallback(self, user_id: str) -> str:
@@ -513,10 +530,12 @@ class GLPIMetricsCollector:
                 return "N1"
 
         except Exception as e:
-            print(f"      Erro ao determinar nivel por nome para usuario {user_id}: {e}")
+            print(
+                f"      Erro ao determinar nivel por nome para usuario {user_id}: {e}")
             return "N1"  # Nivel padrao em caso de erro
 
-    def _get_technician_metrics_corrected(self, tecnico_id: str) -> Dict[str, Any]:
+    def _get_technician_metrics_corrected(
+            self, tecnico_id: str) -> Dict[str, Any]:
         """Coleta metricas de performance de um tecnico especifico."""
         url = f"{self.config.base_url}/apirest.php/search/Ticket"
 
@@ -559,8 +578,13 @@ class GLPIMetricsCollector:
             }
 
         except requests.exceptions.RequestException as e:
-            print(f"        Erro ao buscar metricas do tecnico {tecnico_id}: {e}")
-            return {"total": 0, "resolvidos": 0, "pendentes": 0, "taxa_resolucao": 0.0}
+            print(
+                f"        Erro ao buscar metricas do tecnico {tecnico_id}: {e}")
+            return {
+                "total": 0,
+                "resolvidos": 0,
+                "pendentes": 0,
+                "taxa_resolucao": 0.0}
 
     def _get_user_details(self, user_id: str) -> Optional[Dict[str, Any]]:
         """Busca detalhes de um usuario especifico com filtros de ativo e nao deletado."""
@@ -700,7 +724,8 @@ class GLPIMetricsCollector:
         return result
 
 
-def save_metrics_to_file(metrics: Dict[str, Any], filename: Optional[str] = None) -> str:
+def save_metrics_to_file(
+        metrics: Dict[str, Any], filename: Optional[str] = None) -> str:
     """Salva as metricas coletadas em arquivo JSON."""
     if not filename:
         timestamp = datetime.now().strftime("%Y%m%d_%H%M%S")
@@ -767,12 +792,12 @@ def format_metrics_data(metrics: Dict) -> Dict:
     try:
         # Quebrar linha longa para atender limite de 100 caracteres
         formatted_date = (
-            datetime.fromisoformat(metrics.get("timestamp", "").replace("Z", "+00:00")).strftime(
-                "%Y-%m-%d %H:%M:%S"
-            )
-            if metrics.get("timestamp")
-            else ""
-        )
+            datetime.fromisoformat(
+                metrics.get(
+                    "timestamp",
+                    "").replace(
+                    "Z",
+                    "+00:00")).strftime("%Y-%m-%d %H:%M:%S") if metrics.get("timestamp") else "")
 
         return {
             "timestamp": formatted_date,
@@ -790,10 +815,14 @@ def process_ticket_metrics(tickets: List[Dict]) -> Dict:
     try:
         total = len(tickets)
         # Quebrar linha longa para atender limite de 100 caracteres
-        open_count = len([t for t in tickets if t.get("status") in ["new", "assigned", "planned"]])
+        open_count = len([t for t in tickets if t.get(
+            "status") in ["new", "assigned", "planned"]])
         closed_count = total - open_count
 
-        return {"total_tickets": total, "open_tickets": open_count, "closed_tickets": closed_count}
+        return {
+            "total_tickets": total,
+            "open_tickets": open_count,
+            "closed_tickets": closed_count}
     except Exception:
         return {}
 

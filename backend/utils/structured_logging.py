@@ -17,7 +17,9 @@ from typing import Any, Dict, List, Optional, Union
 
 # Context variables para correlação
 correlation_id_var: ContextVar[Optional[str]] = ContextVar("correlation_id", default=None)
-operation_context_var: ContextVar[Optional[Dict[str, Any]]] = ContextVar("operation_context", default=None)
+operation_context_var: ContextVar[Optional[Dict[str, Any]]] = ContextVar(
+    "operation_context", default=None
+)
 
 
 class JSONFormatter(logging.Formatter):
@@ -201,8 +203,12 @@ class StructuredLogger:
         duration = None
 
         if operation_context and "start_time" in operation_context:
-            start_time = datetime.fromisoformat(operation_context["start_time"].replace("Z", "+00:00"))
-            duration = (datetime.utcnow().replace(tzinfo=start_time.tzinfo) - start_time).total_seconds()
+            start_time = datetime.fromisoformat(
+                operation_context["start_time"].replace("Z", "+00:00")
+            )
+            duration = (
+                datetime.utcnow().replace(tzinfo=start_time.tzinfo) - start_time
+            ).total_seconds()
 
         level = logging.INFO if success else logging.ERROR
         status = "success" if success else "error"
@@ -241,7 +247,9 @@ class StructuredLogger:
 
         self.logger.error(message, extra=extra_data, exc_info=exception is not None)
 
-    def log_performance_metric(self, metric_name: str, value: float, unit: str = "seconds", **kwargs):
+    def log_performance_metric(
+        self, metric_name: str, value: float, unit: str = "seconds", **kwargs
+    ):
         """Registra uma métrica de performance."""
         self.logger.info(
             f"Métrica de performance: {metric_name} = {value} {unit}",
@@ -306,7 +314,9 @@ def with_structured_logging(operation_name: str, logger_name: Optional[str] = No
             safe_kwargs = {
                 k: v
                 for k, v in kwargs.items()
-                if not any(sensitive in k.lower() for sensitive in ["password", "token", "secret", "key"])
+                if not any(
+                    sensitive in k.lower() for sensitive in ["password", "token", "secret", "key"]
+                )
             }
 
             logger.log_operation_start(operation_name, **safe_kwargs)
@@ -330,7 +340,9 @@ def with_structured_logging(operation_name: str, logger_name: Optional[str] = No
             except Exception as e:
                 duration = time.time() - start_time
 
-                logger.log_operation_end(operation_name, success=False, duration=duration, error=str(e))
+                logger.log_operation_end(
+                    operation_name, success=False, duration=duration, error=str(e)
+                )
 
                 logger.log_error_with_context(
                     f"{operation_name}_error",

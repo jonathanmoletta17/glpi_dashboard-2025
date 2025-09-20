@@ -31,7 +31,7 @@ export const apiService = {
     // Verificar cache primeiro
     const cachedData = unifiedCache.get('metrics', cacheParams);
     if (cachedData) {
-      return cachedData;
+      return cachedData as DashboardMetrics;
     }
 
     // Usar coordenador de requisições para evitar chamadas duplicadas
@@ -229,7 +229,7 @@ export const apiService = {
     // Verificar cache primeiro
     const cachedData = unifiedCache.get('systemStatus', cacheParams);
     if (cachedData) {
-      return cachedData;
+      return cachedData as SystemStatus;
     }
 
     const cacheKey = `systemStatus-${JSON.stringify(cacheParams)}`;
@@ -326,7 +326,7 @@ export const apiService = {
     const cachedData = unifiedCache.get('technicianRanking', cacheParams);
     if (cachedData) {
       // console.log('📦 Retornando dados do cache para ranking de técnicos');
-      return cachedData;
+      return cachedData as any[];
     }
 
     try {
@@ -397,7 +397,7 @@ export const apiService = {
     const cachedData = unifiedCache.get('newTickets', cacheParams);
     if (cachedData) {
       // console.log('📦 Retornando dados do cache para novos tickets');
-      return cachedData;
+      return cachedData as any[];
     }
 
     try {
@@ -478,7 +478,7 @@ export const apiService = {
     const cachedData = unifiedCache.get('search', cacheParams);
     if (cachedData) {
       // console.log('📦 Retornando dados do cache para busca');
-      return cachedData;
+      return cachedData as any[];
     }
 
     try {

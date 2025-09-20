@@ -82,11 +82,16 @@ class Config:
     # Flask
     @property
     def SECRET_KEY(self) -> str:
-        return self._get_config_value("flask.secret_key", "dev-secret-key-change-in-production", "SECRET_KEY")
+        return self._get_config_value(
+            "flask.secret_key", "dev-secret-key-change-in-production", "SECRET_KEY"
+        )
 
     @property
     def DEBUG(self) -> bool:
-        return self._get_config_value("flask.debug", False) or os.environ.get("FLASK_DEBUG", "False").lower() == "true"
+        return (
+            self._get_config_value("flask.debug", False)
+            or os.environ.get("FLASK_DEBUG", "False").lower() == "true"
+        )
 
     @property
     def PORT(self) -> int:
@@ -107,7 +112,9 @@ class Config:
     # GLPI API
     @property
     def GLPI_URL(self) -> str:
-        return self._get_config_value("glpi.base_url", "http://10.73.0.79/glpi/apirest.php", "GLPI_URL")
+        return self._get_config_value(
+            "glpi.base_url", "http://10.73.0.79/glpi/apirest.php", "GLPI_URL"
+        )
 
     @property
     def GLPI_USER_TOKEN(self) -> str:
@@ -149,7 +156,9 @@ class Config:
 
     @property
     def PROMETHEUS_JOB_NAME(self) -> str:
-        return self._get_config_value("observability.prometheus.job_name", "glpi_dashboard_funcional", "PROMETHEUS_JOB_NAME")
+        return self._get_config_value(
+            "observability.prometheus.job_name", "glpi_dashboard_funcional", "PROMETHEUS_JOB_NAME"
+        )
 
     @property
     def STRUCTURED_LOGGING(self) -> bool:
@@ -173,15 +182,21 @@ class Config:
     # Alertas
     @property
     def ALERT_RESPONSE_TIME_THRESHOLD(self) -> float:
-        return self._get_config_value("alerts.response_time_threshold", 300, "ALERT_RESPONSE_TIME_THRESHOLD")
+        return self._get_config_value(
+            "alerts.response_time_threshold", 300, "ALERT_RESPONSE_TIME_THRESHOLD"
+        )
 
     @property
     def ALERT_ERROR_RATE_THRESHOLD(self) -> float:
-        return self._get_config_value("alerts.error_rate_threshold", 0.05, "ALERT_ERROR_RATE_THRESHOLD")
+        return self._get_config_value(
+            "alerts.error_rate_threshold", 0.05, "ALERT_ERROR_RATE_THRESHOLD"
+        )
 
     @property
     def ALERT_ZERO_TICKETS_THRESHOLD(self) -> int:
-        return self._get_config_value("alerts.zero_tickets_threshold", 60, "ALERT_ZERO_TICKETS_THRESHOLD")
+        return self._get_config_value(
+            "alerts.zero_tickets_threshold", 60, "ALERT_ZERO_TICKETS_THRESHOLD"
+        )
 
     # Logging
     @property
@@ -190,7 +205,9 @@ class Config:
 
     @property
     def LOG_FORMAT(self) -> str:
-        return self._get_config_value("logging.format", "%(asctime)s - %(name)s - %(levelname)s - %(message)s")
+        return self._get_config_value(
+            "logging.format", "%(asctime)s - %(name)s - %(levelname)s - %(message)s"
+        )
 
     # CORS
     @property
@@ -224,14 +241,18 @@ class Config:
 
     @property
     def CACHE_KEY_PREFIX(self) -> str:
-        return self._get_config_value("cache.key_prefix", "glpi_dashboard_funcional:", "CACHE_KEY_PREFIX")
+        return self._get_config_value(
+            "cache.key_prefix", "glpi_dashboard_funcional:", "CACHE_KEY_PREFIX"
+        )
 
     # Performance Settings
     @property
     def PERFORMANCE_TARGET_P95(self) -> int:
         """Target de performance P95 com validação"""
         try:
-            target = self._get_config_value("performance.target_p95", 1000, "PERFORMANCE_TARGET_P95")
+            target = self._get_config_value(
+                "performance.target_p95", 1000, "PERFORMANCE_TARGET_P95"
+            )
             target = int(target)  # Garantir que é inteiro
             if not (50 <= target <= 10000):
                 raise ValueError(f"Performance target deve estar entre 50 e 10000ms: {target}")
@@ -243,12 +264,18 @@ class Config:
     @property
     def MAX_CONTENT_LENGTH(self) -> int:
         """Tamanho máximo de conteúdo"""
-        return int(self._get_config_value("flask.max_content_length", 16777216, "MAX_CONTENT_LENGTH"))
+        return int(
+            self._get_config_value("flask.max_content_length", 16777216, "MAX_CONTENT_LENGTH")
+        )
 
     @property
     def RATE_LIMIT_PER_MINUTE(self) -> int:
         """Limite de requisições por minuto"""
-        return int(self._get_config_value("performance.rate_limit_per_minute", 100, "RATE_LIMIT_PER_MINUTE"))
+        return int(
+            self._get_config_value(
+                "performance.rate_limit_per_minute", 100, "RATE_LIMIT_PER_MINUTE"
+            )
+        )
 
     def _validate_required_configs(self) -> None:
         """Valida configurações obrigatórias"""
@@ -261,13 +288,17 @@ class Config:
         missing_configs = [key for key, value in required_configs.items() if not value]
 
         if missing_configs:
-            raise ConfigValidationError(f"Configurações obrigatórias ausentes: {', '.join(missing_configs)}")
+            raise ConfigValidationError(
+                f"Configurações obrigatórias ausentes: {', '.join(missing_configs)}"
+            )
 
     def _validate_config_values(self) -> None:
         """Valida valores das configurações"""
         # Validar URL do GLPI
         if not self.GLPI_URL.startswith(("http://", "https://")):
-            raise ConfigValidationError(f"GLPI_URL deve começar com http:// ou https://: {self.GLPI_URL}")
+            raise ConfigValidationError(
+                f"GLPI_URL deve começar com http:// ou https://: {self.GLPI_URL}"
+            )
 
         # Validar nível de log
         valid_log_levels = ["DEBUG", "INFO", "WARNING", "ERROR", "CRITICAL"]

@@ -83,7 +83,8 @@ class GLPICompleteExtractor:
                 "App-Token": self.app_token,
             }
 
-            response = self.session.get(f"{self.glpi_url}/initSession", headers=headers)
+            response = self.session.get(
+                f"{self.glpi_url}/initSession", headers=headers)
             response.raise_for_status()
 
             data = response.json()
@@ -124,7 +125,8 @@ class GLPICompleteExtractor:
         text = re.sub(r"\s+", " ", text)
 
         # Remover caracteres de controle
-        text = "".join(char for char in text if ord(char) >= 32 or char in "\n\t")
+        text = "".join(char for char in text if ord(
+            char) >= 32 or char in "\n\t")
 
         return text.strip()
 
@@ -138,7 +140,7 @@ class GLPICompleteExtractor:
                 # Converter para JSON e limpar
                 json_str = json.dumps(value, ensure_ascii=False)
                 return self.clean_text(json_str)
-            except:
+            except BaseException:
                 return str(value)
 
         return self.clean_text(str(value))
@@ -153,7 +155,8 @@ class GLPICompleteExtractor:
         for attempt in range(self.max_retries):
             try:
                 self.stats["total_api_calls"] += 1
-                response = self.session.get(url, headers=headers, params=params, timeout=60)
+                response = self.session.get(
+                    url, headers=headers, params=params, timeout=60)
                 response.raise_for_status()
 
                 data = response.json()
@@ -164,15 +167,22 @@ class GLPICompleteExtractor:
                 elif isinstance(data, dict):
                     return [data]
                 else:
-                    self.logger.warning(f"Formato de resposta inesperado: {type(data)}")
+                    self.logger.warning(
+                        f"Formato de resposta inesperado: {
+                            type(data)}")
                     return []
 
             except requests.exceptions.RequestException as e:
-                self.logger.warning(f"Tentativa {attempt + 1} falhou para {endpoint}: {e}")
+                self.logger.warning(
+                    f"Tentativa {
+                        attempt +
+                        1} falhou para {endpoint}: {e}")
                 if attempt < self.max_retries - 1:
                     time.sleep(self.retry_delay * (2**attempt))
                 else:
-                    self.logger.error(f"Falha após {self.max_retries} tentativas para {endpoint}")
+                    self.logger.error(
+                        f"Falha após {
+                            self.max_retries} tentativas para {endpoint}")
                     return None
             except Exception as e:
                 self.logger.error(f"Erro inesperado em {endpoint}: {e}")
@@ -180,7 +190,10 @@ class GLPICompleteExtractor:
 
         return None
 
-    def extract_with_pagination(self, endpoint: str, description: str) -> List[Dict]:
+    def extract_with_pagination(
+            self,
+            endpoint: str,
+            description: str) -> List[Dict]:
         """Extrai dados com paginação automática."""
         all_data = []
         start = 0
@@ -222,7 +235,9 @@ class GLPICompleteExtractor:
             # Pequena pausa para não sobrecarregar a API
             time.sleep(0.1)
 
-        self.logger.info(f"Extração de {description} concluída: {len(all_data)} registros")
+        self.logger.info(
+            f"Extração de {description} concluída: {
+                len(all_data)} registros")
         return all_data
 
     def extract_all_tickets(self) -> List[Dict]:
@@ -278,7 +293,7 @@ class GLPICompleteExtractor:
         try:
             profiles = self.make_api_request(f"User/{user_id}/Profile_User")
             return profiles if profiles else []
-        except:
+        except BaseException:
             return []
 
     def filter_technicians(self, users: List[Dict]) -> List[Dict]:
@@ -345,15 +360,18 @@ class GLPICompleteExtractor:
                             ]:
                                 cleaned_tech[key] = self.clean_text(value)
                             else:
-                                cleaned_tech[key] = self.format_complex_field(value)
+                                cleaned_tech[key] = self.format_complex_field(
+                                    value)
                         except Exception as e:
                             # Em caso de erro na limpeza, manter valor original
-                            cleaned_tech[key] = str(value) if value is not None else ""
+                            cleaned_tech[key] = str(
+                                value) if value is not None else ""
 
                     technicians.append(cleaned_tech)
 
             except Exception as e:
-                self.logger.warning(f"Erro ao processar usuário {user.get('id', 'N/A')}: {str(e)}")
+                self.logger.warning(
+                    f"Erro ao processar usuário {user.get('id', 'N/A')}: {str(e)}")
                 continue
 
         self.stats["technicians_filtered"] = len(technicians)
@@ -394,7 +412,13 @@ class GLPICompleteExtractor:
                 is_requester = True
 
             # Verificar se NÃO é técnico baseado em indicadores
-            tech_indicators = ["dtic", "ti", "suporte", "admin", "tecnico", "informatica"]
+            tech_indicators = [
+                "dtic",
+                "ti",
+                "suporte",
+                "admin",
+                "tecnico",
+                "informatica"]
             comment = str(user.get("comment", "")).lower()
 
             # Se tem indicadores técnicos, não é solicitante
@@ -408,22 +432,28 @@ class GLPICompleteExtractor:
                 try:
                     profiles = self.extract_user_profiles(user_id)
                     if profiles:
-                        # Se tem perfis administrativos, não é solicitante comum
+                        # Se tem perfis administrativos, não é solicitante
+                        # comum
                         admin_profiles = ["super-admin", "admin", "technician"]
                         for profile in profiles:
                             profile_name = str(profile.get("name", "")).lower()
-                            if any(admin_prof in profile_name for admin_prof in admin_profiles):
+                            if any(
+                                    admin_prof in profile_name for admin_prof in admin_profiles):
                                 is_requester = False
                                 break
                 except Exception:
-                    # Se não conseguir verificar perfis, manter como solicitante se passou nos outros testes
+                    # Se não conseguir verificar perfis, manter como
+                    # solicitante se passou nos outros testes
                     pass
 
-            # Adicionar critério adicional: usuários com firstname e realname preenchidos
+            # Adicionar critério adicional: usuários com firstname e realname
+            # preenchidos
             firstname = str(user.get("firstname", "")).strip()
             realname = str(user.get("realname", "")).strip()
-            if firstname and realname and len(firstname) > 1 and len(realname) > 1:
-                if not any(indicator in comment for indicator in tech_indicators):
+            if firstname and realname and len(
+                    firstname) > 1 and len(realname) > 1:
+                if not any(
+                        indicator in comment for indicator in tech_indicators):
                     is_requester = True
 
             if is_requester:
@@ -467,7 +497,8 @@ class GLPICompleteExtractor:
             fieldnames = sorted(list(all_keys))
 
             with open(filename, "w", newline="", encoding="utf-8") as csvfile:
-                writer = csv.DictWriter(csvfile, fieldnames=fieldnames, quoting=csv.QUOTE_MINIMAL)
+                writer = csv.DictWriter(
+                    csvfile, fieldnames=fieldnames, quoting=csv.QUOTE_MINIMAL)
                 writer.writeheader()
 
                 for item in data:
@@ -479,7 +510,9 @@ class GLPICompleteExtractor:
 
                     writer.writerow(row)
 
-            self.logger.info(f"{description} salvos em {filename}: {len(data)} registros")
+            self.logger.info(
+                f"{description} salvos em {filename}: {
+                    len(data)} registros")
 
         except Exception as e:
             self.logger.error(f"Erro ao salvar {filename}: {e}")
@@ -489,7 +522,8 @@ class GLPICompleteExtractor:
         try:
             if self.session_token:
                 headers = self.get_headers()
-                self.session.get(f"{self.glpi_url}/killSession", headers=headers)
+                self.session.get(
+                    f"{self.glpi_url}/killSession", headers=headers)
                 self.logger.info("Sessão GLPI encerrada")
         except Exception as e:
             self.logger.warning(f"Erro ao encerrar sessão: {e}")
@@ -504,7 +538,9 @@ class GLPICompleteExtractor:
         print("\n" + "=" * 60)
         print("ESTATÍSTICAS DA EXTRAÇÃO GLPI")
         print("=" * 60)
-        print(f"Início: {self.stats['start_time'].strftime('%Y-%m-%d %H:%M:%S')}")
+        print(
+            f"Início: {
+                self.stats['start_time'].strftime('%Y-%m-%d %H:%M:%S')}")
         print(f"Fim: {end_time.strftime('%Y-%m-%d %H:%M:%S')}")
         print(f"Duração: {duration}")
         print(f"Total de chamadas à API: {self.stats['total_api_calls']}")
@@ -547,7 +583,10 @@ class GLPICompleteExtractor:
             # Filtrar e salvar solicitantes
             self.logger.info("Filtrando solicitantes...")
             requesters = self.filter_requesters(users)
-            self.save_to_csv(requesters, "data/solicitantes.csv", "Solicitantes")
+            self.save_to_csv(
+                requesters,
+                "data/solicitantes.csv",
+                "Solicitantes")
 
             self.logger.info("Extração completa finalizada com sucesso!")
             self.print_statistics()

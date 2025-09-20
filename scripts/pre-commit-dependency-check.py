@@ -1,8 +1,11 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
 """
-Script para detectar dependências circulares no projeto
-."""
+Script para detectar dependências circulares no projeto.
+
+Este script analisa as dependências entre módulos Python e detecta
+possíveis dependências circulares que podem causar problemas.
+"""
 
 import ast
 import os
@@ -15,6 +18,7 @@ class DependencyAnalyzer:
     """Analisador de dependências do projeto."""
 
     def __init__(self, project_root: str):
+        """Inicializa o analisador de dependências."""
         self.project_root = Path(project_root)
         self.dependencies: Dict[str, Set[str]] = {}
 
@@ -43,7 +47,6 @@ class DependencyAnalyzer:
 
     def build_dependency_graph(self) -> Dict[str, Set[str]]:
         """Constrói grafo de dependências do projeto."""
-
         # Encontrar todos os arquivos Python
         python_files = list(self.project_root.rglob("*.py"))
 
@@ -55,7 +58,8 @@ class DependencyAnalyzer:
             module_name = module_path.replace(os.sep, ".")
 
             # Filtrar apenas módulos do projeto (não bibliotecas externas)
-            if not any(part.startswith(".") for part in module_name.split(".")):
+            if not any(part.startswith(".")
+                       for part in module_name.split(".")):
                 project_modules.add(module_name.split(".")[0])
 
         # Analisar dependências

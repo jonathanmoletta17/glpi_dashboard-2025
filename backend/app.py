@@ -1,7 +1,8 @@
 #!/usr/bin/env python3
 """
-Ponto de entrada principal da aplicação Flask GLPI Dashboard
-Consolidado e refatorado para melhor organização e manutenibilidade
+Ponto de entrada principal da aplicação Flask GLPI Dashboard.
+
+Consolidado e refatorado para melhor organização e manutenibilidade.
 """
 
 import logging
@@ -10,21 +11,18 @@ import sys
 from typing import Any, Dict
 
 import redis
+
 from flask import Flask
 from flask_caching import Cache
 from flask_cors import CORS
 
+from api.routes import api_bp
+from config.settings import active_config
+from utils.structured_logging import system_logger
+
 # Adiciona o diretório pai ao path para importar módulos
 parent_dir = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 sys.path.insert(0, parent_dir)
-
-from api.routes import api_bp
-
-from config.settings import active_config
-from services.simple_dict_cache import simple_cache
-
-# Removed unused import: observability_middleware
-from utils.structured_logging import system_logger
 
 # Instâncias globais
 cache = Cache()
@@ -33,7 +31,7 @@ cache_warming_service = None
 
 
 def _load_app_config(config_obj) -> Dict[str, Any]:
-    """Carrega e converte configurações para o Flask"""
+    """Carrega e converte configurações para o Flask."""
     return {
         # Configurações básicas do Flask
         "SECRET_KEY": str(config_obj.SECRET_KEY),
@@ -59,7 +57,7 @@ def _load_app_config(config_obj) -> Dict[str, Any]:
 
 
 def _setup_cache(app: Flask) -> Dict[str, Any]:
-    """Configura o sistema de cache da aplicação"""
+    """Configura o sistema de cache da aplicação."""
     global redis_client, cache_warming_service
 
     try:
@@ -126,7 +124,7 @@ def _setup_cache(app: Flask) -> Dict[str, Any]:
 
 
 def _setup_cors(app: Flask) -> None:
-    """Configura CORS para a aplicação"""
+    """Configura CORS para a aplicação."""
     CORS(
         app,
         resources={
@@ -148,7 +146,7 @@ def _setup_cors(app: Flask) -> None:
 
 
 def _setup_logging(app: Flask) -> None:
-    """Configura logging da aplicação"""
+    """Configura logging da aplicação."""
     from config.logging_config import configure_structured_logging
 
     log_level = app.config.get("LOG_LEVEL", "INFO")
@@ -165,7 +163,7 @@ def _setup_logging(app: Flask) -> None:
 
 
 def create_app(config=None) -> Flask:
-    """Cria e configura a aplicação Flask com observabilidade completa"""
+    """Cria e configura a aplicação Flask com observabilidade completa."""
     app = Flask(__name__)
 
     # Carrega configurações
@@ -212,7 +210,7 @@ def create_app(config=None) -> Flask:
 
 
 def _get_server_config() -> Dict[str, Any]:
-    """Obtém configurações do servidor"""
+    """Obtém configurações do servidor."""
     config_obj = active_config()
     return {
         "host": str(config_obj.HOST),
@@ -222,7 +220,7 @@ def _get_server_config() -> Dict[str, Any]:
 
 
 def run_server() -> None:
-    """Inicia o servidor Flask"""
+    """Inicia o servidor Flask."""
     logger = logging.getLogger("app")
     server_config = _get_server_config()
 
@@ -232,7 +230,9 @@ def run_server() -> None:
     logger.info(f"Iniciando servidor Flask em {host}:{port} (Debug: {debug})")
 
     try:
-        app.run(host=server_config["host"], port=server_config["port"], debug=server_config["debug"])
+        app.run(
+            host=server_config["host"], port=server_config["port"], debug=server_config["debug"]
+        )
     except KeyboardInterrupt:
         logger.info("Servidor interrompido pelo usuário")
     except Exception as e:

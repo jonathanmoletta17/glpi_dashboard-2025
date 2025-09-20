@@ -137,8 +137,8 @@ export const Header = React.memo<HeaderProps>(
     }, [customStartDate, customEndDate, onDateRangeChange, onNotification]);
 
     // Search handlers with debounce (300ms)
-    const debouncedSearch = useDebouncedCallback((query: string) => {
-      onSearch(query);
+    const debouncedSearch = useDebouncedCallback((query: unknown) => {
+      onSearch(query as string);
     }, 300);
 
     const handleSearchChange = useCallback(

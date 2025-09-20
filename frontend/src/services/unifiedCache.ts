@@ -96,6 +96,14 @@ class UnifiedCacheManager {
       sets: 0,
       deletes: 0,
       clears: 0,
+      size: 0,
+      maxSize: finalConfig.maxSize,
+      ttl: finalConfig.ttl,
+      hitRate: 0,
+      isActive: finalConfig.autoActivate || false,
+      totalRequests: 0,
+      avgResponseTime: 0,
+      memoryUsage: 0,
     });
     this.requestTimes.set(type, []);
     this.requestCounts.set(type, 0);
@@ -339,13 +347,13 @@ class UnifiedCacheManager {
     const globalKey = `${type}:${key}`;
     const cached = this.globalCache.get(globalKey);
     if (cached && now - cached.timestamp < finalConfig.cacheMs!) {
-      return cached.data;
+      return cached.data as T;
     }
 
     // Verificar se já existe requisição pendente
     const existing = this.pendingRequests.get(globalKey);
     if (existing) {
-      return existing.promise;
+      return existing.promise as Promise<T>;
     }
 
     // Verificar throttling
