@@ -38,7 +38,7 @@ def get_logging_config(log_level: str = "INFO", log_file: Optional[str] = None) 
         "formatters": {
             "json": {
                 "()": "utils.structured_logging.JSONFormatter",
-                "include_extra_fields": True,
+                "include_extra": True,
             },
             "standard": {"format": "%(asctime)s [%(levelname)s] %(name)s: %(message)s"},
         },

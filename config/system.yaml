@@ -1,0 +1,51 @@
+﻿# Configuração do Sistema GLPI Dashboard
+# Este arquivo contém configurações específicas do sistema
+
+# Configurações de Logging
+logging:
+  level: INFO
+  format: json
+  file_path: logs/app.log
+  max_bytes: 10485760  # 10MB
+  backup_count: 5
+
+# Configurações de Performance
+performance:
+  target_p95: 500  # ms
+  cache_timeout: 300  # 5 minutos
+  max_content_length: 16777216  # 16MB
+
+# Configurações de Alertas
+alerts:
+  response_time_threshold: 2.0  # segundos
+  error_rate_threshold: 0.05    # 5%
+  zero_tickets_threshold: 60    # minutos
+
+# Configurações de Cache
+cache:
+  type: simple
+  default_timeout: 300
+  key_prefix: glpi_dashboard
+
+# Configurações de CORS - DESENVOLVIMENTO
+cors:
+  origins:
+    - http://localhost:3001
+    - http://localhost:5174
+    - http://127.0.0.1:3001
+    - http://127.0.0.1:5174
+
+# Configurações de Rate Limiting
+rate_limit:
+  per_minute: 60
+
+# Configurações de Desenvolvimento
+development:
+  debug: true
+  hot_reload: true
+  detailed_errors: true
+
+# Configurações Flask - DESENVOLVIMENTO
+flask:
+  host: 0.0.0.0
+  port: 5001

@@ -369,7 +369,7 @@ export const ModernDashboard = React.memo<ModernDashboardProps>(function ModernD
             <h3 id='tickets-heading' className='sr-only'>
               Lista de Tickets Recentes
             </h3>
-            <ProfessionalTicketsList className='h-full' limit={6} onTicketClick={onTicketClick} />
+            <ProfessionalTicketsList className='h-full' limit={10} onTicketClick={onTicketClick} />
           </div>
         </div>
       </section>
