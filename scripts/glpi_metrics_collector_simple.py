@@ -258,9 +258,8 @@ class GLPIMetricsCollector:
                     tecnico_id = tecnico["id"]
                     tecnico_nome = tecnico["nome"]
 
-                    # Determinar nivel do tecnico
-                    nivel = self._get_technician_level_by_name_fallback(
-                        tecnico_id)
+                    # Usar nivel padrão N1 (removido fallback com dados hardcoded)
+                    nivel = "N1"
 
                     # Calcular metricas do tecnico
                     metricas = self._get_technician_metrics_corrected(
@@ -469,70 +468,6 @@ class GLPIMetricsCollector:
             f"      {
                 len(tecnicos_ativos)} tecnicos ativos validos encontrados")
         return tecnicos_ativos
-
-    def _get_technician_level_by_name_fallback(self, user_id: str) -> str:
-        """Determina o nivel do tecnico baseado no nome (fallback do backend)."""
-        try:
-            # Buscar nome do usuario
-            user_url = f"{self.config.base_url}/apirest.php/User/{user_id}"
-            response = self.session.get(user_url)
-            if response.status_code != 200:
-                return "N1"  # Nivel padrao
-
-            user_data = response.json()
-            firstname = user_data.get("firstname", "").lower()
-            realname = user_data.get("realname", "").lower()
-
-            # Mapeamento correto dos tecnicos por nivel (conforme backend real)
-            n1_names = [
-                "gabriel andrade da conceicao",
-                "nicolas fernando muniz nunez",
-            ]
-
-            n2_names = [
-                "alessandro carbonera vieira",
-                "jonathan nascimento moletta",
-                "thales vinicius paz leite",
-                "leonardo trojan repiso riela",
-                "edson joel dos santos silva",
-                "luciano marcelino da silva",
-            ]
-
-            n3_names = [
-                "anderson da silva morim de oliveira",
-                "silvio godinho valim",
-                "jorge antonio vicente junior",
-                "pablo hebling guimaraes",
-                "miguelangelo ferreira",
-            ]
-
-            n4_names = [
-                "gabriel silva machado",
-                "luciano de araujo silva",
-                "wagner mengue",
-                "paulo césar pedó nunes",
-                "alexandre rovinski almoarqueg",
-            ]
-
-            # Verificar em qual nivel o tecnico esta
-            full_name = f"{firstname} {realname}".strip()
-
-            if full_name in n4_names:
-                return "N4"
-            elif full_name in n3_names:
-                return "N3"
-            elif full_name in n2_names:
-                return "N2"
-            elif full_name in n1_names:
-                return "N1"
-            else:
-                # Se nao encontrou, usar N1 como padrao
-                return "N1"
-
-        except Exception as e:
-            print(
-                f"      Erro ao determinar nivel por nome para usuario {user_id}: {e}")
-            return "N1"  # Nivel padrao em caso de erro
 
     def _get_technician_metrics_corrected(
             self, tecnico_id: str) -> Dict[str, Any]:

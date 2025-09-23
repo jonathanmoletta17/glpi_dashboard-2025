@@ -202,9 +202,13 @@ function shouldRetry(error: AxiosError): boolean {
   const retryableStatuses = [408, 429, 500, 502, 503, 504];
   const retryableCodes = ['ECONNABORTED', 'ENOTFOUND', 'ECONNRESET', 'ETIMEDOUT'];
 
+  // Verificar se é ERR_ABORTED (requisição cancelada/abortada)
+  const isAborted = error.message?.includes('ERR_ABORTED') || error.code === 'ERR_ABORTED';
+
   return (
     (error.response?.status && retryableStatuses.includes(error.response.status)) ||
     (error.code && retryableCodes.includes(error.code as string)) ||
+    isAborted ||
     false
   );
 }
@@ -218,7 +222,10 @@ async function retryRequest(error: AxiosError): Promise<AxiosResponse> {
     return Promise.reject(error);
   }
 
-  const delay = API_CONFIG.RETRY_DELAY * Math.pow(2, config.__retryCount - 1);
+  // Para ERR_ABORTED, usar delay menor na primeira tentativa
+  const isAborted = error.message?.includes('ERR_ABORTED') || error.code === 'ERR_ABORTED';
+  const baseDelay = isAborted && config.__retryCount === 1 ? 500 : API_CONFIG.RETRY_DELAY;
+  const delay = baseDelay * Math.pow(2, config.__retryCount - 1);
 
   // Debug logs removidos para produção
   // console.log(
