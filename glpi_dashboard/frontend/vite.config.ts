@@ -1,6 +1,10 @@
 import { defineConfig } from 'vite';
 import react from '@vitejs/plugin-react';
+<<<<<<< Updated upstream
 import { visualizer } from 'rollup-plugin-visualizer';
+=======
+import path from 'path';
+>>>>>>> Stashed changes
 
 // https://vitejs.dev/config/
 export default defineConfig({
@@ -41,7 +45,7 @@ export default defineConfig({
   },
   resolve: {
     alias: {
-      '@': '/src',
+      '@': path.resolve(__dirname, './src'),
     },
   },
   test: {

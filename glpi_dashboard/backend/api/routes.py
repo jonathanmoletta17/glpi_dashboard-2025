@@ -12,6 +12,7 @@ from flask import Blueprint, jsonify, request
 from pydantic import ValidationError
 
 from config.settings import active_config
+<<<<<<< Updated upstream
 from schemas.dashboard import DashboardMetrics
 from services.api_service import APIService
 from services.glpi_service import GLPIService
@@ -25,7 +26,18 @@ from utils.performance import (
 )
 from utils.prometheus_metrics import monitor_api_endpoint
 from services.smart_cache import cache_with_smart_ttl, smart_cache
+=======
+
+# Removed api_service import - service deleted
+from services.glpi_service import GLPIService
+from services.simple_dict_cache import cached, simple_cache
+
+# Removed unused import: alerting_system
+# Removed date_decorators import - module deleted
+from utils.performance import monitor_performance
+>>>>>>> Stashed changes
 from utils.response_formatter import ResponseFormatter
+from utils.simple_decorators import monitor_api_endpoint
 from utils.structured_logging import api_logger
 
 # Importar cache do app principal
@@ -37,16 +49,19 @@ except ImportError:
 api_bp = Blueprint("api", __name__, url_prefix="/api")
 
 # Inicializa serviços
+<<<<<<< Updated upstream
 api_service = APIService()
+=======
+>>>>>>> Stashed changes
 glpi_service = GLPIService()
 
 # Obtém logger configurado
 logger = logging.getLogger("api")
 
 # Cache para métricas do GLPI (evita chamadas frequentes)
-_metrics_cache = {"data": None, "timestamp": 0, "ttl": 180, "filters_hash": None}
-_ranking_cache = {"data": None, "timestamp": 0, "ttl": 60, "filters_hash": None}
-_status_cache = {"data": None, "timestamp": 0, "ttl": 30}
+# Cache global removido - usando simple_dict_cache com decorator @cached
+
+# Cache inteligente será inicializado pelo app.py
 
 # Cache inteligente será inicializado pelo app.py
 
@@ -108,8 +123,12 @@ def glpi_health_check():
 @api_bp.route("/metrics")
 @monitor_api_endpoint("get_metrics")
 @monitor_performance
+<<<<<<< Updated upstream
 @cache_with_smart_ttl(endpoint_pattern="/metrics", invalidation_patterns=["metrics", "tickets"])
 @standard_date_validation(support_predefined=True, log_usage=True)
+=======
+@cached(ttl=300)
+>>>>>>> Stashed changes
 def get_metrics(validated_start_date=None, validated_end_date=None, validated_filters=None):
     """Endpoint para obter métricas do dashboard do GLPI"""
     import hashlib
@@ -119,6 +138,7 @@ def get_metrics(validated_start_date=None, validated_end_date=None, validated_fi
     observability_logger = api_logger
     start_time = time.time()
 
+<<<<<<< Updated upstream
     # Verificar cache baseado nos filtros
     filters_str = json.dumps({
         "start_date": validated_start_date.isoformat() if validated_start_date else None,
@@ -140,6 +160,9 @@ def get_metrics(validated_start_date=None, validated_end_date=None, validated_fi
         response_time = (time.time() - start_time) * 1000
         logger.info(f"[{correlation_id}] Métricas retornadas do cache em {response_time:.2f}ms")
         return jsonify(cached_data)
+=======
+    # Cache é gerenciado pelo decorator @cached
+>>>>>>> Stashed changes
 
     try:
         start_date = validated_start_date
@@ -163,7 +186,9 @@ def get_metrics(validated_start_date=None, validated_end_date=None, validated_fi
             method="GET",
         )
 
-        logger.info(f"[{correlation_id}] Buscando métricas do GLPI com filtros: data={start_date} até {end_date}")
+        logger.info(
+            f"[{correlation_id}] Buscando métricas do GLPI com filtros: data={start_date} até {end_date}"
+        )
 
         # Usar método apropriado baseado nos filtros
         if start_date or end_date:
@@ -207,7 +232,14 @@ def get_metrics(validated_start_date=None, validated_end_date=None, validated_fi
         # Log de performance
         response_time = (time.time() - start_time) * 1000
         observability_logger.log_operation_end(
+<<<<<<< Updated upstream
             "get_metrics", success=True, result_count=1 if metrics_data else 0, duration_ms=response_time
+=======
+            "get_metrics",
+            success=True,
+            result_count=1 if metrics_data else 0,
+            duration_ms=response_time,
+>>>>>>> Stashed changes
         )
 
         logger.info(f"[{correlation_id}] Métricas obtidas com sucesso em {response_time:.2f}ms")
@@ -219,7 +251,9 @@ def get_metrics(validated_start_date=None, validated_end_date=None, validated_fi
         except (AttributeError, ImportError):
             target_p95 = 300
         if response_time > target_p95:
-            logger.warning(f"[{correlation_id}] Resposta lenta detectada: {response_time:.2f}ms > {target_p95}ms")
+            logger.warning(
+                f"[{correlation_id}] Resposta lenta detectada: {response_time:.2f}ms > {target_p95}ms"
+            )
 
         # Validar dados com Pydantic
         try:
@@ -233,10 +267,7 @@ def get_metrics(validated_start_date=None, validated_end_date=None, validated_fi
             metrics_data["correlation_id"] = correlation_id
             metrics_data["cached"] = False
 
-        # Salvar no cache
-        _metrics_cache["data"] = metrics_data.copy() if isinstance(metrics_data, dict) else metrics_data
-        _metrics_cache["timestamp"] = current_time
-        _metrics_cache["filters_hash"] = filters_hash
+        # Cache é gerenciado automaticamente pelo decorator @cached
 
         return jsonify(metrics_data)
 
@@ -250,6 +281,7 @@ def get_metrics(validated_start_date=None, validated_end_date=None, validated_fi
         return jsonify(error_response), 500
 
 
+<<<<<<< Updated upstream
 @api_bp.route("/metrics/filtered")
 @monitor_api_endpoint("get_filtered_metrics")
 @monitor_performance
@@ -345,6 +377,9 @@ def get_filtered_metrics(validated_start_date=None, validated_end_date=None, val
             correlation_id=correlation_id,
         )
         return jsonify(error_response), 500
+=======
+# Endpoint /metrics/filtered removido - funcionalidade consolidada em /metrics
+>>>>>>> Stashed changes
 
 
 # ============================================================================
@@ -354,7 +389,11 @@ def get_filtered_metrics(validated_start_date=None, validated_end_date=None, val
 @api_bp.route("/technicians")
 @monitor_api_endpoint("get_technicians")
 @monitor_performance
+<<<<<<< Updated upstream
 @cache_with_smart_ttl(endpoint_pattern="/technicians", invalidation_patterns=["technicians"])
+=======
+@cached(ttl=300)
+>>>>>>> Stashed changes
 def get_technicians():
     """Endpoint para obter lista de técnicos"""
     start_time = time.time()
@@ -381,7 +420,9 @@ def get_technicians():
                 entity_id = None
 
         # Buscar técnicos
-        technician_ids, technician_names = glpi_service._get_all_technician_ids_and_names(entity_id=entity_id)
+        technician_ids, technician_names = glpi_service._get_all_technician_ids_and_names(
+            entity_id=entity_id
+        )
 
         # Converter para formato de lista
         technicians = []
@@ -417,9 +458,16 @@ def get_technicians():
 @api_bp.route("/technicians/ranking")
 @monitor_api_endpoint("get_technician_ranking")
 @monitor_performance
+<<<<<<< Updated upstream
 @cache_with_smart_ttl(endpoint_pattern="/technicians/ranking", invalidation_patterns=["technicians", "tickets"])
 @standard_date_validation(support_predefined=True, log_usage=True)
 def get_technician_ranking(validated_start_date=None, validated_end_date=None, validated_filters=None):
+=======
+@cached(ttl=300)
+def get_technician_ranking(
+    validated_start_date=None, validated_end_date=None, validated_filters=None
+):
+>>>>>>> Stashed changes
     """Endpoint para obter ranking de técnicos por nível"""
     start_time = time.time()
     obs_logger = api_logger
@@ -442,6 +490,7 @@ def get_technician_ranking(validated_start_date=None, validated_end_date=None, v
         except (ValueError, TypeError):
             limit = 100
 
+<<<<<<< Updated upstream
         # Verificar cache
         current_time = time.time()
         filters_hash = hash(
@@ -456,6 +505,9 @@ def get_technician_ranking(validated_start_date=None, validated_end_date=None, v
             cached_data["cached"] = True
             cached_data["correlation_id"] = correlation_id
             return jsonify(cached_data)
+=======
+        # Cache é gerenciado pelo decorator @cached
+>>>>>>> Stashed changes
 
         # Log início do pipeline
         obs_logger.log_operation_start(
@@ -468,7 +520,9 @@ def get_technician_ranking(validated_start_date=None, validated_end_date=None, v
             entity_id=entity_id,
         )
 
-        logger.debug(f"[{correlation_id}] Buscando ranking de técnicos: dates={start_date}-{end_date}, level={level}")
+        logger.debug(
+            f"[{correlation_id}] Buscando ranking de técnicos: dates={start_date}-{end_date}, level={level}"
+        )
 
         # Buscar ranking com ou sem filtros
         if any([start_date, end_date, level, entity_id]):
@@ -509,8 +563,20 @@ def get_technician_ranking(validated_start_date=None, validated_end_date=None, v
 
         # Log de performance
         response_time = (time.time() - start_time) * 1000
+<<<<<<< Updated upstream
         obs_logger.log_operation_end("technician_ranking", success=True, result_count=len(ranking_data), duration_ms=response_time)
         logger.info(f"[{correlation_id}] Ranking obtido: {len(ranking_data)} técnicos em {response_time:.2f}ms")
+=======
+        obs_logger.log_operation_end(
+            "technician_ranking",
+            success=True,
+            result_count=len(ranking_data),
+            duration_ms=response_time,
+        )
+        logger.info(
+            f"[{correlation_id}] Ranking obtido: {len(ranking_data)} técnicos em {response_time:.2f}ms"
+        )
+>>>>>>> Stashed changes
 
         # Verificar performance
         try:
@@ -537,10 +603,7 @@ def get_technician_ranking(validated_start_date=None, validated_end_date=None, v
             },
         }
 
-        # Salvar no cache
-        _ranking_cache["data"] = response_data.copy()
-        _ranking_cache["timestamp"] = current_time
-        _ranking_cache["filters_hash"] = filters_hash
+        # Cache é gerenciado automaticamente pelo decorator @cached
 
         return jsonify(response_data)
 
@@ -556,13 +619,21 @@ def get_technician_ranking(validated_start_date=None, validated_end_date=None, v
 # ROTAS ESSENCIAIS - TICKETS
 # ============================================================================
 
+<<<<<<< Updated upstream
 @api_bp.route("/tickets/new")
 @monitor_api_endpoint("get_new_tickets")
 @monitor_performance
 @cache_with_smart_ttl(endpoint_pattern="/tickets/new", invalidation_patterns=["tickets"])
 @standard_date_validation(support_predefined=True, log_usage=True)
+=======
+
+@api_bp.route("/tickets/recent")
+@monitor_api_endpoint("get_new_tickets")
+@monitor_performance
+@cached(ttl=300)
+>>>>>>> Stashed changes
 def get_new_tickets(validated_start_date=None, validated_end_date=None, validated_filters=None):
-    """Endpoint para obter tickets novos"""
+    """Endpoint para obter tickets recentes"""
     start_time = time.time()
 
     try:
@@ -661,6 +732,7 @@ def get_new_tickets(validated_start_date=None, validated_end_date=None, validate
 @api_bp.route("/tickets/<int:ticket_id>")
 @monitor_api_endpoint("get_ticket_details")
 @monitor_performance
+<<<<<<< Updated upstream
 @cache_with_smart_ttl(endpoint_pattern="/tickets/<int:ticket_id>", invalidation_patterns=["tickets"])
 def get_ticket_details(ticket_id):
     """Endpoint para obter detalhes de um ticket específico por ID"""
@@ -721,13 +793,57 @@ def get_ticket_details(ticket_id):
         logger.error(f"Erro de validação para ticket {ticket_id}: {e}")
         error_response = ResponseFormatter.format_error_response(
             "Dados inválidos", [str(e)]
+=======
+@cached(ttl=300)
+def get_ticket_details(ticket_id):
+    """Endpoint para obter detalhes de um ticket específico"""
+    start_time = time.time()
+
+    try:
+        # Log da operação
+        api_logger.log_operation_start(
+            "api_request",
+            correlation_id=request.headers.get("X-Correlation-ID"),
+            method=request.method,
+            endpoint="api.get_ticket_details",
+            path=f"/api/tickets/{ticket_id}",
+            remote_addr=request.remote_addr,
+        )
+
+        # Buscar ticket no GLPI
+        ticket_data = glpi_service.get_ticket_by_id(ticket_id)
+
+        if not ticket_data:
+            logger.warning(f"Ticket {ticket_id} não encontrado")
+            error_response = ResponseFormatter.format_error_response(
+                f"Ticket {ticket_id} não encontrado",
+                [f"O ticket com ID {ticket_id} não existe ou não está acessível"],
+            )
+            return jsonify(error_response), 404
+
+        # Formatar resposta de sucesso
+        response_data = ResponseFormatter.format_success_response(
+            ticket_data, f"Detalhes do ticket {ticket_id} obtidos com sucesso"
+>>>>>>> Stashed changes
         )
         return jsonify(error_response), 400
 
+        # Log de sucesso
+        processing_time = (time.time() - start_time) * 1000
+        logger.info(f"Detalhes do ticket {ticket_id} obtidos em {processing_time:.2f}ms")
+
+        return jsonify(response_data), 200
+
     except Exception as e:
+<<<<<<< Updated upstream
         logger.error(f"Erro inesperado ao buscar detalhes do ticket {ticket_id}: {e}", exc_info=True)
         error_response = ResponseFormatter.format_error_response(
             f"Erro interno do servidor: {str(e)}", [str(e)]
+=======
+        logger.error(f"Erro ao buscar detalhes do ticket {ticket_id}: {e}", exc_info=True)
+        error_response = ResponseFormatter.format_error_response(
+            f"Erro interno do servidor ao buscar ticket {ticket_id}: {str(e)}", [str(e)]
+>>>>>>> Stashed changes
         )
         return jsonify(error_response), 500
 
@@ -736,6 +852,7 @@ def get_ticket_details(ticket_id):
 # ROTAS ESSENCIAIS - ALERTAS E STATUS
 # ============================================================================
 
+<<<<<<< Updated upstream
 @api_bp.route("/alerts")
 @monitor_performance
 def get_alerts():
@@ -1033,3 +1150,15 @@ def get_status():
             f"Erro interno do servidor: {str(e)}", [str(e)]
         )
         return jsonify(error_response), 500
+=======
+# Alerts endpoint removed - not essential for core functionality
+
+
+# Cache management endpoints removed - not essential for core functionality
+
+
+# Filter types endpoint removed - not essential for core functionality
+
+
+# Endpoint /status removido - funcionalidade consolidada em /health e /health/glpi
+>>>>>>> Stashed changes

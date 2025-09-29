@@ -1,4 +1,9 @@
-"""Utilitários para monitoramento de performance e otimização de cache"""
+#!/usr/bin/env python3
+"""
+Performance monitoring and cache optimization for GLPI Dashboard
+Tracks response times, cache hit rates, and provides performance insights
+"""
+
 import hashlib
 import logging
 import time
@@ -8,6 +13,9 @@ from typing import Any, Dict, List, Optional
 from flask import g, request
 
 from config.settings import active_config
+
+# Import consolidated cache system
+from services.simple_dict_cache import simple_cache
 
 logger = logging.getLogger("performance")
 
@@ -148,7 +156,9 @@ def monitor_performance(func):
             except:
                 target_p95 = 300
             if duration * 1000 > target_p95:
-                logger.warning(f"Slow request: {func.__name__} took {duration*1000:.2f}ms (target: {target_p95}ms)")
+                logger.warning(
+                    f"Slow request: {func.__name__} took {duration*1000:.2f}ms (target: {target_p95}ms)"
+                )
 
     return wrapper
 
@@ -186,26 +196,17 @@ def make_filtered_cache_key(base_key: str) -> str:
 
 
 def cache_with_filters(timeout: int = 300):
-    """Decorator para cache inteligente com suporte a filtros"""
+    """Decorator para cache inteligente com suporte a filtros usando simple_dict_cache"""
 
     def decorator(func):
         @wraps(func)
         def wrapper(*args, **kwargs):
-            from flask import current_app
-
-            # Verifica se o cache está disponível
-            if not hasattr(current_app, "extensions") or "cache" not in current_app.extensions:
-                logger.warning("Cache não disponível, executando função diretamente")
-                return func(*args, **kwargs)
-
-            cache = current_app.extensions["cache"][list(current_app.extensions["cache"].keys())[0]]
-
             # Gera chave de cache baseada na função e filtros
             cache_key = make_filtered_cache_key(func.__name__)
 
-            # Tenta buscar no cache
+            # Tenta buscar no cache consolidado
             try:
-                cached_result = cache.get(cache_key)
+                cached_result = simple_cache.get(cache_key)
                 if cached_result is not None:
                     performance_monitor.record_cache_hit()
                     logger.debug(f"Cache hit for {cache_key}")
@@ -219,9 +220,9 @@ def cache_with_filters(timeout: int = 300):
 
             result = func(*args, **kwargs)
 
-            # Armazena no cache
+            # Armazena no cache consolidado
             try:
-                cache.set(cache_key, result, timeout=timeout)
+                simple_cache.set(cache_key, result, ttl=timeout)
             except Exception as e:
                 logger.warning(f"Erro ao armazenar no cache: {e}")
 

@@ -64,9 +64,13 @@ class ResponseFormatter:
 
             # Se há estrutura niveis (sem filtros)
             elif (
+<<<<<<< Updated upstream
                 raw_metrics
                 and "niveis" in raw_metrics
                 and isinstance(raw_metrics["niveis"], dict)
+=======
+                raw_metrics and "niveis" in raw_metrics and isinstance(raw_metrics["niveis"], dict)
+>>>>>>> Stashed changes
             ):
                 for level_name, level_data in raw_metrics["niveis"].items():
                     if not isinstance(level_data, dict):

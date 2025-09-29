@@ -25,10 +25,10 @@ def clean_html_content(text: Optional[str]) -> str:
         decoded = html.unescape(text)
 
         # Remover tags HTML com regex simples
-        clean_text = re.sub(r'<[^>]*>', '', decoded)
+        clean_text = re.sub(r"<[^>]*>", "", decoded)
 
         # Limpar espaços extras e quebras de linha
-        clean_text = re.sub(r'\s+', ' ', clean_text).strip()
+        clean_text = re.sub(r"\s+", " ", clean_text).strip()
 
         return clean_text
 
