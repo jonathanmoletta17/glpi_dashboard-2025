@@ -1,0 +1,20 @@
+id,firstname,realname,name,comment,entities_id,groups_id,is_active,date_creation,date_mod,last_login,phone,phone2,mobile,registration_number,nome_completo,grupo_principal
+10,Wagner,Mengue,wagner-mengue,CC-DTIC,Entidade raiz,CC-SE-SUBADM-DTIC > N4,1,2023-03-18 14:51:41,2025-07-10 15:49:17,,,,,268584101.0,Wagner Mengue,CC-DTIC
+32,Silvio,Godinho Valim,silvio-valim,CC-DTIC,Entidade raiz,CC-SE-SUBADM-DTIC > N3,1,2023-03-18 14:51:41,2025-09-05 13:57:07,2025-09-05 13:57:07,,,,,Silvio Godinho Valim,CC-DTIC
+53,Paulo,César Pedó Nunes,paulo-nunes,CC-DTIC,Entidade raiz,CC-SE-SUBADM-DTIC > N4,1,2023-03-18 14:51:41,2025-09-05 10:48:15,2025-09-05 10:48:15,,,,,Paulo César Pedó Nunes,CC-DTIC
+60,Pablo,Hebling Guimaraes,pablo-guimaraes,CC-DTIC,Entidade raiz > PIRATINI > CENTRAL DE ATENDIMENTOS,CC-SE-SUBADM-DTIC > N3,1,2023-03-18 14:51:41,2025-09-05 08:10:40,2025-09-05 10:04:10,,555132104343.0,5551991865724.0,,Pablo Hebling Guimaraes,CC-DTIC
+69,Miguelangelo,Ferreira,miguelangelo,CC-DTIC,Entidade raiz,CC-SE-SUBADM-DTIC > N3,1,2023-03-18 14:51:41,2025-09-01 10:11:50,2025-09-05 10:54:15,,,,,Miguelangelo Ferreira,CC-DTIC
+141,Jorge,Antonio Vicente Júnior,jorge-vicente,CC - DTIC,Entidade raiz,CC-SE-SUBADM-DTIC > N3,1,2023-03-18 14:51:41,2025-09-04 11:48:45,2025-09-04 11:48:45,,,,,Jorge Antonio Vicente Júnior,
+185,Edson,Joel dos Santos Silva,edson-silva,CC-DTIC,Entidade raiz,CC-SE-SUBADM-DTIC > N2,1,2023-03-18 14:51:41,2025-09-02 09:56:13,2025-09-05 11:05:04,,,,,Edson Joel dos Santos Silva,CC-DTIC
+250,Alexandre,Rovinski Almoarqueg,alexandre-almoarqueg,CC-DTIC,Entidade raiz > PIRATINI,CC-SE-SUBADM-DTIC > N4,1,2023-03-18 14:51:41,2025-09-03 17:50:53,2025-09-05 11:36:49,,,,,Alexandre Rovinski Almoarqueg,CC-DTIC
+252,Alessandro,Carbonera Vieira,alessandro-vieira,CC-DTIC,Entidade raiz,CC-SE-SUBADM-DTIC > N2,1,2023-03-18 14:51:41,2025-09-04 10:12:16,2025-09-04 10:12:16,,,,,Alessandro Carbonera Vieira,CC-DTIC
+696,Anderson,da Silva Morim de Oliveira,anderson-oliveira,CC-DTIC,Entidade raiz,CC-SE-SUBADM-DTIC > N3,1,2023-03-18 14:56:17,2025-09-05 10:19:27,2025-09-05 10:19:27,,,,,Anderson da Silva Morim de Oliveira,CC-DTIC
+721,Thales,Vinicius Paz Leite,thales-leite,CC-DTIC,Entidade raiz,CC-SE-SUBADM-DTIC > N2,1,2023-03-18 15:23:02,2025-09-03 09:19:28,2025-09-05 14:11:07,,,,,Thales Vinicius Paz Leite,CC-DTIC
+926,Leonardo,Trojan Repiso Riela,leonardo-riela,CC-DTIC,Entidade raiz,CC-SE-SUBADM-DTIC > N2,1,2023-06-27 09:00:25,2025-09-03 10:40:28,2025-09-05 09:43:59,,,,,Leonardo Trojan Repiso Riela,CC-DTIC
+1032,Jonathan,Nascimento Moletta,jonathan-moletta,CC-DTIC,Entidade raiz,CC-SE-SUBADM-DTIC > N2,1,2024-03-21 11:51:13,2025-09-04 15:02:46,2025-09-06 17:00:36,,,,,Jonathan Nascimento Moletta,CC-DTIC
+1088,Luciano,de Araujo Silva,luciano-silva,CC-DTIC,Entidade raiz,CC-SE-SUBADM-DTIC > N4,1,2024-08-06 13:16:05,2025-09-05 11:06:38,2025-09-05 14:22:02,,,,,Luciano de Araujo Silva,CC-DTIC
+1263,Nicolas,Fernando Muniz Nunez,nicolas-nunez,CC-DTIC-Estágio,Entidade raiz > PIRATINI > CENTRAL DE ATENDIMENTOS,CC-SE-SUBADM-DTIC > N1,1,2025-01-16 08:40:45,2025-09-03 10:05:22,2025-09-05 09:59:34,,,,,Nicolas Fernando Muniz Nunez,CC-DTIC-Estágio
+1291,Gabriel,Silva Machado,gabriel-machado,CC-DTIC-Estagio,Entidade raiz > PIRATINI > CENTRAL DE ATENDIMENTOS,CC-SE-SUBADM-DTIC > N4,1,2025-02-24 12:06:07,2025-09-03 10:44:51,2025-09-05 10:26:46,,,,,Gabriel Silva Machado,CC-DTIC-Estagio
+1331,Luciano,Marcelino da Silva,luciano-marcelino,CC-DTIC-SPGG,Entidade raiz,CC-SE-SUBADM-DTIC > N2,1,2025-04-16 09:38:35,2025-09-04 14:11:40,2025-09-04 14:11:40,,,,,Luciano Marcelino da Silva,CC-DTIC-SPGG
+1404,Gabriel,Andrade da Conceicao,gabriel-conceicao,CC-DTIC-Estagio,Entidade raiz,CC-SE-SUBADM-DTIC > N1,1,2025-05-19 12:42:05,2025-09-02 12:28:07,2025-09-05 12:22:14,,,,,Gabriel Andrade da Conceicao,CC-DTIC-Estagio
+1471,Joao,Pedro Wilson Dias,joao-dias,CC-DTIC,Entidade raiz > PIRATINI > CENTRAL DE ATENDIMENTOS,CC-SE-SUBADM-DTIC > N2,1,2025-08-20 09:18:57,2025-09-04 17:00:54,2025-09-05 09:35:33,,,,,Joao Pedro Wilson Dias,CC-DTIC

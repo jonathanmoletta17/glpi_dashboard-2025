@@ -1,0 +1,30 @@
+{
+  "threshold": 50,
+  "reporters": ["html", "console"],
+  "ignore": [
+    "**/node_modules/**",
+    "**/dist/**",
+    "**/build/**",
+    "**/*.test.ts",
+    "**/*.test.tsx",
+    "**/*.spec.ts",
+    "**/*.spec.tsx",
+    "**/coverage/**"
+  ],
+  "format": [
+    "typescript",
+    "javascript",
+    "jsx",
+    "tsx"
+  ],
+  "min-lines": 10,
+  "min-tokens": 70,
+  "output": "./reports/jscpd",
+  "absolute": true,
+  "gitignore": true,
+  "blame": false,
+  "silent": false,
+  "verbose": false,
+  "debug": false,
+  "config": ".jscpd.json"
+}

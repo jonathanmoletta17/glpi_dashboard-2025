@@ -1,0 +1,26 @@
+# Core Flask dependencies
+Flask==2.3.3
+Flask-CORS==4.0.0
+Flask-Caching==2.1.0
+Flask-SQLAlchemy==3.0.5
+
+# HTTP client and utilities
+requests==2.31.0
+python-dotenv==1.0.0
+PyYAML==6.0.1
+redis==5.0.1
+pydantic==2.5.0
+
+# Email validation
+email-validator==2.0.0
+
+# Production server
+gunicorn==21.2.0
+uvicorn==0.24.0
+asgiref==3.7.2
+
+# Database support (optional)
+# psycopg2-binary==2.9.7  # Commented out - requires Visual C++ Build Tools
+
+# Development dependencies
+werkzeug==2.3.7

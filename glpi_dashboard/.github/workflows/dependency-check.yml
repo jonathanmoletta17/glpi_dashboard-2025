@@ -1,0 +1,70 @@
+name: Dependency Validation
+
+# Executa a validação de dependências em pull requests e pushes
+on:
+  push:
+    branches: [ main, develop ]
+    paths:
+      - 'backend/ai/**/*.py'
+      - 'backend/**/*.py'
+  pull_request:
+    branches: [ main, develop ]
+    paths:
+      - 'backend/ai/**/*.py'
+      - 'backend/**/*.py'
+
+jobs:
+  validate-dependencies:
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v4
+
+    - name: Set up Python
+      uses: actions/setup-python@v4
+      with:
+        python-version: '3.11'
+
+    - name: Install dependencies
+      run: |
+        cd backend
+        python -m pip install --upgrade pip
+        pip install -r requirements.txt
+
+    - name: Run dependency validation
+      run: |
+        cd backend
+        python ai/monitor_dependencies.py --fail-on-circular --output-format json
+
+    - name: Generate dependency report
+      if: always()
+      run: |
+        cd backend
+        python ai/monitor_dependencies.py --output-format text > dependency_report.txt
+
+    - name: Upload dependency report
+      if: always()
+      uses: actions/upload-artifact@v3
+      with:
+        name: dependency-report
+        path: backend/dependency_report.txt
+
+    - name: Comment PR with results
+      if: github.event_name == 'pull_request' && failure()
+      uses: actions/github-script@v6
+      with:
+        script: |
+          const fs = require('fs');
+          const path = 'backend/dependency_report.txt';
+
+          if (fs.existsSync(path)) {
+            const report = fs.readFileSync(path, 'utf8');
+
+            github.rest.issues.createComment({
+              issue_number: context.issue.number,
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              body: `## ⚠️ Dependências Circulares Detectadas\n\n\`\`\`\n${report}\n\`\`\`\n\n**Ação necessária:** Corrija as dependências circulares antes de fazer merge.`
+            });
+          }

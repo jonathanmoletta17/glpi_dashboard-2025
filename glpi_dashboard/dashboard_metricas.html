@@ -1,0 +1,441 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dashboard GLPI - Métricas e Análises</title>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 20px;
+        }
+
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+            background: white;
+            border-radius: 15px;
+            box-shadow: 0 20px 40px rgba(0,0,0,0.1);
+            overflow: hidden;
+        }
+
+        .header {
+            background: linear-gradient(135deg, #2c3e50 0%, #34495e 100%);
+            color: white;
+            padding: 30px;
+            text-align: center;
+        }
+
+        .header h1 {
+            font-size: 2.5em;
+            margin-bottom: 10px;
+            font-weight: 300;
+        }
+
+        .header p {
+            font-size: 1.1em;
+            opacity: 0.9;
+        }
+
+        .metrics-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 20px;
+            padding: 30px;
+        }
+
+        .metric-card {
+            background: white;
+            border-radius: 10px;
+            padding: 25px;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.08);
+            border-left: 4px solid #3498db;
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+        }
+
+        .metric-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 25px rgba(0,0,0,0.15);
+        }
+
+        .metric-card.success {
+            border-left-color: #27ae60;
+        }
+
+        .metric-card.warning {
+            border-left-color: #f39c12;
+        }
+
+        .metric-card.info {
+            border-left-color: #3498db;
+        }
+
+        .metric-card.danger {
+            border-left-color: #e74c3c;
+        }
+
+        .metric-value {
+            font-size: 2.5em;
+            font-weight: bold;
+            color: #2c3e50;
+            margin-bottom: 10px;
+        }
+
+        .metric-label {
+            font-size: 1.1em;
+            color: #7f8c8d;
+            margin-bottom: 15px;
+        }
+
+        .metric-description {
+            font-size: 0.9em;
+            color: #95a5a6;
+            line-height: 1.4;
+        }
+
+        .charts-section {
+            padding: 30px;
+            background: #f8f9fa;
+        }
+
+        .charts-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(400px, 1fr));
+            gap: 30px;
+        }
+
+        .chart-container {
+            background: white;
+            border-radius: 10px;
+            padding: 25px;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.08);
+        }
+
+        .chart-title {
+            font-size: 1.3em;
+            font-weight: 600;
+            color: #2c3e50;
+            margin-bottom: 20px;
+            text-align: center;
+        }
+
+        .technicians-list {
+            padding: 30px;
+        }
+
+        .technicians-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 20px;
+        }
+
+        .technician-card {
+            background: white;
+            border-radius: 10px;
+            padding: 20px;
+            box-shadow: 0 3px 10px rgba(0,0,0,0.1);
+            border: 1px solid #ecf0f1;
+        }
+
+        .technician-name {
+            font-size: 1.2em;
+            font-weight: 600;
+            color: #2c3e50;
+            margin-bottom: 8px;
+        }
+
+        .technician-group {
+            color: #3498db;
+            font-weight: 500;
+            margin-bottom: 5px;
+        }
+
+        .technician-status {
+            display: inline-block;
+            padding: 4px 12px;
+            border-radius: 20px;
+            font-size: 0.8em;
+            font-weight: 500;
+        }
+
+        .status-active {
+            background: #d5f4e6;
+            color: #27ae60;
+        }
+
+        .status-recent {
+            background: #dbeafe;
+            color: #3b82f6;
+        }
+
+        .insights-section {
+            padding: 30px;
+            background: #2c3e50;
+            color: white;
+        }
+
+        .insights-title {
+            font-size: 1.8em;
+            margin-bottom: 20px;
+            text-align: center;
+        }
+
+        .insights-list {
+            list-style: none;
+            max-width: 800px;
+            margin: 0 auto;
+        }
+
+        .insights-list li {
+            padding: 15px 0;
+            border-bottom: 1px solid #34495e;
+            font-size: 1.1em;
+            line-height: 1.5;
+        }
+
+        .insights-list li:before {
+            content: "💡";
+            margin-right: 10px;
+        }
+
+        .footer {
+            background: #34495e;
+            color: white;
+            text-align: center;
+            padding: 20px;
+            font-size: 0.9em;
+        }
+
+        @media (max-width: 768px) {
+            .metrics-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .charts-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .header h1 {
+                font-size: 2em;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <!-- Header -->
+        <div class="header">
+            <h1>📊 Dashboard GLPI</h1>
+            <p>Análise Completa de Métricas e Performance</p>
+            <p><small>Última atualização: <span id="lastUpdate"></span></small></p>
+        </div>
+
+        <!-- Métricas Principais -->
+        <div class="metrics-grid">
+            <div class="metric-card success">
+                <div class="metric-value">19</div>
+                <div class="metric-label">Técnicos Ativos</div>
+                <div class="metric-description">Todos os técnicos cadastrados estão ativos no sistema</div>
+            </div>
+
+            <div class="metric-card info">
+                <div class="metric-value">10,142</div>
+                <div class="metric-label">Total de Tickets</div>
+                <div class="metric-description">Tickets registrados e processados no sistema</div>
+            </div>
+
+            <div class="metric-card success">
+                <div class="metric-value">99.24%</div>
+                <div class="metric-label">Taxa de Resolução</div>
+                <div class="metric-description">Excelente performance na resolução de chamados</div>
+            </div>
+
+            <div class="metric-card warning">
+                <div class="metric-value">27.6</div>
+                <div class="metric-label">Dias Médios</div>
+                <div class="metric-description">Tempo médio para resolução de tickets</div>
+            </div>
+
+            <div class="metric-card info">
+                <div class="metric-value">18</div>
+                <div class="metric-label">Logins Recentes</div>
+                <div class="metric-description">Técnicos ativos nos últimos 30 dias</div>
+            </div>
+
+            <div class="metric-card success">
+                <div class="metric-value">10,065</div>
+                <div class="metric-label">Tickets Resolvidos</div>
+                <div class="metric-description">Chamados finalizados com sucesso</div>
+            </div>
+        </div>
+
+        <!-- Gráficos -->
+        <div class="charts-section">
+            <div class="charts-grid">
+                <div class="chart-container">
+                    <div class="chart-title">Distribuição por Grupos</div>
+                    <canvas id="groupChart"></canvas>
+                </div>
+
+                <div class="chart-container">
+                    <div class="chart-title">Top 5 Categorias de Tickets</div>
+                    <canvas id="categoryChart"></canvas>
+                </div>
+
+                <div class="chart-container">
+                    <div class="chart-title">Status dos Tickets</div>
+                    <canvas id="statusChart"></canvas>
+                </div>
+
+                <div class="chart-container">
+                    <div class="chart-title">Distribuição de Prioridades</div>
+                    <canvas id="priorityChart"></canvas>
+                </div>
+            </div>
+        </div>
+
+        <!-- Lista de Técnicos -->
+        <div class="technicians-list">
+            <h2 style="text-align: center; margin-bottom: 30px; color: #2c3e50;">👥 Equipe de Técnicos</h2>
+            <div class="technicians-grid" id="techniciansGrid">
+                <!-- Técnicos serão inseridos via JavaScript -->
+            </div>
+        </div>
+
+        <!-- Insights -->
+        <div class="insights-section">
+            <h2 class="insights-title">💡 Insights Principais</h2>
+            <ul class="insights-list">
+                <li>Sistema possui 19 técnicos ativos de 19 cadastrados</li>
+                <li>18 técnicos fizeram login nos últimos 30 dias</li>
+                <li>Grupo com mais técnicos: CC-DTIC (14 técnicos)</li>
+                <li>Taxa de resolução de tickets: 99.24%</li>
+                <li>Tempo médio de resolução: 27.63 dias</li>
+                <li>Categoria mais comum: Rede/Conectividade (2,410 tickets)</li>
+                <li>Status mais comum: Fechado (6,809 tickets)</li>
+            </ul>
+        </div>
+
+        <!-- Footer -->
+        <div class="footer">
+            <p>Dashboard GLPI - Sistema de Análise de Métricas | Gerado automaticamente</p>
+        </div>
+    </div>
+
+    <script>
+        // Atualizar data
+        document.getElementById('lastUpdate').textContent = new Date().toLocaleString('pt-BR');
+
+        // Dados dos técnicos
+        const technicians = [
+            {name: "Wagner Mengue", group: "CC-DTIC", lastLogin: "Sem registro", active: true},
+            {name: "Silvio Godinho Valim", group: "CC-DTIC", lastLogin: "05/09/2025", active: true},
+            {name: "Paulo César Pedó Nunes", group: "CC-DTIC", lastLogin: "05/09/2025", active: true},
+            {name: "Pablo Hebling Guimaraes", group: "CC-DTIC", lastLogin: "05/09/2025", active: true},
+            {name: "Anderson da Silva Morim de Oliveira", group: "CC-DTIC", lastLogin: "05/09/2025", active: true},
+            {name: "Nicolas Fernando Muniz Nunez", group: "CC-DTIC-Estágio", lastLogin: "05/09/2025", active: true},
+            {name: "Gabriel Silva Machado", group: "CC-DTIC-Estagio", lastLogin: "05/09/2025", active: true},
+            {name: "Luciano Marcelino da Silva", group: "CC-DTIC-SPGG", lastLogin: "05/09/2025", active: true},
+            {name: "Gabriel Andrade da Conceicao", group: "CC-DTIC-Estagio", lastLogin: "05/09/2025", active: true},
+            {name: "Joao Pedro Wilson Dias", group: "CC-DTIC", lastLogin: "05/09/2025", active: true}
+        ];
+
+        // Renderizar técnicos
+        const techniciansGrid = document.getElementById('techniciansGrid');
+        technicians.forEach(tech => {
+            const card = document.createElement('div');
+            card.className = 'technician-card';
+            card.innerHTML = `
+                <div class="technician-name">${tech.name}</div>
+                <div class="technician-group">${tech.group}</div>
+                <div class="technician-status ${tech.active ? 'status-active' : 'status-inactive'}">
+                    ${tech.active ? '✅ Ativo' : '❌ Inativo'}
+                </div>
+                <div style="margin-top: 8px; font-size: 0.9em; color: #7f8c8d;">
+                    Último login: ${tech.lastLogin}
+                </div>
+            `;
+            techniciansGrid.appendChild(card);
+        });
+
+        // Configuração dos gráficos
+        const chartOptions = {
+            responsive: true,
+            plugins: {
+                legend: {
+                    position: 'bottom'
+                }
+            }
+        };
+
+        // Gráfico de Grupos
+        new Chart(document.getElementById('groupChart'), {
+            type: 'doughnut',
+            data: {
+                labels: ['CC-DTIC', 'CC-DTIC-Estágio', 'CC-DTIC-Estagio', 'CC-DTIC-SPGG'],
+                datasets: [{
+                    data: [14, 1, 2, 1],
+                    backgroundColor: ['#3498db', '#e74c3c', '#f39c12', '#27ae60']
+                }]
+            },
+            options: chartOptions
+        });
+
+        // Gráfico de Categorias
+        new Chart(document.getElementById('categoryChart'), {
+            type: 'bar',
+            data: {
+                labels: ['Rede/Conectividade', 'Email/Office', 'Outros', 'Hardware/Equipamentos', 'Software/Sistemas'],
+                datasets: [{
+                    label: 'Tickets',
+                    data: [2410, 2283, 1825, 1415, 1404],
+                    backgroundColor: '#3498db'
+                }]
+            },
+            options: {
+                ...chartOptions,
+                scales: {
+                    y: {
+                        beginAtZero: true
+                    }
+                }
+            }
+        });
+
+        // Gráfico de Status
+        new Chart(document.getElementById('statusChart'), {
+            type: 'pie',
+            data: {
+                labels: ['Fechado', 'Solucionado', 'Em Andamento', 'Outros'],
+                datasets: [{
+                    data: [6809, 3256, 50, 27],
+                    backgroundColor: ['#27ae60', '#3498db', '#f39c12', '#95a5a6']
+                }]
+            },
+            options: chartOptions
+        });
+
+        // Gráfico de Prioridades
+        new Chart(document.getElementById('priorityChart'), {
+            type: 'doughnut',
+            data: {
+                labels: ['Média', 'Baixa', 'Alta', 'Muito Alta'],
+                datasets: [{
+                    data: [8500, 1200, 400, 42],
+                    backgroundColor: ['#3498db', '#27ae60', '#f39c12', '#e74c3c']
+                }]
+            },
+            options: chartOptions
+        });
+    </script>
+</body>
+</html>
